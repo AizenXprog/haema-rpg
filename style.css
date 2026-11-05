@@ -475,3 +475,55 @@
     .chapter:hover .chapter-arrow, .hero-actions .button:hover span { transform: translate(2px, -2px); }
   }
 }
+
+/* Conhecendo o HÆMA — introdução à ficha, dentro do Manual Vivo. */
+.sheet-guide { margin: 30px 0; border: 1px solid #b8a18a; background: var(--paper); }
+.sheet-guide-head { padding: clamp(22px, 4vw, 48px); color: var(--ivory); background: radial-gradient(ellipse at 76% 20%, #461d27, transparent 62%), #171310; border-bottom: 4px double #ad8777; }
+.sheet-guide-head h2 { font: 600 clamp(38px, 6vw, 74px)/1.02 var(--reading); margin: 0 0 16px; }
+.sheet-guide-head h2 span { display: block; font: 400 .62em/1.3 var(--goth); color: #d5aaa4; }
+.sheet-guide-head p { max-width: 58ch; color: #e0d1bf; }
+.sheet-guide-head a { display: inline-block; padding: 10px 0; margin-right: 18px; color: #ebc8b6; text-decoration: underline; text-underline-offset: 4px; }
+.sheet-guide-body { padding: clamp(14px, 3vw, 38px); display: grid; gap: clamp(20px, 4vw, 48px); align-items: start; }
+.sheet-guide article { min-width: 0; }
+.sheet-guide .index { border-top: 3px double #a98e7e; padding-top: 10px; color: #672f3a; }
+.sheet-guide .index nav { display: flex; flex-wrap: wrap; gap: 0 14px; }
+.sheet-guide .index a { padding: 10px 0; color: #573931; border-bottom: 1px solid #c9b7a4; }
+.sheet-guide article > section + section { margin-top: 35px; padding-top: 30px; border-top: 1px solid #b7a490; }
+.sheet-guide h3 { font: 600 clamp(30px, 4vw, 46px)/1.08 var(--reading); margin: 0; color: #53242e; }
+.sheet-guide h4 { font: 600 28px/1.1 var(--reading); margin: 18px 0 10px; }
+.sheet-guide h4 span { color: #775148; font-style: italic; }
+.sheet-guide p, .sheet-guide dd { line-height: 1.65; }
+.sheet-guide .intro { margin-top: 12px; max-width: 68ch; }
+.sheet-guide figure, .sheet-guide .ignis { margin: 20px 0; padding: clamp(14px, 2.5vw, 28px); border: 1px solid #986f60; background: #f7eee0; box-shadow: inset 4px 0 #885662; }
+.sheet-guide figcaption, .sheet-guide .state { font: 700 .74rem/1.5 var(--sans); color: #783d44; text-transform: uppercase; letter-spacing: .09em; }
+.sheet-guide .stats { display: flex; flex-wrap: wrap; gap: 12px 20px; margin: 12px 0; }
+.sheet-guide .stats div { font-size: .88rem; border-left: 1px solid #b99e86; padding-left: 10px; }
+.sheet-guide .stats b, .sheet-guide .scale b { display: block; color: #672f3a; font: 600 2rem/1.15 var(--reading); }
+.sheet-guide figure p, .sheet-guide .ignis p { margin: 12px 0; }
+.sheet-guide a.ref { display: inline-block; padding: 5px 0; color: #73303b; font: 600 .86rem/1.5 var(--sans); text-decoration: underline; text-underline-offset: 3px; border: 0; background: transparent; }
+.sheet-guide details { border-bottom: 1px solid #bfaa96; }
+.sheet-guide summary { padding: 14px 8px; cursor: pointer; color: #582b33; font-weight: 600; }
+.sheet-guide details[open] > summary { background: #e5d6c4; }
+.sheet-guide .inside { padding: 5px 9px 16px; }
+.sheet-guide dl { margin: 10px 0; }
+.sheet-guide .compact { display: grid; gap: 14px 20px; }
+.sheet-guide dt { font: 700 1.4rem/1.25 var(--reading); }
+.sheet-guide dd { margin: 3px 0 0; }
+.sheet-guide .term { padding: 12px 0; border-bottom: 1px solid #c8b6a4; }
+.sheet-guide .term:last-child { border: 0; }
+.sheet-guide .term .ref { display: block; width: fit-content; }
+.sheet-guide .scale { display: flex; align-items: center; gap: clamp(3px, 1vw, 12px); margin: 20px 0; }
+.sheet-guide .scale b { flex: 1; max-width: 66px; min-width: 0; text-align: center; padding: 9px 0; color: #efdcc4; background: #3e292b; border: 1px solid #936866; font-size: clamp(17px, 3vw, 31px); }
+.sheet-guide .ignis { background: linear-gradient(130deg, #42242b, #251c1b); color: #f2e4d3; }
+.sheet-guide .ignis .ref, .sheet-guide .ignis .state { color: #eac0ae; }
+.sheet-guide .ignis .ref { margin-right: 14px; }
+.sheet-guide :is(.sheet-guide-head, .ignis) a:focus-visible { outline-color: var(--ivory); }
+@media (min-width: 640px) { .sheet-guide .compact { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) {
+  .sheet-guide-body { grid-template-columns: minmax(155px, .30fr) minmax(0, 1fr); }
+  .sheet-guide .index { position: sticky; top: 98px; max-height: calc(100vh - 112px); overflow: auto; }
+  .sheet-guide .index nav { display: grid; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sheet-guide details[open] > .inside { animation: haema-unfold .2s var(--haema-ease); }
+}

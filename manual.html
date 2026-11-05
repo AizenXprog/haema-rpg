@@ -6,6 +6,419 @@
 <a aria-current="page" href="manual.html">Manual</a>
 <a href="mesa.html">Mesa de jogo</a></nav><button aria-label="Música ambiente ativada" aria-pressed="true" class="sound-toggle sound-active" id="haema-sound-toggle" title="Controle de música ambiente" type="button"><svg aria-hidden="true" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="17"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg><span id="haema-sound-label">SOM LIGADO</span></button><button aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu" class="menu-toggle" id="menu-toggle"><span></span><span></span></button><a class="top-action" href="mesa.html#ficha">FICHA <span aria-hidden="true">↗</span></a></div></header><main id="conteudo"><section class="page-hero"><div class="container"><div class="folio"><span>HÆMA / II</span><span>PLAYTEST 0.1</span></div><p class="eyebrow">MANUAL DE JOGO / 0.1</p><h1 class="gothic">Manual Vivo</h1><p class="page-summary">Núcleo Jogável 0.1 · documentação experimental completa, 14 capítulos e laboratórios para aprender as mecânicas.</p><div class="thin-rule"><span>✣</span></div><div aria-label="Autoria oficial do HÆMA" class="author-signature">Site e Sistema criado por <strong>Vitor Monte</strong></div></div></section><section class="light-content manual-content manual-vivo" id="manual-vivo"><div class="container">
 <div class="manual-intro"><p class="overline">MANUAL VIVO / NÚCLEO JOGÁVEL 0.1</p><h2 class="serif-heading">Regra, exemplo, experiência.</h2><p>Quatorze capítulos do pacote técnico original, com laboratórios interativos para praticar os procedimentos. Os testes aqui são exemplos isolados; o documento é experimental e pode mudar após o playtest.</p><div class="experimental-flag"><strong>VERSÃO EXPERIMENTAL · 0.1</strong><span>Custos e procedimentos propostos não são regras definitivas. Ignis, poderes, rituais, Ápice e cosmologia não estão implementados.</span></div></div>
+<section id="conhecendo-haema" class="sheet-guide" aria-labelledby="titulo-guia-ficha">
+  <div class="sheet-guide-head">
+    <h2 id="titulo-guia-ficha"><span>Conhecendo o HÆMA</span>Entenda sua Ficha</h2>
+    <p>Abra a ficha de um personagem e comece pelo que você quer entender. Cada explicação leva ao capítulo do Manual onde aquela regra entra em jogo.</p>
+    <a href="#comecar">Ir para sua primeira cena ↓</a> <a href="#manual-search">Consultar os capítulos ↓</a>
+  </div>
+  <div class="sheet-guide-body">
+<aside class="index">
+<strong>Consultar por assunto</strong>
+<nav aria-label="Assuntos da ficha">
+<a href="#ficha-identidade">Nome e ofício</a>
+<a href="#ficha-capacidades">Atributos e competências</a>
+<a href="#ficha-dados">Dados e DT</a>
+<a href="#ficha-condicao">Condição e recursos</a>
+<a href="#ficha-ignis">Ignis</a>
+<a href="#ficha-confronto">Defesa e reações</a>
+<a href="#ficha-especiais">Metus e Latebra</a>
+<a href="#ficha-evolucao">PE, Invicta e Ápice</a>
+</nav>
+</aside>
+<article>
+<section id="ficha-identidade">
+<h3>Quem é seu personagem?</h3>
+<p class="intro">O nome identifica quem você interpreta. O ofício conta com que esse personagem trabalha. HÆMA permite escolher as capacidades separadamente da profissão.</p>
+<figure>
+<figcaption>Uma ficha do Manual</figcaption>
+<h4>Investigador <span>· analista</span>
+</h4>
+<div class="stats">
+<div>
+<b>d8</b>Intelecto</div>
+<div>
+<b>d8</b>Investigação</div>
+<div>
+<b>16</b>Integridade máxima</div>
+</div>
+<p>O primeiro d8 descreve uma capacidade geral. O segundo mostra o dado para uma prática específica. O 16 é a quantidade de Integridade que este personagem tem quando está em plena condição física.</p>
+<a class="ref manual-index-link" href="#personagens">Consultar a ficha do Investigador ↗</a>
+</figure>
+<details>
+<summary>Ofício, história e equipamento</summary>
+<div class="inside">
+<dl>
+<div class="term">
+<dt>Profissão e história</dt>
+<dd>A criação permite escolher um ofício e acrescentar uma história curta. A familiaridade profissional é uma proposta de playtest para testes ligados ao ofício. <a class="ref manual-index-link" href="#criacao">Personagem inicial ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Equipamento</dt>
+<dd>Arma, proteção e ferramentas ajudam a situar o que o personagem leva para a cena. O ofício orienta a escolha das ferramentas. <a class="ref manual-index-link" href="#criacao">Personagem inicial ↗</a>
+</dd>
+</div>
+</dl>
+</div>
+</details>
+</section>
+<section id="ficha-capacidades">
+<h3>Como ler atributo e competência?</h3>
+<p class="intro">Um atributo descreve uma capacidade ampla. Uma competência indica o que o personagem sabe fazer. Para blefar, o Manual combina Presença com Enganação. Para preparar uma fraude, combina Intelecto com a mesma Enganação.</p>
+<details open>
+<summary>Os seis atributos</summary>
+<div class="inside">
+<dl class="compact">
+<div>
+<dt>Força</dt>
+<dd>Capacidade de exercer força física.</dd>
+</div>
+<div>
+<dt>Destreza</dt>
+<dd>Coordenação e agilidade de movimentos.</dd>
+</div>
+<div>
+<dt>Vigor</dt>
+<dd>Resistência física. Seu dado ajuda a determinar Integridade e Fôlego.</dd>
+</div>
+<div>
+<dt>Intelecto</dt>
+<dd>Capacidade de raciocinar e analisar.</dd>
+</div>
+<div>
+<dt>Percepção</dt>
+<dd>Capacidade de perceber o que acontece ao redor.</dd>
+</div>
+<div>
+<dt>Presença</dt>
+<dd>Capacidade de se fazer sentir em uma interação.</dd>
+</div>
+</dl>
+<a class="ref manual-index-link" href="#criacao">Personagem inicial ↗</a>
+</div>
+</details>
+<h4>As 24 competências</h4>
+<p>Abra o grupo para localizar uma competência. O narrador escolhe a dupla de dados conforme a ação descrita.</p>
+<details>
+<summary>Sociais · 7 competências</summary>
+<div class="inside">
+<dl class="compact">
+<div>
+<dt>Enganação</dt>
+<dd>Sustentar um blefe ou preparar uma fraude.</dd>
+</div>
+<div>
+<dt>Persuasão</dt>
+<dd>Apresentar razões para convencer alguém.</dd>
+</div>
+<div>
+<dt>Empatia</dt>
+<dd>Perceber o que outra pessoa sente.</dd>
+</div>
+<div>
+<dt>Intimidação</dt>
+<dd>Pressionar alguém por meio de uma ameaça.</dd>
+</div>
+<div>
+<dt>Diplomacia</dt>
+<dd>Negociar entre interesses diferentes.</dd>
+</div>
+<div>
+<dt>Liderança</dt>
+<dd>Orientar um grupo.</dd>
+</div>
+<div>
+<dt>Atuação</dt>
+<dd>Interpretar um papel diante de outras pessoas.</dd>
+</div>
+</dl>
+<a class="ref manual-index-link" href="#criacao">Consultar as competências no capítulo de criação ↗</a>
+</div>
+</details>
+<details>
+<summary>Físicas · 6 competências</summary>
+<div class="inside">
+<dl class="compact">
+<div>
+<dt>Atletismo</dt>
+<dd>Realizar esforços como o salto entre telhados do Manual.</dd>
+</div>
+<div>
+<dt>Acrobacia</dt>
+<dd>Controlar o movimento e o equilíbrio do corpo.</dd>
+</div>
+<div>
+<dt>Luta</dt>
+<dd>Combater corpo a corpo.</dd>
+</div>
+<div>
+<dt>Pontaria</dt>
+<dd>Mirar em um alvo à distância.</dd>
+</div>
+<div>
+<dt>Armas Brancas</dt>
+<dd>Manejar armas de combate próximo.</dd>
+</div>
+<div>
+<dt>Furtividade</dt>
+<dd>Agir procurando passar despercebido.</dd>
+</div>
+</dl>
+<a class="ref manual-index-link" href="#criacao">Consultar as competências no capítulo de criação ↗</a>
+</div>
+</details>
+<details>
+<summary>Intelectuais · 5 competências</summary>
+<div class="inside">
+<dl class="compact">
+<div>
+<dt>Observação</dt>
+<dd>Examinar detalhes de uma situação. Na ficha, Percepção é o atributo e Observação é a competência.</dd>
+</div>
+<div>
+<dt>Investigação</dt>
+<dd>Examinar indícios e relacionar informações.</dd>
+</div>
+<div>
+<dt>Ciências</dt>
+<dd>Aplicar conhecimento científico.</dd>
+</div>
+<div>
+<dt>Cultura</dt>
+<dd>Recorrer a conhecimentos culturais.</dd>
+</div>
+<div>
+<dt>Estratégia</dt>
+<dd>Planejar como enfrentar uma situação.</dd>
+</div>
+</dl>
+<a class="ref manual-index-link" href="#criacao">Consultar as competências no capítulo de criação ↗</a>
+</div>
+</details>
+<details>
+<summary>Práticas · 6 competências</summary>
+<div class="inside">
+<dl class="compact">
+<div>
+<dt>Medicina</dt>
+<dd>Cuidar de feridos e prestar assistência.</dd>
+</div>
+<div>
+<dt>Tecnologia</dt>
+<dd>Lidar com recursos e dispositivos técnicos.</dd>
+</div>
+<div>
+<dt>Engenharia</dt>
+<dd>Aplicar conhecimentos de construção e funcionamento de sistemas.</dd>
+</div>
+<div>
+<dt>Sobrevivência</dt>
+<dd>Enfrentar condições adversas.</dd>
+</div>
+<div>
+<dt>Condução</dt>
+<dd>Conduzir um veículo.</dd>
+</div>
+<div>
+<dt>Ladinagem</dt>
+<dd>Executar manipulações delicadas, como as associadas à técnica Mãos Silenciosas.</dd>
+</div>
+</dl>
+<a class="ref manual-index-link" href="#criacao">Consultar as competências no capítulo de criação ↗</a>
+</div>
+</details>
+</section>
+<section id="ficha-dados">
+<h3>O que significa d6?</h3>
+<p class="intro">A letra d indica um dado. O número indica quantas faces ele tem. Um d6 pode mostrar de 1 a 6. Subir um grau significa passar para o próximo dado da escala.</p>
+<div class="scale" aria-label="Graus em ordem crescente">
+<b>d4</b>
+<span aria-hidden="true">›</span>
+<b>d6</b>
+<span aria-hidden="true">›</span>
+<b>d8</b>
+<span aria-hidden="true">›</span>
+<b>d10</b>
+<span aria-hidden="true">›</span>
+<b>d12</b>
+</div>
+<dl>
+<div class="term">
+<dt>Avanços de criação</dt>
+<dd>A ficha começa em d4. Há 6 avanços para os atributos e 8 para as competências, com teto inicial d8. Na evolução posterior, o Manual apresenta compras com PE. <a class="ref manual-index-link" href="#criacao">Personagem inicial ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Dificuldade do Teste (DT)</dt>
+<dd>É o número que a soma dos resultados precisa alcançar. No salto entre telhados, Destreza d6 mostra 4 e Atletismo d4 mostra 3. O total 7 alcança a DT 7. <a class="ref manual-index-link" href="#resolucao">Preparação e resolução ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Dupla original e margem</dt>
+<dd>Os dois dados originais são o de atributo e o de competência. A margem expressa por quanto o resultado supera a dificuldade. O rolador da Mesa permite escolher a dupla e a DT. <a class="ref manual-index-link" href="#resolucao">Preparação e resolução ↗</a>
+</dd>
+</div>
+</dl>
+</section>
+<section id="ficha-condicao">
+<h3>Como está seu personagem agora?</h3>
+<p class="intro">Leia o valor atual como uma fotografia deste momento. O máximo indica até onde aquele recurso pode chegar na condição presente.</p>
+<figure>
+<figcaption>Vigor d6 · sem Ferimentos</figcaption>
+<div class="stats">
+<div>
+<b>16</b>Integridade máxima</div>
+<div>
+<b>8</b>Fôlego máximo</div>
+</div>
+<p>O mesmo d6 entra nas contas de duas maneiras. Para a Integridade, entram suas seis faces. Para o Fôlego, entra seu grau na escala: d6 é o segundo grau.</p>
+<a class="ref manual-index-link" href="#criacao">Ver o cálculo dos máximos ↗</a>
+</figure>
+<dl>
+<div class="term">
+<dt>Integridade</dt>
+<dd>Mede a condição física. O dano final reduz o valor atual. Ao chegar a zero, o personagem fica incapacitado. <a class="ref manual-index-link" href="#combate">Combate ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Ferimentos</dt>
+<dd>São marcas de um golpe suficientemente grave. Cada Ferimento ativo reduz em 1 o Fôlego máximo. A ficha acompanha os Ferimentos separadamente da Integridade atual. <a class="ref manual-index-link" href="#combate">Combate ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Fôlego</dt>
+<dd>É a reserva para esforço físico, certas técnicas e reações como Esquiva e Aparo. O valor atual mostra quanto ainda pode ser gasto. <a class="ref manual-index-link" href="#recursos">Recursos ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Ímpeto</dt>
+<dd>É uma vantagem tática passageira. Uma ação arriscada pode gerá-lo nas condições do Manual. Pode ajudar num teste e termina junto com a cena. <a class="ref manual-index-link" href="#recursos">Recursos ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Sobrecarga e Forçar o Corpo</dt>
+<dd>A Sobrecarga registra esforço além da reserva disponível. Forçar o Corpo permite substituir um ponto de Fôlego faltante por Sobrecarga nas condições descritas no capítulo. <a class="ref manual-index-link" href="#recursos">Recursos ↗</a>
+</dd>
+</div>
+</dl>
+<aside class="ignis" id="ficha-ignis">
+<div class="state">Em desenvolvimento · HÆMA 0.1</div>
+<h4>Ignis</h4>
+<p>Ignis é o recurso que o HÆMA reserva para os futuros poderes e rituais do sistema. Na ficha de hoje, é o Fôlego que você acompanha quando faz um esforço físico ou usa uma reação. Ignis pertence à parte do jogo que ainda está sendo escrita.</p>
+<p>Se você está criando seu primeiro personagem, pode seguir sem preencher Ignis. A edição 0.1 ainda deixa em aberto quanto um personagem teria, como gastaria esse recurso e quais efeitos ele produziria.</p>
+<a class="ref manual-index-link" href="#recursos">Ignis no capítulo Recursos ↗</a> <a class="ref manual-index-link" href="#pendencias">Consultar os pontos em aberto ↗</a>
+</aside>
+<details>
+<summary>Queda, estabilização e descanso</summary>
+<div class="inside">
+<p>Quando a Integridade chega a zero, a regra de queda acompanha a possibilidade de estabilização ou morte. Estabilizar interrompe o risco imediato. O descanso curto recupera Fôlego, e o longo também pode recuperar Integridade. A recuperação dos Ferimentos tem condições próprias. O procedimento de morte é experimental.</p>
+<a class="ref manual-index-link" href="#combate">Combate ↗</a>
+</div>
+</details>
+</section>
+<section id="ficha-confronto">
+<h3>O que protege você em confronto?</h3>
+<p class="intro">Guarda, armadura e reação entram em momentos diferentes. Essa distinção ajuda a ler tanto a ficha quanto o resultado de um ataque.</p>
+<dl>
+<div class="term">
+<dt>Guarda e Defesa Passiva</dt>
+<dd>Guarda é o dado do qual se obtém a Defesa Passiva, o número que o ataque precisa alcançar. Na ficha inicial, Guarda d6 dá Defesa 7. <a class="ref manual-index-link" href="#combate">Combate ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Cobertura, escudo e armadura</dt>
+<dd>Cobertura e escudo podem elevar a Defesa. A proteção da armadura reduz o dano depois de um acerto. <a class="ref manual-index-link" href="#combate">Combate ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Esquiva e Aparo</dt>
+<dd>São reações a um ataque que acertou. A Esquiva tenta evitar o golpe. O Aparo usa arma ou escudo adequado para reduzir o dano. Ambas usam Fôlego. <a class="ref manual-index-link" href="#combate">Combate ↗</a>
+</dd>
+</div>
+</dl>
+<details>
+<summary>Rodada, ações e ataque</summary>
+<div class="inside">
+<dl>
+<div class="term">
+<dt>Iniciativa, turno e rodada</dt>
+<dd>A iniciativa define qual lado começa. Ao longo da rodada, os participantes se alternam. Cada personagem dispõe de Ação Principal, Movimento e Reação. <a class="ref manual-index-link" href="#resolucao">Preparação e resolução ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Dado da arma e crítico</dt>
+<dd>Após um acerto, o dado da arma determina o dano. O crítico é uma proposta de dano adicional quando a dupla original atende às condições do capítulo. <a class="ref manual-index-link" href="#combate">Combate ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Criar Abertura e Ataque Desesperado · propostas</dt>
+<dd>A primeira manobra prepara uma oportunidade para um aliado. A segunda permite ao próprio personagem intensificar um ataque, com custo e perda temporária da reação. <a class="ref manual-index-link" href="#combate">Combate ↗</a>
+</dd>
+</div>
+</dl>
+</div>
+</details>
+</section>
+<section id="ficha-especiais">
+<h3>E quando há medo ou ocultação?</h3>
+<p class="intro">O medo interfere nos resultados dos dados. A ocultação acompanha quanto os perseguidores já descobriram sobre um esconderijo.</p>
+<details open>
+<summary>Metus · Inquietação, Pavor e Terror</summary>
+<div class="inside">
+<p>Metus representa o medo diante de uma ameaça concreta. As intensidades são Inquietação d4, Pavor d6 e Terror d8. Em um teste afetado pela fonte do medo, compare cada dado normal com o de Metus.</p>
+<figure>
+<figcaption>Exemplo de comparação</figcaption>
+<p>Atributo <strong>2</strong>, competência <strong>4</strong>, Metus <strong>4</strong>. O 2 é anulado. O 4 permanece por empatar com Metus. O total do teste é <strong>4</strong>.</p>
+</figure>
+<p>A ficha registra o grau ativo. O capítulo explica como resistir à exposição e recuperar o controle.</p>
+<a class="ref manual-index-link" href="#metus">Metus ↗</a>
+</div>
+</details>
+<details>
+<summary>Latebra · marcas, busca, reforço e ruído</summary>
+<div class="inside">
+<p>Latebra acompanha um personagem fisicamente oculto, fora da linha de visão direta. As marcas são números secretos. Cada vez que a busca encontra um número ainda oculto, uma marca é revelada. Quando todas são encontradas, o esconderijo é descoberto.</p>
+<p>Por exemplo, com marcas 2 e 5, tirar 2 revela uma delas. Tirar 2 outra vez deixa o 5 oculto. Busca Rápida e Busca Intensiva são opções do perseguidor. Reforçar Latebra é uma opção de quem se esconde quando o ambiente permite melhorar o esconderijo.</p>
+<p>O ruído pode favorecer a busca. Para Ruído Forte, a edição determina a remoção de uma marca e deixa em aberto quem a escolhe.</p>
+<a class="ref manual-index-link" href="#latebra">Latebra ↗</a>
+</div>
+</details>
+</section>
+<section id="ficha-evolucao">
+<h3>O que o personagem pode conquistar?</h3>
+<p class="intro">Aqui entram o desenvolvimento entre cenas e as possibilidades raras que aparecem no Manual. A ficha digital atual concentra os controles na criação e nos recursos.</p>
+<dl>
+<div class="term">
+<dt>PE e evolução · valores de teste</dt>
+<dd>PE são os pontos usados para desenvolver o personagem. O Manual apresenta custos provisórios para melhorar dados, Guarda, especializações e técnicas. O adendo sobre interpretação orienta o reconhecimento de decisões significativas, inclusive de jogadores reservados. <a class="ref manual-index-link" href="#evolucao">Evolução por PE ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Especialização</dt>
+<dd>É um benefício delimitado a um contexto específico. A proposta atual concede +1 quando esse contexto se aplica. <a class="ref manual-index-link" href="#evolucao">Evolução por PE ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Técnica</dt>
+<dd>É uma capacidade aprendida com requisito e efeito próprios. Por exemplo, Mira Calculada permite abrir mão de movimento para melhorar um ataque à distância naquele turno. <a class="ref manual-index-link" href="#tecnicas">Técnicas humanas ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Invicta · conquista experimental</dt>
+<dd>É uma conquista mecânica extremamente rara. A possibilidade surge após um teste real bem-sucedido em condições críticas de perigo externo. Só então entram os cinco d20. O laboratório demonstra a rolagem. <a class="ref manual-index-link" href="#invicta">Invicta e Ápice ↗</a>
+</dd>
+</div>
+<div class="term">
+<dt>Ápice · reservado</dt>
+<dd>É a utilização excepcional prevista para uma Invicta. A edição 0.1 permite registrar a conquista e reserva seu consumo e a definição do Ápice para uma versão futura. <a class="ref manual-index-link" href="#invicta">Invicta e Ápice ↗</a>
+</dd>
+</div>
+</dl>
+</section>
+</article>
+  </div>
+</section>
 <div aria-label="Como aprender" class="manual-flow"><div><b>01</b><strong>Leia</strong><small>A regra oficial do pacote</small></div><span aria-hidden="true">→</span><div><b>02</b><strong>Experimente</strong><small>Um laboratório didático</small></div><span aria-hidden="true">→</span><div><b>03</b><strong>Aplique</strong><small>Use na sua mesa</small></div></div>
 <section aria-labelledby="first-steps-title" class="first-steps" id="comecar">
 <div class="first-steps-head"><div><span class="guide-kicker">✥ INICIE AQUI · 4 PASSOS</span><h3 id="first-steps-title">Sua primeira cena em HÆMA</h3><p>Para aprender do zero. As regras completas continuam logo abaixo.</p></div><div aria-hidden="true" class="guide-mark">Æ</div></div>
