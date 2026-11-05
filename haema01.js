@@ -1,6 +1,6 @@
 'use strict';
 /** HÆMA 0.1 — Núcleo Jogável. Only rules explicitly present in docs/HAEMA_0.1_Nucleo_Jogavel.md. */
-(()=>{
+function initHAEMA01(){
  const $=q=>document.querySelector(q), $$=q=>Array.from(document.querySelectorAll(q));
  // Single shared rules kernel for the manual, the character sheet, and every demonstrator.
  const core=window.HAEMA01;
@@ -312,4 +312,6 @@
    showResult('#inv-result',`Total ${total} de 5d20. Limiar ${threshold}. ${total>=threshold?'Atingiu o limiar matemático neste exemplo.':'Não atingiu o limiar matemático.'} Nenhuma Invicta foi adquirida ou registrada.`);
   });
  }
-})();
+}
+initHAEMA01();
+document.addEventListener('haema:navigated',initHAEMA01);

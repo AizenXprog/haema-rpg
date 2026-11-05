@@ -1,6 +1,8 @@
 'use strict';
 /** Visual teaching layer. Reads events from the 0.1 rules engine; never rolls or changes game state. */
-(()=>{
+let removeDemoListener=()=>{};
+function initExperience(){
+ removeDemoListener();
  const $=s=>document.querySelector(s);
  const steps=[
   {title:'Você descreve uma ação',body:'Em HÆMA, diga o que seu personagem pretende fazer. O narrador descreve a situação e só pede rolagem quando existe risco ou consequência.',scene:'EXEMPLO DE MESA · Você tenta saltar entre dois telhados. A queda seria perigosa, então o narrador pede um teste.',chapter:'resolucao'},
@@ -49,7 +51,7 @@
   steps.forEach((s,i)=>{const row=element('li','demo-calc-step');row.append(element('span','demo-calc-number',String(i+1).padStart(2,'0')));row.append(element('span','demo-calc-text',s));timeline.append(row)});
   root.append(timeline);
  }
- document.addEventListener('haema:demonstrate',event=>{
+ const onDemonstrate=event=>{
   const v=event.detail;
   if(!v||!v.kind)return;
   if(v.kind==='test')dice('#visual-lab-test',[
@@ -82,5 +84,9 @@
    const bar=element('div','latebra-visual-progress');const fill=element('span','');fill.style.width=(v.total?100*v.found/v.total:0)+'%';bar.append(fill);root.append(bar);
    root.append(element('p','latebra-visual-event',v.message||'As marcas secretas não são exibidas para quem procura.'));
   }
- });
-})();
+  };
+ document.addEventListener('haema:demonstrate',onDemonstrate);
+ removeDemoListener=()=>document.removeEventListener('haema:demonstrate',onDemonstrate);
+}
+initExperience();
+document.addEventListener('haema:navigated',initExperience);
