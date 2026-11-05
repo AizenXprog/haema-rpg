@@ -9,15 +9,18 @@
  const label=document.getElementById('haema-sound-label');
  const source=document.documentElement.dataset.soundtrack||'';
  const audio=source?new Audio(source):null;
- const PREFERENCE='haema-music-enabled';
+ // The music defaults ON at the start of each new tab/session. An explicit
+ // opt-out stays respected while browsing, including page reloads.
+ const PREFERENCE='haema-music-enabled-session';
  const PLAYBACK='haema-music-playback-v1';
  const GAP_MS=30000;
  const VOLUME=.25;
  const read=(area,key)=>{try{return area.getItem(key)}catch{return null}};
  const write=(area,key,value)=>{try{area.setItem(key,value)}catch{}};
- let wanted=read(localStorage,PREFERENCE)!=='false';
+ let wanted=read(sessionStorage,PREFERENCE)!=='false';
  let position=0,gapUntil=0,seekDone=false,blocked=false,playing=false;
  let retryTimer=0,notificationTimer=0,lastCheckpoint=0,pending=null;
+ let playAttempt=0,autoplayNoticeShown=false;
  let notice=null;
  try{
   const saved=JSON.parse(read(sessionStorage,PLAYBACK)||'null');
@@ -29,7 +32,9 @@
  if(audio){
   audio.loop=false;
   audio.volume=VOLUME;
-  audio.preload='metadata';
+  audio.preload='auto';
+  audio.autoplay=true;
+  audio.playsInline=true;
  }
  const persist=(forcePosition)=>{
   if(!audio)return;
@@ -53,15 +58,15 @@
  const paint=()=>{
   if(!label)return;
   const audible=!!audio&&wanted&&playing;
-  label.textContent=!audio?'SOM INDISPONÍVEL':!wanted?'SOM DESLIGADO':audible||gapUntil>Date.now()?'DESLIGAR SOM':'ATIVAR SOM';
-  button.setAttribute('aria-pressed',String(audible));
+  label.textContent=!audio?'SOM INDISPONÍVEL':!wanted?'SOM DESLIGADO':blocked?'TOQUE PARA OUVIR':audible||gapUntil>Date.now()?'DESLIGAR SOM':'SOM LIGADO';
+  button.setAttribute('aria-pressed',String(wanted));
   const description=!audio?'Trilha sonora indisponível':
     !wanted?'Ativar música ambiente':
     audible?'Desligar música ambiente':
-    gapUntil>Date.now()?'Desligar música ambiente (pausa entre reproduções)':'Ativar música ambiente';
+    gapUntil>Date.now()?'Desligar música ambiente (pausa entre reproduções)':blocked?'Música ativa, mas o navegador exige uma interação para liberar o áudio':'Música ambiente ativada; desligar';
   button.setAttribute('aria-label',description);
   button.title=description;
-  button.classList.toggle('sound-active',audible);
+  button.classList.toggle('sound-active',wanted);
  };
  const restore=()=>{
   if(!audio||seekDone||audio.readyState<1)return;
@@ -86,31 +91,42 @@
   retryTimer=setTimeout(()=>{retryTimer=0;gapUntil=0;position=0;persist(0);void start()},delay);
   paint();
  };
- async function start(){
+ async function start(fromGesture=false){
   if(!audio||!wanted)return;
   if(gapUntil>Date.now()){schedule();return;}
   if(gapUntil){gapUntil=0;position=0;persist(0);}
-  if(pending)return pending;
+  if(pending&&!fromGesture)return pending;
   restore();
-  pending=(async()=>{
+  const attempt=++playAttempt;
+  // play() is invoked synchronously within the interaction handler when
+  // fromGesture is true. This is important for browser autoplay permissions.
+  let playPromise;
+  try{playPromise=audio.play();}
+  catch(error){playPromise=Promise.reject(error);}
+  const task=(async()=>{
    try{
-    await audio.play();
+    await playPromise;
+    if(attempt!==playAttempt)return;
     if(!wanted){audio.pause();return;}
     playing=true;blocked=false;
-    persist();
-    paint();
+    persist();paint();
    }catch{
-    playing=false;blocked=true;
-    paint(); // A click or key press will be needed when autoplay is blocked.
-   }finally{pending=null;}
+    if(attempt!==playAttempt)return;
+    playing=false;blocked=true;paint();
+    if(!autoplayNoticeShown){
+     autoplayNoticeShown=true;
+     note('Seu navegador bloqueou o início automático. Toque em qualquer área do site para liberar a música.');
+    }
+   }finally{if(attempt===playAttempt)pending=null;}
   })();
-  return pending;
+  pending=task;
+  return task;
  }
  const disable=()=>{
   wanted=false;blocked=false;playing=false;position=0;gapUntil=0;
   clearRestart();
   if(audio){audio.pause();try{audio.currentTime=0}catch{}}
-  write(localStorage,PREFERENCE,'false');
+  write(sessionStorage,PREFERENCE,'false');
   persist(0);
   paint();
  };
@@ -120,8 +136,8 @@
    disable();note('Música desligada.');return;
   }
   wanted=true;
-  write(localStorage,PREFERENCE,'true');
-  void start().then(()=>{
+  write(sessionStorage,PREFERENCE,'true');
+  void start(true).then(()=>{
    if(playing)note('Música ativada. Use o botão no topo para desligar.');
    else if(wanted)note('Seu navegador exige uma interação para liberar o áudio.');
   });
@@ -148,15 +164,18 @@
   window.addEventListener('pagehide',()=>{if(wanted)persist()});
   // Resume when a tab or page comes back from the back/forward cache.
   window.addEventListener('pageshow',e=>{if(e.persisted&&wanted&&!playing)void start()});
-  // Chrome/Safari/Firefox may block unmuted autoplay until a user gesture.
-  // Ignore the toggle itself, which has explicit click handling.
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&wanted&&!playing&&!pending)void start()});
+  // Browsers may block unmuted autoplay. Try again on any permitted user
+  // gesture rather than requiring a click on the music control itself.
   const unlock=event=>{
    if(!wanted||!blocked||!audio.paused)return;
    const target=event.target;
    if(target instanceof Element&&target.closest('#haema-sound-toggle'))return;
-   void start();
+   void start(true);
   };
   document.addEventListener('pointerdown',unlock,{passive:true,capture:true});
+  document.addEventListener('touchstart',unlock,{passive:true,capture:true});
+  document.addEventListener('click',unlock,{capture:true});
   document.addEventListener('keydown',unlock,{capture:true});
  }
  paint();
