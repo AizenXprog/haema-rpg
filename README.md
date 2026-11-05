@@ -1,36 +1,34 @@
-# HÆMA — Portal do RPG
+# HÆMA — Manual Vivo e Mesa de Jogo 0.1
 
-Portal estático mobile-first publicado via GitHub + Vercel.
+**Site e Sistema criado por Vitor Monte.**
 
-## Navegação principal (3 entradas)
+A implementação atual segue o documento `docs/HAEMA_0.1_Nucleo_Jogavel.md` do pacote técnico do criador. **É um protótipo de playtest, não uma versão final ou cânone definitivo.**
 
-- `index.html` — início e identidade visual.
-- `manual.html` — **manual central**: criação, 2d10, combate, ferimentos, medo, ímpeto, 16 técnicas individuais, 6 combinadas, vínculos e evolução na versão 1.0.
-- `mesa.html` — **mesa de jogo**: ficha e rolador 2d10 na mesma página.
+## Navegação pública
 
-As URLs anteriores `sistema.html`, `ficha.html`, `dados.html` e `arquivo.html` continuam publicadas para não quebrar links antigos, mas não compõem o menu principal. Novas regras confirmadas deverão ser incorporadas ao Manual, e não distribuídas em diversas abas.
+- `index.html`: apresentação e acesso às duas áreas centrais.
+- `manual.html`: **Manual Vivo**, com o texto dos 14 capítulos do Núcleo Jogável 0.1, índice pesquisável e laboratórios de resolução, combate, recursos, Metus, Latebra e Invicta.
+- `mesa.html`: ficha de criação 0.1 e rolador graduado (dado de atributo + dado de competência) compartilhando os mesmos dados.
+- `sistema.html`, `ficha.html`, `dados.html` e `arquivo.html`: endereços antigos redirecionam para a referência 0.1; nenhuma regra anterior fica publicada nessas páginas.
 
-## Recursos
+## Regras e versões
 
-- Ficha e rolador funcionam sem login e sem backend; dados são locais no navegador e podem ser exportados/importados via JSON.
-- Cursor ornamental animado somente para mouse com precisão, sem alterar toque, teclado ou preferência por movimento reduzido.
-- CSS e JavaScript leves, sem framework ou biblioteca de animação. Fontes externas via Google Fonts (pode funcionar com fontes de fallback).
-- Elementos de visualização de baixa prioridade têm animações desligadas em dispositivos de toque; efeitos de cursor usam `requestAnimationFrame` e `transform`.
+- 6 atributos e 24 competências, todos em d4 na criação. Distribua 6 avanços de atributos e 8 de competências, máximo d8 inicialmente.
+- `rules-0.1.js` é o núcleo matemático compartilhado; `haema01.js` liga a interface a esse núcleo. Não misturar com 2d10.
+- A ficha atual usa `localStorage['haema-character-0.1']`. **Não sobrescreve nem apaga** `haema-character-v2` ou `haema-draft-v1`; quando presentes, a Mesa permite exportação para arquivo de preservação.
+- O texto oficial enviado é mantido em `docs/HAEMA_0.1_Nucleo_Jogavel.md` sem alterações.
+- **O Valor da Interpretação:** adendo do criador em `docs/ADENDO_INTERPRETACAO_0.1.md`, incluído no capítulo 8 do Manual sem alterar o original. Os PE individuais permanecem na faixa de **0–2 por arco [proposta]** presente no 0.1; não há concessão automática.
+- `docs/AUDITORIA_0.1.md` registra diferenças entre versões, decisões de compatibilidade e pendências não resolvidas.
+- Os simuladores são **demonstrações didáticas condicionais**. Ignis, poderes, rituais, Ápice e cosmologia não possuem implementação jogável.
 
-## Identidade visual
+## Estética e desenvolvimento
 
-Paleta: `#423F36` carvão, `#440E15` sangue seco, `#212017` marrom e `#0B0A07` quase preto. Gravura de chifres ornamentais original em `assets/antler-sigil.svg`.
+Preserva a identidade já aprovada: vinho escuro, carvão, papel envelhecido, símbolo de chifres, ornamentação leve, responsividade mobile-first e cursor animado apenas em dispositivos com mouse preciso.
 
-A fonte Seagram não é redistribuída. Para publicação futura, verificar a licença do arquivo da fonte antes de hospedá-la. A tipografia pública usa UnifrakturCook como substituta ornamental.
+Site estático para GitHub/Vercel, sem serviços externos necessários além da opção de carregamento de fontes. `index.html` pode ser servido com qualquer servidor HTTP estático.
 
-## Conteúdo
+## Validação e limitações
 
-A documentação corresponde exclusivamente ao playtest 1.0. Cosmologia, Metus e demais conceitos em estudo não foram apresentados como regras finais.
-
-## Autoria oficial
-
-**Site e Sistema criado por Vitor Monte.** A atribuição está presente na página inicial, nas páginas centrais e no rodapé. Manter a assinatura em futuras revisões do portal e documentação.
-
-## Direção futura — Manual Vivo
-
-Ao concluir e aprovar as regras do HÆMA, expandir a página única do Manual com guias didáticos ilustrados, estados visuais interativos, simulações de rolagem, confronto, condições e mecânicas como Latebra, Metus, Ignis e Invicta somente após aprovação da redação e do balanceamento. Priorizar layout mobile-first, acessibilidade, animações leves e controle do usuário sobre demonstrações; evitar multiplicar páginas e abas por mecânica.
+- Sintaxe JS, CSS, links internos, atributos da ficha, contratos de dados e fórmulas dos simuladores foram revisados estaticamente.
+- O navegador gráfico de testes ficou **bloqueado neste ambiente**; os testes visuais e de toque em aparelhos reais permanecem pendentes. Não declarar auditoria visual completa sem essa revisão.
+- Toda revisão futura deve preservar a frase **"Site e Sistema criado por Vitor Monte"**.

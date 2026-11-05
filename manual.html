@@ -1,15 +1,673 @@
 <!DOCTYPE html>
 
-<html lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/><meta content="#0B0A07" name="theme-color"/><meta content="Manual de jogo HÆMA v1.0: criação, 2d10, combate, tensão e evolução." name="description"/><meta content="website" property="og:type"/><meta content="HÆMA — Manual de Jogo" property="og:title"/><meta content="Manual de jogo HÆMA v1.0: criação, 2d10, combate, tensão e evolução." property="og:description"/><title>Manual de Jogo — HÆMA</title><link href="assets/favicon.svg" rel="icon" type="image/svg+xml"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Cormorant+Garamond:wght@400;500;600;700&amp;family=UnifrakturCook:wght@700&amp;display=swap" rel="stylesheet"/><link href="style.css" rel="stylesheet"/><script defer="" src="script.js"></script><meta name="author" content="Vitor Monte"/></head>
+<html lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/><meta content="#0B0A07" name="theme-color"/><meta content="Manual de jogo HÆMA 0.1: criação, dados graduados, combate, Metus e evolução." name="description"/><meta content="website" property="og:type"/><meta content="HÆMA — Manual de Jogo" property="og:title"/><meta content="Manual de jogo HÆMA 0.1: criação, dados graduados, combate, Metus e evolução." property="og:description"/><title>Manual Vivo — HÆMA 0.1 | Núcleo Jogável experimental</title><link href="assets/favicon.svg" rel="icon" type="image/svg+xml"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Cormorant+Garamond:wght@400;500;600;700&amp;family=UnifrakturCook:wght@700&amp;display=swap" rel="stylesheet"/><link href="style.css?v=0.1" rel="stylesheet"/><script defer="" src="script.js?v=0.1"></script><meta content="Vitor Monte" name="author"/><script defer="True" src="rules-0.1.js?v=0.1"></script><script defer="True" src="haema01.js?v=0.1"></script></head>
 <body data-page="manual"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div aria-hidden="true" class="grain"></div><header class="topbar"><div class="header-inner"><a aria-label="HÆMA, página inicial" class="brand" href="index.html"><img alt="" height="35" src="assets/favicon.svg" width="35"/><span>H<span class="accent">Æ</span>MA</span></a><nav aria-label="Navegação principal" class="nav" id="main-nav">
 <a href="index.html">Início</a>
 <a aria-current="page" href="manual.html">Manual</a>
-<a href="mesa.html">Mesa de jogo</a></nav><button aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu" class="menu-toggle" id="menu-toggle"><span></span><span></span></button><a class="top-action" href="mesa.html#ficha">FICHA <span aria-hidden="true">↗</span></a></div></header><main id="conteudo"><section class="page-hero"><div class="container"><div class="folio"><span>HÆMA / II</span><span>PLAYTEST 1.0</span></div><p class="eyebrow">MANUAL DE JOGO / 1.0</p><h1 class="gothic">Manual</h1><p class="page-summary">Todas as regras atualmente documentadas no playtest 1.0, em um só lugar. Expansões serão integradas aqui quando estiverem definidas.</p><div class="author-signature author-signature-page" aria-label="Autoria do HÆMA"><span class="author-signature-ornament" aria-hidden="true">✦</span><span>Site e Sistema criado por <strong>Vitor Monte</strong></span></div><div class="thin-rule"><span>✣</span></div></div></section><section class="light-content manual-content"><div class="container"><div class="manual-intro"><div class="overline">EDIÇÃO 01 / REGRAS DE MESA</div><h2 class="serif-heading">Índice de regras</h2><p>Abra um capítulo para consultar as regras. O conteúdo é provisório e será ampliado aqui conforme o sistema evoluir.</p></div><div class="manual-list">
-<details id="criacao" open=""><summary><span>01</span> Criação de personagem <b>+</b></summary><div class="manual-body"><ol><li>Escolha nome, idade e profissão; conceito e passado são opcionais.</li><li>Corpo, Reflexos, Raciocínio, Presença e Firmeza começam em 1. Distribua +4 pontos; máximo 3 em cada.</li><li>Distribua 12 pontos entre 16 competências; máximo 2 por competência na criação.</li><li>Escolha 2 especializações ligadas a competências com pelo menos 1 ponto. Cada uma dá +1 quando se aplica.</li><li>Escolha 2 técnicas, respeitando os requisitos. Defina equipamento coerente com a campanha.</li></ol><div class="reference-grid"><div><small>VIDA MÁXIMA</small><strong>10 + (2 × Corpo)</strong></div><div><small>DEFESA</small><strong>12 + Reflexos</strong></div><div><small>INICIATIVA</small><strong>2d10 + Reflexos + Atenção</strong></div><div><small>MOVIMENTO</small><strong>6 m por rodada</strong></div><div><small>TENSÃO</small><strong>0 / 6</strong></div><div><small>ÍMPETO</small><strong>1 / 3</strong></div></div></div></details>
-<details id="testes"><summary><span>02</span> Testes e dificuldades <b>+</b></summary><div class="manual-body"><p>O teste padrão usa <strong>2d10 + atributo + competência + especialização aplicável</strong>. Atributo depende da abordagem da ação. Sucesso exige resultado igual ou maior que o alvo.</p><div class="difficulty-list"><div>Comum sob pressão<strong>11</strong></div><div>Desafiadora<strong>14</strong></div><div>Difícil<strong>17</strong></div><div>Extrema<strong>20</strong></div><div>Excepcional<strong>23</strong></div></div><p>Superar o alvo por 5 ou mais gera sucesso marcante. Falhar por 1 a 3 pode permitir sucesso com custo. Dois 10 significam acerto excepcional (se a ação for possível), e dois 1, falha crítica. Ajuda de um aliado capaz concede +2 (máximo um). Modificadores de circunstâncias normalmente variam de −2 a +2, limitados a ±4 no total.</p></div></details>
-<details id="confronto"><summary><span>03</span> Confronto <b>+</b></summary><div class="manual-body"><p>Por rodada, o personagem executa uma ação, move-se até 6 m e dispõe de uma reação. Ataque corpo a corpo: 2d10 + Corpo + Combate (ou Reflexos + Combate se couber). Ataque à distância: 2d10 + Reflexos + Pontaria. Alvo: Defesa.</p><div class="difficulty-list"><div>Desarmado<strong>1d4</strong></div><div>Lâmina curta ou improvisada<strong>1d6</strong></div><div>Arma corpo a corpo pesada<strong>1d8</strong></div><div>Pistola<strong>1d8</strong></div><div>Espingarda até 6 m<strong>2d6</strong></div><div>Fuzil<strong>1d10</strong></div></div><p>Espingarda além de 6 m: 1d6. Atirar em alvo adjacente: −2. Esquiva, como reação declarada antes do ataque, dá +2 Defesa contra esse ataque. Cobertura parcial: +2; robusta: +4. Cobertura total impede ataque sem linha de visão. Sucesso marcante em ataque dá +1d4 de dano; dois 10 dão +1d6 em vez disso.</p></div></details>
-<details id="sobrevivencia"><summary><span>04</span> Ferimentos, tensão e ímpeto <b>+</b></summary><div class="manual-body"><p>Com Vida na metade ou menos: −1 em testes físicos. Em Vida 0, o personagem fica incapacitado e testa 2d10 + Firmeza contra 14 ao fim de cada turno: três sucessos estabilizam, três falhas causam morte.</p><p>Primeiros socorros com kit: Raciocínio + Medicina contra 14, recuperando 1d4 + Medicina (uma vez por pessoa por cena). Um personagem em Vida 0 deve ser estabilizado primeiro. Oito horas de descanso relativamente seguro restauram 3 + Corpo de Vida e reduzem 2 Tensão.</p><p>Medo extremo: 2d10 + Firmeza contra 14 (17 em terror excepcional). Falha soma 1 Tensão, falha crítica soma 2. Em 6 Tensão, −2 em todos os testes até uma pausa segura, quando cai a 3.</p><p>Ímpeto começa em 1, máximo 3. Gastar 1 antes de um teste concede +2; após sofrer dano, reduz o dano em 2. O mestre pode conceder 1 por cena em caso de complicação séria ou risco real para proteger alguém.</p></div></details>
-<details id="tecnicas"><summary><span>05</span> Técnicas <b>+</b></summary><div class="manual-body"><p>Escolha duas técnicas na criação. As técnicas individuais exigem ao menos 1 ponto na competência indicada; as combinadas exigem 1 ponto em <strong>cada</strong> competência da combinação.</p><h3 class="manual-subhead">Técnicas individuais</h3><ul class="technique-list"><li class="technique-item"><div><span>Atletismo</span><strong>Arrancada</strong></div><p>Uma vez por cena, mova +3 m além do deslocamento normal.</p></li><li class="technique-item"><div><span>Combate</span><strong>Controle de impacto</strong></div><p>Ao acertar corpo a corpo, troque 2 de dano por empurrar o alvo 1,5 m.</p></li><li class="technique-item"><div><span>Pontaria</span><strong>Fogo de supressão</strong></div><p>Ao acertar um disparo, troque metade do dano para impedir o movimento do alvo no próximo turno.</p></li><li class="technique-item"><div><span>Discrição</span><strong>Refúgio imediato</strong></div><p>Havendo cobertura, esconda-se como ação mesmo sob observação; teste contra Atenção do observador.</p></li><li class="technique-item"><div><span>Condução</span><strong>Mãos no volante</strong></div><p>Uma vez por cena, ignore uma penalidade situacional de −2 em manobra com veículo.</p></li><li class="technique-item"><div><span>Sobrevivência</span><strong>Acampamento seguro</strong></div><p>Após preparar descanso em ambiente hostil, o grupo reduz 1 Tensão adicional.</p></li><li class="technique-item"><div><span>Medicina</span><strong>Triagem</strong></div><p>Ao prestar primeiros socorros com kit, recupere +1 Vida em caso de sucesso.</p></li><li class="technique-item"><div><span>Tecnologia</span><strong>Remendo de emergência</strong></div><p>Em teste bem-sucedido, um aparelho quebrado funciona por uma cena, sem reconstruir partes ausentes.</p></li><li class="technique-item"><div><span>Atenção</span><strong>Instinto de alerta</strong></div><p>Uma vez por cena, repita um dos d10 de um teste de Atenção recém-falhado.</p></li><li class="technique-item"><div><span>Investigação</span><strong>Reconstrução</strong></div><p>Ao examinar pistas com sucesso, pergunte algo adicional sobre a sequência dos acontecimentos.</p></li><li class="technique-item"><div><span>Ciências</span><strong>Segundo método</strong></div><p>Uma vez por cena, repita um teste científico falhado gastando mais tempo e material.</p></li><li class="technique-item"><div><span>Cultura</span><strong>Contextualização</strong></div><p>Em sucesso de Cultura, obtenha também contexto histórico ou social relevante.</p></li><li class="technique-item"><div><span>Influência</span><strong>Proposta concreta</strong></div><p>Ao negociar com sucesso, obtenha uma condição de acordo explicitada pelo interlocutor.</p></li><li class="technique-item"><div><span>Empatia</span><strong>Presença estável</strong></div><p>Uma vez por cena segura, uma conversa significativa reduz 1 Tensão de um aliado.</p></li><li class="technique-item"><div><span>Expressão</span><strong>Atrair olhares</strong></div><p>Ao conseguir uma distração, afete um pequeno grupo em vez de um observador.</p></li><li class="technique-item"><div><span>Subterfúgio</span><strong>Identidade mantida</strong></div><p>Em um disfarce convincente, sua primeira interação não sofre penalidade por falta de familiaridade.</p></li></ul><h3 class="manual-subhead">Técnicas combinadas</h3><ul class="technique-list"><li class="technique-item"><div><span>Atletismo + Medicina</span><strong>Socorro em movimento</strong></div><p>Uma vez por cena, mova até 6 m e faça primeiros socorros no mesmo turno sem perder deslocamento.</p></li><li class="technique-item"><div><span>Atenção + Discrição</span><strong>Ponto cego</strong></div><p>Depois de observar a área por um turno, conceda +2 ao próximo teste de Discrição de um aliado na cena.</p></li><li class="technique-item"><div><span>Medicina + Investigação</span><strong>Leitura de vestígios</strong></div><p>Ao examinar ferimento e vestígios, um sucesso revela uma provável ação física que o causou.</p></li><li class="technique-item"><div><span>Tecnologia + Combate</span><strong>Ferramenta adaptada</strong></div><p>Com ferramentas e alguns minutos, crie uma arma improvisada eficaz (1d8) por uma cena.</p></li><li class="technique-item"><div><span>Empatia + Influência</span><strong>Voz firme</strong></div><p>Como ação, uma vez por cena, reduza 1 Tensão de aliado que possa ouvir você, mesmo em perigo.</p></li><li class="technique-item"><div><span>Condução + Sobrevivência</span><strong>Desvio planejado</strong></div><p>Em deslocamento arriscado, teste bem-sucedido revela rota alternativa e seu principal custo.</p></li></ul><p class="manual-note">As técnicas exigem contexto crível, não obrigam NPCs a agir contra a própria vontade e não substituem conhecimento que o personagem não poderia ter. Frequências por cena reiniciam em uma nova cena.</p></div></details>
-<details id="evolucao"><summary><span>06</span> Vínculos e evolução <b>+</b></summary><div class="manual-body"><p>Vínculos podem começar vazios e surgir de cenas importantes. Um Vínculo 1 pode conceder +2 em um teste do outro personagem, uma vez por cena, sem acumular com ajuda normal.</p><p>Ao fim de cada sessão, cada personagem recebe 1 Marca de Vivência. Gastos:</p><div class="difficulty-list"><div>+1 competência (máximo 4)<strong>2 marcas</strong></div><div>Nova especialização<strong>2 marcas</strong></div><div>Nova técnica<strong>3 marcas</strong></div><div>+1 atributo (máximo 4)<strong>4 marcas</strong></div></div><p>Os poderes sobrenaturais e a cosmologia ficam fora desta versão.</p></div></details>
-</div><p class="manual-one-place">Este é o ponto único de consulta do sistema. Novas regras aprovadas serão adicionadas aqui, sem criar uma aba para cada assunto.</p><div class="manual-footer"><span>HÆMA / MANUAL DE JOGO 1.0</span><a href="mesa.html#dados">REALIZAR TESTE 2D10 ↗</a></div></div></section></main>
-<footer class="footer"><div class="footer-mark"><img alt="" height="40" src="assets/favicon.svg" width="40"/><span class="display">HÆMA</span><span>HAEMATOMANTHÍA · SISTEMA AUTORAL</span></div><div class="footer-authorship" aria-label="Créditos do projeto"><span class="footer-authorship-label">CRIAÇÃO E DESENVOLVIMENTO</span><p>Site e Sistema criado por <strong>Vitor Monte</strong></p></div><div class="footer-inner"><span>PLAYTEST · 1.0 / 2026</span><nav aria-label="Links do rodapé"><a href="index.html">Início</a><a href="manual.html">Manual</a><a href="mesa.html">Mesa de jogo</a></nav><span>CONTEÚDO SUJEITO A ALTERAÇÕES</span></div></footer></body></html>
+<a href="mesa.html">Mesa de jogo</a></nav><button aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu" class="menu-toggle" id="menu-toggle"><span></span><span></span></button><a class="top-action" href="mesa.html#ficha">FICHA <span aria-hidden="true">↗</span></a></div></header><main id="conteudo"><section class="page-hero"><div class="container"><div class="folio"><span>HÆMA / II</span><span>PLAYTEST 0.1</span></div><p class="eyebrow">MANUAL DE JOGO / 0.1</p><h1 class="gothic">Manual Vivo</h1><p class="page-summary">Núcleo Jogável 0.1 · documentação experimental completa, 14 capítulos e laboratórios para aprender as mecânicas.</p><div class="thin-rule"><span>✣</span></div><div aria-label="Autoria oficial do HÆMA" class="author-signature">Site e Sistema criado por <strong>Vitor Monte</strong></div></div></section><section class="light-content manual-content manual-vivo" id="manual-vivo"><div class="container">
+<div class="manual-intro"><p class="overline">MANUAL VIVO / NÚCLEO JOGÁVEL 0.1</p><h2 class="serif-heading">Regra, exemplo, experiência.</h2><p>Quatorze capítulos do pacote técnico original, com laboratórios interativos para praticar os procedimentos. Os testes aqui são exemplos isolados; o documento é experimental e pode mudar após o playtest.</p><div class="experimental-flag"><strong>VERSÃO EXPERIMENTAL · 0.1</strong><span>Custos e procedimentos propostos não são regras definitivas. Ignis, poderes, rituais, Ápice e cosmologia não estão implementados.</span></div></div>
+<div aria-label="Como aprender" class="manual-flow"><div><b>01</b><strong>Leia</strong><small>A regra oficial do pacote</small></div><span aria-hidden="true">→</span><div><b>02</b><strong>Experimente</strong><small>Um laboratório didático</small></div><span aria-hidden="true">→</span><div><b>03</b><strong>Aplique</strong><small>Use na sua mesa</small></div></div>
+<div class="manual-search-bar"><label for="manual-search">PROCURAR NO MANUAL</label><input autocomplete="off" id="manual-search" placeholder="Ex.: Metus, esquiva, Fôlego, Latebra..." type="search"/><span aria-live="polite" id="manual-count">14 capítulos</span></div>
+<div class="manual-vivo-grid"><aside aria-label="Índice de capítulos" class="manual-index"><div class="manual-index-title">ÍNDICE DE REFERÊNCIA</div><nav><a class="manual-index-link" href="#resolucao"><span>01</span>Resolução</a><a class="manual-index-link" href="#criacao"><span>02</span>Personagem</a><a class="manual-index-link" href="#combate"><span>03</span>Combate</a><a class="manual-index-link" href="#recursos"><span>04</span>Recursos</a><a class="manual-index-link" href="#metus"><span>05</span>Metus</a><a class="manual-index-link" href="#latebra"><span>06</span>Latebra</a><a class="manual-index-link" href="#tecnicas"><span>07</span>Técnicas</a><a class="manual-index-link" href="#evolucao"><span>08</span>Evolução</a><a class="manual-index-link" href="#invicta"><span>09</span>Invicta</a><a class="manual-index-link" href="#personagens"><span>10</span>Cinco fichas</a><a class="manual-index-link" href="#adversarios"><span>11</span>Adversários</a><a class="manual-index-link" href="#sessao"><span>12</span>Sessão-teste</a><a class="manual-index-link" href="#probabilidades"><span>13</span>Auditoria matemática</a><a class="manual-index-link" href="#pendencias"><span>14</span>Pendências</a></nav><p>Documento 0.1 · não definitivo<br/>5 jogadores + narrador</p></aside><div class="manual-chapters"><details class="manual-chapter" id="resolucao" open=""><summary><span class="manual-number">01</span><span>Preparação e resolução central</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><p><strong>Material:</strong> dados d4, d6, d8, d10, d12 e d20; papel para anotar marcas de Latebra e recursos. Os dados não se somam por quantidade de faces: sempre se <strong>rola um dado de atributo + um dado de competência</strong> e se somam os números obtidos.</p>
+<p><strong>Teste:</strong> o narrador escolhe a combinação de atributo + competência que faz sentido. Compare a <strong>soma</strong> com a dificuldade (CD). Empate com a CD é sucesso. Uma competência pode usar atributos diferentes conforme a tarefa: por exemplo, Enganação + Presença para blefar ou Enganação + Intelecto para preparar uma fraude.</p>
+<table>
+<thead>
+<tr>
+<th>CD</th>
+<th>Referência</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>Simples sob pressão</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Padrão</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Exigente</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Difícil</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Extremamente difícil</td>
+</tr>
+<tr>
+<td>15+</td>
+<td>Excepcional; nem todos os personagens são capazes</td>
+</tr>
+</tbody>
+</table>
+<p>Não peça teste para tarefas triviais e repetíveis sem consequência. Na falha, avance a cena com custo, informação parcial, barulho, atraso ou risco — evite simplesmente bloquear a história.</p>
+<p><strong>Bonificações:</strong> somente uma especialização por teste. A soma de bônus numéricos fixos de técnicas e especializações não excede +2. Um dado adicional de ação excepcional é tratado separadamente e não integra a dupla original para críticos nem Invicta.</p>
+<p><strong>Tempo de cena:</strong> rodadas de aproximadamente seis segundos. Cada personagem tem <strong>uma Ação Principal, um Movimento de até 6 m e uma Reação por rodada</strong>; ações triviais são livres a critério do narrador. O narrador e os jogadores podem usar um mapa ou zonas abstratas; em zonas, uma movimentação alcança uma zona adjacente.</p>
+<p><strong>Iniciativa rápida:</strong> cada lado rola 1d6 (empate: repete). O vencedor decide quem começa; depois intercalam-se personagens de ambos os lados na medida do possível. Cada participante age uma vez por rodada. Isso evita uma abertura de cinco ataques sem resposta.</p>
+<div aria-labelledby="lab-test-h" class="lab-panel" id="lab-test"><div class="lab-heading"><span class="lab-eyebrow">LABORATÓRIO 01 · TESTE REAL</span><h3 id="lab-test-h">A graduação dos dados</h3><p>Altere os dados e a dificuldade. Você lança um dado de atributo e um de competência, nunca dois d10 fixos.</p></div><div class="ladder"><span>d4</span><span>d6</span><span>d8</span><span>d10</span><span>d12</span></div><div class="lab-controls"><label>Dado do atributo<select id="lab-attr"></select></label><label>Dado da competência<select id="lab-skill"></select></label><label>Dificuldade<select id="lab-dc"><option value="5">CD 5 · simples sob pressão</option><option selected="" value="7">CD 7 · padrão</option><option value="9">CD 9 · exigente</option><option value="11">CD 11 · difícil</option><option value="13">CD 13 · extremamente difícil</option><option value="15">CD 15 · excepcional</option></select></label></div><button class="lab-action" id="lab-roll" type="button">LANÇAR OS DADOS <span>↗</span></button><div aria-live="polite" class="lab-result" id="lab-test-result">Escolha os dados e experimente uma rolagem.</div></div></div></details>
+<details class="manual-chapter" id="criacao"><summary><span class="manual-number">02</span><span>Personagem inicial</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><p><strong>Atributos (6):</strong> Força, Destreza, Vigor, Intelecto, Percepção e Presença.</p>
+<p><strong>Competências (24):</strong></p>
+<ul>
+<li>Sociais (7): Enganação, Persuasão, Empatia, Intimidação, Diplomacia, Liderança, Atuação.</li>
+<li>Físicas (6): Atletismo, Acrobacia, Luta, Pontaria, Armas Brancas, Furtividade.</li>
+<li>Intelectuais (5): Observação, Investigação, Ciências, Cultura, Estratégia.</li>
+<li>Práticas (6): Medicina, Tecnologia, Engenharia, Sobrevivência, Condução, Ladinagem.</li>
+</ul>
+<p><em>Observação</em> é o nome de trabalho para a antiga competência <em>Percepção</em>, evitando duplicar o nome do atributo.</p>
+<ol>
+<li>Comece com <strong>todos os seis atributos em d4</strong>. Distribua <strong>6 avanços de dado</strong>, cada um subindo um grau (d4→d6→d8). Limite inicial: d8.</li>
+<li>Comece com <strong>todas as competências em d4</strong>. Distribua <strong>8 avanços</strong>, mesma progressão e limite inicial d8.</li>
+<li>Escolha uma profissão e uma história curta (ou nenhuma). <strong>Familiaridade profissional [proposta]:</strong> uma vez por sessão, rerrole apenas o dado de competência de um teste claramente ligado ao ofício; mantenha o segundo resultado.</li>
+<li>Comece com <strong>Guarda d6 = Defesa 7</strong>. Não depende de Destreza.</li>
+<li><strong>Integridade máxima = 10 + número de faces do dado de Vigor.</strong> Ex.: Vigor d6 → 16.</li>
+<li><strong>Fôlego máximo = 6 + grau de Vigor</strong>, com d4=1, d6=2, d8=3, d10=4, d12=5; subtraia eventuais Ferimentos.</li>
+<li>Comece com Integridade e Fôlego cheios; Ímpeto 0/3; Sobrecarga 0/6; Metus ausente. Ignis fica reservado; não há poder definido para gastá-lo nesta versão.</li>
+<li>Equipamento inicial de teste: uma arma, proteção leve ou nenhuma, ferramentas coerentes com o ofício. Todos devem receber itens de utilidade semelhante.</li>
+</ol>
+</div></details>
+<details class="manual-chapter" id="combate"><summary><span class="manual-number">03</span><span>Combate</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><p><strong>Ataque:</strong> escolha a dupla atributo+competência plausível e role contra a <strong>Defesa Passiva = 1 + faces do dado de Guarda</strong>. Cobertura concede +2 Defesa; escudo concede +1 Defesa (não cumulativo com outro escudo).</p>
+<table>
+<thead>
+<tr>
+<th>Guarda</th>
+<th style="text-align:right">Defesa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>d4</td>
+<td style="text-align:right">5</td>
+</tr>
+<tr>
+<td>d6</td>
+<td style="text-align:right">7</td>
+</tr>
+<tr>
+<td>d8</td>
+<td style="text-align:right">9</td>
+</tr>
+<tr>
+<td>d10</td>
+<td style="text-align:right">11</td>
+</tr>
+<tr>
+<td>d12</td>
+<td style="text-align:right">13</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dano da arma</strong> após acerto: pequena 1d4; comum 1d6; pesada 1d8; devastadora 1d10. Arma pequena d4 é discreta e manejável com uma mão; arma comum d6 usa uma mão; arma pesada d8 usa as duas mãos; arma devastadora d10 usa as duas mãos, custa 1 Fôlego por ataque e normalmente provoca Ruído Forte. Uma arma que emita som alto gera ruído pela própria natureza, independentemente da categoria. Proteção de armadura reduz 0–3 pontos do dano, até mínimo zero. Proposta para contrapartidas: armadura 2 limita Movimento a 5 m; armadura 3 limita a 4 m e impede criar Latebra em movimento. Nenhuma dessas categorias define um período histórico.</p>
+<p><strong>Crítico [proposta]:</strong> ataque bem-sucedido com pelo menos um dos <strong>dois dados originais</strong> no máximo natural <strong>e</strong> soma original pelo menos 3 pontos acima da Defesa. Efeito: +2 dano. Bônus, Ímpeto e dados extras não contam para ativá-lo.</p>
+<p><strong>Reações defensivas:</strong> só contra um ataque por reação disponível, depois que o ataque acertou e antes do dano.</p>
+<ul>
+<li><strong>Esquiva:</strong> paga 1 Fôlego; rola Destreza + Acrobacia. Se o resultado for <strong>igual ou maior</strong> que a soma total do ataque (incluindo eventual dado extra de Abertura ou Ataque Desesperado), evita o acerto e seus efeitos de contato; se falhar, recebe dano normalmente. A Guarda não é rolada novamente.</li>
+<li><strong>Aparo:</strong> paga 1 Fôlego, requer arma ou escudo adequados e golpe que possa ser aparado. Role <strong>apenas o dado de Luta ou Armas Brancas</strong>, conforme a defesa; reduza o dano em <strong>⌊resultado/2⌋</strong>. Aplica-se a redução de armadura e do Aparo ao dano total (incluindo crítico); mínimo zero. Aparo não impede automaticamente agarrões, venenos de contato ou efeitos que não dependam de dano.</li>
+<li><strong>Sem reação:</strong> o acerto prossegue direto para o dano. Fôlego zero impede pagar reações.</li>
+</ul>
+<p><strong>Criar Abertura [proposta]:</strong> gaste a Ação Principal para preparar uma oportunidade concreta. Um aliado recebe <strong>+1d6</strong> na próxima tentativa de atacar o mesmo alvo antes do início do próximo turno de quem criou a abertura. O benefício não se acumula com outro dado de abertura.</p>
+<p><strong>Ataque Desesperado [proposta]:</strong> uma vez por confronto, pague 3 Fôlego para adicionar <strong>+1d6</strong> a um ataque. O personagem fica sem sua Reação até o próprio turno seguinte. Não pode acumular com Criar Abertura.</p>
+<h3>3.1 Ferimentos, queda e recuperação</h3>
+<ul>
+<li><strong>Ferimento:</strong> se o dano final de uma única fonte atingir <strong>⌈Integridade máxima/3⌉</strong>, marque 1 Ferimento, no máximo um por golpe. Limite: 2 Ferimentos ativos. Cada um reduz o <strong>Fôlego máximo em 1</strong>; Fôlego atual não pode ficar acima do novo limite.</li>
+<li><strong>Integridade em zero:</strong> incapacitado, sem Ação Principal ou Movimento. No início dos turnos seguintes, role Vigor + Sobrevivência contra CD 7: três sucessos acumulados estabilizam; três falhas acumuladas causam morte. Um novo golpe recebido enquanto incapacitado conta como uma falha adicional. Resultados não precisam ser consecutivos.</li>
+<li><strong>Estabilização externa:</strong> Ação Principal adjacente, Intelecto + Medicina contra CD 7, com material minimamente apropriado; sucesso estabiliza, sem restaurar Integridade. A técnica de estabilização especializada poderá melhorar esse procedimento mais adiante.</li>
+<li><strong>Descanso de 10 minutos em segurança:</strong> recupera todo Fôlego até o máximo atual e reduz 1 Sobrecarga. Não cura Ferimentos nem Integridade.</li>
+<li><strong>Descanso longo (~8 horas) em segurança:</strong> recupera 1d4 Integridade, reduz até 2 Sobrecargas, restaura Fôlego ao máximo; um Ferimento pode ser removido com um teste de Intelecto + Medicina CD 9 e materiais apropriados, <strong>no máximo uma tentativa por personagem após cada descanso longo</strong>. Um personagem sem assistência médica recupera um Ferimento após dois descansos longos seguros. A Integridade nunca ultrapassa o máximo.</li>
+</ul>
+<p>Essas regras de morte são um <strong>protótipo explícito</strong>, não um pedido para matar personagens rapidamente; exigem teste de sensibilidade e ritmo de campanha.</p>
+<div aria-labelledby="lab-combat-h" class="lab-panel" id="lab-combat"><div class="lab-heading"><span class="lab-eyebrow">LABORATÓRIO 03 · COMBATE</span><h3 id="lab-combat-h">Ataque contra Guarda</h3><p>Ataque básico, sem reação. Observe acerto, crítico experimental e dano após armadura.</p></div><div class="lab-controls"><label>Atributo de ataque<select id="atk-attr"></select></label><label>Competência de ataque<select id="atk-skill"></select></label><label>Guarda do alvo<select id="atk-guard"></select></label><label>Armadura do alvo<select id="atk-armor"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label><label>Dado da arma<select id="atk-weapon"></select></label><label>Cobertura<select id="atk-cover"><option value="0">Nenhuma</option><option value="2">Parcial · +2 Defesa</option></select></label></div><button class="lab-action" id="atk-roll" type="button">SIMULAR ATAQUE <span>↗</span></button><div aria-live="polite" class="lab-result" id="atk-result">Selecione os dados. Esta simulação não escolhe reações ou manobras pelo alvo.</div><p class="lab-note">Crítico é proposta da 0.1. A simulação não aplica Esquiva, Aparo, Ímpeto, Abertura nem Ataque Desesperado.</p></div></div></details>
+<details class="manual-chapter" id="recursos"><summary><span class="manual-number">04</span><span>Recursos</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><table>
+<thead>
+<tr>
+<th>Recurso</th>
+<th>Limite</th>
+<th>Regra de trabalho</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Integridade</td>
+<td>10 + faces de Vigor</td>
+<td>Sofrer dano; em zero, incapacitação</td>
+</tr>
+<tr>
+<td>Fôlego</td>
+<td>6 + grau de Vigor − Ferimentos</td>
+<td>Reações e técnicas físicas</td>
+</tr>
+<tr>
+<td>Ignis</td>
+<td>Reservado</td>
+<td>Vincular aos futuros poderes/rituais; <strong>não inventar efeitos agora</strong></td>
+</tr>
+<tr>
+<td>Ímpeto</td>
+<td>0–3</td>
+<td>Ganha 1, máximo uma vez por rodada, ao vencer por margem ≥4 um teste genuinamente arriscado <strong>com pelo menos um dado original no máximo</strong>. Gaste 1 para +1 em um teste após rolar e antes de conhecer o resultado. Não afeta críticos/Invicta. Zera ao fim da cena.</td>
+</tr>
+<tr>
+<td>Sobrecarga</td>
+<td>0–6</td>
+<td><strong>Forçar o Corpo:</strong> uma vez por rodada, substitua 1 Fôlego faltante por +1 Sobrecarga. Com 4–5 Sobrecargas, −1 em testes sob pressão; ao chegar a 6, não pode Forçar o Corpo novamente até reduzir a Sobrecarga.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Proibição antifarm:</strong> falhas voluntárias, riscos autogerados e testes triviais não permitem acumular Ímpeto ou habilitar Invicta. Sobrecarga infligida voluntariamente não satisfaz o requisito especial de Invicta.</p>
+<div aria-labelledby="lab-resources-h" class="lab-panel" id="lab-resources"><div class="lab-heading"><span class="lab-eyebrow">LABORATÓRIO 04 · CONDIÇÃO</span><h3 id="lab-resources-h">Recursos do personagem</h3><p>Altere Vigor, Ferimentos, Integridade e Sobrecarga para visualizar os limites da ficha 0.1.</p></div><div class="lab-controls"><label>Vigor<select id="res-vigor"></select></label><label>Ferimentos<select id="res-wounds"><option value="0">Nenhum</option><option value="1">1 ferimento</option><option value="2">2 ferimentos</option></select></label></div><div class="resource-meters"><label>Integridade <strong id="res-life-label">16/16</strong><input id="res-life" max="16" min="0" type="range" value="16"/></label><div class="meter-track"><span id="res-life-track"></span></div><label>Fôlego <strong id="res-stamina-label">8/8</strong><input id="res-stamina" max="8" min="0" type="range" value="8"/></label><div class="meter-track meter-slate"><span id="res-stamina-track"></span></div><label>Sobrecarga <strong id="res-overload-label">0/6</strong><input id="res-overload" max="6" min="0" type="range" value="0"/></label><div class="meter-track meter-amber"><span id="res-overload-track"></span></div></div><div aria-live="polite" class="lab-result" id="res-result">Os limites se atualizam automaticamente.</div></div></div></details>
+<details class="manual-chapter" id="metus"><summary><span class="manual-number">05</span><span>Metus — medo interferindo nos dados</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><p><strong>Níveis:</strong> Inquietação d4; Pavor d6; Terror d8. O narrador descreve uma ameaça concreta e informa que grau será imposto antes do teste de resistência. Não acumule múltiplos dados de Metus: aplica-se apenas o mais alto.</p>
+<p><strong>Resistir ao início:</strong> teste baseado na ficha, normalmente Presença + Empatia. Outra combinação pode ser aceita quando a resposta efetiva ao medo for diferente (ex.: Vigor + Sobrevivência para suportar pânico físico, Intelecto + Investigação para identificar conscientemente a causa). CD 7 para d4, CD 8 para d6, CD 9 para d8. Falhou → entra no grau anunciado; passou → resiste àquela exposição, sem testes repetidos contra a mesma fonte enquanto não houver mudança importante.</p>
+<p><strong>Interferência:</strong> em testes sob pressão <strong>causada pela fonte do medo</strong> ou <strong>diretamente relacionados a ela</strong>, role os dois dados normais e um dado de Metus. <strong>Cada dado normal que mostrar valor estritamente menor que o de Metus é anulado</strong>; empate permanece. Some os dados sobreviventes; ambos anulados = resultado 0. Não aplique Metus a testes rotineiros sem relação com a ameaça.</p>
+<p><strong>Recuperar controle:</strong> uma Ação Principal, teste de resistência adequado contra CD 7, <strong>sem interferência do próprio Metus</strong>. No sucesso, reduza um grau: d8→d6→d4→sem Metus; falha não altera. Apenas uma tentativa por turno. Quando a ameaça deixa de exercer qualquer pressão durante uma rodada inteira, Metus cai um grau gratuitamente; ao fim da cena segura, desaparece. Exposições extraordinárias poderão ter exceções quando a lore estiver definida.</p>
+<div aria-labelledby="lab-metus-h" class="lab-panel" id="lab-metus"><div class="lab-heading"><span class="lab-eyebrow">LABORATÓRIO 05 · MEDO</span><h3 id="lab-metus-h">Quando Metus anula um dado</h3><p>O dado de Metus só intervém em ações ligadas à ameaça. Ele anula cada dado original que ficar <strong>estritamente abaixo</strong> do seu valor.</p></div><div class="lab-controls"><label>Dado do atributo<select id="met-attr"></select></label><label>Dado da competência<select id="met-skill"></select></label><label>Grau do Metus<select id="met-die"><option value="4">Inquietação · d4</option><option selected="" value="6">Pavor · d6</option><option value="8">Terror · d8</option></select></label><label>CD de exemplo<select id="met-dc"><option value="5">5</option><option selected="" value="7">7</option><option value="9">9</option><option value="11">11</option><option value="13">13</option></select></label></div><button class="lab-action" id="met-roll" type="button">TESTAR INTERFERÊNCIA <span>↗</span></button><div aria-live="polite" class="lab-result" id="met-result">Rolar para observar os dados anulados e o resultado final.</div><p class="lab-note">Exemplo pressupõe ameaça relacionada ao teste. O simulador não decide quando um personagem deve sentir medo.</p></div></div></details>
+<details class="manual-chapter" id="latebra"><summary><span class="manual-number">06</span><span>Latebra — ocultação por marcas secretas</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><p><strong>Pré-condição:</strong> personagem fora da linha de visão direta, com ocultação física plausível. Ocultar-se custa uma <strong>Ação Principal</strong> e cria números secretos chamados <strong>Marcas de Latebra</strong>. O narrador anota as marcas; números duplicados valem como <strong>uma única marca</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Furtividade</th>
+<th>Marcas iniciais</th>
+<th>Regras de duplicata</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>d4</td>
+<td>2d4</td>
+<td>Sem repetição</td>
+</tr>
+<tr>
+<td>d6</td>
+<td>2d6</td>
+<td>Pode rerrolar uma vez cada dado inicial duplicado; mantém o novo resultado</td>
+</tr>
+<tr>
+<td>d8</td>
+<td>3d6</td>
+<td>Mesma repetição, uma vez por dado duplicado</td>
+</tr>
+<tr>
+<td>d10</td>
+<td>3d6</td>
+<td>Até duas repetições por dado duplicado</td>
+</tr>
+<tr>
+<td>d12</td>
+<td>4d6</td>
+<td>Até duas repetições por dado duplicado</td>
+</tr>
+</tbody>
+</table>
+<p>Um especialista pode escolher uma opção de grau menor se achar mais apropriado ao ambiente. As repetições ocorrem antes de aplicar Metus. O teto é <strong>quatro marcas não encontradas</strong>.</p>
+<p><strong>Estado Procurando:</strong> o perseguidor precisa suspeitar da existência de alguém naquela área. Sua Ação Principal pode executar:</p>
+<ul>
+<li><strong>Busca Rápida:</strong> 1d6; permite Movimento normal.</li>
+<li><strong>Busca Intensiva:</strong> 2d6; consome a Ação Principal e o Movimento normal.</li>
+</ul>
+<p>Cada resultado igual a uma marca <strong>ainda não encontrada</strong> revela essa marca. Acertar um número já revelado não produz avanço. Ao revelar todas as marcas ativas, o esconderijo é descoberto. Buscas são individuais; se vários perseguidores estão cooperando e comunicam resultados, usam o mesmo registro.</p>
+<p><strong>Decisão de quem se esconde:</strong> em seu turno, pode agir <strong>ou</strong> gastar a Ação Principal para <strong>Reforçar Latebra</strong>, rolando um novo d6. Um número novo, ainda não descoberto e que não esteja entre suas marcas, acrescenta uma marca, até o limite de quatro. Um resultado repetido ou já descoberto não acrescenta nada. O cenário deve permitir uma melhoria real do esconderijo; esconder-se sem mudar nada não cria dados infinitos. <strong>Marcas descobertas ficam registradas para aquele esconderijo e não contam no teto de quatro.</strong> Elas também não podem ser reutilizadas ali contra os mesmos perseguidores. Mudar de esconderijo exige sair do alcance de observação para iniciar uma nova Latebra.</p>
+<p><strong>Ruído:</strong></p>
+<ul>
+<li>Silencioso: nenhuma penalidade.</li>
+<li>Leve: o perseguidor que possa ouvir ganha <strong>uma tentativa adicional de 1d6</strong> na próxima Busca; bônus não acumula na mesma rodada.</li>
+<li>Forte: remova uma marca ainda não descoberta. Se não restar nenhuma, descoberto.</li>
+<li>Exposição evidente: descoberta imediata, sem Bingo matemático.</li>
+</ul>
+<p><strong>Integração com Metus:</strong> quando a ameaça tem relação com a fonte do medo, role o dado de Metus contra <strong>apenas o último dado inicial</strong> de Latebra (após repetições); se o resultado desse dado inicial for inferior ao Metus, ele não cria marca. Ao reforçar, Metus confronta o novo d6 da mesma maneira. O medo <strong>não apaga retroativamente</strong> marcas já criadas. Em testes normais de ação sob pressão enquanto oculto, Metus funciona integralmente sobre a dupla atributo+competência.</p>
+<p><strong>Ataque oculto:</strong> não acerta automaticamente. Se houver ângulo favorável, recebe até +1 no ataque (sujeito ao limite de bônus), e o ato gera ruído conforme sua natureza. Se o ataque revela visualmente a posição, Latebra termina. O narrador informa a consequência previsível antes da ação.</p>
+<p><strong>Nota de design:</strong> Latebra não é invisibilidade. Quem vê diretamente o personagem não precisa procurar números.</p>
+<div aria-labelledby="lab-latebra-h" class="lab-panel" id="lab-latebra"><div class="lab-heading"><span class="lab-eyebrow">LABORATÓRIO 06 · OCULTAÇÃO</span><h3 id="lab-latebra-h">A busca pelas Marcas</h3><p>O esconderijo já está fora da linha de visão e há motivo plausível para buscá-lo. Marcas não repetidas permanecem ocultas até a busca acertá-las.</p></div><div class="lab-controls"><label>Furtividade<select id="late-die"></select></label><label>Interferência inicial<select id="late-metus"><option value="0">Sem Metus</option><option value="4">Metus d4</option><option value="6">Metus d6</option><option value="8">Metus d8</option></select></label></div><button class="lab-action" id="late-create" type="button">CRIAR OCULTAÇÃO <span>↗</span></button><div aria-live="polite" class="late-marks" id="late-marks"><span>Crie sua Latebra para iniciar.</span></div><div class="lab-controls lab-buttons"><button class="lab-alt" disabled="" id="late-quick" type="button">BUSCA RÁPIDA · 1D6</button><button class="lab-alt" disabled="" id="late-deep" type="button">BUSCA INTENSIVA · 2D6</button><button class="lab-alt" disabled="" id="late-reinforce" type="button">REFORÇAR · 1D6</button></div><div aria-live="polite" class="lab-result" id="late-result">Os resultados iguais a marcas ainda não descobertas revelam essas marcas.</div><p class="lab-note">Ruído Forte e movimentação não são automatizados: exigem avaliação do cenário e podem depender da escolha de uma marca.</p></div></div></details>
+<details class="manual-chapter" id="tecnicas"><summary><span class="manual-number">07</span><span>Técnicas humanas — primeira seleção</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><table>
+<thead>
+<tr>
+<th>Técnica</th>
+<th>Requisito de teste</th>
+<th>Efeito</th>
+<th>Custo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mira Calculada</td>
+<td>Pontaria d6</td>
+<td>Sacrifique Movimento para +1 no próximo ataque à distância neste turno; perder visão cancela</td>
+<td>4 PE</td>
+</tr>
+<tr>
+<td>Defesa Instintiva</td>
+<td>Acrobacia d6</td>
+<td>Na Esquiva, pague +1 Fôlego para repetir o dado de menor valor; mantenha o novo</td>
+<td>4 PE</td>
+</tr>
+<tr>
+<td>Mãos Silenciosas</td>
+<td>Furtividade d6 + Ladinagem d6</td>
+<td>Uma vez por cena, pague 1 Fôlego para converter um Ruído Forte de manipulação em Ruído Leve; não cancela exposição</td>
+<td>12 PE, combinada</td>
+</tr>
+<tr>
+<td>Leitura de Intenções</td>
+<td>Empatia d6 + Investigação d6</td>
+<td>Após observação relevante, um teste bem-sucedido aponta uma inconsistência observável, sem revelar a verdade automaticamente</td>
+<td>12 PE, combinada</td>
+</tr>
+<tr>
+<td>Mediação</td>
+<td>Diplomacia d6 + Empatia d6</td>
+<td>Uma vez por cena, após êxito social, permite discutir uma proposta antes de hostilidade inevitável, sem compelir aceitação</td>
+<td>12 PE, combinada</td>
+</tr>
+<tr>
+<td>Estabilização de Emergência</td>
+<td>Medicina d6</td>
+<td>Ao estabilizar um incapacitado, sucesso também recupera 1 Integridade; apenas uma aplicação por alvo por cena</td>
+<td>4 PE</td>
+</tr>
+</tbody>
+</table>
+<p>Nenhum personagem precisa adquirir técnicas na primeira sessão; as cinco fichas de teste abaixo começam sem compras de PE. Esses custos são <strong>provisórios</strong>.</p>
+</div></details>
+<details class="manual-chapter" id="evolucao"><summary><span class="manual-number">08</span><span>Evolução por PE — valores de teste</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><table>
+<thead>
+<tr>
+<th>Compra</th>
+<th style="text-align:right">Custo em PE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Competência d4→d6</td>
+<td style="text-align:right">4</td>
+</tr>
+<tr>
+<td>Competência d6→d8</td>
+<td style="text-align:right">6</td>
+</tr>
+<tr>
+<td>Competência d8→d10</td>
+<td style="text-align:right">10</td>
+</tr>
+<tr>
+<td>Competência d10→d12</td>
+<td style="text-align:right">16</td>
+</tr>
+<tr>
+<td>Atributo d4→d6</td>
+<td style="text-align:right">12</td>
+</tr>
+<tr>
+<td>Atributo d6→d8</td>
+<td style="text-align:right">18</td>
+</tr>
+<tr>
+<td>Atributo d8→d10</td>
+<td style="text-align:right">30</td>
+</tr>
+<tr>
+<td>Atributo d10→d12</td>
+<td style="text-align:right">48</td>
+</tr>
+<tr>
+<td>Guarda d6→d8 / d8→d10 / d10→d12</td>
+<td style="text-align:right">12 / 20 / 32</td>
+</tr>
+<tr>
+<td>Especialização delimitada (+1 em contexto específico)</td>
+<td style="text-align:right">3</td>
+</tr>
+<tr>
+<td>Técnica básica / avançada / combinada</td>
+<td style="text-align:right">4 / 8 / 12</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Distribuição por arco [proposta]:</strong> marco coletivo +3 PE para cada jogador; realizações individuais com critérios públicos +0–2 PE por arco, registradas para evitar preferência subjetiva. Não conceder PE por testes repetidos ou mero comparecimento. Uma compra só produz efeito entre cenas. Técnicas avançadas exigem competência d8+; combinadas exigem duas competências d6+.</p>
+<section aria-labelledby="rp-addendum-heading" class="rp-addendum"><div class="rp-addendum-head"><span class="overline">DIRETRIZ COMPLEMENTAR / AUTORIA DO CRIADOR</span><span class="rp-draft-note">RECOMPENSAS EXPERIMENTAIS</span></div><h3 id="rp-addendum-heading">O Valor da Interpretação</h3>
+<p>Em HÆMA, uma boa interpretação é reconhecida e recompensada.</p>
+<p>Jogadores que desenvolvem seus personagens, constroem relações significativas, tomam decisões marcantes ou encontram soluções criativas para conflitos podem receber recompensas narrativas e mecânicas.</p>
+<p><strong>A qualidade do RP não é medida pela eloquência ou experiência do jogador</strong>, mas pela autenticidade das escolhas e pelo impacto que elas produzem na história.</p>
+<p>As recompensas podem incluir:</p>
+<ul>
+<li><strong>Reconhecimento narrativo:</strong> confiança de NPCs, novas alianças, informações, oportunidades e consequências duradouras.</li>
+<li><strong>Evolução individual:</strong> PE adicional por contribuições interpretativas relevantes, respeitando os limites de progressão.</li>
+<li><strong>Desenvolvimento de personagem:</strong> relações, características e oportunidades de aprendizado decorrentes das experiências vividas.</li>
+</ul>
+<p>O mestre deve recompensar decisões relevantes, não a quantidade de falas. Uma mesma situação não pode ser repetidamente explorada para acumular recompensas.</p>
+<p>Jogadores iniciantes e reservados possuem as mesmas oportunidades de reconhecimento.</p>
+<p><strong>Interpretar bem não significa tomar a decisão mais vantajosa. Significa tomar uma decisão significativa para aquele personagem.</strong></p>
+<div class="rp-rule-note"><strong>Limite em teste:</strong> o núcleo 0.1 propõe realizações individuais de 0–2 PE por arco. Este adendo não determina bônus além do intervalo proposto. A aplicação final depende dos critérios do narrador e do balanceamento aprovado.</div></section></div></details>
+<details class="manual-chapter" id="invicta"><summary><span class="manual-number">09</span><span>Invicta e Ápice — somente interface mecânica</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><p><strong>Invicta não é recompensa por interpretação ou narrativa.</strong> O personagem deve estar em condição crítica <strong>provocada por perigo externo real</strong>: Integridade atual ≤ 25% da máxima <strong>ou</strong> Sobrecarga ≥ 5/6 de origem externa, e concluir um teste real com CD ao menos 75% do máximo da sua dupla atributo+competência (arredondar para cima). Na primeira ocasião elegível por cena, após êxito, faz <strong>5d20</strong>, soma todos e compara com a exigência da competência: d4 ≥90, d6 ≥88, d8 ≥86, d10 ≥84, d12 ≥82. Se falhar, nenhuma nova tentativa de Invicta nessa cena. Pode guardar no máximo 1 Invicta.</p>
+<table>
+<thead>
+<tr>
+<th>Competência</th>
+<th style="text-align:right">Soma mínima em 5d20</th>
+<th style="text-align:right">Chance por rolagem elegível</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>d4</td>
+<td style="text-align:right">90</td>
+<td style="text-align:right">0,094%</td>
+</tr>
+<tr>
+<td>d6</td>
+<td style="text-align:right">88</td>
+<td style="text-align:right">0,193%</td>
+</tr>
+<tr>
+<td>d8</td>
+<td style="text-align:right">86</td>
+<td style="text-align:right">0,363%</td>
+</tr>
+<tr>
+<td>d10</td>
+<td style="text-align:right">84</td>
+<td style="text-align:right">0,636%</td>
+</tr>
+<tr>
+<td>d12</td>
+<td style="text-align:right">82</td>
+<td style="text-align:right">1,052%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ápice:</strong> será uma técnica extrema que consome Invicta e implica custo severo, mas <strong>nenhuma fórmula de poder ou dano sobrenatural será estabelecida antes da lore</strong>. Durante este quickstart, Invicta pode ser registrada, mas não consumida.</p>
+<div aria-labelledby="lab-invicta-h" class="lab-panel" id="lab-invicta"><div class="lab-heading"><span class="lab-eyebrow">LABORATÓRIO 09 · MATEMÁTICA</span><h3 id="lab-invicta-h">Raridade de Invicta</h3><p>Visualização estatística, não aquisição real. O narrador deve validar perigo externo genuíno, êxito e CD mínima antes de qualquer tentativa de jogo.</p></div><div class="lab-controls"><label>Atributo no teste<select id="inv-attr"></select></label><label>Competência no teste<select id="inv-skill"></select></label></div><div aria-live="polite" class="lab-result" id="inv-requirements"></div><button class="lab-action" id="inv-roll" type="button">SIMULAR 5D20 <span>↗</span></button><div aria-live="polite" class="inv-dice" id="inv-dice"></div><div aria-live="polite" class="lab-result" id="inv-result">Esta rolagem é apenas demonstrativa e não registra Invicta na ficha.</div></div></div></details>
+<details class="manual-chapter" id="personagens"><summary><span class="manual-number">10</span><span>Cinco personagens para playtest</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><p>Todos possuem Guarda d6, Integridade e Fôlego cheios, nenhum PE gasto, nenhum Ferimento, Metus ausente. Os atributos e as competências não listadas começam em d4. Cada ficha contém exatamente <strong>6 avanços de atributos</strong> e <strong>8 de competências</strong>.</p>
+<h3>1. Combatente — ofício: segurança</h3>
+<ul>
+<li><strong>Atributos:</strong> Força d8; Vigor d8; Destreza d6; Percepção d6; Intelecto d4; Presença d4.</li>
+<li><strong>Competências elevadas:</strong> Luta d8; Armas Brancas d8; Atletismo d6; Acrobacia d6; Intimidação d6; Sobrevivência d6.</li>
+<li><strong>Integridade/Fôlego:</strong> 18 / 9. Equipamento: arma pesada 1d8, proteção leve 1.</li>
+<li><strong>Papel de teste:</strong> atacar, aparar, criar abertura.</li>
+</ul>
+<h3>2. Atirador — ofício: rastreador</h3>
+<ul>
+<li><strong>Atributos:</strong> Destreza d8; Percepção d8; Vigor d6; Intelecto d6; Força d4; Presença d4.</li>
+<li><strong>Competências elevadas:</strong> Pontaria d8; Observação d8; Furtividade d6; Estratégia d6; Sobrevivência d6; Investigação d6.</li>
+<li><strong>Integridade/Fôlego:</strong> 16 / 8. Equipamento: arma de distância 1d8, proteção leve 1.</li>
+<li><strong>Papel de teste:</strong> precisão e exploração de cobertura.</li>
+</ul>
+<h3>3. Infiltrador — ofício: técnico de acesso</h3>
+<ul>
+<li><strong>Atributos:</strong> Destreza d8; Percepção d6; Intelecto d6; Presença d6; Vigor d6; Força d4.</li>
+<li><strong>Competências elevadas:</strong> Furtividade d8; Ladinagem d8; Acrobacia d6; Enganação d6; Observação d6; Atletismo d6.</li>
+<li><strong>Integridade/Fôlego:</strong> 16 / 8. Equipamento: arma pequena 1d4, proteção leve 1, ferramentas.</li>
+<li><strong>Papel de teste:</strong> Latebra e objetivo sob pressão.</li>
+</ul>
+<h3>4. Investigador — ofício: analista</h3>
+<ul>
+<li><strong>Atributos:</strong> Intelecto d8; Percepção d8; Presença d6; Vigor d6; Destreza d4; Força d4.</li>
+<li><strong>Competências elevadas:</strong> Investigação d8; Observação d8; Empatia d6; Ciências d6; Cultura d6; Tecnologia d6.</li>
+<li><strong>Integridade/Fôlego:</strong> 16 / 8. Equipamento: arma comum 1d6, proteção leve 1, kit de análise.</li>
+<li><strong>Papel de teste:</strong> pistas, interpretação de ameaças, auxílio aos demais.</li>
+</ul>
+<h3>5. Médico — ofício: socorrista</h3>
+<ul>
+<li><strong>Atributos:</strong> Intelecto d8; Vigor d8; Presença d6; Destreza d6; Força d4; Percepção d4.</li>
+<li><strong>Competências elevadas:</strong> Medicina d8; Ciências d8; Empatia d6; Sobrevivência d6; Diplomacia d6; Tecnologia d6.</li>
+<li><strong>Integridade/Fôlego:</strong> 18 / 9. Equipamento: arma pequena 1d4, proteção leve 1, suprimentos médicos.</li>
+<li><strong>Papel de teste:</strong> suporte, medicina, resistência física ao medo.</li>
+</ul>
+</div></details>
+<details class="manual-chapter" id="adversarios"><summary><span class="manual-number">11</span><span>Adversários de referência</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><table>
+<thead>
+<tr>
+<th>Perfil</th>
+<th>Dados de ataque</th>
+<th style="text-align:right">Defesa</th>
+<th style="text-align:right">Integridade</th>
+<th style="text-align:right">Fôlego</th>
+<th style="text-align:right">Armadura</th>
+<th>Dano</th>
+<th>Reação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ameaça menor</td>
+<td>d4+d6</td>
+<td style="text-align:right">7</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">0</td>
+<td>1d4</td>
+<td>Esquiva d4+d4</td>
+</tr>
+<tr>
+<td>Oponente treinado</td>
+<td>d6+d6</td>
+<td style="text-align:right">7</td>
+<td style="text-align:right">10</td>
+<td style="text-align:right">6</td>
+<td style="text-align:right">1</td>
+<td>1d6</td>
+<td>Aparo d6</td>
+</tr>
+<tr>
+<td>Oponente veterano</td>
+<td>d8+d6</td>
+<td style="text-align:right">9</td>
+<td style="text-align:right">18</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">1</td>
+<td>1d8</td>
+<td>Esquiva d8+d6</td>
+</tr>
+</tbody>
+</table>
+<p>Todos têm no máximo 1 Reação por rodada e usam as mesmas regras de crítico. Não existe regra especial de chefe na 0.1. <strong>Não considere estes perfis calibrados para dificuldade garantida</strong>: os números são pontos de partida para testar o sistema, não uma classificação definitiva.</p>
+</div></details>
+<details class="manual-chapter" id="sessao"><summary><span class="manual-number">12</span><span>Primeira sessão-teste de 5 jogadores (sem lore)</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><p><strong>Cenário neutro:</strong> um complexo abandonado, uma sala de controle e um corredor com coberturas. O grupo precisa recuperar uma peça de informação. Isso é só um ambiente de teste; não estabelece época, facção nem cosmologia.</p>
+<p><strong>Objetivo e relógio:</strong> no máximo 6 rodadas até a informação ser destruída. Abrir o console exige duas ações principais bem-sucedidas de Intelecto + Tecnologia ou Ladinagem (CD 7). Cada falha causa Ruído Leve se alguém estiver escondido ali.</p>
+<p><strong>Encontro de referência:</strong> 3 oponentes treinados. Dois tentam conter os jogadores; o terceiro alterna entre proteger o console e procurar quem se escondeu, desde que tenha pista concreta de intrusão. Os inimigos não lutam até a morte obrigatoriamente.</p>
+<p><strong>Metus em teste controlado:</strong> no início da 2ª rodada, uma ameaça assustadora produz Metus d4 em quem a percebe. Resistência CD7; quem falhar fica afetado. Não introduza lore sobrenatural para justificar o teste.</p>
+<p><strong>Latebra em teste controlado:</strong> o infiltrador pode tentar ocultar-se atrás de divisórias; inimigos só entram em Procurando quando percebem ruído, pegadas, desaparecimento visual ou evidência equivalente. O infiltrador pode escolher <strong>agir no console</strong> ou <strong>Reforçar Latebra</strong>, mas não ambos com a mesma ação.</p>
+<p><strong>Registre após a sessão:</strong> número de rodadas; ataques, acertos e críticos; Integridade e Fôlego consumidos; quantos testes de Metus anularam ambos os dados; buscas de Latebra por inimigo; quantas marcas foram descobertas; turnos gastos reforçando vs. agindo; momentos de espera de cada jogador; se alguma técnica ou estratégia foi claramente dominante.</p>
+</div></details>
+<details class="manual-chapter" id="probabilidades"><summary><span class="manual-number">13</span><span>Auditoria matemática reproduzível (sem alegar playtest humano)</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><p>Sob as regras descritas acima, os resultados <strong>exatos por enumeração</strong> são:</p>
+<table>
+<thead>
+<tr>
+<th>Caso</th>
+<th style="text-align:right">Probabilidade ou valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ataque d6+d6 contra Defesa 7</td>
+<td style="text-align:right">58,333%</td>
+</tr>
+<tr>
+<td>Ataque d8+d8 contra Defesa 9</td>
+<td style="text-align:right">56,250%</td>
+</tr>
+<tr>
+<td>Crítico d6+d6 contra Defesa 7</td>
+<td style="text-align:right">13,889%</td>
+</tr>
+<tr>
+<td>Metus d4: ambos d6 normais anulados</td>
+<td style="text-align:right">9,722%</td>
+</tr>
+<tr>
+<td>Metus d6: ambos d6 normais anulados</td>
+<td style="text-align:right">25,463%</td>
+</tr>
+<tr>
+<td>Metus d8: ambos d6 normais anulados</td>
+<td style="text-align:right">44,097%</td>
+</tr>
+<tr>
+<td>d6+d6, CD7, com Metus d6</td>
+<td style="text-align:right">31,944% de sucesso</td>
+</tr>
+<tr>
+<td>Dano por ataque declarado, d6+d6 contra Defesa7, arma 1d8, armadura1, crítico +2: usando Esquiva d6+d6</td>
+<td style="text-align:right">1,5718</td>
+</tr>
+<tr>
+<td>Mesmo caso, usando Aparo ⌊d6/2⌋</td>
+<td style="text-align:right">1,5770</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Chance exata de a Latebra ser descoberta após quatro buscas individuais de 1d6</strong>, sem reforço, Metus ou ruídos; repetições iniciais conforme tabela:</p>
+<table>
+<thead>
+<tr>
+<th>Furtividade</th>
+<th style="text-align:right">Descoberta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>d4: 2d4, sem rerrolagem</td>
+<td style="text-align:right">30,421%</td>
+</tr>
+<tr>
+<td>d6: 2d6, uma rerrolagem de duplicata</td>
+<td style="text-align:right">24,093%</td>
+</tr>
+<tr>
+<td>d8: 3d6, uma rerrolagem por duplicata</td>
+<td style="text-align:right">10,388%</td>
+</tr>
+<tr>
+<td>d10: 3d6, duas rerrolagens por duplicata</td>
+<td style="text-align:right">8,955%</td>
+</tr>
+<tr>
+<td>d12: 4d6, duas rerrolagens por duplicata</td>
+<td style="text-align:right">2,921%</td>
+</tr>
+</tbody>
+</table>
+<p>Esses números são resultados de contagem de possibilidades, <strong>não</strong> de 120 mil ou 200 mil partidas humanas. O verificador acompanha o arquivo separadamente. Distribuições e resultados só se aplicam exatamente às hipóteses indicadas.</p>
+<h3>Encontros reproduzíveis com cinco personagens</h3>
+<p>O simulador complementar realizou <strong>4.000 confrontos por cenário</strong>, com semente fixa, cinco fichas deste manual, equipamentos listados, adversários treinados, uma Reação por rodada, decisões táticas simplificadas, e o investigador usando <strong>Criar Abertura</strong> em vez de atacar. <strong>Sem Metus, Latebra, cura, cobertura, perícias ambientais, roteiro ou decisões humanas.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Adversários treinados</th>
+<th style="text-align:right">Vitória do grupo</th>
+<th style="text-align:right">Rodadas médias</th>
+<th style="text-align:right">Incapacitados (média)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td style="text-align:right">100,0%</td>
+<td style="text-align:right">3,70</td>
+<td style="text-align:right">0,07</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align:right">100,0%</td>
+<td style="text-align:right">5,92</td>
+<td style="text-align:right">0,42</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align:right">98,7%</td>
+<td style="text-align:right">9,56</td>
+<td style="text-align:right">1,25</td>
+</tr>
+<tr>
+<td>5</td>
+<td style="text-align:right">80,4%</td>
+<td style="text-align:right">14,47</td>
+<td style="text-align:right">2,64</td>
+</tr>
+</tbody>
+</table>
+<p><em>São porcentagens de simulação com quatro mil confrontos por quantidade de adversários, não promessas sobre partidas reais. As vitórias de 100% significam que o modelo venceu todos os 4.000 confrontos amostrados, não que a chance verdadeira seja de 100%.</em></p>
+<h3>Latebra e Metus: objetivo urgente vs. resistência prolongada</h3>
+<p>O segundo simulador reproduz uma disputa isolada: infiltrador de <strong>Intelecto d6 + Ladinagem d8</strong> precisa obter <strong>dois sucessos em CD 7</strong>, já estando oculto em Latebra d8; perseguidor executa <strong>Busca Intensiva 2d6</strong> por rodada; falhar no objetivo produz Ruído Leve. Prazo de <strong>seis rodadas</strong>, jogador agindo primeiro, sem recuperação de Metus. Cada cenário teve <strong>20 mil tentativas com semente fixa</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Metus ativo</th>
+<th style="text-align:right">Concluir objetivo sem reforçar</th>
+<th style="text-align:right">Reforçar no primeiro turno e agir depois</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nenhum</td>
+<td style="text-align:right">81,3%</td>
+<td style="text-align:right">73,9%</td>
+</tr>
+<tr>
+<td>d4</td>
+<td style="text-align:right">69,3%</td>
+<td style="text-align:right">60,6%</td>
+</tr>
+<tr>
+<td>d6</td>
+<td style="text-align:right">56,2%</td>
+<td style="text-align:right">47,2%</td>
+</tr>
+<tr>
+<td>d8</td>
+<td style="text-align:right">45,7%</td>
+<td style="text-align:right">36,4%</td>
+</tr>
+</tbody>
+</table>
+<p>Outro objetivo: <strong>sobreviver oculto durante cinco rodadas</strong>, sem executar ações barulhentas, contra o mesmo perseguidor (20 mil tentativas por condição):</p>
+<table>
+<thead>
+<tr>
+<th>Metus ativo</th>
+<th style="text-align:right">Sem reforçar</th>
+<th style="text-align:right">Reforçando sempre que possível</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nenhum</td>
+<td style="text-align:right">41,6%</td>
+<td style="text-align:right">68,7%</td>
+</tr>
+<tr>
+<td>d4</td>
+<td style="text-align:right">38,6%</td>
+<td style="text-align:right">61,1%</td>
+</tr>
+<tr>
+<td>d6</td>
+<td style="text-align:right">36,4%</td>
+<td style="text-align:right">56,1%</td>
+</tr>
+<tr>
+<td>d8</td>
+<td style="text-align:right">35,6%</td>
+<td style="text-align:right">51,0%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Leitura técnica:</strong> reforçar Latebra tem custo real de oportunidade. É bom quando o objetivo é resistir oculto; pode ser mau quando há prazo curto para concluir ações. Metus não elimina essa distinção, mas reduz muito a chance de executar tarefas urgentes. O simulador não tenta representar um combate integral com cinco pessoas nem decisões humanas de perseguição.</p>
+<p>O cenário de três adversários deve ser tratado como <strong>referência fácil a moderada</strong>, com duração já significativa. Quatro adversários elevam consideravelmente a duração; cinco não são encontro padrão. São estimativas condicionais a um algoritmo de foco de alvo, não uma medida universal de dificuldade.</p>
+</div></details>
+<details class="manual-chapter" id="pendencias"><summary><span class="manual-number">14</span><span>Pontos ainda abertos antes de chamar de versão estável</span><span aria-hidden="true" class="manual-toggle">+</span></summary><div class="manual-body prose-01"><div class="chapter-source-label">TEXTO INTEGRAL · HÆMA 0.1 · EXPERIMENTAL</div><ol>
+<li><strong>Ritmo de encontros:</strong> rodadas médias de grupos completos com equipamentos, terreno e decisões reais.</li>
+<li><strong>Impacto de ignorar combate:</strong> objetivos alternativos precisam competir com ataques sem tornar-se triviais.</li>
+<li><strong>Metus extremo:</strong> d8 anula ambos os dados d6 com frequência alta; verificar se raridade e recuperação são suficientes.</li>
+<li><strong>Latebra prolongada:</strong> reforço e ações de múltiplos perseguidores precisam de playtest, principalmente com marca descoberta e novos esconderijos.</li>
+<li><strong>Escala de dano e morte:</strong> verificar brutalidade e duração em campanhas de várias sessões.</li>
+<li><strong>Profissões, técnicas e PE:</strong> assegurar que custos e bônus não criem uma build obrigatória.</li>
+<li><strong>Poderes, Ignis e Ápice:</strong> <strong>não</strong> concluídos, dependem de lore futura.</li>
+</ol>
+<h3>Regra de qualidade</h3>
+<p>Esta é uma <strong>versão jogável para experimentar o núcleo humano</strong>, não um sistema “perfeito” ou concluído. A aprovação final depende de teste com pessoas, correções e decisão do criador. A versão 0.1 congela uma base de comparação para não continuar mudando tudo sem evidência.</p>
+</div></details>
+<div hidden="" id="manual-search-empty">Nenhum capítulo corresponde à busca. Tente outro termo.</div></div></div>
+<p class="manual-one-place">Este é o único lugar de consulta das regras 0.1. A ficha e o rolador compartilham o mesmo modelo de dados e não utilizam o sistema antigo.</p><div class="manual-footer"><span>HÆMA 0.1 / TEXTO INTEGRAL DO NÚCLEO JOGÁVEL</span><a href="mesa.html#ficha">ABRIR FICHA 0.1 ↗</a></div>
+</div></section></main>
+<footer class="footer"><div class="footer-mark"><img alt="" height="40" src="assets/favicon.svg" width="40"/><span class="display">HÆMA</span><span>HAEMATOMANTHÍA · SISTEMA AUTORAL</span></div><div class="footer-authorship"><span>CRIAÇÃO E DESENVOLVIMENTO</span><p>Site e Sistema criado por <strong>Vitor Monte</strong></p></div><div class="footer-inner"><span>PLAYTEST · 0.1 / 2026</span><nav aria-label="Links do rodapé"><a href="index.html">Início</a><a href="manual.html">Manual</a><a href="mesa.html">Mesa de jogo</a></nav><span>CONTEÚDO SUJEITO A ALTERAÇÕES</span></div></footer></body></html>
