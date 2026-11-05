@@ -7,7 +7,7 @@ Data: 05/11/2026. Fonte prioritária: `HAEMA_0.1_Nucleo_Jogavel.md` do pacote t�
 | Início | 2d10 / 5 atributos / 16 competências | dados graduados; 6 atributos; 24 competências | Revisar números, navegação e avisos |
 | Manual | Manual 1.0 antigo; 2d10, Vida, Defesa, Firmeza, Ímpeto anterior | Núcleo Jogável 0.1, 14 seções | Substituir por 14 capítulos fiéis, com demonstrações isoladas e aviso experimental |
 | Ficha | 5 atributos de 1 a 3, 16 competências de 0 a 2, limites antigos | 6 atributos e 24 competências em d4; 6 e 8 avanços até d8; Guarda d6 | Criar nova ficha com grau do dado e recursos derivados |
-| Rolador | Dois d10 + números | dado do atributo + dado da competência, teste contra CD | Novo rolador coerente com ficha 0.1 |
+| Rolador | Dois d10 + números | dado do atributo + dado da competência, teste contra DT | Novo rolador coerente com ficha 0.1 |
 | Recursos | Vida, Defesa 12+Reflexos, Tensão | Integridade, Guarda/Defesa, Fôlego, Ferimentos, Sobrecarga, Ímpeto, Metus | Novos recursos; edição manual de valores atuais |
 | URLs antigas | sistema.html, arquivo.html, ficha.html, dados.html continuam com mecânicas anteriores | Uma única referência ativa 0.1 | Redirecionar endereços antigos para as páginas oficiais, sem links quebrados |
 | Dados locais | `haema-character-v2` e chave anterior `haema-draft-v1` | Nova ficha versionada e incompatível | **Não apagar, sobrescrever nem migrar automaticamente**; expor exportação da ficha antiga |
@@ -27,7 +27,7 @@ Data: 05/11/2026. Fonte prioritária: `HAEMA_0.1_Nucleo_Jogavel.md` do pacote t�
 
 - Página inicial, manual, ficha, rolador e páginas antigas livres de rótulos antigos de 2d10/5/16.
 - Criação: exatamente 6 atributos + 24 competências, todos d4, 6 e 8 avanços, teto d8.
-- Rolador: atributos/competências selecionados da ficha, cada um com rolagem própria e CD por empate.
+- Rolador: atributos/competências selecionados da ficha, cada um com rolagem própria e DT por empate.
 - Recursos: `Integridade = 10 + faces(Vigor)`; `Fôlego = 6 + grau(Vigor) − Ferimentos`; `Defesa = 1 + faces(Guarda)`.
 - Metus: anulação estritamente `<`, igualdade não anula.
 - Latebra: marcas únicas e rastreamento compartilhado de descobertas; Busca Rápida 1d6, Intensiva 2d6.
@@ -39,3 +39,12 @@ Data: 05/11/2026. Fonte prioritária: `HAEMA_0.1_Nucleo_Jogavel.md` do pacote t�
 ## Adendo recebido — O Valor da Interpretação (05/11/2026)
 
 Texto do criador preservado literalmente no arquivo `docs/ADENDO_INTERPRETACAO_0.1.md`, apresentado no capítulo 8 do Manual Vivo como **diretriz complementar**, separado do documento original. Recompensas narrativas e PE por decisões interpretativas significativas são elegíveis, sem julgar eloquência ou frequência de falas. A referência de PE individual do 0.1 permanece **0–2 por arco [proposta]**, sem valores adicionais inventados. Fica pendente validar critérios públicos, concessão e limites antes de automatizar PE na ficha.
+
+## Didática e nomenclatura — revisão posterior (2026-11-05)
+
+- Revisados oito capítulos antes apresentados como quatro caixas repetitivas. Cada entrada ganhou explicação visual própria, com referência técnica expansível.
+- **Dificuldade do Teste (DT)** é o único nome exibido no Manual, Mesa e resultados. Mesmos valores de dificuldade e mesmas fórmulas da versão 0.1.
+- Exemplificação do salto entre telhados usa, apenas neste cenário, Destreza d6 + Atletismo d4 contra DT 7, acionando o rolador genuíno.
+- Sintaxe JS, integração, 6 atributos, 24 competências, 14 capítulos e 320/390/768/1440 px foram verificados localmente.
+- Chave 0.1 permanece `haema-character-0.1` e o legado `haema-character-v2` não sofre mutação.
+- A validação hospedada ainda depende de deploy de preview pronto na Vercel.
