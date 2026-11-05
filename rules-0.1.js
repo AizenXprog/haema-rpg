@@ -9,13 +9,13 @@
   'Práticas':['Medicina','Tecnologia','Engenharia','Sobrevivência','Condução','Ladinagem']
  };
  const SKILLS=Object.values(SKILL_GROUPS).flat(), DICE=[4,6,8,10,12];
- const CDS={5:'Simples sob pressão',7:'Padrão',9:'Exigente',11:'Difícil',13:'Extremamente difícil',15:'Excepcional'};
+ const DTS={5:'Simples sob pressão',7:'Padrão',9:'Exigente',11:'Difícil',13:'Extremamente difícil',15:'Excepcional'};
  const INV_THRESHOLDS={4:90,6:88,8:86,10:84,12:82}, INV_CHANCES={4:'0,094%',6:'0,193%',8:'0,363%',10:'0,636%',12:'1,052%'};
  const LATEBRA={4:{count:2,faces:4,rerolls:0},6:{count:2,faces:6,rerolls:1},8:{count:3,faces:6,rerolls:1},10:{count:3,faces:6,rerolls:2},12:{count:4,faces:6,rerolls:2}};
  const grade=d=>DICE.indexOf(d)+1;
  const steps=arr=>arr.reduce((n,d)=>n+(d-4)/2,0);
  const resources=(vigor,wounds=0)=>({integrity:10+vigor,stamina:6+grade(vigor)-wounds,defense:7,guard:6});
- const success=(a,b,cd)=>a+b>=cd;
+ const success=(a,b,dt)=>a+b>=dt;
  const defense=(guard,cover=0,shield=0)=>1+guard+cover+shield;
  const applyMetus=(a,b,m)=>({first:a<m?0:a,second:b<m?0:b,total:(a<m?0:a)+(b<m?0:b)});
  const attack=(aFace,bFace,aRoll,bRoll,guard,cover=0,armor=0,weaponRoll=0)=>{
@@ -24,7 +24,7 @@
   const final=hit?Math.max(0,weaponRoll+(critical?2:0)-armor):0;
   return {defense:d,total,hit,critical,damage:final};
  };
- const invictaCD=(attrFace,skillFace)=>Math.ceil((attrFace+skillFace)*.75);
+ const invictaDT=(attrFace,skillFace)=>Math.ceil((attrFace+skillFace)*.75);
  const invictaThreshold=skillFace=>INV_THRESHOLDS[skillFace];
  function die(faces,randomSource){
   if(!DICE.includes(faces)&&faces!==20)throw new Error('Invalid die');
@@ -54,5 +54,5 @@
   if(marks.has(newRoll)||found.has(newRoll))return 'duplicate';
   marks.add(newRoll);return 'added';
  }
- return Object.freeze({ATTR,SKILL_GROUPS,SKILLS,DICE,CDS,INV_THRESHOLDS,INV_CHANCES,LATEBRA,grade,steps,resources,success,defense,applyMetus,attack,invictaCD,invictaThreshold,die,initialLatebra,searchLatebra,reinforceLatebra});
+ return Object.freeze({ATTR,SKILL_GROUPS,SKILLS,DICE,DTS,INV_THRESHOLDS,INV_CHANCES,LATEBRA,grade,steps,resources,success,defense,applyMetus,attack,invictaDT,invictaThreshold,die,initialLatebra,searchLatebra,reinforceLatebra});
 });

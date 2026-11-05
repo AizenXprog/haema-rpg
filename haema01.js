@@ -131,11 +131,11 @@
  // Mesa central roll: exact two graded dice and difficulty (equal succeeds).
  if($('#roll-btn-v01')){
   $('#roll-btn-v01').addEventListener('click',()=>{
-   const ai=+$('#roll-attr-v01').value,si=+$('#roll-skill-v01').value,a=char.attributes[ai],b=char.skills[si],cd=+$('#roll-cd-v01').value;
+   const ai=+$('#roll-attr-v01').value,si=+$('#roll-skill-v01').value,a=char.attributes[ai],b=char.skills[si],dt=+$('#roll-dt-v01').value;
    const x=die(a),y=die(b),sum=x+y;
    showResult('#roll-a-v01',String(x));showResult('#roll-b-v01',String(y));showResult('#roll-total-v01',String(sum));
-   showResult('#roll-verdict-v01',sum>=cd?'SUCESSO · '+sum+' ≥ '+cd:'FALHA · '+sum+' < '+cd);
-   showResult('#roll-breakdown-v01',ATTR[ai]+' d'+a+' ('+x+') + '+SKILLS[si]+' d'+b+' ('+y+') = '+sum+' / CD '+cd);
+   showResult('#roll-verdict-v01',sum>=dt?'SUCESSO · '+sum+' ≥ '+dt:'FALHA · '+sum+' < '+dt);
+   showResult('#roll-breakdown-v01',ATTR[ai]+' d'+a+' ('+x+') + '+SKILLS[si]+' d'+b+' ('+y+') = '+sum+' / DT '+dt);
    $$('.v01-die-display').forEach(el=>{el.classList.remove('roll-flash');void el.offsetWidth;el.classList.add('roll-flash')});
   });
  }
@@ -145,7 +145,16 @@
   const input=$('#manual-search'),chapters=$$('.manual-chapter'),counter=$('#manual-count');
   input.addEventListener('input',()=>{
    const term=input.value.toLocaleLowerCase('pt-BR').trim();let matches=0;
-   chapters.forEach(ch=>{const found=!term||ch.textContent.toLocaleLowerCase('pt-BR').includes(term);ch.hidden=!found;if(found)matches++;if(term&&found)ch.open=true;});
+   chapters.forEach(ch=>{
+    const found=!term||ch.textContent.toLocaleLowerCase('pt-BR').includes(term);
+    ch.hidden=!found;if(found)matches++;
+    if(term&&found){
+     ch.open=true;
+     const overview=(ch.querySelector('summary')?.textContent||'')+' '+(ch.querySelector('.teaching-layout, .teaching-scene')?.textContent||'');
+     const detailed=ch.querySelector('.rules-reference');
+     if(detailed&&!overview.toLocaleLowerCase('pt-BR').includes(term)&&detailed.textContent.toLocaleLowerCase('pt-BR').includes(term))detailed.open=true;
+    }
+   });
    showResult('#manual-count',matches+' '+(matches===1?'capítulo':'capítulos'));
    $('#manual-search-empty').hidden=!!matches;
   });
@@ -159,9 +168,9 @@
  // Interactive example: resolution.
  for(const key of ['#lab-attr','#lab-skill','#atk-attr','#atk-skill','#atk-guard','#atk-weapon','#met-attr','#met-skill','#late-die','#res-vigor','#inv-attr','#inv-skill'])fillDice($(key));
  if($('#lab-roll'))$('#lab-roll').addEventListener('click',()=>{
-  const a=+$('#lab-attr').value,b=+$('#lab-skill').value,cd=+$('#lab-dc').value,x=die(a),y=die(b);
-  showResult('#lab-test-result',`Atributo d${a}: ${x} · Competência d${b}: ${y} · Total ${x+y} / CD ${cd} — ${x+y>=cd?'SUCESSO':'FALHA'}.`);
-  document.dispatchEvent(new CustomEvent('haema:demonstrate',{detail:{kind:'test',a,b,cd,x,y,total:x+y,success:x+y>=cd}}));
+  const a=+$('#lab-attr').value,b=+$('#lab-skill').value,dt=+$('#lab-dt').value,x=die(a),y=die(b);
+  showResult('#lab-test-result',`Atributo d${a}: ${x} · Competência d${b}: ${y} · Total ${x+y} / DT ${dt} — ${x+y>=dt?'SUCESSO':'FALHA'}.`);
+  document.dispatchEvent(new CustomEvent('haema:demonstrate',{detail:{kind:'test',a,b,dt,x,y,total:x+y,success:x+y>=dt}}));
  });
 
  // Combat tutorial: baseline attack, optional defensive reaction, then damage.
@@ -234,10 +243,10 @@
 
  // Metus: strict less-than cancellation and simultaneous normal rolls.
  if($('#met-roll'))$('#met-roll').addEventListener('click',()=>{
-  const a=+$('#met-attr').value,b=+$('#met-skill').value,m=+$('#met-die').value,cd=+$('#met-dc').value;
+  const a=+$('#met-attr').value,b=+$('#met-skill').value,m=+$('#met-die').value,dt=+$('#met-dt').value;
   const x=die(a),y=die(b),z=die(m),{first:rx,second:ry}=core.applyMetus(x,y,z);
-  showResult('#met-result',`Dado de atributo: ${x}${rx===0?' (anulado)':''}. Competência: ${y}${ry===0?' (anulado)':''}. Metus d${m}: ${z}. Resultado ${rx} + ${ry} = ${rx+ry} / CD ${cd} — ${rx+ry>=cd?'SUCESSO':'FALHA'}. Empate com Metus não anula.`);
-  document.dispatchEvent(new CustomEvent('haema:demonstrate',{detail:{kind:'metus',a,b,m,cd,x,y,z,rx,ry,total:rx+ry,success:rx+ry>=cd}}));
+  showResult('#met-result',`Dado de atributo: ${x}${rx===0?' (anulado)':''}. Competência: ${y}${ry===0?' (anulado)':''}. Metus d${m}: ${z}. Resultado ${rx} + ${ry} = ${rx+ry} / DT ${dt} — ${rx+ry>=dt?'SUCESSO':'FALHA'}. Empate com Metus não anula.`);
+  document.dispatchEvent(new CustomEvent('haema:demonstrate',{detail:{kind:'metus',a,b,m,dt,x,y,z,rx,ry,total:rx+ry,success:rx+ry>=dt}}));
  });
 
  // Latebra: unique secret marks, rules-based rerolls and individual searches.
@@ -292,8 +301,8 @@
  function invUpdate(){
   if(!$('#inv-attr'))return;
   const a=+$('#inv-attr').value,b=+$('#inv-skill').value;
-  const cd=Math.ceil((a+b)*.75),threshold=INV_THRESHOLD[b];
-  showResult('#inv-requirements',`Para a dupla d${a} + d${b}, uma CD elegível é pelo menos ${cd} (75% do máximo da dupla). Competência d${b}: soma mínima ${threshold} em 5d20; chance matemática ${INV_CHANCE[b]} por tentativa elegível. Exige condição crítica externa e sucesso real validado pelo narrador.`);
+  const dt=Math.ceil((a+b)*.75),threshold=INV_THRESHOLD[b];
+  showResult('#inv-requirements',`Para a dupla d${a} + d${b}, uma DT elegível é pelo menos ${dt} (75% do máximo da dupla). Competência d${b}: soma mínima ${threshold} em 5d20; chance matemática ${INV_CHANCE[b]} por tentativa elegível. Exige condição crítica externa e sucesso real validado pelo narrador.`);
  }
  if($('#inv-roll')){
   $('#inv-attr').addEventListener('change',invUpdate);$('#inv-skill').addEventListener('change',invUpdate);invUpdate();

@@ -47,9 +47,12 @@ Atualização de experiência sem substituir o núcleo matemático 0.1:
 - Nenhuma alteração às chaves `haema-character-0.1`, `haema-character-v2` e `haema-draft-v1`.
 - A assinatura “Site e Sistema criado por Vitor Monte” permanece em todas as páginas.
 
-### Trilha sonora
 
-- Arquivo disponibilizado pelo criador: `assets/media-vita-ambient.mp3` — **Media Vita**, transcodificado em MP3 mono 48 kbps (aprox. 1,1 MB), para carregamento leve. Original enviado: `Media Vita_spotdown.org.mp3`.
-- Reprodução iniciada somente após interação do visitante com o botão de som no cabeçalho; o mesmo controle desliga e interrompe a reprodução.
-- Após o término, a reprodução é repetida com um intervalo de **30 segundos**. Nenhuma trilha é inventada ou substituída.
-- Autoplay e continuidade entre páginas podem ser restringidos pelo navegador.
+## Revisão didática e nomenclatura — novembro de 2026
+
+- A sigla oficial é **Dificuldade do Teste (DT)**, substituindo a sigla antiga sem mudar os números ou o cálculo. Os identificadores internos JS e controles foram atualizados de `cd` para `dt`, mantendo os dados salvos e a matemática.
+- Oito introduções repetitivas em quatro caixas foram substituídas por composições pedagógicas próprias (saltos, personagem, confronto, recursos, Metus, Latebra, evolução, Invicta).
+- Texto técnico integral preservado em painel expansório dentro do mesmo capítulo, acessível para consulta durante uma sessão.
+- O botão da cena do telhado usa o rolador real: Destreza d6 + Atletismo d4 versus DT 7; a escolha foi colocada no formulário para inspeção, sem fixar regras de combinação de atributo e competência.
+- Fontes e documentação original permanecem no projeto; `docs/HAEMA_0.1_Nucleo_Jogavel.md` é a versão editorial com DT.
+- Fichas, chaves `localStorage` e arquivo da trilha sonora Media Vita foram preservados sem migração destrutiva.

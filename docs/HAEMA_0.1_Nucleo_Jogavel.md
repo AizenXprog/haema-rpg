@@ -14,9 +14,9 @@
 
 **Material:** dados d4, d6, d8, d10, d12 e d20; papel para anotar marcas de Latebra e recursos. Os dados não se somam por quantidade de faces: sempre se **rola um dado de atributo + um dado de competência** e se somam os números obtidos.
 
-**Teste:** o narrador escolhe a combinação de atributo + competência que faz sentido. Compare a **soma** com a dificuldade (CD). Empate com a CD é sucesso. Uma competência pode usar atributos diferentes conforme a tarefa: por exemplo, Enganação + Presença para blefar ou Enganação + Intelecto para preparar uma fraude.
+**Teste:** o narrador escolhe a combinação de atributo + competência que faz sentido. Compare a **soma** com a dificuldade (DT). Empate com a DT é sucesso. Uma competência pode usar atributos diferentes conforme a tarefa: por exemplo, Enganação + Presença para blefar ou Enganação + Intelecto para preparar uma fraude.
 
-| CD | Referência |
+| DT | Referência |
 |---|---|
 | 5 | Simples sob pressão |
 | 7 | Padrão |
@@ -84,10 +84,10 @@ Não peça teste para tarefas triviais e repetíveis sem consequência. Na falha
 ### 3.1 Ferimentos, queda e recuperação
 
 - **Ferimento:** se o dano final de uma única fonte atingir **⌈Integridade máxima/3⌉**, marque 1 Ferimento, no máximo um por golpe. Limite: 2 Ferimentos ativos. Cada um reduz o **Fôlego máximo em 1**; Fôlego atual não pode ficar acima do novo limite.
-- **Integridade em zero:** incapacitado, sem Ação Principal ou Movimento. No início dos turnos seguintes, role Vigor + Sobrevivência contra CD 7: três sucessos acumulados estabilizam; três falhas acumuladas causam morte. Um novo golpe recebido enquanto incapacitado conta como uma falha adicional. Resultados não precisam ser consecutivos.
-- **Estabilização externa:** Ação Principal adjacente, Intelecto + Medicina contra CD 7, com material minimamente apropriado; sucesso estabiliza, sem restaurar Integridade. A técnica de estabilização especializada poderá melhorar esse procedimento mais adiante.
+- **Integridade em zero:** incapacitado, sem Ação Principal ou Movimento. No início dos turnos seguintes, role Vigor + Sobrevivência contra DT 7: três sucessos acumulados estabilizam; três falhas acumuladas causam morte. Um novo golpe recebido enquanto incapacitado conta como uma falha adicional. Resultados não precisam ser consecutivos.
+- **Estabilização externa:** Ação Principal adjacente, Intelecto + Medicina contra DT 7, com material minimamente apropriado; sucesso estabiliza, sem restaurar Integridade. A técnica de estabilização especializada poderá melhorar esse procedimento mais adiante.
 - **Descanso de 10 minutos em segurança:** recupera todo Fôlego até o máximo atual e reduz 1 Sobrecarga. Não cura Ferimentos nem Integridade.
-- **Descanso longo (~8 horas) em segurança:** recupera 1d4 Integridade, reduz até 2 Sobrecargas, restaura Fôlego ao máximo; um Ferimento pode ser removido com um teste de Intelecto + Medicina CD 9 e materiais apropriados, **no máximo uma tentativa por personagem após cada descanso longo**. Um personagem sem assistência médica recupera um Ferimento após dois descansos longos seguros. A Integridade nunca ultrapassa o máximo.
+- **Descanso longo (~8 horas) em segurança:** recupera 1d4 Integridade, reduz até 2 Sobrecargas, restaura Fôlego ao máximo; um Ferimento pode ser removido com um teste de Intelecto + Medicina DT 9 e materiais apropriados, **no máximo uma tentativa por personagem após cada descanso longo**. Um personagem sem assistência médica recupera um Ferimento após dois descansos longos seguros. A Integridade nunca ultrapassa o máximo.
 
 Essas regras de morte são um **protótipo explícito**, não um pedido para matar personagens rapidamente; exigem teste de sensibilidade e ritmo de campanha.
 
@@ -107,11 +107,11 @@ Essas regras de morte são um **protótipo explícito**, não um pedido para mat
 
 **Níveis:** Inquietação d4; Pavor d6; Terror d8. O narrador descreve uma ameaça concreta e informa que grau será imposto antes do teste de resistência. Não acumule múltiplos dados de Metus: aplica-se apenas o mais alto.
 
-**Resistir ao início:** teste baseado na ficha, normalmente Presença + Empatia. Outra combinação pode ser aceita quando a resposta efetiva ao medo for diferente (ex.: Vigor + Sobrevivência para suportar pânico físico, Intelecto + Investigação para identificar conscientemente a causa). CD 7 para d4, CD 8 para d6, CD 9 para d8. Falhou → entra no grau anunciado; passou → resiste àquela exposição, sem testes repetidos contra a mesma fonte enquanto não houver mudança importante.
+**Resistir ao início:** teste baseado na ficha, normalmente Presença + Empatia. Outra combinação pode ser aceita quando a resposta efetiva ao medo for diferente (ex.: Vigor + Sobrevivência para suportar pânico físico, Intelecto + Investigação para identificar conscientemente a causa). DT 7 para d4, DT 8 para d6, DT 9 para d8. Falhou → entra no grau anunciado; passou → resiste àquela exposição, sem testes repetidos contra a mesma fonte enquanto não houver mudança importante.
 
 **Interferência:** em testes sob pressão **causada pela fonte do medo** ou **diretamente relacionados a ela**, role os dois dados normais e um dado de Metus. **Cada dado normal que mostrar valor estritamente menor que o de Metus é anulado**; empate permanece. Some os dados sobreviventes; ambos anulados = resultado 0. Não aplique Metus a testes rotineiros sem relação com a ameaça.
 
-**Recuperar controle:** uma Ação Principal, teste de resistência adequado contra CD 7, **sem interferência do próprio Metus**. No sucesso, reduza um grau: d8→d6→d4→sem Metus; falha não altera. Apenas uma tentativa por turno. Quando a ameaça deixa de exercer qualquer pressão durante uma rodada inteira, Metus cai um grau gratuitamente; ao fim da cena segura, desaparece. Exposições extraordinárias poderão ter exceções quando a lore estiver definida.
+**Recuperar controle:** uma Ação Principal, teste de resistência adequado contra DT 7, **sem interferência do próprio Metus**. No sucesso, reduza um grau: d8→d6→d4→sem Metus; falha não altera. Apenas uma tentativa por turno. Quando a ameaça deixa de exercer qualquer pressão durante uma rodada inteira, Metus cai um grau gratuitamente; ao fim da cena segura, desaparece. Exposições extraordinárias poderão ter exceções quando a lore estiver definida.
 
 ## 6. Latebra — ocultação por marcas secretas
 
@@ -182,7 +182,7 @@ Nenhum personagem precisa adquirir técnicas na primeira sessão; as cinco ficha
 
 ## 9. Invicta e Ápice — somente interface mecânica
 
-**Invicta não é recompensa por interpretação ou narrativa.** O personagem deve estar em condição crítica **provocada por perigo externo real**: Integridade atual ≤ 25% da máxima **ou** Sobrecarga ≥ 5/6 de origem externa, e concluir um teste real com CD ao menos 75% do máximo da sua dupla atributo+competência (arredondar para cima). Na primeira ocasião elegível por cena, após êxito, faz **5d20**, soma todos e compara com a exigência da competência: d4 ≥90, d6 ≥88, d8 ≥86, d10 ≥84, d12 ≥82. Se falhar, nenhuma nova tentativa de Invicta nessa cena. Pode guardar no máximo 1 Invicta.
+**Invicta não é recompensa por interpretação ou narrativa.** O personagem deve estar em condição crítica **provocada por perigo externo real**: Integridade atual ≤ 25% da máxima **ou** Sobrecarga ≥ 5/6 de origem externa, e concluir um teste real com DT ao menos 75% do máximo da sua dupla atributo+competência (arredondar para cima). Na primeira ocasião elegível por cena, após êxito, faz **5d20**, soma todos e compara com a exigência da competência: d4 ≥90, d6 ≥88, d8 ≥86, d10 ≥84, d12 ≥82. Se falhar, nenhuma nova tentativa de Invicta nessa cena. Pode guardar no máximo 1 Invicta.
 
 | Competência | Soma mínima em 5d20 | Chance por rolagem elegível |
 |---|---:|---:|
@@ -242,7 +242,7 @@ Todos têm no máximo 1 Reação por rodada e usam as mesmas regras de crítico.
 
 **Cenário neutro:** um complexo abandonado, uma sala de controle e um corredor com coberturas. O grupo precisa recuperar uma peça de informação. Isso é só um ambiente de teste; não estabelece época, facção nem cosmologia.
 
-**Objetivo e relógio:** no máximo 6 rodadas até a informação ser destruída. Abrir o console exige duas ações principais bem-sucedidas de Intelecto + Tecnologia ou Ladinagem (CD 7). Cada falha causa Ruído Leve se alguém estiver escondido ali.
+**Objetivo e relógio:** no máximo 6 rodadas até a informação ser destruída. Abrir o console exige duas ações principais bem-sucedidas de Intelecto + Tecnologia ou Ladinagem (DT 7). Cada falha causa Ruído Leve se alguém estiver escondido ali.
 
 **Encontro de referência:** 3 oponentes treinados. Dois tentam conter os jogadores; o terceiro alterna entre proteger o console e procurar quem se escondeu, desde que tenha pista concreta de intrusão. Os inimigos não lutam até a morte obrigatoriamente.
 
@@ -295,7 +295,7 @@ O simulador complementar realizou **4.000 confrontos por cenário**, com semente
 
 ### Latebra e Metus: objetivo urgente vs. resistência prolongada
 
-O segundo simulador reproduz uma disputa isolada: infiltrador de **Intelecto d6 + Ladinagem d8** precisa obter **dois sucessos em CD 7**, já estando oculto em Latebra d8; perseguidor executa **Busca Intensiva 2d6** por rodada; falhar no objetivo produz Ruído Leve. Prazo de **seis rodadas**, jogador agindo primeiro, sem recuperação de Metus. Cada cenário teve **20 mil tentativas com semente fixa**.
+O segundo simulador reproduz uma disputa isolada: infiltrador de **Intelecto d6 + Ladinagem d8** precisa obter **dois sucessos em DT 7**, já estando oculto em Latebra d8; perseguidor executa **Busca Intensiva 2d6** por rodada; falhar no objetivo produz Ruído Leve. Prazo de **seis rodadas**, jogador agindo primeiro, sem recuperação de Metus. Cada cenário teve **20 mil tentativas com semente fixa**.
 
 | Metus ativo | Concluir objetivo sem reforçar | Reforçar no primeiro turno e agir depois |
 |---|---:|---:|

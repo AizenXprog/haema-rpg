@@ -3,10 +3,10 @@
 (()=>{
  const $=s=>document.querySelector(s);
  const steps=[
-  {title:'Você descreve uma ação',body:'Em HÆMA, diga o que seu personagem pretende fazer. O narrador descreve a situação e só pede rolagem quando existe risco ou consequência.',scene:'EXEMPLO DE MESA · Você tenta atravessar uma passagem instável. O narrador avalia se o obstáculo realmente pede um teste.',chapter:'resolucao'},
-  {title:'Escolha atributo e competência',body:'Se houver risco, o narrador escolhe dois dados graduados que façam sentido: um do atributo e outro da competência. Não existe uma dupla fixa para toda situação.',scene:'EXEMPLO DE MESA · Uma tentativa pode envolver Destreza e Atletismo. Se sua ficha mostrar d6 e d4, serão esses dois dados que você lançará.',chapter:'criacao'},
-  {title:'Role os dois dados e some',body:'Some os números que saírem nos dados, não as faces totais. Compare o resultado com a CD definida pelo narrador. Alcançar exatamente a CD é sucesso.',scene:'EXEMPLO DIDÁTICO · d6 mostra 4 e d4 mostra 3. Total = 7. Contra CD 7, você tem sucesso.',chapter:'resolucao'},
-  {title:'A história continua',body:'O narrador descreve o que aconteceu. Uma falha não precisa encerrar a cena: ela pode trazer um custo, atraso, ruído ou risco. Para avançar, pratique no laboratório abaixo.',scene:'PRÓXIMO PASSO · Abra “Preparação e resolução central” e experimente o simulador com os seus dados.',chapter:'resolucao'}
+  {title:'Você descreve uma ação',body:'Em HÆMA, diga o que seu personagem pretende fazer. O narrador descreve a situação e só pede rolagem quando existe risco ou consequência.',scene:'EXEMPLO DE MESA · Você tenta saltar entre dois telhados. A queda seria perigosa, então o narrador pede um teste.',chapter:'resolucao'},
+  {title:'Escolha atributo e competência',body:'Se houver risco, o narrador escolhe dois dados graduados que façam sentido: um do atributo e outro da competência. Não existe uma dupla fixa para toda situação.',scene:'EXEMPLO DE MESA · Neste salto, a combinação escolhida é Destreza d6 + Atletismo d4. Os dados variam conforme a ficha e a ação.',chapter:'criacao'},
+  {title:'Role os dois dados e some',body:'Some os números que saírem nos dados, não as faces totais. Compare o resultado com a Dificuldade do Teste (DT) definida pelo narrador. Alcançar exatamente a DT é sucesso.',scene:'EXEMPLO DIDÁTICO · d6 mostra 4 e d4 mostra 3. Total = 7. Contra DT 7, você tem sucesso.',chapter:'resolucao'},
+  {title:'A história continua',body:'O narrador descreve o que aconteceu. Uma falha não precisa encerrar a cena: ela pode trazer um custo, atraso, ruído ou risco. Para avançar, pratique no laboratório abaixo.',scene:'PRÓXIMO PASSO · Vá ao capítulo Resolução e faça o salto entre telhados no laboratório.',chapter:'resolucao'}
  ];
  if($('#lesson-next')){
   let page=0;const prev=$('#lesson-prev'),next=$('#lesson-next');
@@ -23,6 +23,14 @@
   $('#lesson-deep').addEventListener('click',()=>{const ch=document.getElementById(steps[page].chapter);if(ch?.tagName==='DETAILS')ch.open=true});
   paint();
  }
+ const rooftop=$('#rooftop-demo');
+ if(rooftop)rooftop.addEventListener('click',()=>{
+  const attr=$('#lab-attr'),skill=$('#lab-skill'),difficulty=$('#lab-dt'),roll=$('#lab-roll');
+  if(!attr||!skill||!difficulty||!roll)return;
+  attr.value='6';skill.value='4';difficulty.value='7';
+  const notice=$('#rooftop-note');if(notice)notice.textContent='Destreza d6 + Atletismo d4, DT 7. Confira abaixo o resultado sorteado de verdade.';
+  roll.click();$('#lab-test')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'});
+ });
  const element=(tag,cls,value)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(value!=null)e.textContent=value;return e};
  function dice(stage,rolls,steps,title,successful){
   const root=$(stage);if(!root)return;root.replaceChildren();root.className='demonstration-stage'+(successful===true?' demo-success':successful===false?' demo-failure':'');
@@ -46,13 +54,13 @@
   if(!v||!v.kind)return;
   if(v.kind==='test')dice('#visual-lab-test',[
    {label:'Atributo',faces:v.a,roll:v.x},{label:'Competência',faces:v.b,roll:v.y}
-  ],[`Dado do atributo = ${v.x}; dado da competência = ${v.y}.`,`Soma: ${v.x} + ${v.y} = ${v.total}.`,`Comparação com CD ${v.cd}: ${v.total} ${v.total>=v.cd?'≥':'<'} ${v.cd}. ${v.success?'SUCESSO':'FALHA'}.`],v.success?'A regra foi superada':'A dificuldade não foi alcançada',v.success);
+  ],[`Dado do atributo = ${v.x}; dado da competência = ${v.y}.`,`Soma: ${v.x} + ${v.y} = ${v.total}.`,`Comparação com DT ${v.dt}: ${v.total} ${v.total>=v.dt?'≥':'<'} ${v.dt}. ${v.success?'SUCESSO':'FALHA'}.`],v.success?'A DT foi alcançada':'A DT não foi alcançada',v.success);
   if(v.kind==='metus'){
    dice('#visual-lab-metus',[
     {label:'Atributo',faces:v.a,roll:v.x,canceled:v.x<v.z},
     {label:'Competência',faces:v.b,roll:v.y,canceled:v.y<v.z},
     {label:'Metus',faces:v.m,roll:v.z,type:'metus'}
-   ],[`Metus mostra ${v.z}. Só anula resultados estritamente menores que ${v.z}.`,`Restam ${v.rx} e ${v.ry}: ${v.rx} + ${v.ry} = ${v.total}.`,`Comparação com CD ${v.cd}: ${v.success?'SUCESSO':'FALHA'}. Empate com Metus não anula.`],v.success?'O personagem resiste à interferência':'O medo compromete o teste',v.success);
+   ],[`Metus mostra ${v.z}. Só anula resultados estritamente menores que ${v.z}.`,`Restam ${v.rx} e ${v.ry}: ${v.rx} + ${v.ry} = ${v.total}.`,`Comparação com DT ${v.dt}: ${v.success?'SUCESSO':'FALHA'}. Empate com Metus não anula.`],v.success?'O personagem resiste à interferência':'O medo compromete o teste',v.success);
   }
   if(v.kind==='combat'){
    let reactionText='Sem reação defensiva';
