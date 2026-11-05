@@ -59,3 +59,15 @@
 /* Mobile-first: avoid costly fixed procedural grain and ambient scale animation on touch. */
 @media(hover:none),(pointer:coarse){.grain{display:none}.hero-fog{animation:none}.antler-emblem{animation:none;filter:none}.topbar{backdrop-filter:none}}
 @media(prefers-reduced-motion:reduce){.haema-pointer{display:none!important}.hero-fog,.antler-emblem{animation:none!important}}
+/* Attribution: HÆMA's official author signature, readable on both mobile and desktop. */
+.author-signature{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;column-gap:11px;row-gap:6px;max-width:100%;color:#d9c7ae;font:500 clamp(11px,2.8vw,13px)/1.5 var(--sans);letter-spacing:.015em;text-align:center}
+.author-signature strong{color:#f7e7cd;font-weight:700;letter-spacing:.02em}
+.author-signature-ornament{font-size:10px;color:#b8787a;opacity:.85}
+.author-signature-hero{margin:20px auto 22px;padding:11px 12px;border-top:1px solid #987b6954;border-bottom:1px solid #987b6954;width:fit-content}
+.author-signature-page{justify-content:flex-start;text-align:left;margin:20px 0 19px;color:#d4c1aa}
+.footer-authorship{width:min(100% - 36px,700px);margin:0 auto 32px;padding:16px 14px 20px;border-top:1px solid #916e6240;border-bottom:1px solid #916e6240;text-align:center}
+.footer-authorship-label{font:700 9px/1.5 var(--sans);letter-spacing:.2em;color:#c29186}
+.footer-authorship p{margin:6px 0 0;color:#f1e5d4;font:500 clamp(13px,3.1vw,17px)/1.5 var(--reading);letter-spacing:.025em}
+.footer-authorship strong{font-weight:700;color:#fff3e2}
+@media(min-width:940px){.author-signature-hero{margin-top:24px;margin-bottom:26px}.footer-authorship{margin-bottom:38px}}
+@media(max-width:370px){.author-signature{font-size:11px;column-gap:7px}.author-signature-hero{padding:10px 5px}.author-signature-ornament{font-size:8px}}

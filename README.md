@@ -26,3 +26,11 @@ A fonte Seagram não é redistribuída. Para publicação futura, verificar a li
 ## Conteúdo
 
 A documentação corresponde exclusivamente ao playtest 1.0. Cosmologia, Metus e demais conceitos em estudo não foram apresentados como regras finais.
+
+## Autoria oficial
+
+**Site e Sistema criado por Vitor Monte.** A atribuição está presente na página inicial, nas páginas centrais e no rodapé. Manter a assinatura em futuras revisões do portal e documentação.
+
+## Direção futura — Manual Vivo
+
+Ao concluir e aprovar as regras do HÆMA, expandir a página única do Manual com guias didáticos ilustrados, estados visuais interativos, simulações de rolagem, confronto, condições e mecânicas como Latebra, Metus, Ignis e Invicta somente após aprovação da redação e do balanceamento. Priorizar layout mobile-first, acessibilidade, animações leves e controle do usuário sobre demonstrações; evitar multiplicar páginas e abas por mecânica.
