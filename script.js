@@ -79,35 +79,43 @@ if($('#dice-roll')){
  });
 }
 
-// Decorative cursor: rAF only while changing position; disabled for touch and reduced motion.
+// Decorative cursor: 1:1 pointer positioning. No easing or animation-frame lag.
+// Only ornament details animate on hover; mouse coordinates follow immediately.
+// Disabled for touch and reduced-motion users.
 (()=>{
  const canUse=window.matchMedia('(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)');
  if(!canUse.matches)return;
- const cursor=document.createElement('div');cursor.className='haema-pointer';cursor.setAttribute('aria-hidden','true');
+ const cursor=document.createElement('div');
+ cursor.className='haema-pointer';
+ cursor.setAttribute('aria-hidden','true');
  cursor.innerHTML='<span class="haema-pointer-outer"></span><span class="haema-pointer-star">✦</span>';
- document.body.appendChild(cursor);document.documentElement.classList.add('cursor-ready');
- let x=0,y=0,atX=0,atY=0,active=false,frame=0;
- const animate=()=>{
-   atX+=(x-atX)*.24;atY+=(y-atY)*.24;
-   cursor.style.transform=`translate3d(${atX}px,${atY}px,0)`;
-   if(Math.abs(x-atX)+Math.abs(y-atY)>.7 && active)frame=requestAnimationFrame(animate);
-   else {cursor.style.transform=`translate3d(${x}px,${y}px,0)`;atX=x;atY=y;frame=0;}
- };
- const start=()=>{if(!frame)frame=requestAnimationFrame(animate)};
- document.addEventListener('pointermove',e=>{
-   if(e.pointerType!=='mouse')return;
-   x=e.clientX;y=e.clientY;
-   if(!active){atX=x;atY=y;cursor.classList.add('is-visible');active=true;}
-   const target=e.target;
-   const typing=!!target.closest('input,textarea,select,[contenteditable="true"]');
-   cursor.classList.toggle('is-hidden',typing);
-   cursor.classList.toggle('is-hovering',!!target.closest('a,button,summary,[role="button"]'));
-   start();
+ document.body.appendChild(cursor);
+ document.documentElement.classList.add('cursor-ready');
+ let active=false,hovering=false,hidden=false;
+ document.addEventListener('pointermove',event=>{
+   if(event.pointerType!=='mouse')return;
+   // No interpolation: keep the visual cursor precisely under the actual pointer.
+   cursor.style.transform='translate3d('+event.clientX+'px,'+event.clientY+'px,0)';
+   if(!active){active=true;cursor.classList.add('is-visible');}
+   const target=event.target instanceof Element?event.target:null;
+   const nextHidden=!!target?.closest('input,textarea,select,[contenteditable="true"]');
+   const nextHovering=!!target?.closest('a,button,summary,[role="button"]');
+   if(nextHidden!==hidden){hidden=nextHidden;cursor.classList.toggle('is-hidden',hidden);}
+   if(nextHovering!==hovering){hovering=nextHovering;cursor.classList.toggle('is-hovering',hovering);}
  },{passive:true});
- document.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')cursor.classList.add('is-pressed')},{passive:true});
+ document.addEventListener('pointerdown',event=>{
+   if(event.pointerType==='mouse')cursor.classList.add('is-pressed');
+ },{passive:true});
  document.addEventListener('pointerup',()=>cursor.classList.remove('is-pressed'),{passive:true});
  document.addEventListener('pointercancel',()=>cursor.classList.remove('is-pressed'),{passive:true});
- document.addEventListener('mouseout',e=>{if(!e.relatedTarget){cursor.classList.remove('is-visible');active=false;}},{passive:true});
- document.addEventListener('visibilitychange',()=>{if(document.hidden){cursor.classList.remove('is-visible');active=false;if(frame)cancelAnimationFrame(frame);frame=0;}},{passive:true});
- canUse.addEventListener('change',e=>{cursor.classList.toggle('cursor-off',!e.matches);document.documentElement.classList.toggle('cursor-ready',e.matches);});
+ document.addEventListener('mouseout',event=>{
+   if(!event.relatedTarget){active=false;cursor.classList.remove('is-visible');}
+ },{passive:true});
+ document.addEventListener('visibilitychange',()=>{
+   if(document.hidden){active=false;cursor.classList.remove('is-visible');}
+ },{passive:true});
+ canUse.addEventListener('change',event=>{
+   cursor.classList.toggle('cursor-off',!event.matches);
+   document.documentElement.classList.toggle('cursor-ready',event.matches);
+ });
 })();
