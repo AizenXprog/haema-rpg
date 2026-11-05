@@ -1,5 +1,5 @@
 'use strict';
-/** User-controlled soundtrack. No source is configured until the creator supplies the actual audio file. */
+/** User-controlled soundtrack: Media Vita, audio optimized from the file provided by the project creator. */
 (()=>{
  const button=document.getElementById('haema-sound-toggle');if(!button)return;
  const label=document.getElementById('haema-sound-label');

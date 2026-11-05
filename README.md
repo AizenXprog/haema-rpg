@@ -46,3 +46,10 @@ Atualização de experiência sem substituir o núcleo matemático 0.1:
 - **Arquivo de música ainda não recebido** nesta conversa; a página não baixa nem inventa uma faixa. Para ativar, hospedar o áudio fornecido em `assets/` e definir seu caminho no atributo `data-soundtrack` da raiz `<html>` nas três páginas principais. Sem arquivo, o botão explica a pendência.
 - Nenhuma alteração às chaves `haema-character-0.1`, `haema-character-v2` e `haema-draft-v1`.
 - A assinatura “Site e Sistema criado por Vitor Monte” permanece em todas as páginas.
+
+### Trilha sonora
+
+- Arquivo disponibilizado pelo criador: `assets/media-vita-ambient.mp3` — **Media Vita**, transcodificado em MP3 mono 48 kbps (aprox. 1,1 MB), para carregamento leve. Original enviado: `Media Vita_spotdown.org.mp3`.
+- Reprodução iniciada somente após interação do visitante com o botão de som no cabeçalho; o mesmo controle desliga e interrompe a reprodução.
+- Após o término, a reprodução é repetida com um intervalo de **30 segundos**. Nenhuma trilha é inventada ou substituída.
+- Autoplay e continuidade entre páginas podem ser restringidos pelo navegador.
