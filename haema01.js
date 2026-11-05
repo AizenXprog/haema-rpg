@@ -161,16 +161,54 @@
  if($('#lab-roll'))$('#lab-roll').addEventListener('click',()=>{
   const a=+$('#lab-attr').value,b=+$('#lab-skill').value,cd=+$('#lab-dc').value,x=die(a),y=die(b);
   showResult('#lab-test-result',`Atributo d${a}: ${x} · Competência d${b}: ${y} · Total ${x+y} / CD ${cd} — ${x+y>=cd?'SUCESSO':'FALHA'}.`);
+  document.dispatchEvent(new CustomEvent('haema:demonstrate',{detail:{kind:'test',a,b,cd,x,y,total:x+y,success:x+y>=cd}}));
  });
 
- // Combat: exact attack/critical/damage proposal; explicitly no reactions or special tactics.
+ // Combat tutorial: baseline attack, optional defensive reaction, then damage.
+ // The reaction is isolated to this teaching demo; no character sheet values are debited.
+ if($('#atk-reaction')){
+  const selector=$('#atk-reaction');
+  const sync=()=>{
+   $('#atk-reaction-dodge').hidden=selector.value!=='dodge';
+   $('#atk-reaction-parry').hidden=selector.value!=='parry';
+  };
+  selector.addEventListener('change',sync);sync();
+ }
  if($('#atk-roll'))$('#atk-roll').addEventListener('click',()=>{
-  const a=+$('#atk-attr').value,b=+$('#atk-skill').value,g=+$('#atk-guard').value,armor=+$('#atk-armor').value,w=+$('#atk-weapon').value,cover=+$('#atk-cover').value;
-  const d=1+g+cover,x=die(a),y=die(b),hit=x+y>=d,critical=hit&&(x===a||y===b)&&(x+y>=d+3);
-  let detail=`Dados ${x} (d${a}) + ${y} (d${b}) = ${x+y} contra Defesa ${d}`;
-  if(hit){const dmg=die(w),final=Math.max(0,dmg+(critical?2:0)-armor);detail+=` · ACERTO${critical?' CRÍTICO (+2 · proposta)':''} · Dano ${dmg}${critical?' + 2':''} − armadura ${armor} = ${final}.`;}else detail+=' · ERROU · Sem dano.';
-  if(w===10)detail+=' Arma devastadora: custa 1 Fôlego e normalmente gera Ruído Forte (não debitado aqui).';
-  showResult('#atk-result',detail);
+  const a=+$('#atk-attr').value,b=+$('#atk-skill').value,
+   guard=+$('#atk-guard').value,armor=+$('#atk-armor').value,
+   weapon=+$('#atk-weapon').value,cover=+$('#atk-cover').value;
+  const reaction=$('#atk-reaction')?.value||'none';
+  const x=die(a),y=die(b),total=x+y;
+  const baseline=core.attack(a,b,x,y,guard,cover,armor,0);
+  const {defense,hit,critical}=baseline;
+  let dodgeX=null,dodgeY=null,dodgeA=null,dodgeB=null,dodgeTotal=null,dodged=false;
+  let parryRoll=null,parryAmount=0,parryFace=null,damageRoll=null,final=0;
+  let explain=`Ataque: ${x} (d${a}) + ${y} (d${b}) = ${total}; Defesa = 1 + Guarda ${guard}${cover?' + cobertura '+cover:''} = ${defense}.`;
+  if(!hit)explain+=' ERROU · Não houve reação nem dano.';
+  else{
+   explain+=critical?' ACERTO CRÍTICO (proposta 0.1, +2 dano).':' ACERTO.';
+   if(reaction==='dodge'){
+    dodgeA=+$('#atk-dodge-attr').value;dodgeB=+$('#atk-dodge-skill').value;
+    dodgeX=die(dodgeA);dodgeY=die(dodgeB);dodgeTotal=dodgeX+dodgeY;
+    dodged=dodgeTotal>=total;
+    explain+=` Esquiva: ${dodgeX} + ${dodgeY} = ${dodgeTotal} ${dodged?'≥':'<'} ataque ${total} · ${dodged?'EVITOU':'FALHOU'} (custa 1 Fôlego).`;
+   }else if(reaction==='parry'){
+    parryFace=+$('#atk-parry-die').value;parryRoll=die(parryFace);parryAmount=Math.floor(parryRoll/2);
+    explain+=` Aparo: dado mostra ${parryRoll} → redução de ${parryAmount} (custa 1 Fôlego).`;
+   }
+   if(!dodged){
+    damageRoll=die(weapon);
+    final=Math.max(0,damageRoll+(critical?2:0)-armor-parryAmount);
+    explain+=` Dano ${damageRoll}${critical?' + 2':''} − armadura ${armor}${parryAmount?' − Aparo '+parryAmount:''} = ${final}.`;
+   }else explain+=' Sem dano após a Esquiva.';
+   if(weapon===10)explain+=' Arma devastadora: gasta 1 Fôlego por ataque e normalmente provoca Ruído Forte (não debitado na demonstração).';
+  }
+  showResult('#atk-result',explain);
+  document.dispatchEvent(new CustomEvent('haema:demonstrate',{detail:{
+   kind:'combat',a,b,guard,armor,weapon,cover,reaction,x,y,total,defense,hit,critical,
+   dodgeX,dodgeY,dodgeA,dodgeB,dodgeTotal,dodged,parryFace,parryRoll,parryAmount,damageRoll,final
+  }}));
  });
 
  // Resources: transparent derived formulas; not a persistent character state.
@@ -199,6 +237,7 @@
   const a=+$('#met-attr').value,b=+$('#met-skill').value,m=+$('#met-die').value,cd=+$('#met-dc').value;
   const x=die(a),y=die(b),z=die(m),{first:rx,second:ry}=core.applyMetus(x,y,z);
   showResult('#met-result',`Dado de atributo: ${x}${rx===0?' (anulado)':''}. Competência: ${y}${ry===0?' (anulado)':''}. Metus d${m}: ${z}. Resultado ${rx} + ${ry} = ${rx+ry} / CD ${cd} — ${rx+ry>=cd?'SUCESSO':'FALHA'}. Empate com Metus não anula.`);
+  document.dispatchEvent(new CustomEvent('haema:demonstrate',{detail:{kind:'metus',a,b,m,cd,x,y,z,rx,ry,total:rx+ry,success:rx+ry>=cd}}));
  });
 
  // Latebra: unique secret marks, rules-based rerolls and individual searches.
@@ -214,6 +253,7 @@
   late.finished=left===0;
   for(const id of ['#late-quick','#late-deep','#late-reinforce'])$(id).disabled=late.finished;
   showResult('#late-result',message+' · '+left+' marca(s) ainda oculta(s).'+(late.finished?' ESCONDERIJO DESCOBERTO.':''));
+  document.dispatchEvent(new CustomEvent('haema:demonstrate',{detail:{kind:'latebra',total:late.all.size,found:late.found.size,hidden:left,finished:late.finished,message}}));
  }
  if($('#late-create')){
   $('#late-create').addEventListener('click',()=>{

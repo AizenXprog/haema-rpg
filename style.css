@@ -202,3 +202,98 @@
 .rp-draft-note{font:700 9px/1.5 var(--sans);letter-spacing:.08em;color:#693b3b;border:1px solid #b38e89;padding:6px 9px}
 .rp-addendum h3{color:#48292c}.rp-addendum ul{padding-left:20px}
 .rp-rule-note{font:500 12px/1.7 var(--sans);color:#4e3532;border-top:1px solid #b59c85;margin-top:19px;padding-top:13px}
+
+/* =======================================================
+   MANUAL VIVO · edição didática premium (compatível v0.1)
+   Camada visual separada do núcleo matemático e da ficha.
+   ======================================================= */
+/* Permanent soundtrack control: compact, high contrast, always in the sticky header. */
+.sound-toggle{display:inline-flex;justify-content:center;align-items:center;gap:7px;min-width:76px;min-height:43px;margin-left:auto;padding:8px 9px;color:#eeddd0;background:#281a1a;border:1px solid #9d6664;border-radius:4px;flex:0 0 auto;white-space:nowrap;letter-spacing:.045em;font:700 9px/1.2 var(--sans);transition:background .18s,border-color .18s}
+.sound-toggle svg{color:#d2a3a1;flex:none}.sound-toggle.sound-active{background:#4b2026;border-color:#e0aa9e}.sound-toggle:hover{border-color:#f0c6b4;background:#4a2527}.sound-toggle:focus-visible{outline-offset:2px}.audio-message{position:fixed;z-index:110;top:87px;left:50%;transform:translateX(-50%);width:max-content;max-width:min(90vw,420px);padding:13px 18px;border:1px solid #bd8882;background:#221417;color:#fff0e3;border-radius:6px;box-shadow:0 14px 35px #0009;text-align:center;font-size:12px;line-height:1.5}.audio-message[hidden]{display:none}
+@media(max-width:380px){.header-inner{gap:8px;padding:0 12px}.brand>span{font-size:29px}.sound-toggle{min-width:72px;padding:7px 6px;font-size:8px;gap:4px}.sound-toggle svg{width:14px;height:14px}.menu-toggle{width:43px;height:43px;margin-left:0}}
+@media(min-width:940px){.sound-toggle{margin-left:5px;min-height:44px;padding:11px 14px;font-size:10px}.top-action{margin-left:0}}
+
+/* A self-contained beginner route, before the 14 fully preserved technical chapters. */
+.first-steps{position:relative;margin:32px 0 36px;border:1px solid #9a817275;background:#211c1b;color:#efe3d1;box-shadow:0 15px 38px #321e1831;overflow:hidden;isolation:isolate}
+.first-steps:before,.first-steps:after{content:'✥';position:absolute;z-index:-1;color:#b98c7957;font:25px var(--reading)}
+.first-steps:before{top:12px;right:16px}.first-steps:after{bottom:12px;left:16px;transform:rotate(180deg)}
+.first-steps-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:25px 24px 20px;background:linear-gradient(130deg,#342122,#221b1b 75%);border-bottom:1px solid #bf9b8666}
+.first-steps-head h3{margin:8px 0 8px;font:600 clamp(30px,5vw,49px)/1.06 var(--reading);letter-spacing:-.03em;color:#f6e6cf}
+.first-steps-head p{margin:0;color:#d9c9bc;font-size:13px;line-height:1.6;max-width:515px}
+.guide-kicker{color:#d6a399;letter-spacing:.14em;font-size:9px;font-weight:800}
+.guide-mark{display:none;color:#dfc5a99e;font:600 75px var(--reading)}
+.lesson-progress{height:4px;background:#4a3730}.lesson-progress-fill{display:block;width:25%;height:100%;background:linear-gradient(90deg,#a65359,#e6b4a1);transition:width .3s ease}
+.lesson-content{padding:27px 24px 20px}.lesson-content.lesson-change{animation:lesson-enter .3s ease both}
+.lesson-counter{font:800 10px var(--sans);letter-spacing:.19em;color:#c98e8b}
+.lesson-content h4{font:600 clamp(26px,5vw,41px)/1.1 var(--reading);margin:13px 0 12px;color:#fff1de}
+.lesson-body{font:400 clamp(15px,2vw,18px)/1.7 var(--sans);max-width:730px;color:#efe2d6}
+.lesson-scene{background:#130f0f;border-left:3px solid #a45258;padding:16px 17px;color:#e3d1bf;font-size:12px;line-height:1.8}
+.lesson-deep{margin-top:16px;display:inline-flex;gap:10px;color:#efc1b5;font-size:10px;font-weight:800;letter-spacing:.1em;border-bottom:1px solid #a65f58;padding-bottom:6px}
+.lesson-controls{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:17px 21px 18px;border-top:1px solid #6a4c43a6;background:#221b1a}
+.lesson-controls button{border:1px solid #b48c7c80;background:#3b2526;color:#ffebdb;font-weight:700;font-size:10px;letter-spacing:.08em;min-height:43px;padding:9px 13px}.lesson-controls button:last-child{background:#712d35;border-color:#ac6165}
+.lesson-controls button:disabled{opacity:.34;cursor:default}.lesson-steps{font-size:9px;color:#c9b6a4;white-space:nowrap;font-weight:700}
+@keyframes lesson-enter{from{opacity:.65;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(min-width:700px){.first-steps-head{padding:31px 36px}.guide-mark{display:block}.lesson-content{padding:36px 39px 28px}.lesson-controls{padding:20px 38px}.lesson-scene{font-size:14px}}
+@media(max-width:359px){.lesson-controls{padding:14px 12px;gap:5px}.lesson-controls button{padding:8px;font-size:9px}.lesson-steps{font-size:8px}.first-steps-head,.lesson-content{padding-left:17px;padding-right:17px}}
+
+/* The same four questions appear at the beginning of each high-impact mechanic. */
+.learning-questions{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:8px 0 28px;padding:0}
+.learning-answer{background:#f5ecdc;border:1px solid #bbab94;padding:17px 16px 16px;min-width:0;position:relative}
+.learning-answer:before{content:'✥';position:absolute;right:13px;top:12px;color:#9e6062;font-size:13px;opacity:.7}
+.learning-answer>span{font:800 10px var(--sans);letter-spacing:.13em;color:#893943;text-transform:uppercase}
+.learning-answer p{margin:9px 0 0;color:#3c302e;font:400 15px/1.65 var(--sans)}
+@media(min-width:710px){.learning-questions{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.learning-answer{padding:21px}.learning-answer p{font-size:15px}}
+
+/* Dice: readable silhouettes rather than huge textures or heavy WebGL on mobile. */
+.demonstration-stage{background:linear-gradient(145deg,#2a2021 0%,#131416 100%);color:#efe3d2;border:1px solid #986e6b;margin:21px 0 15px;padding:21px 17px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px #ffffff0b;contain:layout style}
+.demonstration-stage:before{content:'';position:absolute;pointer-events:none;inset:8px;border:1px solid #b18e7950}.demo-idle{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:130px;text-align:center;position:relative;color:#ccb9a9;font:800 10px/1.6 var(--sans);letter-spacing:.13em}.demo-engraving{font:45px var(--reading);color:#ad8a82}
+.demo-headline{display:flex;align-items:center;gap:10px;font:600 clamp(20px,4vw,29px)/1.1 var(--reading);color:#f7dfce;margin:2px 0 15px;position:relative}.demo-headline:before{content:'✣';color:#c58e83;font-size:18px}
+.demo-success{border-color:#a8a17a}.demo-failure{border-color:#98555a}
+.visual-dice-tray{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;position:relative;margin:15px 0 21px}
+.visual-die{display:flex;flex-direction:column;align-items:center;min-width:72px;max-width:98px;gap:6px;text-align:center;position:relative}
+.visual-die-label{font:800 9px/1.4 var(--sans);letter-spacing:.05em;color:#e8c7bc;min-height:25px}
+.visual-die-shell{position:relative;width:77px;height:78px;display:grid;place-items:center;isolation:isolate;clip-path:polygon(30% 4%,70% 4%,97% 36%,83% 95%,17% 95%,3% 36%);background:linear-gradient(138deg,#e2d2bf 0%,#8f766d 43%,#3e292a 100%);filter:drop-shadow(0 10px 12px #0009);animation:poly-roll .52s cubic-bezier(.16,.92,.3,1.08) both;transform-origin:center}
+.visual-die-shell:before{content:'';z-index:-1;position:absolute;inset:5px;clip-path:inherit;background:linear-gradient(132deg,#b99981 0%,#7d6360 43%,#332126 100%);box-shadow:inset -8px -10px 19px #170d10b9;pointer-events:none}
+.visual-die-shell:after{content:'';position:absolute;z-index:-1;width:100%;height:100%;clip-path:polygon(50% 8%,85% 92%,16% 92%);background:#f0e2d121;pointer-events:none}
+.visual-die-shell[data-faces="4"]{clip-path:polygon(50% 2%,98% 94%,2% 94%)}
+.visual-die-shell[data-faces="6"]{clip-path:polygon(8% 8%,92% 8%,92% 92%,8% 92%)}
+.visual-die-shell[data-faces="8"]{clip-path:polygon(50% 2%,98% 50%,50% 98%,2% 50%)}
+.visual-die-shell[data-faces="10"]{clip-path:polygon(50% 2%,80% 13%,98% 48%,83% 90%,50% 98%,17% 90%,2% 48%,20% 13%)}
+.visual-die-shell[data-faces="12"]{clip-path:polygon(32% 3%,68% 3%,91% 22%,98% 60%,75% 94%,25% 94%,2% 60%,9% 22%)}
+.visual-die-shell[data-faces="20"]{clip-path:polygon(50% 1%,91% 24%,100% 72%,50% 99%,0% 72%,9% 24%)}
+.visual-die-numeral{font:700 27px/1 var(--reading);color:#fff8e6;position:relative;text-shadow:0 2px 2px #291114a8,0 0 7px #240d1080}
+.visual-die.is-cancelled .visual-die-shell{opacity:.35;filter:grayscale(1);transform:scale(.89)!important}
+.visual-die.is-cancelled:after{content:'×';position:absolute;top:36px;color:#f1d2cc;font:700 45px/1 var(--sans);text-shadow:0 2px 8px #260a0d}
+.visual-die-flag{font:800 9px var(--sans);letter-spacing:.08em;color:#e1a7a6}
+.visual-die.is-metus .visual-die-shell{background:linear-gradient(135deg,#9d4e58,#3e121d)}
+.demo-calculation{list-style:none;margin:0;padding:0;position:relative;display:grid;gap:0;border-top:1px solid #e4c6ad44}
+.demo-calc-step{display:grid;grid-template-columns:29px 1fr;gap:10px;align-items:start;padding:11px 0;border-bottom:1px solid #d1ac9d2e;font:400 12px/1.6 var(--sans);color:#edddce;animation:calc-entry .28s both}
+.demo-calc-step:nth-child(2){animation-delay:.09s}.demo-calc-step:nth-child(3){animation-delay:.18s}.demo-calc-step:nth-child(4){animation-delay:.27s}
+.demo-calc-number{color:#dfaea5;letter-spacing:.1em;font-weight:800;font-size:10px;padding-top:2px}
+@keyframes poly-roll{0%{opacity:0;transform:perspective(400px) rotateX(-78deg) rotateZ(-42deg) scale(.5)}65%{opacity:1;transform:perspective(400px) rotateX(25deg) rotateZ(15deg) scale(1.08)}100%{opacity:1;transform:perspective(400px) rotateX(0) rotateZ(0) scale(1)}}
+@keyframes calc-entry{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(min-width:750px){.demonstration-stage{padding:29px 31px;margin-top:24px}.visual-dice-tray{gap:25px;margin:25px 0 28px}.visual-die{min-width:105px}.visual-die-shell{width:100px;height:103px}.visual-die-numeral{font-size:34px}.visual-die-label{font-size:10px}.demo-calc-step{font-size:14px;padding:12px 0;grid-template-columns:36px 1fr}}
+
+/* Defensive reactions: isolated simulation, not extra navigation or a persistent resource spending engine. */
+.reaction-guide{padding:16px;margin:14px 0 18px;border:1px solid #c8b199;background:#fbf2e5}
+.reaction-guide .guide-kicker{color:#84383f}.reaction-guide .lab-controls{margin-top:9px}
+.reaction-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-top:10px}
+.reaction-fields[hidden]{display:none}.reaction-fields label{display:grid;gap:7px;font-size:12px;font-weight:700;color:#442e2e}.reaction-fields select{max-width:100%;min-height:43px;background:#fffcf5;border:1px solid #b79b8b;border-radius:2px;padding:9px;color:#302122}
+.reaction-guide p{font-size:12px;margin:11px 0 0}
+
+/* Latebra hides the actual marks, but lets learners see search progress and the latest event. */
+.latebra-visual-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#efe3d2;font-size:12px;margin:17px 0 11px}
+.latebra-visual-head strong{font-weight:800;color:#ddb4a5}.latebra-visual-progress{height:12px;background:#51413e;border:1px solid #b08c7c;border-radius:30px;overflow:hidden}
+.latebra-visual-progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,#98494d,#db9f8b);transition:width .28s ease}
+.latebra-visual-event{margin:13px 0 0;color:#d9c3b0;font-size:12px}
+/* Three small chapters on the character sheet instead of dense onboarding paragraphs. */
+.first-character-map{display:grid;grid-template-columns:1fr;gap:8px;margin:20px 0 15px}
+.first-character-map>div{display:flex;align-items:center;flex-wrap:wrap;gap:8px;border:1px solid #a98a7b88;background:#37282a;color:#f6e9d5;padding:13px 14px;font-size:12px}
+.first-character-map span{display:grid;place-items:center;width:28px;height:28px;border:1px solid #b28881;color:#f1b9aa;font-size:11px}.first-character-map strong{font-weight:700}.first-character-map small{color:#d1c0ae;font-size:10px;margin-left:auto}
+@media(min-width:900px){.first-character-map{grid-template-columns:repeat(3,minmax(0,1fr))}.first-character-map>div{min-width:0;align-items:flex-start}.first-character-map small{margin-left:0;flex-basis:100%;padding-left:36px}}
+@media(prefers-reduced-motion:reduce){.lesson-content.lesson-change,.visual-die-shell,.demo-calc-step{animation:none!important}.lesson-progress-fill,.latebra-visual-progress span{transition:none!important}}
+@media(hover:none),(pointer:coarse){.visual-die-shell{animation-duration:.25s}.demonstration-stage{contain:layout style}}
+/* Fix native input intrinsic sizing on 320px displays, without hiding overflowing content. */
+.v01-fields{grid-template-columns:minmax(0,1fr)}.v01-fields label,.v01-fields input{min-width:0;max-width:100%}.v01-fields input{width:100%}
+/* Short, instantly legible audio states on narrow screens. Full descriptive label stays on desktop. */
+@media(max-width:639px){#haema-sound-label{font-size:0}#haema-sound-label:after{content:'SOM OFF';font-size:9px;letter-spacing:.06em}#haema-sound-toggle.sound-active #haema-sound-label:after{content:'DESLIGAR';font-size:9px}}

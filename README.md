@@ -32,3 +32,17 @@ Site estático para GitHub/Vercel, sem serviços externos necessários além da 
 - Sintaxe JS, CSS, links internos, atributos da ficha, contratos de dados e fórmulas dos simuladores foram revisados estaticamente.
 - O navegador gráfico de testes ficou **bloqueado neste ambiente**; os testes visuais e de toque em aparelhos reais permanecem pendentes. Não declarar auditoria visual completa sem essa revisão.
 - Toda revisão futura deve preservar a frase **"Site e Sistema criado por Vitor Monte"**.
+
+
+## Preview — Experiência didática e controle de áudio (2026-11-05)
+
+Atualização de experiência sem substituir o núcleo matemático 0.1:
+- Jornada guiada de 4 passos para iniciantes, antes do índice integral de 14 capítulos.
+- Caixas didáticas “O que é / Quando / Como / Exemplo” nas mecânicas principais.
+- Dados ilustrados d4–d12 e sequências de cálculo em testes, combate e Metus; animações reduzidas conforme preferência do aparelho.
+- Combate demonstrativo: agora inclui escolhas de Esquiva (Destreza + Acrobacia) e Aparo (metade inteira de Luta/Armas Brancas), com gasto de Fôlego apenas indicado — **não** debita a ficha. Acerto, crítico, armadura e cálculos continuam seguindo o Núcleo 0.1.
+- Latebra mostra progresso da busca sem revelar marcas ocultas indevidamente.
+- Controle de áudio visível no topo, inclusive em 320 px. O player tem desligamento imediato e repetição após **30 segundos** de silêncio ao terminar a faixa; requer toque do usuário para ativar, e o intervalo cancela quando desliga.
+- **Arquivo de música ainda não recebido** nesta conversa; a página não baixa nem inventa uma faixa. Para ativar, hospedar o áudio fornecido em `assets/` e definir seu caminho no atributo `data-soundtrack` da raiz `<html>` nas três páginas principais. Sem arquivo, o botão explica a pendência.
+- Nenhuma alteração às chaves `haema-character-0.1`, `haema-character-v2` e `haema-draft-v1`.
+- A assinatura “Site e Sistema criado por Vitor Monte” permanece em todas as páginas.
