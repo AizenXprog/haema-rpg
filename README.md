@@ -1,25 +1,26 @@
 # HÆMA — Portal do RPG
 
-Portal mobile-first do sistema autoral de RPG **HÆMA (Haematomânthía)**. Versão visual 2 do site público: estética editorial de manuscrito e gravura, mas com interface focada em RPG de mesa, não em frases promocionais.
+Site estático, mobile-first, com páginas independentes. Publicação automática pela Vercel ao atualizar `main`.
 
-## O que inclui
+## Páginas
 
-- Página inicial com gravura vetorial de dado de dez faces e animações com suporte a redução de movimento.
-- Introdução prática ao sistema e manual 1.0 de consulta rápida em quatro capítulos.
-- Ficha de criação com 5 atributos, 16 competências, 4 pontos extras em atributos e 12 em competências, duas especializações e duas técnicas registradas em texto.
-- Vida e Defesa calculadas em tempo real.
-- Salvamento automático no navegador e importar/exportar ficha `.json`.
-- Rolador 2d10 integrado aos valores da ficha, dificuldade e modificador de circunstância.
-- Layout responsivo testado com 320, 390, 768 e 1440 pixels de largura.
+- `index.html` — início e identidade visual
+- `sistema.html` — princípios do sistema
+- `manual.html` — regras de playtest
+- `ficha.html` — ficha de personagem (localStorage e JSON)
+- `dados.html` — rolador 2d10 que lê a ficha local
+- `arquivo.html` — estado da documentação
 
-## Acessar ou publicar
+## Identidade
 
-Site estático: `index.html`, `style.css`, `script.js`, sem dependências de build. GitHub conectado à Vercel para deploy automático da branch `main`.
+Paleta base: `#423F36` carvão, `#440E15` sangue seco, `#212017` marrom escuro, `#0B0A07` quase preto. Tons adicionais de pergaminho para leitura. Antler emblem original em `assets/antler-sigil.svg`.
 
-## O que não é final
+A tipografia ornamental usa UnifrakturCook (fontes Google) como alternativa pública. CSS suporta instalação local da fonte **Seagram TFB** para testes, mas não hospeda nem redistribui o arquivo da fonte, que é declarado pelo autor como gratuito apenas para uso pessoal. Para distribuição da Seagram ao público, obtenha licença apropriada e adicione fonte legalmente ao projeto.
 
-Conteúdo apresentado é do **manual de playtest 1.0**; equilibragem e detalhes podem mudar. O portal **não** substitui o manual integral e a ficha existente inclui apenas suas regras fundamentais. Metus e a ideia de furtividade Bingo ainda estão em estudo. Nenhuma cosmologia ou lore é afirmada como canônica.
+## Técnica
 
-## Acessibilidade e armazenamento
+HTML, CSS e JavaScript sem framework ou build. Funciona em hospedagem estática e na Vercel. Mobile-first a partir de 320px, botões adaptados a toque, menu acessível, preferência por movimento reduzido. A ficha é local, **sem conta nem sincronização**; para trocar de dispositivo, exporte/import JSON.
 
-Navegação por teclado, tamanhos de alvo adequados a toque, `prefers-reduced-motion`, status acessíveis e campos identificados. Os dados de personagem são salvos no `localStorage` deste navegador; não existe login nem sincronização entre dispositivos.
+## Conteúdo
+
+O manual incorporado é uma consulta resumida da versão 1.0. A cosmologia e os poderes sobrenaturais não foram definidos. O projeto não publica lore fictícia como oficial.
