@@ -18,3 +18,44 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
 
 .mobile-antler{display:block;width:min(260px,70vw);height:160px;object-fit:contain;margin:12px auto 0;filter:drop-shadow(0 8px 14px #0007)}@media(min-width:940px){.mobile-antler{display:none}}
+
+/* Portal v3 — clear navigation, unified table tools and efficient desktop cursor */
+:where(a,button,summary,select,input):focus-visible{outline:2px solid #c9a69a;outline-offset:4px}
+.chapter-list-minimal{max-width:920px;margin-inline:auto}
+.chapter-list-minimal .chapter{min-height:150px}
+.mesa-shortcuts{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.mesa-shortcuts a{display:inline-flex;align-items:center;min-height:48px;padding:11px 19px;border:1px solid #9f79715c;background:#291c1d;color:#f5e8d2;font-size:12px;letter-spacing:.03em;transition:border-color .2s,background .2s}
+.mesa-shortcuts a:hover{border-color:#c6a19b;background:#440e15}
+#ficha,#dados,.manual-list details{scroll-margin-top:100px}
+.page-hero-compact .container{padding-bottom:0}
+.mesa-section-head{padding-top:46px;padding-bottom:20px}
+.mesa-section-head .serif-heading{font-size:clamp(35px,6.4vw,68px);margin:19px 0 0}
+.mesa-dice-heading .serif-heading{color:#eee4d3}
+.mesa-dice-heading .section-titlebar{color:#ded4c0}
+.manual-subhead{font-family:var(--reading),Georgia,serif;font-weight:600;font-size:clamp(24px,3.5vw,33px);margin:28px 0 12px}
+.technique-list{list-style:none;margin:0 0 22px;padding:0;display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid #9d8a7970}
+.technique-item{padding:15px 0;border-bottom:1px solid #9d8a796e;display:grid;gap:7px;align-items:start}
+.technique-item div{display:flex;flex-direction:column;gap:4px}
+.technique-item div span{font-family:var(--sans);font-size:10px;letter-spacing:.10em;text-transform:uppercase;color:#855047;font-weight:700}
+.technique-item div strong{font-family:var(--reading),Georgia,serif;font-size:22px;font-weight:600;line-height:1.1}
+.technique-item p{font-size:14px;line-height:1.65;margin:0}
+.manual-note,.manual-one-place{max-width:900px;font-size:14px;line-height:1.8}
+.manual-one-place{margin:30px 0 10px;opacity:.75}
+@media(min-width:780px){.technique-item{grid-template-columns:minmax(185px,35%) 1fr;gap:20px}.chapter-list-minimal{max-width:890px}}
+/* Custom animated sigil; composited transform only. Never replace touch cursor. */
+.haema-pointer{position:fixed;left:0;top:0;width:0;height:0;pointer-events:none;z-index:9999;opacity:0;transition:opacity .14s ease;will-change:transform;display:none}
+.haema-pointer-outer{position:absolute;inset:-17px;width:34px;height:34px;border:1px solid #c8b29c;border-radius:3px;transform:rotate(45deg) scale(.75);box-shadow:0 0 0 1px #440e153d;transition:transform .18s,border-color .18s,background .18s}
+.haema-pointer-star{position:absolute;left:0;top:0;transform:translate(-50%,-50%);line-height:1;color:#a74449;text-shadow:0 0 3px #160d0d,0 0 8px #110908;font-size:14px;transition:transform .18s,color .18s}
+.haema-pointer.is-hovering .haema-pointer-outer{transform:rotate(45deg) scale(1.13);border-color:#efdbc0;background:#440e1529}
+.haema-pointer.is-hovering .haema-pointer-star{color:#f0d7c0;transform:translate(-50%,-50%) scale(1.18)}
+.haema-pointer.is-pressed .haema-pointer-outer{transform:rotate(45deg) scale(.61)}
+.haema-pointer.cursor-off,.haema-pointer.is-hidden{opacity:0!important}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+ .cursor-ready body,.cursor-ready a,.cursor-ready button,.cursor-ready summary{cursor:none}
+ .cursor-ready input,.cursor-ready textarea,.cursor-ready select{cursor:auto}
+ .haema-pointer{display:block}
+ .haema-pointer.is-visible{opacity:1}
+}
+/* Mobile-first: avoid costly fixed procedural grain and ambient scale animation on touch. */
+@media(hover:none),(pointer:coarse){.grain{display:none}.hero-fog{animation:none}.antler-emblem{animation:none;filter:none}.topbar{backdrop-filter:none}}
+@media(prefers-reduced-motion:reduce){.haema-pointer{display:none!important}.hero-fog,.antler-emblem{animation:none!important}}

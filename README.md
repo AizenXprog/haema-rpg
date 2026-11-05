@@ -1,26 +1,28 @@
 # HÆMA — Portal do RPG
 
-Site estático, mobile-first, com páginas independentes. Publicação automática pela Vercel ao atualizar `main`.
+Portal estático mobile-first publicado via GitHub + Vercel.
 
-## Páginas
+## Navegação principal (3 entradas)
 
-- `index.html` — início e identidade visual
-- `sistema.html` — princípios do sistema
-- `manual.html` — regras de playtest
-- `ficha.html` — ficha de personagem (localStorage e JSON)
-- `dados.html` — rolador 2d10 que lê a ficha local
-- `arquivo.html` — estado da documentação
+- `index.html` — início e identidade visual.
+- `manual.html` — **manual central**: criação, 2d10, combate, ferimentos, medo, ímpeto, 16 técnicas individuais, 6 combinadas, vínculos e evolução na versão 1.0.
+- `mesa.html` — **mesa de jogo**: ficha e rolador 2d10 na mesma página.
 
-## Identidade
+As URLs anteriores `sistema.html`, `ficha.html`, `dados.html` e `arquivo.html` continuam publicadas para não quebrar links antigos, mas não compõem o menu principal. Novas regras confirmadas deverão ser incorporadas ao Manual, e não distribuídas em diversas abas.
 
-Paleta base: `#423F36` carvão, `#440E15` sangue seco, `#212017` marrom escuro, `#0B0A07` quase preto. Tons adicionais de pergaminho para leitura. Antler emblem original em `assets/antler-sigil.svg`.
+## Recursos
 
-A tipografia ornamental usa UnifrakturCook (fontes Google) como alternativa pública. CSS suporta instalação local da fonte **Seagram TFB** para testes, mas não hospeda nem redistribui o arquivo da fonte, que é declarado pelo autor como gratuito apenas para uso pessoal. Para distribuição da Seagram ao público, obtenha licença apropriada e adicione fonte legalmente ao projeto.
+- Ficha e rolador funcionam sem login e sem backend; dados são locais no navegador e podem ser exportados/importados via JSON.
+- Cursor ornamental animado somente para mouse com precisão, sem alterar toque, teclado ou preferência por movimento reduzido.
+- CSS e JavaScript leves, sem framework ou biblioteca de animação. Fontes externas via Google Fonts (pode funcionar com fontes de fallback).
+- Elementos de visualização de baixa prioridade têm animações desligadas em dispositivos de toque; efeitos de cursor usam `requestAnimationFrame` e `transform`.
 
-## Técnica
+## Identidade visual
 
-HTML, CSS e JavaScript sem framework ou build. Funciona em hospedagem estática e na Vercel. Mobile-first a partir de 320px, botões adaptados a toque, menu acessível, preferência por movimento reduzido. A ficha é local, **sem conta nem sincronização**; para trocar de dispositivo, exporte/import JSON.
+Paleta: `#423F36` carvão, `#440E15` sangue seco, `#212017` marrom e `#0B0A07` quase preto. Gravura de chifres ornamentais original em `assets/antler-sigil.svg`.
+
+A fonte Seagram não é redistribuída. Para publicação futura, verificar a licença do arquivo da fonte antes de hospedá-la. A tipografia pública usa UnifrakturCook como substituta ornamental.
 
 ## Conteúdo
 
-O manual incorporado é uma consulta resumida da versão 1.0. A cosmologia e os poderes sobrenaturais não foram definidos. O projeto não publica lore fictícia como oficial.
+A documentação corresponde exclusivamente ao playtest 1.0. Cosmologia, Metus e demais conceitos em estudo não foram apresentados como regras finais.
