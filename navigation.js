@@ -39,6 +39,38 @@
   if(target){if(target.tagName==='DETAILS')target.open=true;target.scrollIntoView({block:'start',behavior:'instant'});}
   else window.scrollTo({top:0,left:0,behavior:'instant'});
  };
+ // Fetch-only navigation replaces <main> without reloading <head>. Synchronize
+ // route-specific styles before showing the next page (notably portal.css).
+ const syncPageStyles=async parsed=>{
+  const next=new Set(
+   [...parsed.querySelectorAll('head link[rel="stylesheet"][href]')]
+    .map(link=>new URL(link.getAttribute('href'),location.href).href)
+    .filter(href=>new URL(href).origin===location.origin)
+  );
+  const current=[...document.querySelectorAll('head link[rel="stylesheet"][href]')];
+  const present=new Set(current.map(link=>link.href));
+  const loading=[];
+  for(const href of next){
+   if(present.has(href))continue;
+   const link=document.createElement('link');
+   link.rel='stylesheet';
+   link.href=href;
+   loading.push(new Promise(resolve=>{
+    let settled=false;
+    const done=()=>{if(settled)return;settled=true;clearTimeout(timeout);resolve();};
+    const timeout=setTimeout(done,5000);
+    link.onload=done;
+    link.onerror=done;
+   }));
+   document.head.append(link);
+  }
+  // Await the new stylesheet to avoid flashing unstyled content.
+  await Promise.all(loading);
+  // Remove styles specific to pages that are no longer active.
+  for(const link of document.querySelectorAll('head link[rel="stylesheet"][href]')){
+   if(new URL(link.href).origin===location.origin&&!next.has(link.href))link.remove();
+  }
+ };
  const fetchPage=async(url,signal)=>{
   const key=url.pathname;
   if(cache.has(key))return cache.get(key);
@@ -66,6 +98,8 @@
   const parsed=new DOMParser().parseFromString(markup,'text/html');
   const nextMain=parsed.querySelector('main#conteudo');
   if(!nextMain){location.assign(url.href);return;}
+  await syncPageStyles(parsed);
+  if(request!==sequence)return;
   if(changeHistory){
    history.replaceState({...history.state,scrollY:window.scrollY},'',location.href);
    history.pushState({haema:true,scrollY:0},'',url.href);
