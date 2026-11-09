@@ -3,11 +3,12 @@
  * main content changes; old pages remain directly accessible to browsers/crawlers.
  */
 (()=>{
- const routes=new Set(['','index.html','manual.html','portal.html']);
+ const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html']);
  const main=document.querySelector('main#conteudo');
  if(!main||!window.fetch||!window.history?.pushState)return;
  let pending=null,sequence=0;
  const cache=new Map();
+ history.scrollRestoration='manual';
  const currentKey=()=>location.pathname.split('/').pop()||'index.html';
  const canon=url=>url.pathname.split('/').pop()||'index.html';
  const allowed=url=>url.origin===location.origin&&routes.has(canon(url));
@@ -23,7 +24,8 @@
  };
  const updateHeader=key=>{
   document.querySelectorAll('.nav a').forEach(link=>{
-   const active=canon(new URL(link.href,location.href))===key;
+   const target=canon(new URL(link.href,location.href));
+   const active=target===key||(key==='manual.html'&&target==='sistema.html')||(key==='mesa.html'&&target==='portal.html');
    if(active)link.setAttribute('aria-current','page');
    else link.removeAttribute('aria-current');
   });
@@ -41,35 +43,23 @@
  };
  // Fetch-only navigation replaces <main> without reloading <head>. Synchronize
  // route-specific styles before showing the next page (notably portal.css).
+ const styles=new Map();
  const syncPageStyles=async parsed=>{
-  const next=new Set(
-   [...parsed.querySelectorAll('head link[rel="stylesheet"][href]')]
-    .map(link=>new URL(link.getAttribute('href'),location.href).href)
-    .filter(href=>new URL(href).origin===location.origin)
-  );
-  const current=[...document.querySelectorAll('head link[rel="stylesheet"][href]')];
-  const present=new Set(current.map(link=>link.href));
-  const loading=[];
-  for(const href of next){
-   if(present.has(href))continue;
-   const link=document.createElement('link');
-   link.rel='stylesheet';
-   link.href=href;
-   loading.push(new Promise(resolve=>{
-    let settled=false;
-    const done=()=>{if(settled)return;settled=true;clearTimeout(timeout);resolve();};
-    const timeout=setTimeout(done,5000);
-    link.onload=done;
-    link.onerror=done;
-   }));
-   document.head.append(link);
-  }
-  // Await the new stylesheet to avoid flashing unstyled content.
-  await Promise.all(loading);
-  // Remove styles specific to pages that are no longer active.
-  for(const link of document.querySelectorAll('head link[rel="stylesheet"][href]')){
-   if(new URL(link.href).origin===location.origin&&!next.has(link.href))link.remove();
-  }
+  const links=[...parsed.querySelectorAll('head link[rel="stylesheet"][href]')];
+  await Promise.all(links.map(source=>{
+   const href=new URL(source.getAttribute('href'),location.href).href;
+   if(new URL(href).origin!==location.origin)return;
+   if(styles.has(href))return styles.get(href);
+   if([...document.querySelectorAll('link[rel="stylesheet"]')].some(link=>link.href===href&&link.sheet))return;
+   const link=document.createElement('link');link.rel='stylesheet';link.href=href;
+   const promise=new Promise((resolve,reject)=>{
+    const timeout=setTimeout(()=>fail(),8000);
+    const fail=()=>{clearTimeout(timeout);styles.delete(href);link.remove();reject(Error('Stylesheet unavailable'));};
+    link.onload=()=>{clearTimeout(timeout);resolve();};link.onerror=fail;
+   });
+   styles.set(href,promise);document.head.append(link);return promise;
+  }));
+  // Scoped styles remain loaded: an older navigation cannot remove a newer route's CSS.
  };
  const fetchPage=async(url,signal)=>{
   const key=url.pathname;
@@ -98,13 +88,14 @@
   const parsed=new DOMParser().parseFromString(markup,'text/html');
   const nextMain=parsed.querySelector('main#conteudo');
   if(!nextMain){location.assign(url.href);return;}
-  await syncPageStyles(parsed);
+  try{await syncPageStyles(parsed)}catch{if(request===sequence)location.assign(url.href);return;}
   if(request!==sequence)return;
   if(changeHistory){
    history.replaceState({...history.state,scrollY:window.scrollY},'',location.href);
    history.pushState({haema:true,scrollY:0},'',url.href);
   }
   // Preserve header, sound toggle, and the ORIGINAL <audio> instance.
+  document.dispatchEvent(new Event('haema:leaving'));
   const existing=document.querySelector('main#conteudo');
   existing.replaceWith(document.importNode(nextMain,true));
   document.body.dataset.page=parsed.body.dataset.page||'';
@@ -112,6 +103,7 @@
   const description=parsed.querySelector('meta[name="description"]')?.content;
   if(description){const meta=document.querySelector('meta[name="description"]');if(meta)meta.content=description;}
   updateHeader(canon(url));
+  const heading=document.querySelector('main h1');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
   document.dispatchEvent(new CustomEvent('haema:navigated',{detail:{path:canon(url)}}));
   applyReveals();
   requestAnimationFrame(()=>{
@@ -135,4 +127,5 @@
   const url=new URL(location.href);
   void navigate(url,false,Number.isFinite(event.state?.scrollY)?event.state.scrollY:null);
  });
+ updateHeader(currentKey());
 })();

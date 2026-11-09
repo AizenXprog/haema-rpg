@@ -6,10 +6,16 @@ A implementação atual segue o documento `docs/HAEMA_0.1_Nucleo_Jogavel.md` do 
 
 ## Navegação pública
 
-- `index.html`: apresentação e acesso às duas áreas centrais.
+- `index.html`: apresentação e caminhos para Sistema, Biblioteca e Mesa.
+- `sistema.html`: entrada para Manual, introdução à ficha e ferramentas de jogo.
 - `manual.html`: **Manual Vivo**, com o texto dos 14 capítulos do Núcleo Jogável 0.1, índice pesquisável e laboratórios de resolução, combate, recursos, Metus, Latebra e Invicta.
-- `mesa.html`: ficha de criação 0.1 e rolador graduado (dado de atributo + dado de competência) compartilhando os mesmos dados.
-- `sistema.html`, `ficha.html`, `dados.html` e `arquivo.html`: endereços antigos redirecionam para a referência 0.1; nenhuma regra anterior fica publicada nessas páginas.
+- `portal.html`: ambiente privado dos jogadores e campanhas, apresentado como Mesa na navegação.
+- `mesa.html`: ficha de criação 0.1 e rolador graduado, disponíveis mediante autorização própria.
+- `biblioteca.html`: Biblioteca privada e leitor do Bestiário; o backend entrega apenas os registros e trechos autorizados.
+- `administracao.html`: aprovação, permissões independentes, liberações e auditoria, restritas ao administrador.
+- `ficha.html`, `dados.html` e `arquivo.html`: endereços antigos redirecionam para a referência 0.1.
+
+Veja [implementação, migração e validação da reformulação](docs/REFORMULACAO_2026-11-09.md). Esta branch é destinada à prévia; produção depende de aprovação.
 
 ## Regras e versões
 

@@ -19,16 +19,9 @@ module.exports=async function handler(req,res){
   const user=await userResponse.json();if(!UUID.test(user.id||''))return finish(res,401,'Sessão inválida.');
   const providers=user.app_metadata?.providers||[user.app_metadata?.provider];
   if(!providers.includes('google'))return finish(res,403,'Acesso reservado a contas Google autorizadas.');
-  const adminResponse=await fetch(base+'/rest/v1/rpc/haema_is_admin',{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:'{}',signal:AbortSignal.timeout(7000)});
-  if(!adminResponse.ok)return finish(res,503,'Não foi possível validar as permissões do mestre.');
-  const isAdmin=await adminResponse.json();
-  if(isAdmin!==true){
-   const u=encodeURIComponent(user.id);
-   const grantResponse=await fetch(base+'/rest/v1/haema_mesa_grants?select=user_id&user_id=eq.'+u+'&limit=1',{headers,signal:AbortSignal.timeout(7000)});
-   if(!grantResponse.ok)return finish(res,503,'Não foi possível validar as permissões da Mesa.');
-   const grants=await grantResponse.json();
-   if(!Array.isArray(grants)||!grants.some(g=>g.user_id===user.id))return finish(res,403,'Mesa restrita. Solicite liberação ao mestre.');
-  }
+  const allowedResponse=await fetch(base+'/rest/v1/rpc/haema_has_area',{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify({requested:'mesa'}),signal:AbortSignal.timeout(7000)});
+  if(!allowedResponse.ok)return finish(res,503,'Não foi possível consultar as permissões.');
+  if(await allowedResponse.json()!==true)return finish(res,403,'Acesso à Mesa pendente ou revogado.');
   finish(res,200,HTML);
  }catch{return finish(res,503,'Autenticação temporariamente indisponível.');}
 };
