@@ -1,3 +1,4 @@
+import {client as sharedClient, access as sharedAccess, accessGate} from './auth.js';
 'use strict';
 /** HÆMA — Portal privado. No private content is fetched before Supabase Auth.
  * The browser receives a publishable key only; PostgreSQL RLS is authoritative.
@@ -35,23 +36,7 @@ const PORTAL=(()=>{
  };
  const notify=async(promise,root,success)=>{try{const r=await promise;if(r?.error)throw r.error;if(success)message(root,success);return r}catch(e){message(root,errorText(e),true);return null}};
  const query=async(q)=>{const r=await q;if(r.error)throw r.error;return r.data};
- const ensureClient=async()=>{
-  if(state.client)return state.client;
-  if(state.boot)return state.boot;
-  state.boot=(async()=>{
-   const response=await fetch('/api/portal-config',{cache:'no-store'});
-   if(!response.ok)throw Error('A configuração do portal não está acessível.');
-   const cfg=await response.json();if(!cfg.configured)return null;
-   const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/+esm');
-   state.client=createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-   if(!state.authBound){state.authBound=true;state.client.auth.onAuthStateChange((_event,_session)=>{
-    // Avoid doing awaited database queries inside the auth callback.
-    queueMicrotask(()=>{if(currentRoot())void init()});
-   });}
-   return state.client;
-  })();
-  try{return await state.boot}finally{state.boot=null}
- };
+ const ensureClient=async()=>{state.client=await sharedClient();return state.client;};
  function setup(root){
   root.replaceChildren();const card=node('div','portal-setup');card.append(node('p','portal-overline','PORTAL EM PREPARAÇÃO'),node('h2','','Um espaço reservado à sua campanha.'),node('p','','O login Google ainda não está configurado neste ambiente. O Portal não concede permissões sem autenticação real nem expõe registros privados.'));
   card.append(brief('A configuração exige Supabase Auth (Google), as políticas de acesso por campanha e as variáveis públicas da Vercel. O site atual continua funcionando normalmente.'));
@@ -84,23 +69,18 @@ const PORTAL=(()=>{
   state.current=state.campaigns.find(c=>c.id===state.current?.id)||state.campaigns[0]||null;
  }
  function noCampaign(root){
-  root.replaceChildren();const card=node('div','portal-setup');card.append(node('p','portal-overline','PRIMEIRO ACESSO'),node('h2','','Encontre sua campanha.'),node('p','','Use o convite disponibilizado pelo mestre. Se você é o administrador do HÆMA, pode criar a campanha inicial.'));
-  const form=node('form','portal-form');form.append(node('h3','','Entrar por convite'));
-  const input=field('Código de acesso','text','',128);input.input.required=true;input.input.placeholder='Cole o convite enviado pelo mestre';form.append(input.wrap);
-  form.append(b('Entrar na campanha',()=>{},'portal-action'));form.lastChild.type='submit';
-  form.addEventListener('submit',async e=>{e.preventDefault();const code=input.input.value.trim();if(code.length<32){message(form,'Convite incompleto.',true);return}
-   const r=await notify(state.client.rpc('haema_join_campaign',{code}),form,'Convite aceito.');if(r){await reload(root)}});
-  card.append(form);
+  root.replaceChildren();const card=node('div','portal-setup');
+  card.append(node('h2','','Aguardando sua campanha.'),node('p','','O administrador pode associar sua conta a uma campanha pelo painel de acessos.'));
   if(state.admin){const gm=node('form','portal-form');gm.append(node('h3','','Criar campanha como mestre'));
    const name=field('Nome da campanha','text','',100),desc=field('Descrição inicial','textarea','',1200);name.input.required=true;gm.append(name.wrap,desc.wrap);
    const submit=b('Criar campanha',()=>{},'portal-action');submit.type='submit';gm.append(submit);
    gm.addEventListener('submit',async e=>{e.preventDefault();submit.disabled=true;const r=await notify(state.client.from('haema_campaigns').insert({gm_id:state.user.id,name:name.input.value.trim(),description:desc.input.value.trim()}),gm,'Campanha criada.');submit.disabled=false;if(r)await reload(root)});
    card.append(gm);
   }
-  if(!state.admin){card.append(brief('A conta Google já foi autenticada, mas ainda não recebeu a autorização de mestre. No Supabase, um administrador deve associar seu UUID à tabela haema_platform_admins.'));const idBox=node('div','portal-item');idBox.append(node('p','portal-meta','IDENTIFICADOR DA CONTA'),node('code','',state.user.id));card.append(idBox);}
   card.append(b('Sair da conta',async()=>{await state.client.auth.signOut();state.user=null;signin(root)}));
   root.append(card);
  }
+ document.addEventListener('haema:auth',()=>void init());
  const isGM=()=>state.current?.gm_id===state.user?.id;
  const campaignId=()=>state.current.id;
  function sidebar(root){
@@ -111,7 +91,7 @@ const PORTAL=(()=>{
   if(state.campaigns.length>1){const choose=node('div','portal-selector');choose.append(node('label','','CAMPANHA'));
    const select=node('select');for(const c of state.campaigns){const o=node('option','',c.name);o.value=c.id;select.append(o)}select.value=campaignId();select.addEventListener('change',()=>{state.current=state.campaigns.find(c=>c.id===select.value);state.tab='home';void renderDashboard(root)});choose.append(select);aside.append(choose)}
   const tabs=node('nav','portal-tabs');tabs.setAttribute('aria-label','Áreas do portal');
-  const options=[['home','✧','Visão geral'],['characters','♧','Personagens'],['materials','✦','Acervo'],['chat','◈','Conversa']];if(isGM())options.push(['gm','♜','Painel do Mestre']);
+  const options=[['home','✧','Visão geral'],['characters','♧','Personagens'],['chat','◈','Conversa']];if(state.materials)options.push(['materials','✦','Materiais']);if(isGM())options.push(['gm','♜','Painel do Mestre']);
   for(const[id,mark,label]of options){const tab=node('button','portal-tab'+(id===state.tab?' is-active':''));tab.type='button';tab.setAttribute('aria-current',id===state.tab?'page':'false');tab.append(node('span','portal-tab-mark',mark),node('span','',label));tab.addEventListener('click',()=>{state.tab=id;void renderDashboard(root)});tabs.append(tab)}
   aside.append(tabs);const end=node('div','portal-sidebar-end');end.append(b('Sair',async()=>{await state.client.auth.signOut();state.user=null;state.current=null;signin(root)}));aside.append(end);return aside;
  }
@@ -119,15 +99,15 @@ const PORTAL=(()=>{
   const id=campaignId(),s=state.client,gm=isGM();
   const qs=[
    s.from('haema_characters').select('id,campaign_id,user_id,title,rules_version,payload,updated_at').eq('campaign_id',id).order('updated_at',{ascending:false}),
-   s.from('haema_materials').select('id,title,kind,content,visibility,updated_at').eq('campaign_id',id).order('updated_at',{ascending:false}),
+   state.materials?s.from('haema_materials').select('id,title,kind,content,visibility,updated_at').eq('campaign_id',id).order('updated_at',{ascending:false}):Promise.resolve({data:[]}),
    s.from('haema_messages').select('id,author_id,content,created_at').eq('campaign_id',id).order('created_at',{ascending:false}).limit(100),
-   s.from('haema_gm_records').select('id,category,title,content,status,visibility,updated_at').eq('campaign_id',id).order('updated_at',{ascending:false}),
+   state.materials?s.from('haema_gm_records').select('id,category,title,content,status,visibility,updated_at').eq('campaign_id',id).order('updated_at',{ascending:false}):Promise.resolve({data:[]}),
    gm?s.from('haema_members').select('user_id,role,joined_at').eq('campaign_id',id):Promise.resolve({data:[]}),
    gm?s.from('haema_audit').select('id,actor_id,entity_type,entity_id,action,occurred_at').eq('campaign_id',id).order('occurred_at',{ascending:false}).limit(60):Promise.resolve({data:[]}),
    s.from('haema_mesa_grants').select('user_id,granted_at').order('granted_at',{ascending:false})
   ];
-  const result=await Promise.all(qs.map(query));for(const r of result)if(r.error)throw r.error;
-  const [characters,materials,messages,records,members,audit,mesaGrants]=result.map(r=>r.data||[]);
+  const result=await Promise.all(qs.map(query));
+  const [characters,materials,messages,records,members,audit,mesaGrants]=result;
   const ids=[...new Set([...members.map(m=>m.user_id),...messages.map(m=>m.author_id),...characters.map(c=>c.user_id)])];
   let profiles=[];if(ids.length)profiles=await query(s.from('haema_profiles').select('id,display_name').in('id',ids));
   const names=Object.fromEntries(profiles.map(p=>[p.id,p.display_name]));
@@ -162,7 +142,7 @@ const PORTAL=(()=>{
   panel.append(node('hr','portal-divider-line'));
   panel.append(node('p','portal-overline',isGM()?'ESCUDO DO MESTRE':'SEU ESPAÇO NA MESA'));
   panel.append(brief(isGM()?'Acompanhe as fichas dos jogadores, publique materiais e mantenha seu arquivo de lore e sistema com histórico de alterações.':'Seu personagem e o que foi compartilhado com ele ficam juntos. Acesse o acervo ou entre na conversa da campanha.'));
-  const actions=node('div','portal-flex');actions.append(b('Ver personagens',()=>{state.tab='characters';void renderDashboard(root)},'portal-action'),b('Abrir acervo',()=>{state.tab='materials';void renderDashboard(root)}));if(isGM())actions.append(b('Painel do Mestre',()=>{state.tab='gm';void renderDashboard(root)}));if(state.data.mesaGrants.some(g=>g.user_id===state.user.id)||state.admin)actions.append(b('Abrir Mesa de Jogo',()=>{location.href='mesa.html'},'portal-action'));panel.append(actions);
+  const actions=node('div','portal-flex');actions.append(b('Ver personagens',()=>{state.tab='characters';void renderDashboard(root)},'portal-action'));if(state.materials)actions.append(b('Abrir acervo',()=>{state.tab='materials';void renderDashboard(root)}));if(isGM())actions.append(b('Painel do Mestre',()=>{state.tab='gm';void renderDashboard(root)}));if(state.data.mesaGrants.some(g=>g.user_id===state.user.id)||state.admin)actions.append(b('Abrir Mesa de Jogo',()=>{location.href='mesa.html'},'portal-action'));panel.append(actions);
  }
  function characterCard(character,panel,root){
   const card=node('article','portal-item'),top=node('div','portal-item-top'),head=node('div');head.append(node('h3','',character.title),node('span','portal-meta',(state.data.names[character.user_id]||'Jogador')+' · HÆMA '+character.rules_version));
@@ -260,19 +240,9 @@ const PORTAL=(()=>{
     const list=node('div','portal-list');for(const m of state.data.members){const card=node('div','portal-item');card.append(node('h3','',state.data.names[m.user_id]||'Integrante'),node('p','portal-meta',(m.role==='gm'?'MESTRE':'JOGADOR')+' · entrou em '+formatTime(m.joined_at)));
      const granted=state.data.mesaGrants.some(g=>g.user_id===m.user_id);
      card.append(node('p','portal-meta',m.user_id===state.user.id?'Mesa liberada automaticamente ao administrador':granted?'MESA DE JOGO · LIBERADA':'MESA DE JOGO · BLOQUEADA'));
-     if(state.admin&&m.user_id!==state.user.id){const toggle=b(granted?'Revogar acesso à Mesa':'Permitir acesso à Mesa',async()=>{
-      toggle.disabled=true;const op=granted?state.client.from('haema_mesa_grants').delete().eq('user_id',m.user_id):state.client.from('haema_mesa_grants').insert({user_id:m.user_id,granted_by:state.user.id});
-      const result=await notify(op,card,granted?'Acesso revogado.':'Acesso à Mesa concedido.');toggle.disabled=false;if(result)await renderDashboard(root);
-     },granted?'portal-ghost':'portal-action');card.append(toggle);}
      list.append(card)}section.append(list);
     if(state.admin)section.append(brief('Somente o mestre administrador pode liberar ou revogar a Mesa. O sistema verifica a autorização no servidor a cada acesso.'));
-    const form=node('div','portal-form');form.append(node('h3','','Convidar jogadores'),brief('O convite é criado uma única vez e pode ser usado até cinco vezes nos próximos 14 dias. Não envie o convite publicamente.'));
-    const create=b('Gerar convite seguro',async()=>{
-     const rand=new Uint8Array(24);crypto.getRandomValues(rand);const code='HAEMA-'+[...rand].map(x=>x.toString(16).padStart(2,'0')).join('');
-     const bytes=new TextEncoder().encode(code);const hash=await crypto.subtle.digest('SHA-256',bytes);const token_hash=[...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join('');
-     const r=await notify(state.client.from('haema_invites').insert({campaign_id:campaignId(),token_hash,max_uses:5}),form,'Convite gerado; copie-o antes de sair desta tela.');
-     if(r){const output=node('textarea');output.readOnly=true;output.rows=3;output.value=code;form.append(output);form.append(b('Copiar convite',async()=>{try{await navigator.clipboard.writeText(code);message(form,'Convite copiado.')}catch{output.select();message(form,'Selecione e copie o convite manualmente.')}}));create.disabled=true}
-    },'portal-action');form.append(create);section.append(form);
+    const accessLink=node('a','portal-action','Administrar acessos');accessLink.href='administracao.html';section.append(accessLink);
    }else{
     section.append(node('p','portal-overline','HISTÓRICO IMUTÁVEL'));
     const list=node('div','portal-list');if(!state.data.audit.length)list.append(empty('Nenhuma alteração registrada por enquanto.'));
@@ -301,6 +271,9 @@ const PORTAL=(()=>{
    if(!sessionData?.session){state.user=null;signin(root);return;}
    const {data,error}=await client.auth.getUser();if(error)throw error;
    state.user=data.user;if(!state.user){signin(root);return}
+   const permission=await sharedAccess();
+   if(!permission.areas.includes('portal')){accessGate(root,permission,'Portal do jogador');return;}
+   state.materials=permission.areas.includes('materials');
    await profile();if(epoch!==state.epoch||root!==currentRoot())return;
    state.admin=!!(await query(client.rpc('haema_is_admin')));
    await reload(root);

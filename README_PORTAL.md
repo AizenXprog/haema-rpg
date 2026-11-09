@@ -1,17 +1,11 @@
-## Portal privado — prévia de implementação (novembro de 2026)
+# Portal privado do HÆMA
 
-A branch de prévia inclui `portal.html`, `portal.css`, `portal.js`, `api/portal-config.js`, `docs/PORTAL_SQL_01.sql`, `docs/PORTAL_SETUP.md`, `docs/PORTAL_ROADMAP.md` e `docs/PORTAL_QA.md`.
+O Supabase dedicado, Google OAuth e o administrador fundador estão provisionados. O núcleo permanece 0.1 experimental; a implantação anterior já oferece Portal e Mesa protegidos.
 
-**Atenção:** o portal ainda não foi conectado ao Supabase. OAuth Google, banco e chat real estão aguardando provisionamento e testes de segurança. A UI mostra essa pendência e não finge autenticação.
+Esta branch reúne a próxima prévia: aprovação manual de cadastros, cinco permissões independentes, Biblioteca, leitor do Bestiário e painel de liberações. A migração de acesso foi autorizada e aplicada ao banco compartilhado; novos ingressos por convite estão desativados. A interface da produção continua na versão anterior até aprovação de publicação.
 
-Arquitetura planejada para cinco jogadores + mestre: acesso por campanha, fichas 0.1, acervo e chat, notas privadas de lore/sistema, histórico de alterações e futuro tabuleiro virtual inspirado funcionalmente em C.R.I.S. + Owlbear Rodeo (sem copiar identidade/código).
+Consulte [estado, validação e reversão da reformulação](docs/REFORMULACAO_2026-11-09.md). A presença de uma interface ou de OAuth configurado não substitui o teste completo com contas reais. Mapas, tokens e mesa virtual continuam no roadmap.
 
-O isolamento de dados usa RLS no banco, não CSS nem controles no navegador. Acesso privilegiado só após bootstrap do UUID do mestre com SQL administrativo. Não armazenar OAuth secrets no GitHub ou no navegador. A música Media Vita segue com player persistente durante a navegação pública e do portal.
+O servidor e o RLS controlam cada consulta. Nenhuma chave privilegiada, documento privado ou backup pertence a este repositório. Fichas locais antigas e o núcleo matemático foram preservados, assim como a música Media Vita e os créditos oficiais.
 
-## Atualização de acesso privado
-
-- Mesa de Jogo removida dos menus públicos e protegida por endpoint autenticado.
-- Mestre inicial precisa ser cadastrado via UUID do Google OAuth; ninguém vira mestre por login simples.
-- Login Google só funciona após configurar Supabase, OAuth e Vercel (nenhum segredo foi inventado).
-- `haema_mesa_grants` controla acesso por jogador; tabela com RLS e interface de revogação.
-- Fichas locais antigas intactas.
+**Site e Sistema criado por Vitor Monte.**
