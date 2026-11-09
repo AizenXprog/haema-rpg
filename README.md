@@ -56,3 +56,12 @@ Atualização de experiência sem substituir o núcleo matemático 0.1:
 - O botão da cena do telhado usa o rolador real: Destreza d6 + Atletismo d4 versus DT 7; a escolha foi colocada no formulário para inspeção, sem fixar regras de combinação de atributo e competência.
 - Fontes e documentação original permanecem no projeto; `docs/HAEMA_0.1_Nucleo_Jogavel.md` é a versão editorial com DT.
 - Fichas, chaves `localStorage` e arquivo da trilha sonora Media Vita foram preservados sem migração destrutiva.
+
+
+## Portal privado e Mesa com acesso controlado
+
+O endereço público possui Início, Manual Vivo e Portal da Campanha. A Mesa de Jogo não aparece na navegação pública. O caminho `mesa.html` é apenas um ponto de autenticação: o conteúdo de ficha e rolador é entregue por `/api/mesa` somente após sessão Google validada no Supabase e permissão do administrador ou concessão explícita em `haema_mesa_grants`. Acesso não autorizado ou ambiente sem configuração falha fechado. **Google Login, mestre e armazenamento online ainda dependem da configuração real do Supabase**; não há contas fictícias nem autoelevação de privilégio.
+
+Arquivos de referência: `portal.html`, `portal.js`, `portal.css`, `api/portal-config.js`, `api/mesa.js`, `mesa-gate.js` e `docs/PORTAL_SETUP.md`, `docs/PORTAL_SQL_01.sql`.
+
+As fichas locais existentes, inclusive `haema-character-0.1`, `haema-character-v2` e `haema-draft-v1`, permanecem intocadas. A autoria **Site e Sistema criado por Vitor Monte** permanece em todas as interfaces.
