@@ -31,8 +31,8 @@ Não está implementada nesta etapa. A arquitetura reserva a campanha como unida
 
 - A navegação da prévia mostra **Início**, **Sistema**, **Biblioteca** e **Mesa**, com **Administração** para a conta autorizada. `mesa.html` é uma tela de autenticação/autorizações, sem ficha nem rolador incorporados publicamente.
 - A ficha e o rolador são carregados de `/api/mesa` após validar o JWT com Supabase Auth e conferir **administrador autorizado** ou concessão explícita em `haema_has_area('mesa')` (com compatibilidade para a antiga tabela de concessões). O acesso direto sem autenticação retorna HTTP 401/403, e sem configuração retorna 503.
-- Depois de cadastrar o administrador pela sua **UUID de Google login**, crie a campanha e convide os participantes. No **Painel do Mestre → Integrantes**, use **Permitir acesso à Mesa** para cada jogador escolhido; a permissão pode ser revogada ali.
+- O fundador já está cadastrado. Novos participantes devem entrar com Google; em **Administração → Pessoas**, revise a conta, marque as áreas e, quando necessário, associe uma campanha. Negação e revogação estão no mesmo painel.
 - Nenhum jogador pode elevar suas próprias permissões. A validação ocorre do lado do servidor e o banco aplica RLS.
 - Caso o painel Google ainda mostre 'não configurado', complete Provider Google, Redirect URLs, a migração SQL e as variáveis `HAEMA_SUPABASE_URL` e `HAEMA_SUPABASE_PUBLISHABLE_KEY` na Vercel; publique novamente o deploy após criar as variáveis.
-- Para manter o áudio sem interrupção nos dois conteúdos públicos, `navigation.js` continua navegando sem reload entre Início e Manual; o Portal e a Mesa privada exigem carregamento autenticado separado.
+- A navegação mantém o áudio entre as páginas. Os módulos autenticados carregam os dados de Portal, Biblioteca, Administração e ferramentas somente após as verificações de acesso.
 - O login Google e as políticas não podem ser considerados ativos antes de testes com duas contas diferentes e um administrador. Não cadastrar mestre pelo nome, email digitado no cliente ou uma variável JS pública.

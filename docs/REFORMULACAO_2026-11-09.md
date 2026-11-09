@@ -26,6 +26,7 @@ Variáveis existentes em Preview e Production: `HAEMA_SUPABASE_URL` e `HAEMA_SUP
 ## Verificação
 
 - Chrome automatizado: transições entre seis rotas, manutenção do áudio, estilos carregados, larguras de 320 a 1440 px, ausência de erros JavaScript, respostas anônimas 401.
+- Verificação na prévia Vercel: SDK Supabase real carregado para visitante, botão Google disponível e tokens inválidos recusados. Ficha, rolagem, importação/exportação e persistência após navegação verificadas separadamente com sessão simulada (`tests/mesa-browser.py`).
 - Interface com sessão simulada: índice sem busca em massa, registro individual, teclado, página única no celular, Escape, limpeza do conteúdo, movimento reduzido, concessão de áreas, liberação de trecho e renderização dos dados da campanha.
 - Banco real, em transações com rollback: cadastro pendente, tentativa de autoaprovação, leitura direta do acervo, convites desativados, permissões independentes, liberação por registro/parágrafo, edição concorrente e revogação com os mesmos claims. Também isolamento de fichas e materiais reservados ao mestre.
 - Arquivos de teste SQL em `tests/access-library.sql` e `tests/access-isolation.sql`; usar apenas em banco preparado, sem colisão com os identificadores sintéticos. Os scripts não contêm lore.
