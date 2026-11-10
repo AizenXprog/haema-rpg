@@ -1,6 +1,10 @@
 import {access, authorizedFetch, accessGate, node, button} from './auth.js';
 
-const states = {canon:'Cânone', concept:'Cânone conceitual', proposal:'Proposta · não aprovada', historical:'Histórico · substituído'};
+// A reader's field journal contains only the established fauna. Drafts and
+// discarded concepts remain in the private editorial archive, not in this book.
+const knownFauna = records => (Array.isArray(records) ? records : []).filter(
+  item => item.state === 'canon' || item.state === 'concept'
+);
 let generation = 0;
 let readerCleanup = () => {};
 const root = () => document.getElementById('library-access');
@@ -88,7 +92,7 @@ async function openBook(permissions) {
       const response=await authorizedFetch('/api/library', {signal:abort.signal});
       const latest=await response.json();
       if(!alive)return;
-      index=latest;
+      index=knownFauna(latest);
       if(entryId) {
         const current=index.find(item=>item.id===entryId);
         if(!current) {showIndex();spread.focus({preventScroll:true});}
@@ -108,7 +112,7 @@ async function openBook(permissions) {
     }
     if (pages.length === 1 && !mobile.matches) {
       const end = node('article','book-page book-end');
-      end.append(node('span','end-ornament','✥'),node('p','','Fim deste registro.'));
+      end.append(node('span','end-ornament','✥'),node('p','','Por ora, nada mais tenho a acrescentar.'));
       fragment.append(end);
     }
     spread.replaceChildren(fragment);
@@ -125,9 +129,20 @@ async function openBook(permissions) {
     entryId = null;
     page = 0;
     entries=[];
+    entries.push(() => {
+      const preface=node('div','book-copy');
+      preface.append(
+        node('p','','Estas folhas não foram escritas para encerrar a história das criaturas, mas para impedir que aquilo que delas conheço se perca. Cada encontro, relato e vestígio me oferece somente uma parcela do mundo.'),
+        node('p','','Anoto o que posso sustentar, separo o que vi do que ouvi e deixo em branco o que ainda não compreendo. Não há vergonha na dúvida; há, porém, grande perigo em tomar a imaginação por testemunho.'),
+        node('p','','Não contes os nomes aqui reunidos como se fossem todos os habitantes destas terras. A natureza há de guardar muito mais do que estas páginas conseguem alcançar. E eu ainda tenho muito a descobrir.')
+      );
+      return [node('span','folio-label','BESTIÁRIO · PRIMEIRAS FOLHAS'),
+        node('h2','','A quem abrir este caderno'),preface];
+    });
     if (!index.length) {
-      entries.push(() => [node('span','folio-label','BESTIÁRIO'),node('h2','','Um acervo em preparação.'),
-        node('p','','O administrador ainda está escolhendo os registros disponíveis para você.')]);
+      entries.push(() => [node('span','folio-label','BESTIÁRIO'),
+        node('h2','','As próximas páginas ainda aguardam descobertas.'),
+        node('p','','As folhas permanecem abertas àquilo que ainda está por ser observado.')]);
     }
     for (let i=0;i<index.length;i+=6) {
       const items = index.slice(i,i+6);
@@ -136,10 +151,9 @@ async function openBook(permissions) {
         for (const item of items) {
           const li = node('li');
           const pick = button(item.title,() => loadEntry(item.id),'book-index-entry');
-          pick.append(node('small','',states[item.state]));
           li.append(pick);list.append(li);
         }
-        return [node('span','folio-label','BESTIÁRIO · ÍNDICE'),node('h2','',i===0?'Registros do acervo':'Continuação'),list];
+        return [node('span','folio-label','BESTIÁRIO · ÍNDICE'),node('h2','',i===0?'Criaturas que pude conhecer':'Outras folhas do caderno'),list];
       });
     }
     paint();
@@ -156,7 +170,7 @@ async function openBook(permissions) {
       entryId=id;entryRevision=item.revision;page=0;
       const paragraphs=item.paragraphs;
       entries=paragraphs.map((text,i)=>()=> {
-        const parts = [node('span','folio-label',states[item.state])];
+        const parts = [node('span','folio-label',i===0?'DO CADERNO DE CRIATURAS':'DAS FOLHAS QUE SE SEGUEM')];
         if (i===0) {
           parts.push(node('h2','creature-title',item.title),node('p','creature-subtitle',item.subtitle));
         } else parts.push(node('h3','running-title',item.title));
@@ -166,7 +180,7 @@ async function openBook(permissions) {
           const p=node('p','',line.replace(/\*\*/g,''));
           content.append(p);
         }
-        parts.push(content,node('div','book-source','Registro '+item.source_version+' · '+(item.master?'Arquivo do mestre':'Trecho liberado')));
+        parts.push(content,node('div','book-source',i===paragraphs.length-1?'Esta página não é a última descoberta.':'De um caderno de observações'));
         return parts;
       });
       if (!entries.length) entries=[()=>[node('p','','Este registro aguarda liberação.')]];
@@ -206,7 +220,7 @@ async function openBook(permissions) {
   },options);
   try {
     const response=await authorizedFetch('/api/library',{signal:abort.signal});
-    index=await response.json();
+    index=knownFauna(await response.json());
     if(alive)showIndex();
   } catch(error) { if(alive){spread.replaceChildren(node('article','book-page',error.message));status('Índice indisponível');} }
 }
