@@ -1,5 +1,5 @@
 import './portal.js';
-import './library.js';
+import './library.js?v=2';
 import './admin.js';
 import './mesa-gate.js';
 import {access} from './auth.js';

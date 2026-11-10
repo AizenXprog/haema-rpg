@@ -15,37 +15,64 @@ async function initLibrary() {
   const version = ++generation;
   if (!host) return;
   const cover=document.querySelector('.tome');
-  cover?.setAttribute('aria-hidden','true');
-  cover?.removeAttribute('role');
-  cover?.removeAttribute('tabindex');
-  if(cover) {cover.onclick=null;cover.onkeydown=null;}
-  document.querySelector('.tome-cover')?.classList.remove('is-authorized');
+  const caption=document.querySelector('.desk-caption');
+  const feedback=document.querySelector('[data-access-feedback]');
+  const setBookAction=(action,label,authorized=false)=>{
+    if(!cover)return;
+    cover.removeAttribute('aria-hidden');
+    cover.setAttribute('role','button');
+    cover.setAttribute('tabindex','0');
+    cover.setAttribute('aria-label',label);
+    cover.dataset.access=authorized?'authorized':'locked';
+    cover.onclick=action;
+    cover.onkeydown=event=>{
+      if(event.key==='Enter'||event.key===' '){event.preventDefault();action();}
+    };
+    document.querySelector('.tome-cover')?.classList.toggle('is-authorized',authorized);
+  };
+  const explainGate=message=>{
+    if(feedback)feedback.textContent=message;
+    document.querySelector('.library-entry')?.scrollIntoView({
+      behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',
+      block:'center'
+    });
+    host.querySelector('button')?.focus({preventScroll:true});
+  };
+  setBookAction(()=>explainGate('Estamos consultando seu acesso. O livro só abre após autorização.'),'Consultar o acesso ao Bestiário');
+  if(caption)caption.textContent='BESTIÁRIO · VERIFICANDO ACESSO';
+  if(feedback)feedback.textContent='';
   host.replaceChildren(node('p','archive-kicker','Consultando seu acesso…'));
   try {
     const permissions = await access();
     if (version !== generation || host !== root()) return;
-    if (!permissions.areas.includes('library')) { accessGate(host,permissions,'Biblioteca'); return; }
+    if (!permissions.areas.includes('library')) {
+      accessGate(host,permissions,'Biblioteca');
+      const message=!permissions.user?'Entre com sua conta Google para solicitar acesso ao Bestiário.'
+        :permissions.status==='denied'||permissions.status==='revoked'
+          ?'Seu acesso à Biblioteca está suspenso. Fale com o administrador.'
+          :'Sua conta aguarda aprovação. Peça ao administrador as permissões Biblioteca de Lore e Bestiário.';
+      setBookAction(()=>explainGate(message),'Consultar autorização para abrir o Bestiário');
+      if(caption)caption.textContent='BESTIÁRIO · ACESSO RESTRITO';
+      return;
+    }
     host.replaceChildren(node('span','archive-kicker','ACERVO AUTORIZADO'),
       node('h2','','Escolha um volume.'),
       node('p','','O Bestiário reúne os registros disponíveis para a sua conta.'));
     if (!permissions.areas.includes('bestiary')) {
-      host.append(node('p','','A entrada no Bestiário precisa de uma autorização própria.'));
+      host.append(node('p','','A Biblioteca está liberada, mas o Bestiário ainda precisa de autorização própria.'));
+      setBookAction(()=>explainGate('Solicite ao administrador a permissão Bestiário para abrir este volume.'),'Consultar autorização do Bestiário');
+      if(caption)caption.textContent='BESTIÁRIO · AUTORIZAÇÃO NECESSÁRIA';
       return;
     }
     host.append(button('Abrir o Bestiário', () => openBook(permissions), 'archive-button open-volume'));
-    cover.removeAttribute('aria-hidden');
-    cover.setAttribute('role','button');
-    cover.setAttribute('tabindex','0');
-    cover.setAttribute('aria-label','Abrir o Bestiário');
-    cover.onclick=()=>openBook(permissions);
-    cover.onkeydown=event=>{
-      if(event.key==='Enter'||event.key===' '){event.preventDefault();openBook(permissions);}
-    };
-    document.querySelector('.tome-cover')?.classList.add('is-authorized');
+    setBookAction(()=>openBook(permissions),'Abrir o Bestiário',true);
+    if(caption)caption.textContent='VOLUME DISPONÍVEL · BESTIÁRIO';
   } catch (error) {
     if (version !== generation) return;
     host.replaceChildren(node('h2','','O acervo aguarda.'),node('p','',error.message),
       button('Tentar novamente',initLibrary));
+    setBookAction(()=>explainGate('Não foi possível verificar seu acesso. Use Tentar novamente.'),'Consultar erro de acesso ao Bestiário');
+    if(caption)caption.textContent='BESTIÁRIO · ACESSO INDISPONÍVEL';
   }
 }
 async function openBook(permissions) {

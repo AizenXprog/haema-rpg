@@ -45,6 +45,9 @@
 .library-desk { display: flex; align-items: center; flex-direction: column; perspective: 1400px; padding: 18px 0 0; }
 .tome { position: relative; width: min(310px, 88%); aspect-ratio: .69; transform: rotateY(-14deg) rotateZ(-4deg); transform-style: preserve-3d;
   filter: drop-shadow(20px 30px 28px #000b); transition: transform .7s cubic-bezier(.2,.7,.25,1); }
+.tome[role="button"] { cursor: pointer; }
+.tome[role="button"]:focus-visible { outline: 2px solid #d5b886; outline-offset: 10px; border-radius: 5px; }
+.tome[data-access="locked"] .cover-seal { opacity: .55; }
 .tome-pages { position: absolute; inset: 6px -15px -8px 18px; transform: translateZ(-14px);
   border-radius: 3px 10px 10px 3px; border: 1px solid #57432e;
   background: repeating-linear-gradient(0deg, #baa382 0 1px, #64513c 2px, #a58d6b 3px);
