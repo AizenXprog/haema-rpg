@@ -66,13 +66,22 @@ async function initAdmin() {
     }
     async function releases() {
       const tab=++tabVersion;
-      panel.replaceChildren(node('h2','','Liberações do Bestiário'),node('p','','Selecione o registro e marque somente os trechos que deseja disponibilizar aos leitores autorizados.'));
+      panel.replaceChildren(node('h2','','Liberações do Bestiário'),node('p','','Para uma criatura aparecer no livro dos jogadores, escolha o registro, marque pelo menos um parágrafo e salve a liberação. O acesso à Biblioteca, sozinho, não publica os animais.'));
       try {
         const response=await authorizedFetch('/api/library'),items=await response.json();
         if(version!==generation||root!==host()||tab!==tabVersion)return;
+        const releaseSummary=node('p','admin-release-summary');
+        const countPublished=()=>items.filter(item=>item.released).length;
+        const setSummary=()=>{releaseSummary.textContent=countPublished()+' de '+items.length+' registros com trechos liberados aos jogadores.';};
+        setSummary();
+        panel.append(releaseSummary);
         const select=node('select');select.setAttribute('aria-label','Registro do Bestiário');
         select.append(new Option('Escolha um registro',''));
-        for(const item of items)select.append(new Option(item.title+(item.released?' · com trechos liberados':''),item.id));
+        const categories={canon:'CANÔNICO',concept:'CONCEITO',proposal:'PROPOSTA',historical:'HISTÓRICO'};
+        const priority={canon:0,concept:1,proposal:2,historical:3};
+        const available=[...items].sort((a,b)=>(priority[a.state]??10)-(priority[b.state]??10)||a.ordinal-b.ordinal);
+        const describe=item=>(categories[item.state]||'REGISTRO')+' · '+item.title+(item.released?' · PUBLICADO':' · PRIVADO');
+        for(const item of available)select.append(new Option(describe(item),item.id));
         const editor=node('div');let selected=0;
         select.addEventListener('change',async()=>{
           const sequence=++selected;
@@ -94,7 +103,18 @@ async function initAdmin() {
               const indexes=[...form.querySelectorAll('input:checked')].map(x=>+x.value);
               try{
                 await rpc('haema_release_entry',{entry_id:item.id,indexes,expected_revision:item.revision});
-                item.revision++;feedback.textContent='Liberação registrada. '+indexes.length+' trecho(s) disponível(is).';
+                item.revision++;
+                item.released_indexes=indexes;
+                const selectedItem=items.find(record=>record.id===item.id);
+                if(selectedItem) {
+                  selectedItem.released=indexes.length>0;
+                  const opt=[...select.options].find(option=>option.value===item.id);
+                  if(opt)opt.textContent=describe(selectedItem);
+                }
+                setSummary();
+                feedback.textContent=indexes.length
+                  ?'Publicado: '+indexes.length+' trecho(s). Os jogadores verão a criatura no índice.'
+                  :'Nenhum trecho publicado. A criatura não aparece para os jogadores.';
               }catch(error){feedback.textContent=error.message;}
             }),feedback);
           }catch(error){editor.replaceChildren(node('p','',error.message));}

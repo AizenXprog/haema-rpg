@@ -125,6 +125,8 @@
 .admin-panel h2 { font: 600 38px/1.1 var(--reading); }
 .admin-panel h3 { font: 600 30px/1.1 var(--reading); }
 .admin-panel p { line-height: 1.7; }
+.admin-release-summary { margin: 18px 0; padding: 13px 18px; border-left: 3px solid #833d41; background: #e3d1b8; color: #56302a; font-weight: 700; }
+.book-release-note { margin-block: 16px; padding: 10px 12px; border-left: 2px solid #b79561; color: #c7b8a4; font-size: 13px; line-height: 1.5; }
 .admin-user { border-top: 1px solid #b5a188; }
 .admin-user summary { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:20px 5px; cursor:pointer; font:600 25px var(--reading); }
 .admin-user summary small { font:600 11px var(--sans); color:#7b413e; }

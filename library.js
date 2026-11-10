@@ -1,9 +1,11 @@
 import {access, authorizedFetch, accessGate, node, button} from './auth.js';
 
-// A reader's field journal contains only the established fauna. Drafts and
-// discarded concepts remain in the private editorial archive, not in this book.
-const knownFauna = records => (Array.isArray(records) ? records : []).filter(
-  item => item.state === 'canon' || item.state === 'concept'
+// The server is authoritative for player visibility: its index includes only
+// records with deliberately released paragraphs. The administrator can inspect
+// unpublished canonical/concept records while preparing a release.
+const knownFauna = (records,admin=false) => (Array.isArray(records) ? records : []).filter(
+  item => admin ? (item.released === true || item.state === 'canon' || item.state === 'concept')
+    : item.released === true
 );
 let generation = 0;
 let readerCleanup = () => {};
@@ -119,7 +121,7 @@ async function openBook(permissions) {
       const response=await authorizedFetch('/api/library', {signal:abort.signal});
       const latest=await response.json();
       if(!alive)return;
-      index=knownFauna(latest);
+      index=knownFauna(latest,permissions.admin);
       if(entryId) {
         const current=index.find(item=>item.id===entryId);
         if(!current) {showIndex();spread.focus({preventScroll:true});}
@@ -163,13 +165,19 @@ async function openBook(permissions) {
         node('p','','Anoto o que posso sustentar, separo o que vi do que ouvi e deixo em branco o que ainda não compreendo. Não há vergonha na dúvida; há, porém, grande perigo em tomar a imaginação por testemunho.'),
         node('p','','Não contes os nomes aqui reunidos como se fossem todos os habitantes destas terras. A natureza há de guardar muito mais do que estas páginas conseguem alcançar. E eu ainda tenho muito a descobrir.')
       );
-      return [node('span','folio-label','BESTIÁRIO · PRIMEIRAS FOLHAS'),
+      const leaves=[node('span','folio-label','BESTIÁRIO · PRIMEIRAS FOLHAS'),
         node('h2','','A quem abrir este caderno'),preface];
+      if (permissions.admin && !index.some(item=>item.released)) {
+        leaves.push(node('p','book-release-note',
+          'Nota para o mestre: nenhum registro tem trechos liberados aos jogadores. Use Administração → Liberações para publicar os parágrafos escolhidos.'));
+      }
+      return leaves;
     });
     if (!index.length) {
-      entries.push(() => [node('span','folio-label','BESTIÁRIO'),
-        node('h2','','As próximas páginas ainda aguardam descobertas.'),
-        node('p','','As folhas permanecem abertas àquilo que ainda está por ser observado.')]);
+      entries.push(() => [node('span','folio-label','BESTIÁRIO · ACERVO AINDA NÃO LIBERADO'),
+        node('h2','','Nenhuma criatura disponível para leitura.'),
+        node('p','','O acesso ao livro está funcionando. O mestre ainda não liberou nenhum registro do Bestiário para os jogadores.'),
+        node('p','','Assim que o mestre selecionar e publicar os trechos autorizados, os animais aparecerão neste índice.')]);
     }
     for (let i=0;i<index.length;i+=6) {
       const items = index.slice(i,i+6);
@@ -177,7 +185,8 @@ async function openBook(permissions) {
         const list = node('ol','book-index');
         for (const item of items) {
           const li = node('li');
-          const pick = button(item.title,() => loadEntry(item.id),'book-index-entry');
+          const display = permissions.admin && !item.released ? item.title+' · NÃO PUBLICADO' : item.title;
+          const pick = button(display,() => loadEntry(item.id),'book-index-entry');
           li.append(pick);list.append(li);
         }
         return [node('span','folio-label','BESTIÁRIO · ÍNDICE'),node('h2','',i===0?'Criaturas que pude conhecer':'Outras folhas do caderno'),list];
@@ -257,7 +266,7 @@ async function openBook(permissions) {
   },options);
   try {
     const response=await authorizedFetch('/api/library',{signal:abort.signal});
-    index=knownFauna(await response.json());
+    index=knownFauna(await response.json(),permissions.admin);
     if(alive)showIndex();
   } catch(error) { if(alive){spread.replaceChildren(node('article','book-page',error.message));status('Índice indisponível');} }
 }
