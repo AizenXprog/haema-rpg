@@ -156,6 +156,16 @@ async function openBook(permissions) {
         return [node('span','folio-label','BESTIÁRIO · ÍNDICE'),node('h2','',i===0?'Criaturas que pude conhecer':'Outras folhas do caderno'),list];
       });
     }
+    if (index.length) {
+      entries.push(() => {
+        const note=node('div','book-copy');
+        note.append(
+          node('p','','Estas páginas contêm apenas os nomes que minhas notas puderam alcançar. Não lhes concedas a autoridade de um catálogo completo: os caminhos são muitos, e muito do que vive permanece sem nome entre minhas folhas.'),
+          node('p','','Deixo espaço para novas criaturas, novos relatos e correções daquilo que um dia julguei compreender. Um bestiário terminado seria, talvez, o sinal de que seu autor deixou de olhar para o mundo.')
+        );
+        return [node('span','folio-label','FOLHAS POR ESCREVER'),node('h2','','Ainda resta tanto a descobrir'),note];
+      });
+    }
     paint();
   }
   async function loadEntry(id) {
