@@ -1,7 +1,7 @@
 'use strict';
 /** Media Vita — soundtrack shared by HÆMA's separate HTML pages.
- * Autoplay is attempted, but a browser may require the first user gesture.
- * We restore the playhead and the 30-second replay gap across navigation.
+ * Silent by default: the visitor alone chooses when music begins.
+ * Keep the chosen playback alive across seamless in-site navigation.
  */
 (()=>{
  const button=document.getElementById('haema-sound-toggle');
@@ -9,31 +9,24 @@
  const label=document.getElementById('haema-sound-label');
  const source=document.documentElement.dataset.soundtrack||'';
  const audio=source?new Audio(source):null;
- // The music defaults ON at the start of each new tab/session. An explicit
- // opt-out stays respected while browsing, including page reloads.
- const PREFERENCE='haema-music-enabled-session';
+ // Every fresh page load begins silent. Only a direct click on the sound
+ // control may opt the visitor in; navigation retains this live audio instance.
  const PLAYBACK='haema-music-playback-v1';
  const GAP_MS=30000;
  const VOLUME=.25;
  const read=(area,key)=>{try{return area.getItem(key)}catch{return null}};
  const write=(area,key,value)=>{try{area.setItem(key,value)}catch{}};
- let wanted=read(sessionStorage,PREFERENCE)!=='false';
+ let wanted=false;
  let position=0,gapUntil=0,seekDone=false,blocked=false,playing=false;
  let retryTimer=0,notificationTimer=0,lastCheckpoint=0,pending=null;
  let playAttempt=0,autoplayNoticeShown=false;
  let notice=null;
- try{
-  const saved=JSON.parse(read(sessionStorage,PLAYBACK)||'null');
-  if(saved&&saved.source===source){
-   position=Math.max(0,Number(saved.position)||0);
-   gapUntil=Math.max(0,Number(saved.gapUntil)||0);
-  }
- }catch{}
+
  if(audio){
   audio.loop=false;
   audio.volume=VOLUME;
-  audio.preload='auto';
-  audio.autoplay=true;
+  audio.preload='none';
+  audio.autoplay=false;
   audio.playsInline=true;
  }
  const persist=(forcePosition)=>{
@@ -126,8 +119,7 @@
   wanted=false;blocked=false;playing=false;position=0;gapUntil=0;
   clearRestart();
   if(audio){audio.pause();try{audio.currentTime=0}catch{}}
-  write(sessionStorage,PREFERENCE,'false');
-  persist(0);
+   persist(0);
   paint();
  };
  button.addEventListener('click',()=>{
@@ -136,8 +128,7 @@
    disable();note('Música desligada.');return;
   }
   wanted=true;
-  write(sessionStorage,PREFERENCE,'true');
-  void start(true).then(()=>{
+   void start(true).then(()=>{
    if(playing)note('Música ativada. Use o botão no topo para desligar.');
    else if(wanted)note('Seu navegador exige uma interação para liberar o áudio.');
   });
@@ -178,9 +169,5 @@
   document.addEventListener('click',unlock,{capture:true});
   document.addEventListener('keydown',unlock,{capture:true});
  }
- paint();
- if(wanted&&audio){
-  if(gapUntil>Date.now())schedule();
-  else void start(); // Attempt automatically as requested; gracefully fall back.
- }
+ paint(); // No automatic play attempt. The listener above is the sole opt-in entry.
 })();
