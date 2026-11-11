@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR" data-soundtrack="assets/media-vita-ambient.mp3">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0B0A07">
+<meta name="description" content="Acompanhe a evolução do sistema de RPG HÆMA, do Núcleo Humano ao Alfa 0.6 experimental — sem spoilers da campanha."><meta name="author" content="Vitor Monte">
+<title>Atualizações — HÆMA | Desenvolvimento do sistema</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=0.1">
+<script defer src="script.js?v=0.1"></script><script defer src="audio.js?v=0.6"></script>
+<script defer src="rules-0.1.js?v=0.1"></script>
+
+<script defer src="haema01.js?v=0.4"></script><script defer src="experience.js?v=0.4"></script><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="atualizacoes.css?v=1"><script defer src="navigation.js?v=2"></script><script type="module" src="app.js?v=4"></script></head>
+<body data-page="atualizacoes">
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div aria-hidden="true" class="grain"></div>
+<header class="topbar"><div class="header-inner">
+<a aria-label="HÆMA, página inicial" class="brand" href="index.html"><img src="assets/favicon.svg" width="35" height="35" alt=""><span>H<span class="accent">Æ</span>MA</span></a>
+<nav class="nav" id="main-nav" aria-label="Navegação principal"><a href="index.html">Início</a><a href="sistema.html">Sistema</a><a href="atualizacoes.html">Atualizações</a><a href="biblioteca.html">Biblioteca</a><a href="portal.html">Mesa</a><a data-admin-link hidden href="administracao.html">Administração</a></nav>
+<button class="sound-toggle" type="button" id="haema-sound-toggle" aria-label="Ativar música ambiente" aria-pressed="false" title="Controle de música ambiente"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span id="haema-sound-label">SOM DESLIGADO</span></button>
+<button class="menu-toggle" id="menu-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span></button><a class="top-action" href="portal.html">PORTAL <span aria-hidden="true">↗</span></a>
+</div></header>
+
+<main id="conteudo" class="dev-log">
+  <section class="dev-intro" aria-labelledby="dev-title">
+    <div class="dev-container">
+      <div class="dev-masthead"><span>HÆMA · ARQUIVO DE DESENVOLVIMENTO</span><span>REGISTRO PÚBLICO / 2026</span></div>
+      <div class="dev-heading"><span class="dev-ornament" aria-hidden="true">✥</span>
+        <p class="dev-eyebrow">O CAMINHO DO SISTEMA</p>
+        <h1 id="dev-title">Atualizações<span class="dev-period">.</span></h1>
+        <p class="dev-lead">Cada versão deixa uma marca. Aqui reunimos as ideias consolidadas, os experimentos em andamento e os próximos passos do HÆMA — sem antecipar os segredos de suas campanhas.</p>
+      </div>
+      <div class="dev-state"><div><span class="dev-state-label">MANUAL DISPONÍVEL</span><strong>Núcleo Jogável 0.1</strong><small>Referência experimental atualmente consultável no site.</small></div><span class="dev-state-divider" aria-hidden="true">✣</span><div><span class="dev-state-label">DESENVOLVIMENTO INTERNO</span><strong>Alfa 0.6</strong><small>Pacote integrado preparado para playtest interno; ainda não é o Manual publicado.</small></div></div>
+      <a href="#linha-do-tempo" class="dev-scroll">PERCORRER OS MARCOS <span aria-hidden="true">↓</span></a>
+    </div>
+  </section>
+  <section class="dev-history" id="linha-do-tempo" aria-label="Linha do tempo de desenvolvimento">
+    <div class="dev-container">
+      <div class="dev-history-intro"><p class="dev-eyebrow">DIÁRIO DO NÚCLEO</p><h2>As etapas de uma <em>construção viva.</em></h2><p>Versões de laboratório não substituem regras em vigor. O que é hipótese permanece hipótese até ser avaliado em mesa.</p></div>
+      <div class="dev-timeline">
+        <article class="dev-milestone">
+          <div class="dev-marker" aria-hidden="true"><span>00</span></div>
+          <div class="dev-moment"><div class="dev-kicker"><span>FUNDAÇÃO DO SISTEMA</span><span>BASE ESTABELECIDA</span></div>
+            <h3>O humano, antes <em>do extraordinário.</em></h3>
+            <p class="dev-excerpt">Um sistema autoral com seis atributos, 24 competências e dados que evoluem de d4 a d12. Personagens começam como pessoas comuns, livres de classes obrigatórias.</p>
+            <details class="dev-disclosure"><summary>Explorar os fundamentos <span aria-hidden="true">+</span></summary>
+              <div class="dev-detail"><p>Profissões influenciam experiências e oportunidades, mas não definem o personagem por inteiro. A evolução combina pontos e vivências conquistadas em jogo.</p>
+              <p>Metus, Latebra e Invicta dão identidade a medo, furtividade e realizações técnicas raras. A defesa híbrida e as consequências persistentes fazem cada decisão importar.</p></div>
+            </details>
+          </div>
+        </article>
+        <article class="dev-milestone">
+          <div class="dev-marker" aria-hidden="true"><span>03</span></div>
+          <div class="dev-moment"><div class="dev-kicker"><span>NÚCLEO HUMANO 0.3</span><span>PROPOSTA EXPERIMENTAL</span></div>
+            <h3>Um corpo que <em>sente as escolhas.</em></h3>
+            <p class="dev-excerpt">Protótipos integraram combate com Guarda, Esquiva e Aparo; Integridade, Fôlego, Ferimentos e Sobrecarga; incapacitação, socorro e recuperação.</p>
+            <details class="dev-disclosure"><summary>Ver o escopo do candidato 0.3 <span aria-hidden="true">+</span></summary>
+              <div class="dev-detail"><p>Fome, sede e sono passaram a fazer parte do estudo de sobrevivência. Equipamentos, exploração, técnicas humanas e progressão receberam procedimentos candidatos para campanhas longas.</p>
+              <p>É um documento para avaliação, não um conjunto de fórmulas já oficializado.</p></div>
+            </details>
+          </div>
+        </article>
+        <article class="dev-milestone">
+          <div class="dev-marker" aria-hidden="true"><span>04</span></div>
+          <div class="dev-moment"><div class="dev-kicker"><span>LABORATÓRIO 0.4</span><span>SIMULAÇÕES COMPUTACIONAIS</span></div>
+            <h3>Entre a proteção <em>e o perigo.</em></h3>
+            <p class="dev-excerpt">Modelos matemáticos compararam alternativas para Guarda, armaduras, reações e duração de confrontos entre grupos, sem presumir que vencer signifique eliminar o adversário.</p>
+            <details class="dev-disclosure"><summary>Abrir a nota do laboratório <span aria-hidden="true">+</span></summary><div class="dev-detail"><p>O estudo também explorou escassez, retirada e conflitos orientados por objetivos e limites. As comparações são experimentos computacionais, não resultados de sessões presenciais.</p></div></details>
+          </div>
+        </article>
+        <article class="dev-milestone">
+          <div class="dev-marker" aria-hidden="true"><span>05</span></div>
+          <div class="dev-moment"><div class="dev-kicker"><span>LABORATÓRIO 0.5</span><span>BALANCEAMENTO EM ANÁLISE</span></div>
+            <h3>Equilibrar sem <em>apagar a liberdade.</em></h3>
+            <p class="dev-excerpt">Simulações com cinco personagens confrontaram hipóteses de progressão de iniciantes e veteranos, Guarda, absorção por armadura, Esquiva, Aparo e confrontos com objetivos diversos.</p>
+            <details class="dev-disclosure"><summary>O que foi examinado <span aria-hidden="true">+</span></summary><div class="dev-detail"><p>Além da vitória por combate, os cenários consideraram negociações, retirada, proteção e consequências. Os resultados ajudam a escolher o que merece playtest humano; não comprovam equilíbrio definitivo.</p></div></details>
+          </div>
+        </article>
+        <article class="dev-milestone dev-discovery">
+          <div class="dev-marker" aria-hidden="true"><span>✦</span></div>
+          <div class="dev-moment"><div class="dev-kicker"><span>NOVA DIREÇÃO EXTRAORDINÁRIA</span><span>EM DESCOBERTA</span></div>
+            <h3>Não decorar poderes.<br><em>Aprender a intervir.</em></h3>
+            <p class="dev-excerpt">Tanger por Descobertas investiga capacidades extraordinárias como conhecimento conquistado. Despertar e Tanger fazem parte da linguagem do sistema; não exigem classes, magias tradicionais nem listas fechadas de habilidades.</p>
+            <details class="dev-disclosure"><summary>Conhecer o caminho de pesquisa <span aria-hidden="true">+</span></summary><div class="dev-detail"><p>Observação, estudo, ensaio e compreensão de fenômenos abrem caminhos distintos de aprendizado. Repertório — o que se descobriu — e domínio — o que se consegue sustentar — crescem em dimensões próprias.</p><p>Preparação, condições, limites e consequências tornam cada intervenção uma escolha situada. O ambiente oferece relações a compreender e alterar criativamente. Personagens sem capacidades extraordinárias continuam essenciais para reconhecer riscos, construir soluções e fazer o grupo avançar.</p></div></details>
+          </div>
+        </article>
+        <article class="dev-milestone dev-highlight" id="alfa-06">
+          <div class="dev-marker" aria-hidden="true"><span>06</span></div>
+          <div class="dev-moment">
+            <div class="dev-highlight-top"><span class="dev-sigil" aria-hidden="true">✥</span><span>PRIMEIRO PACOTE INTEGRADO</span></div>
+            <div class="dev-kicker"><span>HÆMA · ALFA 0.6</span><span>PREPARADO PARA PLAYTEST INTERNO</span></div>
+            <h3>Núcleo Humano <span class="dev-plus">+</span><br><em>Tanger por Descobertas.</em></h3>
+            <p class="dev-excerpt">Pela primeira vez, criação, testes, combate, sobrevivência, progressão e manifestações extraordinárias foram reunidos em um pacote experimental para uma mesa de cinco jogadores e um mestre.</p>
+            <div class="dev-highlight-note"><span class="dev-note-dot" aria-hidden="true"></span><p><strong>Estado atual:</strong> preparado para playtest interno. O Alfa 0.6 não é uma edição definitiva, não representa testes presenciais já concluídos e <strong>não substituiu o Manual 0.1 publicado</strong>.</p></div>
+            <details class="dev-disclosure"><summary>O que este marco permite avaliar <span aria-hidden="true">+</span></summary><div class="dev-detail"><p>Uma sessão de ponta a ponta com núcleo humano e módulo opcional de Tanger, para avaliar ritmo, clareza, risco, escolhas e a participação de todos os cinco personagens. Os procedimentos e números ainda dependem de validação e podem mudar.</p></div></details>
+          </div>
+        </article>
+      </div>
+      <div class="dev-closing"><span aria-hidden="true">✧</span><p>O sistema avança por investigação, experimentação e decisão. O que ainda não foi aprovado permanece aberto.</p><a href="manual.html" class="dev-manual-link">CONSULTAR O MANUAL 0.1 <span aria-hidden="true">↗</span></a></div>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="footer-mark"><img src="assets/favicon.svg" width="40" height="40" alt=""><span class="display">HÆMA</span><span>HAEMATOMANTHÍA · SISTEMA AUTORAL</span></div><div class="footer-authorship"><span>CRIAÇÃO E DESENVOLVIMENTO</span><p>Site e Sistema criado por <strong>Vitor Monte</strong></p></div><div class="footer-inner"><span>PLAYTEST · 0.1 / 2026</span><nav aria-label="Links do rodapé"><a href="index.html">Início</a><a href="manual.html">Manual</a><a href="portal.html">Portal</a></nav><span>ACESSO PRIVADO POR CAMPANHA</span></div></footer>
+</body></html>

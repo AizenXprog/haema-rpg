@@ -20,6 +20,7 @@
  let position=0,gapUntil=0,seekDone=false,blocked=false,playing=false;
  let retryTimer=0,notificationTimer=0,lastCheckpoint=0,pending=null;
  let playAttempt=0,autoplayNoticeShown=false;
+ let videoActive=false,pausedForVideo=false;
  let notice=null;
 
  if(audio){
@@ -51,10 +52,11 @@
  const paint=()=>{
   if(!label)return;
   const audible=!!audio&&wanted&&playing;
-  label.textContent=!audio?'SOM INDISPONÍVEL':!wanted?'SOM DESLIGADO':blocked?'TOQUE PARA OUVIR':audible||gapUntil>Date.now()?'DESLIGAR SOM':'SOM LIGADO';
+  label.textContent=!audio?'SOM INDISPONÍVEL':!wanted?'SOM DESLIGADO':videoActive?'SOM PAUSADO · VÍDEO':blocked?'TOQUE PARA OUVIR':audible||gapUntil>Date.now()?'DESLIGAR SOM':'SOM LIGADO';
   button.setAttribute('aria-pressed',String(wanted));
   const description=!audio?'Trilha sonora indisponível':
     !wanted?'Ativar música ambiente':
+    videoActive?'Música pausada durante o trailer. Toque para desligar.':
     audible?'Desligar música ambiente':
     gapUntil>Date.now()?'Desligar música ambiente (pausa entre reproduções)':blocked?'Música ativa, mas o navegador exige uma interação para liberar o áudio':'Música ambiente ativada; desligar';
   button.setAttribute('aria-label',description);
@@ -85,7 +87,7 @@
   paint();
  };
  async function start(fromGesture=false){
-  if(!audio||!wanted)return;
+  if(!audio||!wanted||videoActive)return;
   if(gapUntil>Date.now()){schedule();return;}
   if(gapUntil){gapUntil=0;position=0;persist(0);}
   if(pending&&!fromGesture)return pending;
@@ -100,7 +102,7 @@
    try{
     await playPromise;
     if(attempt!==playAttempt)return;
-    if(!wanted){audio.pause();return;}
+    if(!wanted||videoActive){audio.pause();return;}
     playing=true;blocked=false;
     persist();paint();
    }catch{
@@ -124,10 +126,11 @@
  };
  button.addEventListener('click',()=>{
   if(!audio){note('A faixa de áudio não está disponível.');return;}
-  if(wanted&&(playing||gapUntil>Date.now())){
+  if(wanted&&(playing||videoActive||gapUntil>Date.now())){
    disable();note('Música desligada.');return;
   }
   wanted=true;
+  if(videoActive){pausedForVideo=true;paint();note('Música ativada: ela tocará quando o trailer for fechado.');return;}
    void start(true).then(()=>{
    if(playing)note('Música ativada. Use o botão no topo para desligar.');
    else if(wanted)note('Seu navegador exige uma interação para liberar o áudio.');
@@ -135,7 +138,7 @@
  });
  if(audio){
   audio.addEventListener('loadedmetadata',restore);
-  audio.addEventListener('playing',()=>{playing=true;blocked=false;paint()});
+  audio.addEventListener('playing',()=>{if(videoActive){audio.pause();return;}playing=true;blocked=false;paint()});
   audio.addEventListener('pause',()=>{playing=false;paint()});
   audio.addEventListener('timeupdate',()=>{
    if(!wanted||gapUntil)return;
@@ -159,7 +162,7 @@
   // Browsers may block unmuted autoplay. Try again on any permitted user
   // gesture rather than requiring a click on the music control itself.
   const unlock=event=>{
-   if(!wanted||!blocked||!audio.paused)return;
+   if(!wanted||!blocked||videoActive||!audio.paused)return;
    const target=event.target;
    if(target instanceof Element&&target.closest('#haema-sound-toggle'))return;
    void start(true);
@@ -169,5 +172,21 @@
   document.addEventListener('click',unlock,{capture:true});
   document.addEventListener('keydown',unlock,{capture:true});
  }
- paint(); // No automatic play attempt. The listener above is the sole opt-in entry.
+ document.addEventListener('haema:video-activity',event=>{
+  const active=event.detail?.active===true;
+  if(active){
+   if(videoActive)return;
+   videoActive=true;
+   pausedForVideo=wanted&&playing;
+   if(audio&&!audio.paused){audio.pause();persist();}
+   paint();
+  }else if(videoActive){
+   videoActive=false;
+   const restoreMusic=pausedForVideo;
+   pausedForVideo=false;
+   paint();
+   if(wanted&&restoreMusic&&audio)void start(true);
+  }
+ });
+ paint(); // Audio remains opt-in. Player activity only suspends/resumes it.
 })();

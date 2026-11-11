@@ -1,0 +1,92 @@
+/* HÆMA — linha do tempo pública. Estilos isolados em .dev-log. */
+.dev-log{background:#0c0b0b;color:#efe5d6;min-width:0;overflow:hidden}
+.dev-container{width:min(1160px,calc(100% - 42px));margin-inline:auto}
+.dev-intro{position:relative;padding:22px 0 clamp(58px,9vw,124px);background:radial-gradient(ellipse at 72% 25%,#63253355,transparent 53%),radial-gradient(ellipse at 22% 72%,#6a433020,transparent 52%),linear-gradient(160deg,#140f10,#100e0e 62%,#241717)}
+.dev-intro:before{content:"";position:absolute;inset:14px;border:1px solid #b4956940;pointer-events:none}
+.dev-intro:after{content:"✥";position:absolute;right:-7%;bottom:-13%;font:clamp(280px,42vw,650px)/1 var(--reading);color:#b18a6920;pointer-events:none}
+.dev-intro .dev-container{position:relative;z-index:1}
+.dev-masthead{display:flex;justify-content:space-between;gap:20px;padding:0 0 16px;border-bottom:1px solid #b19a7e58;color:#c6ab92;font:700 9px/1.6 var(--sans);letter-spacing:.16em}
+.dev-masthead span:last-child{text-align:right}
+.dev-heading{position:relative;max-width:850px;margin:clamp(60px,9vw,116px) auto 53px;text-align:center}
+.dev-ornament{display:block;font:32px/1 var(--reading);color:#b77d7e;margin-bottom:18px}
+.dev-eyebrow{margin:0 0 12px;color:#d3a69a;font:700 10px/1.5 var(--sans);letter-spacing:.23em}
+.dev-heading h1{font:500 clamp(68px,13vw,164px)/.96 var(--reading);letter-spacing:-.05em;margin:0 0 23px;color:#f3e3d0;text-shadow:0 12px 32px #0008;overflow-wrap:break-word}
+.dev-period{color:#9b4854}
+.dev-lead{margin:0 auto;max-width:690px;color:#d0bdae;font:400 clamp(20px,2.5vw,27px)/1.45 var(--reading)}
+.dev-state{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);align-items:center;gap:26px;max-width:850px;margin:0 auto;padding:25px clamp(16px,4vw,38px);background:#180f12aa;border-block:1px solid #b698745a}
+.dev-state>div{display:grid;gap:7px}
+.dev-state-label{color:#bf8984;font:700 9px var(--sans);letter-spacing:.17em}
+.dev-state strong{font:500 clamp(23px,3vw,35px)/1.1 var(--reading);color:#f5dec8}
+.dev-state small{font:400 12px/1.55 var(--sans);color:#baa79a}
+.dev-state-divider{text-align:center;color:#b09075;font:26px var(--reading)}
+.dev-scroll{display:flex;align-items:center;justify-content:center;gap:16px;margin:36px auto 0;width:max-content;max-width:100%;font:700 10px/1.4 var(--sans);letter-spacing:.15em;color:#dac0b1;border-bottom:1px solid #a17a70;padding-bottom:9px}
+.dev-scroll:hover,.dev-manual-link:hover{color:#fff6e4}
+.dev-history{position:relative;padding:clamp(70px,10vw,132px) 0 clamp(72px,10vw,140px);background:radial-gradient(ellipse at 13% 43%,#4220292a,transparent 45%),linear-gradient(155deg,#121011,#100f0e 55%,#211719)}
+.dev-history-intro{max-width:760px;margin:0 auto 74px;text-align:center}
+.dev-history-intro h2{font:500 clamp(45px,6vw,78px)/1.06 var(--reading);margin:12px 0 18px;letter-spacing:-.025em}
+.dev-history-intro h2 em,.dev-milestone h3 em{font-style:italic;color:#c28f8d}
+.dev-history-intro p:last-child{font:400 14px/1.7 var(--sans);color:#bca99e;max-width:620px;margin:0 auto}
+.dev-timeline{position:relative;max-width:990px;margin:auto}
+.dev-timeline:before{content:"";position:absolute;left:58px;top:19px;bottom:88px;width:1px;background:linear-gradient(#ab716177,#c99b8f66 50%,#b28c6940)}
+.dev-milestone{display:grid;grid-template-columns:116px minmax(0,1fr);position:relative;gap:32px;padding:0 0 clamp(64px,8vw,104px)}
+.dev-marker{position:relative;display:grid;place-items:center;width:61px;height:61px;margin-left:28px;z-index:1;color:#e4c7ae;background:#211518;border:1px solid #c19c826b;border-radius:50%;box-shadow:0 0 0 8px #100f0f,0 12px 30px #0008}
+.dev-marker span{font:500 24px var(--reading)}
+.dev-moment{padding:8px 0 0;min-width:0}
+.dev-kicker{display:flex;flex-wrap:wrap;gap:8px 28px;align-items:center;margin-bottom:18px;color:#cca991;font:700 9px/1.5 var(--sans);letter-spacing:.17em}
+.dev-kicker span+span{color:#d49d9d}
+.dev-milestone h3{font:500 clamp(43px,6vw,69px)/1.02 var(--reading);letter-spacing:-.02em;margin:0 0 19px;color:#f2e3d0}
+.dev-excerpt{font:400 clamp(18px,2vw,23px)/1.5 var(--reading);color:#d1c1b0;max-width:720px;margin:0 0 22px}
+.dev-disclosure{border-top:1px solid #b093775a;border-bottom:1px solid #b0937740;max-width:730px}
+.dev-disclosure summary{display:flex;justify-content:space-between;gap:20px;align-items:center;cursor:pointer;list-style:none;padding:15px 4px;color:#d6b1a5;font:700 10px/1.5 var(--sans);letter-spacing:.13em;text-transform:uppercase}
+.dev-disclosure summary::-webkit-details-marker{display:none}
+.dev-disclosure summary span{font:400 24px var(--reading);transition:transform .2s}
+.dev-disclosure[open] summary span{transform:rotate(45deg)}
+.dev-detail{padding:8px 18px 12px 0;max-width:680px;color:#c6b6a6;font:400 14px/1.85 var(--sans)}
+.dev-detail p{margin:0 0 13px}
+.dev-discovery .dev-marker{border-color:#d4b084;background:#42202d}
+.dev-discovery .dev-excerpt{max-width:750px}
+.dev-highlight{margin:6px 0 0;padding-bottom:0}
+.dev-highlight .dev-marker{background:#73313d;border-color:#f2c7a3;color:#ffe1c0;box-shadow:0 0 0 8px #100f0f,0 0 36px #7d333855}
+.dev-highlight .dev-moment{position:relative;isolation:isolate;padding:clamp(24px,4vw,54px);background:radial-gradient(ellipse at 80% 0%,#87374844,transparent 58%),linear-gradient(145deg,#301920,#1b1116 72%);border:1px solid #be8d7799;box-shadow:0 20px 80px #0009,inset 0 0 0 8px #9c75641c}
+.dev-highlight .dev-moment:before{content:"";position:absolute;inset:10px;border:1px solid #b9946a40;z-index:-1;pointer-events:none}
+.dev-highlight-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:30px;color:#efc8a8;font:700 9px/1.6 var(--sans);letter-spacing:.16em}
+.dev-sigil{font:35px/1 var(--reading);color:#d9a6a0}
+.dev-highlight h3{font-size:clamp(44px,5.5vw,73px)}
+.dev-plus{color:#be8e79}
+.dev-highlight-note{display:flex;align-items:flex-start;gap:14px;padding:17px 0;margin-bottom:22px;border-top:1px solid #d7a98870;border-bottom:1px solid #d7a98840}
+.dev-note-dot{display:block;width:8px;height:8px;border-radius:50%;background:#d3a99b;flex:none;margin-top:9px;box-shadow:0 0 14px #e0a89c99}
+.dev-highlight-note p{margin:0;font-size:13px;color:#dbc7b5}
+.dev-highlight-note strong{color:#f9e9d3}
+.dev-closing{display:flex;flex-direction:column;align-items:center;text-align:center;margin:95px auto 0;max-width:650px}
+.dev-closing>span{font:40px var(--reading);color:#c58b87}
+.dev-closing p{font:400 27px/1.33 var(--reading);color:#e0c9b7;margin:18px 0 26px}
+.dev-manual-link{font:700 10px var(--sans);letter-spacing:.14em;color:#dbb6a1;border-bottom:1px solid #ab796f;padding-bottom:9px}
+@media(max-width:720px){
+ .dev-container{width:min(100% - 30px,1160px)}
+ .dev-masthead{font-size:8px;letter-spacing:.08em}
+ .dev-heading{margin:68px 0 42px}
+ .dev-heading h1{font-size:clamp(55px,12vw,85px)}
+ .dev-state{gap:14px;grid-template-columns:minmax(0,1fr);text-align:left;padding:21px}
+ .dev-state-divider{display:none}
+ .dev-state>div+div{padding-top:17px;border-top:1px solid #b5987740}
+ .dev-history-intro{margin-bottom:55px}
+ .dev-timeline:before{left:22px;bottom:85px}
+ .dev-milestone{grid-template-columns:45px minmax(0,1fr);gap:15px;padding-bottom:64px}
+ .dev-marker{width:40px;height:40px;margin:0 0 0 2px;box-shadow:0 0 0 4px #100f0f}
+ .dev-marker span{font-size:18px}
+ .dev-moment{padding-top:3px}
+ .dev-kicker{font-size:8px;letter-spacing:.09em;gap:5px 16px}
+ .dev-milestone h3{font-size:clamp(34px,7vw,53px)}
+ .dev-excerpt{font-size:19px}
+ .dev-highlight .dev-moment{padding:22px 17px}
+ .dev-highlight h3{font-size:clamp(35px,6.8vw,49px)}
+ .dev-disclosure summary{font-size:9px;letter-spacing:.05em}
+ .dev-closing{margin-top:78px}
+}
+@media(max-width:380px){.dev-heading h1{font-size:53px;letter-spacing:-.07em}.dev-milestone{gap:10px}.dev-kicker{font-size:7px}.dev-highlight .dev-moment{padding:19px 13px}.dev-highlight h3{font-size:34px}}
+@media(prefers-reduced-motion:no-preference){
+ .dev-milestone .dev-marker{transition:background .3s,transform .35s}
+ .dev-milestone:hover .dev-marker{transform:scale(1.08);background:#68353b}
+ .dev-disclosure .dev-detail{animation:dev-open .35s ease-out}
+ @keyframes dev-open{from{opacity:.2;transform:translateY(-6px)}to{opacity:1;transform:none}}
+}
