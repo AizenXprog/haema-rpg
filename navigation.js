@@ -29,6 +29,13 @@
    if(active)link.setAttribute('aria-current','page');
    else link.removeAttribute('aria-current');
   });
+  document.querySelectorAll('.section-nav a').forEach(link=>{
+   const dest=new URL(link.href,location.href);
+   if(canon(dest)===key&&dest.search===location.search&&!dest.hash)link.setAttribute('aria-current','page');
+   else link.removeAttribute('aria-current');
+  });
+  const account=document.querySelector('.top-action');
+  if(account){if(['portal.html','administracao.html','campanha.html'].includes(key))account.setAttribute('aria-current','page');else account.removeAttribute('aria-current');}
   const menu=document.getElementById('menu-toggle');
   const nav=document.getElementById('main-nav');
   if(menu)menu.setAttribute('aria-expanded','false');
