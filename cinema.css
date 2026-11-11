@@ -200,3 +200,6 @@ html[data-cinema-paused] .sigil-arch::after{animation-play-state:paused}
 .manual-vivo .lab-panel .demo-calc-text{color:#ead8c5}
 .manual-vivo .lab-panel .reaction-guide{background:#201923;border:1px solid #9b7b7055}
 .manual-vivo .lab-panel .reaction-guide :is(label,.lab-note){color:#d6c2b3}
+
+/* Snapshot overlays must never swallow a second navigation or sound-control click. */
+::view-transition{pointer-events:none}
