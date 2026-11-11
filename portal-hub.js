@@ -6,7 +6,7 @@ async function init(){
  try{
   const info=await access();
   if(version!==generation||!root.isConnected)return;
-  if(!info.user){accessGate(root,info,'Portal');return;}
+  if(!info.user){accessGate(root,info,'Portal');root.querySelector('h2').textContent='Entre na sua conta.';return;}
   root.replaceChildren(node('p','archive-kicker','CONTA CONECTADA'),node('h2','',info.user.user_metadata?.full_name||'Sua conta'));
   root.append(node('p','',info.admin?'Administração do HÆMA. Organize pessoas, acessos e conteúdo.':info.status==='approved'?'Seus espaços disponíveis estão reunidos abaixo.':'Sua conta está registrada. Aguarde a revisão do administrador.'));
   const list=node('div','instrument-list');

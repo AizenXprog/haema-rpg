@@ -44,3 +44,5 @@ body[data-page="campanha"] .portal-panel{border-radius:0}
 .topbar .top-action{display:inline-flex!important;align-items:center;white-space:nowrap}
 
 @media(max-width:600px){.topbar .brand{font-size:26px;gap:6px}.topbar .brand img{width:26px;height:26px}.topbar .sound-toggle{width:38px;min-width:38px;padding:9px;justify-content:center}.topbar .sound-toggle span{display:none!important}.topbar .menu-toggle{width:38px;min-width:38px}.topbar .top-action{font-size:9px;padding:9px 5px;margin:0}.header-inner{gap:8px}}
+
+.section-nav a[aria-current]::after,.section-nav a[aria-current]::before,.top-action[aria-current]::after,.top-action[aria-current]::before{display:none!important}
