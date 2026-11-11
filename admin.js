@@ -1,6 +1,6 @@
 import {access, client, rpc, node, button, accessGate, authorizedFetch} from './auth.js';
 
-const AREAS = [['library','Biblioteca de Lore'],['bestiary','Bestiário'],['portal','Portal do jogador'],['mesa','Mesa de Jogo'],['materials','Materiais da campanha']];
+const AREAS = [['library','Biblioteca de Lore'],['bestiary','Bestiário'],['portal','Campanhas e fichas online'],['mesa','Ficha local e dados'],['materials','Materiais da campanha']];
 let generation=0;
 const host=()=>document.getElementById('haema-admin');
 async function initAdmin() {

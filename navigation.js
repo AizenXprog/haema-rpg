@@ -3,7 +3,7 @@
  * main content changes; old pages remain directly accessible to browsers/crawlers.
  */
 (()=>{
- const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html']);
+ const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html','campanha.html']);
  const main=document.querySelector('main#conteudo');
  if(!main||!window.fetch||!window.history?.pushState)return;
  let pending=null,sequence=0;
@@ -25,10 +25,17 @@
  const updateHeader=key=>{
   document.querySelectorAll('.nav a').forEach(link=>{
    const target=canon(new URL(link.href,location.href));
-   const active=target===key||(key==='manual.html'&&target==='sistema.html')||(key==='mesa.html'&&target==='portal.html');
+   const active=target===key||(['manual.html','mesa.html','atualizacoes.html'].includes(key)&&target==='sistema.html');
    if(active)link.setAttribute('aria-current','page');
    else link.removeAttribute('aria-current');
   });
+  document.querySelectorAll('.section-nav a').forEach(link=>{
+   const dest=new URL(link.href,location.href);
+   if(canon(dest)===key&&dest.search===location.search&&!dest.hash)link.setAttribute('aria-current','page');
+   else link.removeAttribute('aria-current');
+  });
+  const account=document.querySelector('.top-action');
+  if(account){if(['portal.html','administracao.html','campanha.html'].includes(key))account.setAttribute('aria-current','page');else account.removeAttribute('aria-current');}
   const menu=document.getElementById('menu-toggle');
   const nav=document.getElementById('main-nav');
   if(menu)menu.setAttribute('aria-expanded','false');
