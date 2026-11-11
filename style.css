@@ -527,3 +527,6 @@
 @media (prefers-reduced-motion: no-preference) {
   .sheet-guide details[open] > .inside { animation: haema-unfold .2s var(--haema-ease); }
 }
+
+/* Five principal destinations remain legible in the intermediate desktop header. */
+@media(min-width:940px) and (max-width:1110px){.nav{gap:10px}.nav a{font-size:10px;letter-spacing:.025em}.brand>span{font-size:34px}.top-action{padding:11px}.sound-toggle{padding:10px}}

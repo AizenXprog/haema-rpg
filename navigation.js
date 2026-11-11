@@ -3,7 +3,7 @@
  * main content changes; old pages remain directly accessible to browsers/crawlers.
  */
 (()=>{
- const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html']);
+ const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html']);
  const main=document.querySelector('main#conteudo');
  if(!main||!window.fetch||!window.history?.pushState)return;
  let pending=null,sequence=0;
