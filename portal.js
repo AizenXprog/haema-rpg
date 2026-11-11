@@ -45,12 +45,12 @@ const PORTAL=(()=>{
   root.append(card);
  }
  function signin(root){
-  root.replaceChildren();const card=node('div','portal-auth');card.append(node('p','portal-overline','ACESSO DA CAMPANHA'),node('h2','','Entre no seu lugar à mesa.'),node('p','','Use sua conta Google para acessar os personagens, materiais e conversas compartilhados com você. A área do mestre só é liberada pela campanha.'));
+  root.replaceChildren();const card=node('div','portal-auth');card.append(node('p','portal-overline','ACESSO DA CAMPANHA'),node('h2','','Acesse os registros da campanha.'),node('p','','Use sua conta Google para acessar os personagens, materiais e conversas compartilhados com você. A área do mestre só é liberada pela campanha.'));
   const features=node('div','portal-access-points');
   for(const [name,desc] of [['PERSONAGENS','Fichas 0.1 salvas online, com versões preservadas.'],['ACERVO & CONVERSA','O que o mestre liberou e o chat da sua mesa.']]){const c=node('div');c.append(node('strong','',name),node('span','',desc));features.append(c)}
   card.append(features);
   const btn=b('Entrar com Google',async()=>{
-   btn.disabled=true;const{error}=await state.client.auth.signInWithOAuth({provider:'google',options:{redirectTo:new URL('portal.html',location.origin+'/').href}});
+   btn.disabled=true;const{error}=await state.client.auth.signInWithOAuth({provider:'google',options:{redirectTo:new URL('campanha.html',location.origin+'/').href}});
    if(error){btn.disabled=false;message(card,errorText(error),true)}
   },'portal-action');
   card.append(btn,node('p','portal-note','O Google autentica sua conta; o mestre vê seus personagens e atividades na campanha, não sua senha nem informações privadas da conta Google.'));
@@ -142,7 +142,7 @@ const PORTAL=(()=>{
   panel.append(node('hr','portal-divider-line'));
   panel.append(node('p','portal-overline',isGM()?'ESCUDO DO MESTRE':'SEU ESPAÇO NA MESA'));
   panel.append(brief(isGM()?'Acompanhe as fichas dos jogadores, publique materiais e mantenha seu arquivo de lore e sistema com histórico de alterações.':'Seu personagem e o que foi compartilhado com ele ficam juntos. Acesse o acervo ou entre na conversa da campanha.'));
-  const actions=node('div','portal-flex');actions.append(b('Ver personagens',()=>{state.tab='characters';void renderDashboard(root)},'portal-action'));if(state.materials)actions.append(b('Abrir acervo',()=>{state.tab='materials';void renderDashboard(root)}));if(isGM())actions.append(b('Painel do Mestre',()=>{state.tab='gm';void renderDashboard(root)}));if(state.data.mesaGrants.some(g=>g.user_id===state.user.id)||state.admin)actions.append(b('Abrir Mesa de Jogo',()=>{location.href='mesa.html'},'portal-action'));panel.append(actions);
+  const actions=node('div','portal-flex');actions.append(b('Ver personagens',()=>{state.tab='characters';void renderDashboard(root)},'portal-action'));if(state.materials)actions.append(b('Abrir acervo',()=>{state.tab='materials';void renderDashboard(root)}));if(isGM())actions.append(b('Painel do Mestre',()=>{state.tab='gm';void renderDashboard(root)}));if(state.data.mesaGrants.some(g=>g.user_id===state.user.id)||state.admin)actions.append(b('Abrir ficha local e dados',()=>{document.querySelector('a[href="mesa.html"]')?.click()},'portal-action'));panel.append(actions);
  }
  function characterCard(character,panel,root){
   const card=node('article','portal-item'),top=node('div','portal-item-top'),head=node('div');head.append(node('h3','',character.title),node('span','portal-meta',(state.data.names[character.user_id]||'Jogador')+' · HÆMA '+character.rules_version));
@@ -260,7 +260,7 @@ const PORTAL=(()=>{
    const r=await notify(op,form,'Registro salvo e auditado.');save.disabled=false;if(r)await renderDashboard(root);
   });panel.append(form);
  }
- async function reload(root){await fetchCampaigns();state.tab='home';if(state.current)await renderDashboard(root);else noCampaign(root)}
+ async function reload(root){await fetchCampaigns();state.tab=new URLSearchParams(location.search).get('secao')==='characters'?'characters':'home';if(state.current)await renderDashboard(root);else noCampaign(root)}
  async function init(){
   const root=currentRoot();if(!root)return;const epoch=++state.epoch;root.replaceChildren(node('div','portal-loading','Preparando o seu acesso...'));
   try{
@@ -272,7 +272,7 @@ const PORTAL=(()=>{
    const {data,error}=await client.auth.getUser();if(error)throw error;
    state.user=data.user;if(!state.user){signin(root);return}
    const permission=await sharedAccess();
-   if(!permission.areas.includes('portal')){accessGate(root,permission,'Portal do jogador');return;}
+   if(!permission.areas.includes('portal')){accessGate(root,permission,'Campanhas e fichas online');return;}
    state.materials=permission.areas.includes('materials');
    await profile();if(epoch!==state.epoch||root!==currentRoot())return;
    state.admin=!!(await query(client.rpc('haema_is_admin')));
