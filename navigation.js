@@ -6,13 +6,14 @@
  const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html','campanha.html']);
  const main=document.querySelector('main#conteudo');
  if(!main||!window.fetch||!window.history?.pushState)return;
- let pending=null,sequence=0;
+ let pending=null,sequence=0,viewTransition=null,revealObserver=null;
  const cache=new Map();
  history.scrollRestoration='manual';
  const currentKey=()=>location.pathname.split('/').pop()||'index.html';
  const canon=url=>url.pathname.split('/').pop()||'index.html';
  const allowed=url=>url.origin===location.origin&&routes.has(canon(url));
  const applyReveals=()=>{
+  revealObserver?.disconnect();
   const els=document.querySelectorAll('main .reveal');
   if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion:reduce)').matches){
    els.forEach(el=>el.classList.add('is-visible'));return;
@@ -20,6 +21,7 @@
   const observer=new IntersectionObserver(entries=>{
    for(const entry of entries){if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}}
   },{threshold:.06});
+  revealObserver=observer;
   els.forEach(el=>observer.observe(el));
  };
  const updateHeader=key=>{
@@ -45,7 +47,7 @@
   if(!hash){window.scrollTo({top:0,left:0,behavior:'instant'});return;}
   let target=null;
   try{target=document.getElementById(decodeURIComponent(hash.slice(1)));}catch{}
-  if(target){if(target.tagName==='DETAILS')target.open=true;target.scrollIntoView({block:'start',behavior:'instant'});}
+  if(target){for(let el=target;el;el=el.parentElement)if(el.tagName==='DETAILS')el.open=true;target.scrollIntoView({block:'start',behavior:'instant'});}
   else window.scrollTo({top:0,left:0,behavior:'instant'});
  };
  // Fetch-only navigation replaces <main> without reloading <head>. Synchronize
@@ -82,6 +84,7 @@
  async function navigate(url,changeHistory=true,scrollTarget=null){
   if(!allowed(url)){location.assign(url.href);return;}
   const request=++sequence;
+  viewTransition?.skipTransition();
   if(pending)pending.abort();
   pending=new AbortController();
   let markup;
@@ -97,10 +100,13 @@
   if(!nextMain){location.assign(url.href);return;}
   try{await syncPageStyles(parsed)}catch{if(request===sequence)location.assign(url.href);return;}
   if(request!==sequence)return;
+  const commit=()=>{
+   if(request!==sequence)return;
   if(changeHistory){
    history.replaceState({...history.state,scrollY:window.scrollY},'',location.href);
    history.pushState({haema:true,scrollY:0},'',url.href);
   }
+
   // Preserve header, sound toggle, and the ORIGINAL <audio> instance.
   document.dispatchEvent(new Event('haema:leaving'));
   const existing=document.querySelector('main#conteudo');
@@ -113,11 +119,15 @@
   const heading=document.querySelector('main h1');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
   document.dispatchEvent(new CustomEvent('haema:navigated',{detail:{path:canon(url)}}));
   applyReveals();
-  requestAnimationFrame(()=>{
-   if(request!==sequence)return;
+  if(request===sequence){
    if(scrollTarget!=null&&scrollTarget!==undefined&&scrollTarget!=='')window.scrollTo({top:scrollTarget,left:0,behavior:'instant'});
    else scrollToTarget(url.hash);
-  });
+  }
+  };
+  if(document.startViewTransition&&!document.hidden&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+   viewTransition=document.startViewTransition(commit);
+   await viewTransition.updateCallbackDone.catch(()=>{});
+  }else commit();
  }
  document.addEventListener('click',event=>{
   if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000" fill="none">
+<defs><linearGradient id="stone" x1="100" y1="0" x2="1050" y2="800" gradientUnits="userSpaceOnUse"><stop stop-color="#25191c"/><stop offset=".45" stop-color="#0c0a0c"/><stop offset="1" stop-color="#421620"/></linearGradient><radialGradient id="light"><stop stop-color="#9d3747" stop-opacity=".38"/><stop offset="1" stop-color="#2c1018" stop-opacity="0"/></radialGradient><linearGradient id="edge"><stop stop-color="#c1a477" stop-opacity=".08"/><stop offset=".5" stop-color="#c1a477" stop-opacity=".5"/><stop offset="1" stop-color="#c1a477" stop-opacity=".05"/></linearGradient><linearGradient id="floor" x2="0" y2="1"><stop stop-color="#8a283c" stop-opacity="0"/><stop offset="1" stop-color="#8a283c" stop-opacity=".2"/></linearGradient></defs>
+<rect width="1200" height="1000" fill="#09080a"/><ellipse cx="700" cy="440" rx="620" ry="580" fill="url(#light)"/>
+<path d="M75 980V460C75 220 330 140 600 24c270 116 525 196 525 436v520H75Z" fill="url(#stone)" stroke="url(#edge)" stroke-width="2"/>
+<path d="M156 980V460c0-186 210-274 444-381 234 107 444 195 444 381v520" stroke="#bd956b" stroke-opacity=".16" stroke-width="14"/>
+<path d="M173 980V464c0-178 199-262 427-367 228 105 427 189 427 367v516" stroke="#bd956b" stroke-opacity=".29"/>
+<path d="M256 980V466c0-134 160-207 344-301 184 94 344 167 344 301v514" fill="#0b080b" stroke="#986c59" stroke-opacity=".38" stroke-width="3"/>
+<path d="M278 980V468c0-126 148-192 322-281 174 89 322 155 322 281v512" stroke="#91634e" stroke-opacity=".2"/>
+<path d="M347 980V467c0-81 118-149 253-218 135 69 253 137 253 218v513" stroke="#bd956b" stroke-opacity=".26" stroke-width="2"/>
+<path d="M360 980V470c0-80 110-138 240-207 130 69 240 127 240 207v510" fill="#100b10"/>
+<path d="M600 263v717M360 470h480" stroke="#79553f" stroke-opacity=".18"/>
+<path d="m600 340 115 80v215L600 744 485 635V420l115-80Z" stroke="#bd956b" stroke-opacity=".16"/>
+<path d="m600 365 94 67v192l-94 94-94-94V432l94-67Z" stroke="#bd956b" stroke-opacity=".11"/>
+<path d="M0 1000 360 760h480l360 240" fill="url(#floor)"/>
+<g stroke="#ac805c" stroke-opacity=".12"><path d="M360 760 80 1000M470 760 340 1000M730 760 860 1000M840 760l280 240M295 820h610M205 890h790M110 970h980"/></g>
+<g fill="#171114" stroke="#a38061" stroke-opacity=".2"><path d="M55 980V478h48v502zM1097 980V478h48v502z"/><path d="M142 980V490h33v490zM1025 980V490h33v490z"/><path d="M239 980V487h32v493zM929 980V487h32v493z"/></g>
+<g stroke="#a38061" stroke-opacity=".25"><path d="M42 485h72M1086 485h72M129 497h59M1012 497h59M229 494h51M920 494h51"/></g>
+<ellipse cx="700" cy="600" rx="400" ry="450" fill="url(#light)"/>
+</svg>
