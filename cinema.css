@@ -195,3 +195,8 @@ html[data-cinema-paused] .sigil-arch::after{animation-play-state:paused}
  :is(.home-hero,.home-index,.system-editorial,.library-chamber,.portal-workspace,.admin-workspace,.section-nav,.manual-vivo,.topbar) :not(.book-reader *):not(.book-reader){transition:none!important;animation:none!important;scroll-behavior:auto!important}
  .manual-chapter::details-content{transition:none!important}
 }
+
+/* Keep the calculation narrative readable inside the dark laboratory. */
+.manual-vivo .lab-panel .demo-calc-text{color:#ead8c5}
+.manual-vivo .lab-panel .reaction-guide{background:#201923;border:1px solid #9b7b7055}
+.manual-vivo .lab-panel .reaction-guide :is(label,.lab-note){color:#d6c2b3}

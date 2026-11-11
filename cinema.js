@@ -55,7 +55,7 @@
    const select=document.createElement('select');select.id='cinema-chapter';
    const first=new Option('Escolha no índice…','');select.append(first);
    for(const chapter of chapters){
-    const title=chapter.querySelector('summary')?.textContent.replace(/\s+/g,' ').replace(/\+\s*$/,'').trim()||chapter.id;
+    const title=chapter.querySelector('summary')?.textContent.replace(/^(\d{2})(?=\S)/,'$1 · ').replace(/\s+/g,' ').replace(/\+\s*$/,'').trim()||chapter.id;
     select.append(new Option(title,chapter.id));
    }
    toolbar.append(label,select);search.after(toolbar);
