@@ -157,3 +157,29 @@
     50% { box-shadow: 0 0 0 1px #7c5046, 0 18px 50px #000a, 0 0 28px #8e313026, inset 0 0 0 3px #74534244; }
   }
 }
+
+/* HÆMA — segundo registro e galeria. Estilo original preservado. */
+.haema-trailer__gallery{position:relative}
+.haema-trailer__selectors{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.haema-trailer__choice{display:flex;align-items:center;gap:15px;text-align:left;min-width:0;padding:10px;color:#dbc4b2;background:#1b1515;border:1px solid #7c574f;transition:background .23s,border-color .23s,transform .23s}
+.haema-trailer__choice:hover,.haema-trailer__choice:focus-visible{border-color:#deb69b;background:#332224;transform:translateY(-2px)}
+.haema-trailer__choice.is-selected{border-color:#d7a07f;background:linear-gradient(95deg,#4d272a,#291b1c);box-shadow:inset 0 0 0 1px #d5a47a3a}
+.haema-trailer__choice img{display:block;width:125px;height:70px;object-fit:cover;border:1px solid #b99d804b;filter:saturate(.67)}
+.haema-trailer__choice>span{display:grid;gap:3px}
+.haema-trailer__choice small{font:700 9px/1.4 var(--sans);letter-spacing:.16em;color:#ca9687}
+.haema-trailer__choice strong{font:500 27px/1.1 var(--reading);white-space:nowrap}
+.haema-trailer__choice-state{font:700 9px/1.4 var(--sans);letter-spacing:.12em;color:#baa393}
+.haema-trailer__poster{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;background:#130c0f}
+.haema-trailer__poster>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.46;filter:saturate(.6) contrast(1.12)}
+.haema-trailer__poster:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#110d10e6,transparent 55%,#110c1175);pointer-events:none}
+.haema-trailer__poster-content{position:relative;z-index:1;text-align:center;display:grid;justify-items:center;gap:21px}
+.haema-trailer__poster-content>span{font:700 10px var(--sans);letter-spacing:.24em;color:#f0d2bb}
+.haema-trailer__play{padding:18px 23px;display:inline-flex;align-items:center;gap:15px;border:1px solid #e2b69c;background:#5d252cd6;color:#fff0df;font:700 11px/1.5 var(--sans);letter-spacing:.12em;box-shadow:0 8px 36px #000a;transition:transform .22s,background .22s}
+.haema-trailer__play:hover{transform:scale(1.04);background:#893945}
+.haema-trailer__play span{font-size:16px}
+.haema-trailer__poster-content>small{font:600 8px var(--sans);letter-spacing:.14em;color:#d0b7a2}
+.haema-trailer__legend button{background:none;border:0;color:#f1c4ac;font:700 9px var(--sans);letter-spacing:.12em;text-decoration:underline;text-underline-offset:4px}
+.haema-trailer__screen iframe{background:#090809}
+@media(max-width:720px){.haema-trailer__choice{padding:7px;gap:8px}.haema-trailer__choice img{width:75px;height:50px}.haema-trailer__choice small{font-size:8px;letter-spacing:.05em}.haema-trailer__choice strong{font-size:21px}.haema-trailer__choice-state{font-size:7px}.haema-trailer__poster-content{gap:12px}.haema-trailer__play{padding:12px;font-size:9px}.haema-trailer__poster-content>small{font-size:7px}}
+@media(max-width:400px){.haema-trailer__choice{display:grid}.haema-trailer__choice img{width:100%;height:58px}.haema-trailer__choice strong{font-size:20px}}
+@media(prefers-reduced-motion:reduce){.haema-trailer__choice,.haema-trailer__play{transition:none!important}}

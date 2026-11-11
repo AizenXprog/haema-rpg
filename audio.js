@@ -17,7 +17,7 @@
  const read=(area,key)=>{try{return area.getItem(key)}catch{return null}};
  const write=(area,key,value)=>{try{area.setItem(key,value)}catch{}};
  let wanted=false;
- let position=0,gapUntil=0,seekDone=false,blocked=false,playing=false;
+ let position=0,gapUntil=0,seekDone=false,blocked=false,playing=false,suspendedByTrailer=false;
  let retryTimer=0,notificationTimer=0,lastCheckpoint=0,pending=null;
  let playAttempt=0,autoplayNoticeShown=false;
  let notice=null;
@@ -50,11 +50,12 @@
  };
  const paint=()=>{
   if(!label)return;
-  const audible=!!audio&&wanted&&playing;
-  label.textContent=!audio?'SOM INDISPONÍVEL':!wanted?'SOM DESLIGADO':blocked?'TOQUE PARA OUVIR':audible||gapUntil>Date.now()?'DESLIGAR SOM':'SOM LIGADO';
+  const audible=!!audio&&wanted&&playing&&!suspendedByTrailer;
+  label.textContent=!audio?'SOM INDISPONÍVEL':!wanted?'SOM DESLIGADO':suspendedByTrailer?'SOM PAUSADO':blocked?'TOQUE PARA OUVIR':audible||gapUntil>Date.now()?'DESLIGAR SOM':'SOM LIGADO';
   button.setAttribute('aria-pressed',String(wanted));
   const description=!audio?'Trilha sonora indisponível':
     !wanted?'Ativar música ambiente':
+    suspendedByTrailer?'Música pausada durante o trailer':
     audible?'Desligar música ambiente':
     gapUntil>Date.now()?'Desligar música ambiente (pausa entre reproduções)':blocked?'Música ativa, mas o navegador exige uma interação para liberar o áudio':'Música ambiente ativada; desligar';
   button.setAttribute('aria-label',description);
@@ -85,7 +86,7 @@
   paint();
  };
  async function start(fromGesture=false){
-  if(!audio||!wanted)return;
+  if(!audio||!wanted||suspendedByTrailer)return;
   if(gapUntil>Date.now()){schedule();return;}
   if(gapUntil){gapUntil=0;position=0;persist(0);}
   if(pending&&!fromGesture)return pending;
@@ -116,15 +117,27 @@
   return task;
  }
  const disable=()=>{
-  wanted=false;blocked=false;playing=false;position=0;gapUntil=0;
+  wanted=false;blocked=false;playing=false;position=0;gapUntil=0;suspendedByTrailer=false;
   clearRestart();
   if(audio){audio.pause();try{audio.currentTime=0}catch{}}
    persist(0);
   paint();
  };
+ document.addEventListener('haema:trailer-play',()=>{
+  if(suspendedByTrailer)return;
+  suspendedByTrailer=true;
+  if(audio&&wanted){position=audio.currentTime;audio.pause();persist();}
+  paint();
+ });
+ document.addEventListener('haema:trailer-stop',()=>{
+  if(!suspendedByTrailer)return;
+  suspendedByTrailer=false;
+  paint();
+  if(wanted&&!playing)void start();
+ });
  button.addEventListener('click',()=>{
   if(!audio){note('A faixa de áudio não está disponível.');return;}
-  if(wanted&&(playing||gapUntil>Date.now())){
+  if(wanted&&(playing||gapUntil>Date.now()||suspendedByTrailer)){
    disable();note('Música desligada.');return;
   }
   wanted=true;
