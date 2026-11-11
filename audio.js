@@ -101,7 +101,7 @@
    try{
     await playPromise;
     if(attempt!==playAttempt)return;
-    if(!wanted){audio.pause();return;}
+    if(!wanted||suspendedByTrailer){audio.pause();return;}
     playing=true;blocked=false;
     persist();paint();
    }catch{
@@ -148,7 +148,7 @@
  });
  if(audio){
   audio.addEventListener('loadedmetadata',restore);
-  audio.addEventListener('playing',()=>{playing=true;blocked=false;paint()});
+  audio.addEventListener('playing',()=>{if(suspendedByTrailer){audio.pause();playing=false;paint();return;}playing=true;blocked=false;paint()});
   audio.addEventListener('pause',()=>{playing=false;paint()});
   audio.addEventListener('timeupdate',()=>{
    if(!wanted||gapUntil)return;
