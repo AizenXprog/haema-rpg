@@ -203,3 +203,5 @@ html[data-cinema-paused] .sigil-arch::after{animation-play-state:paused}
 
 /* Snapshot overlays must never swallow a second navigation or sound-control click. */
 ::view-transition{pointer-events:none}
+
+@media(max-width:760px){.hero-actions .button{flex:0 0 auto;width:100%;min-height:50px}}
