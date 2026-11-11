@@ -527,3 +527,12 @@
 @media (prefers-reduced-motion: no-preference) {
   .sheet-guide details[open] > .inside { animation: haema-unfold .2s var(--haema-ease); }
 }
+
+/* HAEMA NAV LINK UPDATES — preserve desktop header fit with the new section. */
+@media (min-width:940px) and (max-width:1180px){
+ .header-inner{padding-inline:14px;gap:8px}
+ .nav{gap:clamp(8px,1vw,14px)}
+ .nav a{font-size:10px;letter-spacing:.06em}
+ .top-action{padding:12px 10px;margin-left:0;font-size:9px}
+ .sound-toggle{font-size:8px;padding-inline:7px}
+}
