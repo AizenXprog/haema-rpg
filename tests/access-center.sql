@@ -8,7 +8,7 @@ select set_config('request.jwt.claims',jsonb_build_object('sub',(select user_id 
 set local role authenticated;
 do $verify$
 declare
- v jsonb; rev integer; ass uuid[]; expected uuid[]; u jsonb;
+ v jsonb; rev integer; ass uuid[]; expected uuid[]; u jsonb; campaign_id uuid;
 begin
  v := public.haema_access_control_snapshot();
  assert jsonb_array_length(v->'books')=3,'Livros ausentes na Central';
@@ -23,6 +23,17 @@ begin
  assert v->>'status'='approved','Aprovação não foi salva';
  assert (v->'books') ? 'regencias-conhecidas','Livro não foi atribuído';
  assert (v->'areas') ? 'library','Área Biblioteca não foi atribuída';
+ v := public.haema_access_control_snapshot();
+ select (x->>'id')::uuid into campaign_id from jsonb_array_elements(v->'campaigns') x limit 1;
+ if campaign_id is not null then
+  v := public.haema_access_control_user_save('33333333-3333-4333-8333-333333333333','approved',
+    array['library']::text[],array['regencias-conhecidas']::text[],
+    (select (u2->>'revision')::integer from jsonb_array_elements(public.haema_access_control_snapshot()->'users') u2
+      where u2->>'id'='33333333-3333-4333-8333-333333333333'),campaign_id);
+  select x into u from jsonb_array_elements(public.haema_access_control_snapshot()->'users') x
+    where x->>'id'='33333333-3333-4333-8333-333333333333';
+  assert u->'campaigns' ? campaign_id::text,'Vínculo de campanha não preservado';
+ end if;
  begin
   perform public.haema_access_control_user_save('33333333-3333-4333-8333-333333333333',
    'approved',array['library']::text[],array['regencias-conhecidas']::text[],rev,null);
