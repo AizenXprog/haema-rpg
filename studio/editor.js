@@ -9,7 +9,7 @@ const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
 const view={x:0,y:0,zoom:1,ready:false};
 let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,showGrid=true,paintedTiles=new Set(),lastStamp=null;
-let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,saveTimer=0,broadcastTimer=0;
+let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,saveTimer=0,broadcastTimer=0;
 let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
 const status=(message)=>{$('studio-status').textContent=message;};
 const round=(n)=>Math.round(n*2)/2;
@@ -30,6 +30,10 @@ function render(){
  ctx.fillStyle='#0a1012';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.translate(view.x,view.y);ctx.scale(view.zoom,view.zoom);
  drawScene(ctx,scene,{grid:showGrid,image:backgroundImage});
+ if(selectedProp&&scene.props.includes(selectedProp)&&tool==='select'){
+  ctx.save();ctx.lineWidth=2.5/Math.max(.2,view.zoom);ctx.strokeStyle='#f0d3a0';ctx.setLineDash([7,4]);
+  ctx.beginPath();ctx.arc(selectedProp.x*CELL,selectedProp.y*CELL,27,0,Math.PI*2);ctx.stroke();ctx.restore();
+ }
  if(hover&&['terrain','reveal','conceal','erase','raise','lower','scatter'].includes(tool)){
   ctx.strokeStyle=tool==='reveal'?'#d6b986':'#f2d1a4';ctx.lineWidth=1.6/view.zoom;ctx.setLineDash([6/view.zoom,4/view.zoom]);
   ctx.beginPath();ctx.arc(hover.x*CELL,hover.y*CELL,brush*CELL,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
@@ -57,6 +61,29 @@ function closestToken(p){
  for(const t of scene.tokens){const d=Math.hypot(t.x-p.x,t.y-p.y);if(d<distance){found=t;distance=d;}}
  return found;
 }
+function closestProp(p){
+ let found=null,distance=.72;
+ // Reverse order follows draw order, so the foremost object is selected first.
+ for(let i=scene.props.length-1;i>=0;i--){
+  const candidate=scene.props[i];
+  const d=Math.hypot(candidate.x-p.x,candidate.y-p.y);
+  if(d<distance){found=candidate;distance=d;}
+ }
+ return found;
+}
+function refreshSelection(){
+ if(selectedProp&&!scene.props.includes(selectedProp))selectedProp=null;
+ if(selected&&!scene.tokens.includes(selected))selected=null;
+ const valid=!!selectedProp;
+ for(const id of ['selected-rotate-left','selected-rotate-right','selected-duplicate','selected-delete'])$(id).disabled=!valid;
+ const label=valid?(document.querySelector('[data-prop="'+selectedProp.type+'"]')?.textContent?.trim()||selectedProp.type):
+  selected?'Token '+(selected.label||''): 'Nenhum objeto selecionado';
+ $('selected-object-label').textContent=label;
+ $('selected-object-hint').textContent=valid?'Arraste para mover. Use os controles para girar, duplicar ou excluir.':
+  selected?'Para editar este token, abra a aba Mesa.':'Selecione um móvel ou elemento do mapa para editar.';
+ $('token-visibility').disabled=!selected;
+ $('token-visibility').checked=selected?!!selected.hidden:false;
+}
 function saveLater(){
  clearTimeout(saveTimer);
  saveTimer=setTimeout(async()=>{
@@ -67,7 +94,7 @@ function saveLater(){
 // History stores the large background image by reference, not on every brush stroke.
 const freezeScene=()=>({shape:JSON.stringify({...scene,background:null}),background:scene.background});
 const thawScene=entry=>safeScene({...JSON.parse(entry.shape),background:entry.background});
-function clearSelection(){selected=null;$('token-visibility').checked=false;$('token-visibility').disabled=true;}
+function clearSelection(){selected=null;selectedProp=null;refreshSelection();}
 function snapshot(){
  history.push(freezeScene());if(history.length>40)history.shift();future.length=0;
 }
@@ -81,6 +108,7 @@ function changed(autosave=true){
  showGrid=scene.gridVisible!==false;$('grid-toggle').checked=showGrid;$('grid-state').textContent=showGrid?'Visível':'Oculta';
  $('scene-name').value=scene.name;
  $('studio-token-count').textContent=scene.tokens.length;
+ refreshSelection();
  render();
  if(autosave)saveLater();
  queueBroadcast();
@@ -167,7 +195,7 @@ function showInspectorTab(name){
  }
 }
 function showToolOptions(next){
- const context=({terrain:'terrain',raise:'elevation',lower:'elevation',prop:'prop',wall:'wall',room:'room',scatter:'scatter',generate:'generation',erase:'erase'})[next]||'default';
+ const context=({select:'select',terrain:'terrain',raise:'elevation',lower:'elevation',prop:'prop',wall:'wall',room:'room',scatter:'scatter',generate:'generation',erase:'erase'})[next]||'default';
  document.querySelectorAll('[data-tool-panel]').forEach(panel=>{panel.hidden=panel.dataset.toolPanel!==context;});
  $('studio-inspector-title').textContent=toolInfo[next]?.[0]||'Construção';
  $('studio-inspector-subtitle').textContent=context==='default'?'ESCOLHA UMA FERRAMENTA':'PROPRIEDADES DA FERRAMENTA';
@@ -191,10 +219,11 @@ canvas.addEventListener('pointerdown',event=>{
   gesture={mode:'pan',px:p.px,py:p.py,x:view.x,y:view.y};
  }else if(tool==='select'){
   selected=closestToken(p);
+  selectedProp=selected?null:closestProp(p);
   if(selected){snapshot();gesture={mode:'drag',token:selected};}
+  else if(selectedProp){snapshot();gesture={mode:'prop-drag',prop:selectedProp};showInspectorTab('build');}
   else gesture={mode:'noop'};
-  $('token-visibility').disabled=!selected;
-  if(selected)$('token-visibility').checked=!!selected.hidden;
+  refreshSelection();
  }else if(tool==='wall'){
   snapshot();gesture={mode:'wall',startX:round(p.x),startY:round(p.y)};
  }else if(tool==='room'){
@@ -209,6 +238,7 @@ canvas.addEventListener('pointermove',event=>{
  const p=point(event);hover=p;
  if(drawing&&gesture?.mode==='pan'){view.x=gesture.x+p.px-gesture.px;view.y=gesture.y+p.py-gesture.py;}
  else if(drawing&&gesture?.mode==='drag'&&within(p)){gesture.token.x=clamp(p.x,.5,scene.cols-.5);gesture.token.y=clamp(p.y,.5,scene.rows-.5);changed(false);}
+ else if(drawing&&gesture?.mode==='prop-drag'&&within(p)){gesture.prop.x=clamp(p.x,0,scene.cols);gesture.prop.y=clamp(p.y,0,scene.rows);changed(false);}
  else if(drawing&&gesture?.mode==='paint'){paintLine(gesture.previous,p);gesture.previous=p;}
  render();
 });
@@ -230,7 +260,7 @@ function release(event){
   }else status('Arraste um cômodo com pelo menos três células de largura e altura.');
  }
  if(gesture?.mode==='paint')changed();
- if(gesture?.mode==='drag'||gesture?.mode==='wall')changed();
+ if(['drag','prop-drag','wall'].includes(gesture?.mode))changed();
  drawing=false;gesture=null;render();
  try{canvas.releasePointerCapture(event.pointerId);}catch{}
 }
@@ -323,6 +353,25 @@ function setup(){
   $('prop-search-empty').hidden=total!==0;
  });
  $('new-room').addEventListener('click',()=>{setTool('room');status('Arraste no mapa para desenhar um cômodo; o editor cria paredes e um acesso.');});
+ for(const [id,degrees] of [['selected-rotate-left',-15],['selected-rotate-right',15]]){
+  $(id).addEventListener('click',()=>{
+   if(!selectedProp||!scene.props.includes(selectedProp))return;
+   snapshot();selectedProp.rotation=((Number(selectedProp.rotation)||0)+degrees+360)%360;changed();
+  });
+ }
+ $('selected-duplicate').addEventListener('click',()=>{
+  if(!selectedProp||!scene.props.includes(selectedProp))return;
+  if(scene.props.length>=500)return status('Limite de 500 objetos nesta versão.');
+  snapshot();
+  const clone={...selectedProp,x:clamp(selectedProp.x+.65,0,scene.cols),y:clamp(selectedProp.y+.65,0,scene.rows)};
+  scene.props.push(clone);selectedProp=clone;changed();
+ });
+ $('selected-delete').addEventListener('click',()=>{
+  if(!selectedProp||!scene.props.includes(selectedProp))return;
+  snapshot();scene.props=scene.props.filter(item=>item!==selectedProp);
+  selectedProp=null;changed();
+ });
+
  $('scene-name').addEventListener('change',event=>{snapshot();scene.name=String(event.target.value).slice(0,80)||'Sem título';changed();});
  $('grid-toggle').addEventListener('change',event=>{showGrid=event.target.checked;scene.gridVisible=showGrid;changed();});
  $('token-visibility').addEventListener('change',event=>{if(!selected)return;snapshot();selected.hidden=event.target.checked;changed();});
