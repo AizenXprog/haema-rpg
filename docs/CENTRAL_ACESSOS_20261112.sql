@@ -176,7 +176,7 @@ returns jsonb language sql stable security invoker set search_path='' as $$
 $$;
 create or replace function public.haema_access_control_user_save(
   target uuid,next_status text,requested_areas text[],requested_books text[],expected_revision integer,campaign uuid)
-returns jsonb language sql security invoker set search_path='' as $
+returns jsonb language sql security invoker set search_path='' as $$
  select haema_private.access_control_user_save(target,next_status,requested_areas,requested_books,expected_revision,campaign);
 $$;
 create or replace function public.haema_access_control_book_save(
