@@ -1,4 +1,5 @@
 import {renderTerrain} from './terrain-renderer.js';
+import {renderFog} from './fog-renderer.js';
 // HÆMA Estúdio — cena vetorial original. Independente do Manual e da Lore.
 export const CELL=48;
 export const TERRAINS={grass:'#354c3d',stone:'#6b6b62',earth:'#78604b',water:'#2c6470',sand:'#9b815a',wood:'#72503a',brick:'#775a4e',marble:'#969085'};
@@ -177,8 +178,11 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
   ctx.font='bold 14px Georgia';ctx.fillStyle='#1b1b1c';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText((t.label||'?').slice(0,2).toUpperCase(),x,y+1);
   if(!player&&t.hidden){ctx.strokeStyle='#df8d7e';ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(x,y,20,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}
  }
- for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++)if(scene.fog[tileIndex(scene,x,y)]){
-  ctx.fillStyle=player?'#0b0d11':'#080d16b3';ctx.fillRect(x*CELL,y*CELL,CELL,CELL);
+ if(!(typeof renderFog==='function'&&renderFog(ctx,scene,{player,cell:CELL}))){
+  // Server-side/mock context fallback only.
+  for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++)if(scene.fog[tileIndex(scene,x,y)]){
+   ctx.fillStyle=player?'#0b0d11':'#080d16b3';ctx.fillRect(x*CELL,y*CELL,CELL,CELL);
+  }
  }
  if(grid){ctx.lineWidth=1;ctx.strokeStyle=player?'#b1a48a1a':'#d2c6a039';ctx.beginPath();
   for(let x=0;x<=scene.cols;x++){ctx.moveTo(x*CELL+.5,0);ctx.lineTo(x*CELL+.5,h);}
