@@ -178,12 +178,19 @@ function palimpsest(host,data){
   for(let i=0;i<6;i++){
    const index=i,slot=el('button','reserved-slot',selected[i]||'Fragmento '+(i+1));slot.type='button';
    slot.title='Remover fragmento da posição '+(i+1);slot.addEventListener('click',()=>{if(selected[index]){selected.splice(index,1);paint();}});
+   slot.addEventListener('dragover',ev=>ev.preventDefault());
+   slot.addEventListener('drop',ev=>{ev.preventDefault();const id=ev.dataTransfer.getData('text/plain');
+    if(!(data.fragments||[]).some(fragment=>fragment.id===id))return;
+    const old=selected.indexOf(id);if(old>=0)selected.splice(old,1);
+    if(selected.length<6)selected.splice(Math.min(index,selected.length),0,id);paint();
+   });
    slots.append(slot);
   }
   choices.replaceChildren();
   for(const part of data.fragments||[]){
    const option=el('button','reserved-fragment');option.type='button';option.disabled=selected.includes(part.id)||selected.length>=6;
    option.append(el('b','',part.mark||part.id),el('span','',part.text||''),el('small','',part.note||''));
+   option.draggable=!option.disabled;option.addEventListener('dragstart',ev=>ev.dataTransfer.setData('text/plain',part.id));
    option.addEventListener('click',()=>{selected.push(part.id);paint();});choices.append(option);
   }
  };
@@ -218,14 +225,20 @@ function ledger(host,data){
 function wheel(host,data){
  host.append(el('p','','Use os capítulos para identificar os princípios e ajustar a orientação dos traços. A sequência deste instrumento não representa hierarquia cosmológica.'));
  const slots=[],layout=el('div','reserved-wheel');
+ layout.setAttribute('aria-label','Instrumento circular de sete peças e marcas de alinhamento');
  const choices=[['','Escolher Regência'],...(data.pieces||[]).map(x=>[x.id,x.description])];
  for(let i=0;i<7;i++){
   const control=el('div','reserved-wheel-slot'),position=el('span','reserved-position',String(i+1));
+  const angle=-Math.PI/2+i*2*Math.PI/7;
+  control.style.left=(50+39*Math.cos(angle))+'%';control.style.top=(50+39*Math.sin(angle))+'%';
   const select=el('select');select.setAttribute('aria-label','Regência na posição '+(i+1));
   for(const [id,label] of choices){const option=el('option','',label);option.value=id;select.append(option);}
+  const guide=el('span','reserved-wheel-guide','◱');guide.setAttribute('aria-hidden','true');
   const rotor=el('button','reserved-rotor','◱');rotor.type='button';rotor.setAttribute('aria-label','Girar peça '+(i+1));
   let rotation=0;rotor.addEventListener('click',()=>{rotation=(rotation+1)%4;rotor.style.transform='rotate('+rotation*90+'deg)';rotor.setAttribute('aria-label','Girar peça '+(i+1)+'. Orientação '+rotation*90+' graus');});
-  const current={select,rotation:()=>rotation};slots.push(current);control.append(position,select,rotor);layout.append(control);
+  select.addEventListener('change',()=>{const repeats=slots.some(other=>other.select!==select&&other.select.value===select.value&&select.value);
+   if(repeats)select.value='';});
+  const current={select,rotation:()=>rotation};slots.push(current);control.append(position,select,rotor,guide);layout.append(control);
  }
  host.append(layout);
  return()=>({order:slots.map(x=>x.select.value),rotations:slots.map(x=>x.rotation())});
