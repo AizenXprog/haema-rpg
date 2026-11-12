@@ -18,9 +18,9 @@ begin
  assert not d::text ilike '%before_data%','Antes de fichas não pode aparecer no feed';
  assert not d::text ilike '%after_data%','Depois de fichas não pode aparecer no feed';
  assert not d::text ilike '%O Pacto das Chaves concedeu%','Texto dos livros não pode aparecer no feed';
- assert exists(select 1 from haema_private.activity_events e where e.action='book.open'),'Leitura não registrada';
- assert exists(select 1 from haema_private.activity_events e where e.action='puzzle.attempt'),'Tentativa não registrada';
- assert not exists(select 1 from haema_private.activity_events e where e.target like '%positions%'),'Tentativa completa não pode ficar armazenada';
+ assert exists(select 1 from jsonb_array_elements(d->'items') e where e->>'action'='book.open'),'Leitura não registrada';
+ assert exists(select 1 from jsonb_array_elements(d->'items') e where e->>'action'='puzzle.attempt'),'Tentativa não registrada';
+ assert not exists(select 1 from jsonb_array_elements(d->'items') e where e->>'target' like '%positions%'),'Tentativa completa não pode ficar armazenada';
 end $verification$;
 reset role;
 -- Ensaio de bloqueio de leitura dos registros para pessoas não administradoras.
