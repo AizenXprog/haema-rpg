@@ -94,7 +94,7 @@ begin
  perform haema_private.activity_mark('campaign','campaign.member_added',
    new.user_id::text,new.campaign_id::text,'servidor',0);
  return new;
-end $;
+end $$;
 drop trigger if exists haema_members_activity on public.haema_members;
 create trigger haema_members_activity after insert or delete on public.haema_members
 for each row execute function haema_private.activity_member_trigger();
