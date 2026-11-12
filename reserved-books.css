@@ -212,4 +212,31 @@
  .reserved-reader[open] .reserved-frame{animation:none!important;transform:none!important}
  .reserved-ambient-canvas{display:none!important}
 }
-html[data-cinema-paused] .reserved-reader :is(.reserved-scenery::before,.reserved-scenery::after){animation-play-state:paused}
+html[data-cinema-paused] .reserved-reader .reserved-scenery::before,
+html[data-cinema-paused] .reserved-reader .reserved-scenery::after{animation-play-state:paused}
+
+/* The hidden writing only emerges during the examination; it is not an answer label. */
+.reserved-overlay-paper{display:flex;flex-direction:column;gap:11px;text-align:left;font:italic 21px/1.4 'Cormorant Garamond',serif;min-height:165px}
+.reserved-overlay-top{font:700 9px 'DM Sans',sans-serif;letter-spacing:.14em;opacity:.65}
+.reserved-overlay-paper p{margin:0}
+.reserved-overlay-hidden{display:block;opacity:.04;filter:blur(4px);transition:filter .65s ease,opacity .65s ease;line-height:1.5;letter-spacing:.012em;border-top:1px solid var(--edge);padding-top:14px}
+.reserved-overlay-paper.is-lit .reserved-overlay-hidden{opacity:.85;filter:blur(0)}
+.reserved-document{display:flex;flex-direction:column;gap:10px;justify-content:flex-start;cursor:pointer;min-width:0;font:15px/1.5 'DM Sans',sans-serif;transition:box-shadow .18s,border-color .18s,transform .18s}
+.reserved-document strong{font:600 25px/1.2 'Cormorant Garamond',serif}
+.reserved-document span{display:block;font-size:13px;line-height:1.55;text-wrap:pretty}
+.reserved-document:before{content:"✥";align-self:flex-end;font:16px 'Cormorant Garamond',serif;color:var(--accent);opacity:.5}
+.reserved-document[aria-pressed="true"]{border:2px solid var(--accent);box-shadow:inset 0 0 0 3px var(--paper),0 0 0 2px var(--accent);transform:translateY(-3px)}
+.reserved-fragment{font:16px/1.45 'Cormorant Garamond',serif;touch-action:manipulation}
+.reserved-fragment b{font:800 10px 'DM Sans',sans-serif;letter-spacing:.06em}
+.reserved-fragment small{font:italic 14px/1.35 'Cormorant Garamond',serif}
+.reserved-slot{font:15px/1.4 'Cormorant Garamond',serif;overflow-wrap:anywhere;padding:13px;min-height:104px;cursor:grab}
+.reserved-reader .reserved-puzzle select{cursor:pointer}
+.reserved-reader .reserved-puzzle input{cursor:text}
+@media(max-width:720px){
+ .reserved-overlay-paper{font-size:19px}
+ .reserved-document{min-height:115px}
+ .reserved-slot{min-height:94px;padding:9px;font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .reserved-overlay-hidden,.reserved-document{transition:none!important}
+}
