@@ -7,8 +7,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=3">
-<script type="module" src="studio/editor.js?v=5"></script>
+<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=4">
+<script type="module" src="studio/editor.js?v=6"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
@@ -32,6 +32,8 @@
 <button type="button" data-tool="pan" aria-pressed="true"><span>✥</span>Mover</button>
 <button type="button" data-tool="select" aria-pressed="false"><span>⌖</span>Selecionar</button>
 <button type="button" data-tool="terrain" aria-pressed="false"><span>▧</span>Terreno</button>
+<button type="button" data-tool="road" aria-pressed="false"><span>⌁</span>Estrada</button>
+<button type="button" data-tool="river" aria-pressed="false"><span>≈</span>Rio</button>
 <button type="button" data-tool="raise" aria-pressed="false"><span>⬆</span>Elevar</button>
 <button type="button" data-tool="lower" aria-pressed="false"><span>⬇</span>Rebaixar</button>
 <button type="button" data-tool="prop" aria-pressed="false"><span>♧</span>Objetos</button>
@@ -81,6 +83,28 @@
        <button type="button" id="selected-delete" disabled>Excluir</button>
       </div>
      </div>
+     <div id="selected-path-controls" class="studio-selection-card" hidden>
+      <strong id="selected-path-label">Caminho selecionado</strong>
+      <label class="brush-label" for="selected-path-width"><span>Largura <b id="selected-path-width-value">1.25</b></span>
+       <input id="selected-path-width" type="range" min=".5" max="4" step=".25" value="1.25"></label>
+      <div class="studio-selection-actions">
+       <button type="button" id="selected-path-duplicate" disabled>Duplicar</button>
+       <button type="button" id="selected-path-delete" disabled>Excluir</button>
+      </div>
+      <p class="studio-panel-hint">Arraste o traçado para movê-lo. Use a largura para ajustar a estrada ou o rio.</p>
+     </div>
+    </div>
+    <div data-tool-panel="path" class="context-panel" hidden>
+     <p class="context-intro">Arraste o mouse para desenhar um traçado contínuo. Depois, use Selecionar para mover, duplicar ou ajustar a largura.</p>
+     <label class="brush-label" for="path-width"><span>Largura <b id="path-width-value">1.25</b> células</span>
+      <input id="path-width" type="range" min=".5" max="4" step=".25" value="1.25"></label>
+     <label class="field-label" id="road-material-container" for="road-material">Acabamento da estrada
+      <select id="road-material">
+       <option value="earth">Terra batida</option><option value="stone">Pedra</option>
+       <option value="sand">Areia</option><option value="brick">Tijolos</option><option value="wood">Madeira</option>
+      </select>
+     </label>
+     <div class="studio-tip">Os traçados permanecem editáveis e não revelam áreas cobertas pela neblina.</div>
     </div>
     <div data-tool-panel="terrain" class="context-panel" hidden>
      <p class="context-intro">Escolha o material e arraste o pincel no mapa.</p>
@@ -129,6 +153,16 @@
 <button type="button" data-scene-template="tavern">Estalagem</button>
 <button type="button" data-scene-template="dungeon">Ruínas e salas</button></div>
      <div class="studio-tip">Gerar substitui a cena aberta. Exporte seu projeto antes, se quiser guardar a versão anterior.</div>
+     <details class="studio-disclosure studio-guided">
+      <summary>Gerar a partir de descrição (experimental)</summary>
+      <div class="studio-guided-body">
+       <label class="field-label" for="guided-description">Descreva seu cenário
+        <textarea id="guided-description" maxlength="320" rows="4" placeholder="Ex.: floresta densa com um rio sinuoso e uma estrada de terra"></textarea>
+       </label>
+       <button type="button" id="guided-generate" class="studio-wide-action">Montar cena editável</button>
+       <p class="studio-panel-hint" id="guided-feedback" role="status">Interpretação local por palavras-chave, sem IA e sem enviar sua descrição a serviços externos.</p>
+      </div>
+     </details>
     </div>
     <div data-tool-panel="room" class="context-panel" hidden>
      <p class="context-intro">Arraste um retângulo no mapa. O editor cria automaticamente piso, paredes e uma porta.</p>
