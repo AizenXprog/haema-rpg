@@ -197,3 +197,13 @@
 .weather-still .volume-mist,.weather-still .volume-horizon{animation-play-state:paused}
 
 .volume-reader button{box-shadow:none;text-transform:none;letter-spacing:normal}
+
+
+/* The decorative pointer lives in <body>, below the browser top layer used
+   by showModal(). Restore the native mouse cursor inside both book readers. */
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+ html.cursor-ready :is(.book-reader,.volume-reader){cursor:default}
+ html.cursor-ready :is(.book-reader,.volume-reader) :is(button:not(:disabled),a){cursor:pointer}
+ html.cursor-ready :is(.book-reader,.volume-reader) button:disabled{cursor:not-allowed}
+ html.cursor-ready :is(.book-reader,.volume-reader) :is(input,textarea){cursor:text}
+}
