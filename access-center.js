@@ -20,8 +20,8 @@ function action(label,run,cls='access-action'){
   if(control.disabled)return;
   control.disabled=true;
   try{await run();}catch(error){
-   const message=control.parentNode?.querySelector('[data-access-error]');
-   if(message){message.textContent=error?.message||'Não foi possível salvar.';message.hidden=false;}
+   const message=control.closest('.access-center')?.querySelector('.access-feedback');
+   if(message){message.replaceChildren(notice(error?.message||'Não foi possível concluir a alteração.','error'));message.scrollIntoView({behavior:'smooth',block:'nearest'});}
   }finally{if(control.isConnected)control.disabled=false;}
  });
  return control;
