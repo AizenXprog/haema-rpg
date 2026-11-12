@@ -1,7 +1,7 @@
 /* Navegação identificada, sem conteúdo digitado. Sinais do cliente não constituem prova de segurança. */
 import {client} from './auth.js';
 const ROUTES=new Set(['index.html','biblioteca.html','sistema.html','manual.html','portal.html',
- 'administracao.html','campanha.html','mesa.html','estudio.html','atualizacoes.html']);
+ 'administracao.html','campanha.html','mesa.html','estudio.html','atualizacoes.html','privacidade.html','arquivo.html','ficha.html','dados.html','projecao.html']);
 const path=()=>location.pathname.split('/').pop()||'index.html';
 let pending=false,connected=false,lastRoute='';
 async function signal(action,target){
