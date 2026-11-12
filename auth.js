@@ -32,7 +32,7 @@ export async function access() {
   const {data, error} = await db.auth.getUser();
   if (error || !data.user) throw Error('Sua sessão expirou. Entre novamente.');
   const admin = await rpc('haema_is_admin');
-  if (admin) return {user: data.user, admin: true, areas: ['library','bestiary','portal','mesa','materials'], status: 'approved'};
+  if (admin) return {user: data.user, admin: true, areas: ['library','bestiary','portal','mesa','materials','studio'], status: 'approved'};
   const [account, grants] = await Promise.all([
     db.from('haema_access_accounts').select('status').eq('user_id', data.user.id).single(),
     db.from('haema_area_grants').select('area').eq('user_id', data.user.id)
