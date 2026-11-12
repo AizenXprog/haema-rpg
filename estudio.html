@@ -3,24 +3,24 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#08090b">
-<title>HÆMA Estúdio — Mesa Física</title>
+<title>HÆMA Estúdio — Mapmaker 0.2</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="studio/studio.css?v=1">
-<script type="module" src="studio/editor.js?v=1"></script>
+<link rel="stylesheet" href="studio/studio.css?v=2">
+<script type="module" src="studio/editor.js?v=2"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
  <div class="studio-gate-mark">H<span>Æ</span>MA</div>
- <p class="studio-kicker">ATELIÊ RESERVADO · ESTÚDIO 0.1</p>
+ <p class="studio-kicker">ATELIÊ RESERVADO · ESTÚDIO 0.2</p>
  <h1>Onde os mundos<br><em>tomam forma.</em></h1>
  <p>Verificando acesso individual ao Estúdio…</p>
  <a href="portal.html" class="studio-back">← Voltar à minha conta</a>
 </div>
 <div id="studio-workspace" hidden>
  <header class="studio-topbar">
-  <div class="studio-brand"><a href="portal.html" aria-label="Voltar ao Portal">H<span>Æ</span>MA</a><i></i><div><strong>ESTÚDIO</strong><small>MAPMAKER & TABLETOP · ALFA 0.1</small></div></div>
+  <div class="studio-brand"><a href="portal.html" aria-label="Voltar ao Portal">H<span>Æ</span>MA</a><i></i><div><strong>ESTÚDIO</strong><small>MAPMAKER & TABLETOP · ALFA 0.2</small></div></div>
   <label class="scene-name-label"><span>PROJETO</span><input id="scene-name" type="text" maxlength="80" value="Ruínas do caminho" aria-label="Nome do mapa"></label>
   <div class="studio-actions"><button type="button" id="save-local">Salvar</button><button type="button" id="export-json">Exportar projeto</button><button type="button" id="open-projection" class="studio-primary">Abrir tela dos jogadores <span aria-hidden="true">↗</span></button></div>
  </header>
@@ -31,8 +31,12 @@
     <button type="button" data-tool="pan" aria-pressed="true"><span>✥</span>Mover</button>
     <button type="button" data-tool="select" aria-pressed="false"><span>⌖</span>Selecionar</button>
     <button type="button" data-tool="terrain" aria-pressed="false"><span>▧</span>Terreno</button>
+    <button type="button" data-tool="raise" aria-pressed="false"><span>⬆</span>Elevar</button>
+    <button type="button" data-tool="lower" aria-pressed="false"><span>⬇</span>Rebaixar</button>
     <button type="button" data-tool="prop" aria-pressed="false"><span>♧</span>Objetos</button>
     <button type="button" data-tool="wall" aria-pressed="false"><span>╱</span>Parede</button>
+    <button type="button" data-tool="room" aria-pressed="false"><span>▣</span>Cômodo</button>
+    <button type="button" data-tool="scatter" aria-pressed="false"><span>♧</span>Floresta</button>
     <button type="button" data-tool="token" aria-pressed="false"><span>◉</span>Token</button>
     <button type="button" data-tool="reveal" aria-pressed="false"><span>◌</span>Revelar</button>
     <button type="button" data-tool="conceal" aria-pressed="false"><span>●</span>Ocultar</button>
@@ -45,19 +49,55 @@
     <button type="button" data-terrain="stone" aria-pressed="false"><i style="--swatch:#7a7a70"></i>Pedra</button>
     <button type="button" data-terrain="earth" aria-pressed="false"><i style="--swatch:#94735a"></i>Terra</button>
     <button type="button" data-terrain="water" aria-pressed="false"><i style="--swatch:#37788a"></i>Água</button>
+    <button type="button" data-terrain="sand" aria-pressed="false"><i style="--swatch:#bea070"></i>Areia</button>
+    <button type="button" data-terrain="wood" aria-pressed="false"><i style="--swatch:#926547"></i>Madeira</button>
+    <button type="button" data-terrain="brick" aria-pressed="false"><i style="--swatch:#927160"></i>Tijolos</button>
+    <button type="button" data-terrain="marble" aria-pressed="false"><i style="--swatch:#bcb4a8"></i>Mármore</button>
    </div>
    <label class="brush-label" for="brush-size"><span>Raio do pincel <b id="brush-value">2</b></span><input id="brush-size" type="range" min="1" max="5" value="2"></label>
+   <p class="studio-panel-hint">Arraste o pincel sobre o mapa. Elevar e rebaixar criam níveis de terreno; margens e materiais recebem acabamento automático.</p>
    <div class="panel-rule"></div>
-   <div class="panel-heading"><span>03 / RECURSOS INICIAIS</span><h3>Objetos de cena</h3></div>
+   <div class="panel-heading"><span>03 / AMBIENTES</span><h3>Geração de cenas</h3></div>
+   <label class="field-label">Semente (opcional)<input type="text" id="seed-input" maxlength="80" placeholder="Ex.: caminho-do-inverno"></label>
+   <div class="generator-grid" role="group" aria-label="Cenários gerados">
+    <button type="button" data-scene-template="forest">Bosque antigo</button>
+    <button type="button" data-scene-template="lake">Lago e margens</button>
+    <button type="button" data-scene-template="tavern">Estalagem</button>
+    <button type="button" data-scene-template="dungeon">Ruínas e salas</button>
+   </div>
+   <p class="studio-panel-hint">A geração altera apenas o projeto aberto. Salve ou exporte a cena atual antes de substituí-la.</p>
+   <div class="panel-rule"></div>
+   <div class="panel-heading"><span>04 / CONSTRUÇÃO</span><h3>Interiores e arquitetura</h3></div>
+   <button type="button" id="new-room" class="studio-wide-action">Desenhar cômodo com paredes + porta</button>
+   <p class="studio-panel-hint">Arraste sobre o terreno para criar um cômodo com piso, paredes e entrada.</p>
+   <div class="panel-rule"></div>
+   <div class="panel-heading"><span>05 / MOBILIÁRIO</span><h3>Objetos e detalhes</h3></div>
    <div class="palette-grid" role="group" aria-label="Objetos disponíveis">
     <button type="button" data-prop="tree" aria-pressed="false">Árvore</button>
     <button type="button" data-prop="rock" aria-pressed="false">Pedra</button>
     <button type="button" data-prop="torch" aria-pressed="false">Tocha</button>
     <button type="button" data-prop="pillar" aria-pressed="false">Coluna</button>
+    <button type="button" data-prop="bush" aria-pressed="false">Arbusto</button>
+    <button type="button" data-prop="table" aria-pressed="false">Mesa</button>
+    <button type="button" data-prop="chair" aria-pressed="false">Cadeira</button>
+    <button type="button" data-prop="bed" aria-pressed="false">Cama</button>
+    <button type="button" data-prop="shelf" aria-pressed="false">Estante</button>
+    <button type="button" data-prop="chest" aria-pressed="false">Baú</button>
+    <button type="button" data-prop="rug" aria-pressed="false">Tapete</button>
+    <button type="button" data-prop="barrel" aria-pressed="false">Barril</button>
+    <button type="button" data-prop="hearth" aria-pressed="false">Lareira</button>
+    <button type="button" data-prop="crate" aria-pressed="false">Caixote</button>
+    <button type="button" data-prop="cabinet" aria-pressed="false">Armário</button>
+    <button type="button" data-prop="stairs" aria-pressed="false">Escadas</button>
+    <button type="button" data-prop="door" aria-pressed="false">Porta</button>
    </div>
   </aside>
   <main class="studio-stage" id="studio-main">
-   <div class="studio-canvas-head"><div><span>VISUALIZAÇÃO DO MESTRE</span><strong>Cena ativa</strong></div><div class="studio-head-tools"><button type="button" id="undo" title="Desfazer (Ctrl+Z)">↶</button><button type="button" id="redo" title="Refazer (Ctrl+Y)">↷</button><button type="button" id="fit-map">Ajustar mapa</button></div></div>
+   <div class="studio-canvas-head"><div><span>VISUALIZAÇÃO DO MESTRE</span><strong>Cena ativa</strong></div><div class="studio-head-tools">
+     <label class="studio-grid-switch" for="grid-toggle" title="Exibir ou ocultar completamente os quadradinhos, inclusive na projeção e na exportação">
+      <input id="grid-toggle" type="checkbox" checked><span class="studio-grid-indicator" aria-hidden="true">▦</span><span>Grade <b id="grid-state">Visível</b></span>
+     </label>
+     <button type="button" id="undo" title="Desfazer (Ctrl+Z)">↶</button><button type="button" id="redo" title="Refazer (Ctrl+Y)">↷</button><button type="button" id="fit-map">Ajustar mapa</button></div></div>
    <div class="canvas-viewport"><canvas id="studio-canvas" aria-label="Editor de mapa de RPG em duas dimensões"></canvas><div class="canvas-corner">HÆMA / MESTRE · CONTEÚDO RESERVADO</div></div>
    <div class="studio-statusbar"><span id="studio-status" role="status">Projeto local. Nada é enviado ao servidor.</span><span>FERRAMENTA <b id="studio-tool">MOVER</b></span><span>ZOOM <b id="studio-zoom">100%</b></span></div>
   </main>
@@ -65,7 +105,8 @@
    <div class="panel-heading"><span>04 / MESA FÍSICA</span><h2>Controle do mestre</h2><p>Somente a visão revelada será projetada. Não é preciso conectar nenhum jogador.</p></div>
    <div class="panel-rule"></div>
    <div class="panel-heading"><span>NEBLINA DE GUERRA</span><h3>Visibilidade</h3></div>
-   <div class="stack-actions"><button type="button" id="reveal-all">Revelar todo o mapa</button><button type="button" id="hide-all">Cobrir todo o mapa</button><label><input id="grid-toggle" type="checkbox" checked> Mostrar grade</label></div>
+   <div class="stack-actions"><button type="button" id="reveal-all">Revelar todo o mapa</button><button type="button" id="hide-all">Cobrir todo o mapa</button></div>
+   <p class="studio-panel-hint">O controle de grade está acima do mapa. Ao ocultar, os quadradinhos também desaparecem da tela dos jogadores.</p>
    <div class="panel-rule"></div>
    <div class="panel-heading"><span>CRIATURAS E PERSONAGENS</span><h3>Tokens <b id="studio-token-count">2</b></h3></div>
    <label class="field-label">Identificação<input type="text" id="token-name" maxlength="16" value="PJ" placeholder="Nome ou iniciais"></label>
@@ -82,7 +123,7 @@
    </div>
    <input type="file" hidden id="import-map-input" accept="image/png,image/jpeg,image/webp">
    <input type="file" hidden id="import-json-input" accept=".json,application/json">
-   <p class="studio-footnote">Protótipo técnico 0.1. Projetos são salvos neste navegador; exporte cópias JSON para preservar seu trabalho. Efeitos avançados, biblioteca extensa e fichas serão adicionados em etapas posteriores.</p>
+   <p class="studio-footnote">Protótipo técnico 0.2. Projetos são salvos neste navegador; exporte cópias JSON para preservar seu trabalho. Efeitos avançados, biblioteca extensa e fichas serão adicionados em etapas posteriores.</p>
   </aside>
  </div>
  <footer class="studio-footer">HÆMA · HAEMATOMANTHÍA <span>Site e Sistema criado por Vitor Monte.</span></footer>
