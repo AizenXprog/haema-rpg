@@ -349,3 +349,11 @@ button,input{font-family:inherit}
 .studio-selection-actions button:hover:not(:disabled){background:#414851}
 .studio-selection-actions button:disabled{opacity:.4;cursor:not-allowed}
 #selected-delete:not(:disabled){color:#f0c7ca}
+
+
+.studio-inspector .field-label select{
+ width:100%;min-height:38px;background:#272d32;color:#e6e8ea;
+ border:1px solid #464e56;border-radius:6px;padding:8px 10px;
+ font:500 12px/1.4 'DM Sans',sans-serif
+}
+.studio-inspector .field-label select:focus-visible{outline:2px solid #bd8d95;outline-offset:2px}
