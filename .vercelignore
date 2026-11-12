@@ -1,0 +1,7 @@
+.git/
+private/
+artifacts/
+tests/
+technical/
+docs/
+README*.md

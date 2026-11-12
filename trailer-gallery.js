@@ -92,7 +92,7 @@
     playerElement=frame;
     screen.replaceChildren(frame);
     const close=gallery.querySelector('[data-trailer-close]');
-    if(close)close.hidden=false;
+    if(close){close.hidden=false;close.focus({preventScroll:true});}
     void loadYT().then(()=>{
       if(token!==generation||!frame.isConnected||!window.YT?.Player)return;
       try{
@@ -111,7 +111,7 @@
     const selected=el?.closest('[data-trailer-select]');
     if(selected){choose(selected.dataset.trailerSelect);return;}
     if(el?.closest('[data-trailer-play]')){play();return;}
-    if(el?.closest('[data-trailer-close]')){const active=root()?.dataset.active||'1';choose(active);}
+    if(el?.closest('[data-trailer-close]')){const active=root()?.dataset.active||'1';choose(active);root()?.querySelector('[data-trailer-play]')?.focus({preventScroll:true});}
   });
   document.addEventListener('haema:leaving',stop);
   document.addEventListener('haema:navigated',()=>{if(root())choose(root().dataset.active||'1');else stop();});

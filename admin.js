@@ -122,6 +122,28 @@ async function initAdmin() {
         panel.append(select,editor);
       }catch(error){if(tab===tabVersion&&root===host())panel.append(node('p','',error.message));}
     }
+    async function volumes() {
+      const tab=++tabVersion;
+      panel.replaceChildren(node('h2','','Volumes e publicação'),node('p','','Os textos completos permanecem privados até a liberação explícita. Um volume liberado só pode ser lido por contas aprovadas com acesso à Biblioteca. O Bestiário mantém suas liberações independentes.'));
+      try {
+        const items=await rpc('haema_volume_catalog');
+        if(version!==generation||root!==host()||tab!==tabVersion)return;
+        for(const item of items) {
+          const row=node('article','admin-user');
+          row.append(node('h3','',item.title),node('p','',item.released?'Liberado para leitores autorizados da Biblioteca.':'Privado · revisão exclusiva da administração.'));
+          const review=node('a','archive-link-button','Revisar na Biblioteca ↗');review.href='biblioteca.html#manuscritos-title';row.append(review);
+          const label=node('label'),confirm=node('input');confirm.type='checkbox';
+          label.append(confirm,document.createTextNode(item.released?'Confirmo retirar este volume da leitura dos jogadores.':'Revisei o texto e autorizo a leitura para contas aprovadas com Biblioteca.'));
+          const feedback=node('p');feedback.setAttribute('role','status');
+          const save=button(item.released?'Recolher volume':'Liberar volume',async()=>{
+            if(!confirm.checked)return;
+            try{await rpc('haema_volume_release',{volume_id:item.id,release:!item.released,expected_revision:item.revision});await volumes();}
+            catch(error){feedback.textContent=error.message;}
+          });save.disabled=true;confirm.addEventListener('change',()=>{save.disabled=!confirm.checked});
+          row.append(label,save,feedback);panel.append(row);
+        }
+      }catch(error){if(tab===tabVersion&&root===host())panel.append(node('p','',error.message));}
+    }
     function audit() {
       tabVersion++;
       panel.replaceChildren(node('h2','','Histórico de acessos e liberações'));
@@ -129,13 +151,13 @@ async function initAdmin() {
       for(const log of logs) {
         const row=node('article','audit-row');
         row.append(node('time','',new Date(log.created_at).toLocaleString('pt-BR')),
-          node('strong','',log.action==='access.review'?'Permissões revisadas':'Trechos do Bestiário revisados'),
-          node('p','',log.subject_id?(names[log.subject_id]||'Conta cadastrada')+' · '+log.details.before+' → '+log.details.after:log.details.entry));
+          node('strong','',log.action==='access.review'?'Permissões revisadas':log.action==='volume.release'?'Publicação de volume revisada':'Trechos do Bestiário revisados'),
+          node('p','',log.subject_id?(names[log.subject_id]||'Conta cadastrada')+' · '+log.details.before+' → '+log.details.after:log.action==='volume.release'?log.details.volume+' · '+(log.details.after?'Liberado':'Privado'):log.details.entry));
         panel.append(row);
       }
       if(!logs.length)panel.append(node('p','','As revisões de acesso e as liberações aparecerão aqui.'));
     }
-    tabs.append(button('Pessoas',users),button('Liberações',releases),button('Auditoria',audit),button('Atualizar',initAdmin));
+    tabs.append(button('Pessoas',users),button('Liberações',releases),button('Volumes',volumes),button('Auditoria',audit),button('Atualizar',initAdmin));
     users();
   } catch(error) {
     if(version!==generation||root!==host())return;

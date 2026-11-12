@@ -8,6 +8,7 @@
  if(!main||!window.fetch||!window.history?.pushState)return;
  let pending=null,sequence=0,viewTransition=null,revealObserver=null;
  const cache=new Map();
+ let renderedPath=location.pathname+location.search;
  history.scrollRestoration='manual';
  const currentKey=()=>location.pathname.split('/').pop()||'index.html';
  const canon=url=>url.pathname.split('/').pop()||'index.html';
@@ -111,6 +112,7 @@
   document.dispatchEvent(new Event('haema:leaving'));
   const existing=document.querySelector('main#conteudo');
   existing.replaceWith(document.importNode(nextMain,true));
+  renderedPath=url.pathname+url.search;
   document.body.dataset.page=parsed.body.dataset.page||'';
   document.title=parsed.title||document.title;
   const description=parsed.querySelector('meta[name="description"]')?.content;
@@ -142,6 +144,11 @@
  });
  window.addEventListener('popstate',event=>{
   const url=new URL(location.href);
+  if(url.pathname+url.search===renderedPath){
+   ++sequence;pending?.abort();viewTransition?.skipTransition();
+   if(Number.isFinite(event.state?.scrollY))window.scrollTo({top:event.state.scrollY,left:0,behavior:'instant'});else scrollToTarget(url.hash);
+   return;
+  }
   void navigate(url,false,Number.isFinite(event.state?.scrollY)?event.state.scrollY:null);
  });
  updateHeader(currentKey());
