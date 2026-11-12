@@ -37,7 +37,7 @@ export async function renderReservedAdmin(panel){
     if(!manuscript.files?.length||!puzzle.files?.length){feedback(form,'Selecione os dois arquivos antes de importar.',true);return;}
     try{
      const raw=await manuscript.files[0].text(),setup=JSON.parse(await puzzle.files[0].text());
-     const first=(raw.match(/^#\\s+(.+)$/m)||[])[1]||'';
+     const first=(raw.match(/^#\s+(.+)$/m)||[])[1]||'';
      if(first.trim().toLocaleLowerCase('pt-BR')!==book.title.toLocaleLowerCase('pt-BR'))throw Error('O título do manuscrito não corresponde ao volume selecionado.');
      if(!setup?.public_data||!setup?.expected_answer||!setup?.revelation)throw Error('O arquivo do enigma está incompleto.');
      if(!confirm('Importar este manuscrito integral e configuração do enigma no armazenamento privado?'))return;
