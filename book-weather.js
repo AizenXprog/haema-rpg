@@ -53,7 +53,7 @@ export function createBookWeather(root,theme){
  }
  function tick(now){
   frame=0;if(disposed||document.hidden||reduced.matches)return;
-  const elapsed=last?now-last:16.7;
+  const elapsed=last?now-last:33.4;
   if(quiet&&elapsed<30){frame=requestAnimationFrame(tick);return;}
   last=now;if(elapsed>45)slow++;samples++;
   if(samples===120){if(slow>30){quiet=true;particles.splice(95);}samples=0;slow=0;}
