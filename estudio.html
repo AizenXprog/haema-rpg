@@ -7,8 +7,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=1">
-<script type="module" src="studio/editor.js?v=3"></script>
+<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=2">
+<script type="module" src="studio/editor.js?v=4"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
@@ -67,6 +67,19 @@
     <div data-tool-panel="default" class="context-panel">
      <p class="context-intro">Escolha uma ferramenta à esquerda para editar o mapa. As opções aparecem aqui conforme o que você estiver fazendo.</p>
      <div class="studio-tip"><strong>Dica</strong><span>Use a roda do mouse para aproximar, ou mantenha Espaço pressionado para mover a câmera.</span></div>
+    </div>
+    <div data-tool-panel="select" class="context-panel" hidden>
+     <p class="context-intro">Clique para selecionar objetos ou tokens. Arraste para mover.</p>
+     <div class="studio-selection-card">
+      <strong id="selected-object-label">Nenhum objeto selecionado</strong>
+      <p id="selected-object-hint">Clique em um móvel ou elemento do mapa para editar.</p>
+      <div class="studio-selection-actions" role="group" aria-label="Edição de objetos">
+       <button type="button" id="selected-rotate-left" disabled title="Girar 15 graus à esquerda">↶ Girar</button>
+       <button type="button" id="selected-rotate-right" disabled title="Girar 15 graus à direita">↷ Girar</button>
+       <button type="button" id="selected-duplicate" disabled>Duplicar</button>
+       <button type="button" id="selected-delete" disabled>Excluir</button>
+      </div>
+     </div>
     </div>
     <div data-tool-panel="terrain" class="context-panel" hidden>
      <p class="context-intro">Escolha o material e arraste o pincel no mapa.</p>
