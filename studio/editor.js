@@ -76,6 +76,7 @@ function redo(){
  if(!future.length)return;history.push(freezeScene());scene=thawScene(future.pop());clearSelection();loadBackground();changed();
 }
 function changed(autosave=true){
+ showGrid=scene.gridVisible!==false;$('grid-toggle').checked=showGrid;$('grid-state').textContent=showGrid?'Visível':'Oculta';
  $('scene-name').value=scene.name;
  $('studio-token-count').textContent=scene.tokens.length;
  render();
@@ -238,11 +239,11 @@ function setup(){
  document.querySelectorAll('[data-tool]').forEach(el=>el.addEventListener('click',()=>setTool(el.dataset.tool)));
  document.querySelectorAll('[data-terrain]').forEach(el=>el.addEventListener('click',()=>{terrain=el.dataset.terrain;setTool('terrain');document.querySelectorAll('[data-terrain]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
  document.querySelectorAll('[data-prop]').forEach(el=>el.addEventListener('click',()=>{prop=el.dataset.prop;setTool('prop');document.querySelectorAll('[data-prop]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
- document.querySelectorAll('[data-scene-template]').forEach(el=>el.addEventListener('click',()=>{const type=el.dataset.sceneTemplate;if(!confirm('Substituir o cenário atual por um novo mapa gerado? A ação poderá ser desfeita.'))return;snapshot();scene=generateScene(type,$('seed-input').value||String(Date.now()));clearSelection();loadBackground();changed();fit();status('Cenário gerado: '+scene.name); }));
+ document.querySelectorAll('[data-scene-template]').forEach(el=>el.addEventListener('click',()=>{const type=el.dataset.sceneTemplate;if(!confirm('Substituir o cenário atual por um novo mapa gerado? A ação poderá ser desfeita.'))return;snapshot();scene=generateScene(type,$('seed-input').value||String(Date.now()));scene.gridVisible=showGrid;clearSelection();loadBackground();changed();fit();status('Cenário gerado: '+scene.name); }));
  $('brush-size').addEventListener('input',event=>{brush=Number(event.target.value);$('brush-value').textContent=brush;render();});
  $('new-room').addEventListener('click',()=>{setTool('room');status('Arraste no mapa para desenhar um cômodo; o editor cria paredes e um acesso.');});
  $('scene-name').addEventListener('change',event=>{snapshot();scene.name=String(event.target.value).slice(0,80)||'Sem título';changed();});
- $('grid-toggle').addEventListener('change',event=>{showGrid=event.target.checked;changed(false);});
+ $('grid-toggle').addEventListener('change',event=>{showGrid=event.target.checked;scene.gridVisible=showGrid;changed();});
  $('token-visibility').addEventListener('change',event=>{if(!selected)return;snapshot();selected.hidden=event.target.checked;changed();});
  $('reveal-all').addEventListener('click',()=>{snapshot();scene.fog.fill(0);changed();});
  $('hide-all').addEventListener('click',()=>{snapshot();scene.fog.fill(1);changed();});
