@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<defs>
+<linearGradient id="bone" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#d2bf93"/><stop offset=".32" stop-color="#aa8e61"/><stop offset=".57" stop-color="#d1b786"/><stop offset="1" stop-color="#6c4b2f"/></linearGradient>
+<linearGradient id="earth" x2="0" y2="1"><stop stop-color="#ad8350"/><stop offset="1" stop-color="#513524"/></linearGradient>
+<linearGradient id="veil" x2="0" y2="1"><stop stop-color="#bf945e" stop-opacity="0"/><stop offset="1" stop-color="#9e7545"/></linearGradient>
+<filter id="stone"><feTurbulence baseFrequency=".035 .13" numOctaves="3" seed="9" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="3"/><feColorMatrix in="noise" type="saturate" values="0"/><feComposite operator="in" in2="SourceGraphic"/><feBlend in2="SourceGraphic" mode="soft-light"/></filter>
+<filter id="shadow"><feGaussianBlur stdDeviation="12"/></filter>
+</defs>
+<!-- Anonymous eroded fossil fragments. No canonical Drax anatomy is asserted. -->
+<path d="M0 710Q210 595 430 725T930 715T1600 620V900H0Z" fill="#755333" opacity=".65"/>
+<g fill="#241a13" opacity=".4" filter="url(#shadow)"><ellipse cx="170" cy="822" rx="240" ry="33"/><ellipse cx="1480" cy="830" rx="240" ry="40"/></g>
+<g fill="url(#bone)" filter="url(#stone)">
+<path d="M-78 894C-46 672-27 389 65 265L97 231L124 238C225 279 267 521 275 804L248 839C238 597 206 356 123 288L100 277C19 355-6 663-34 884Z"/>
+<path d="M20 905C47 718 68 497 141 407L162 389L188 398C263 443 295 655 307 858L284 874C267 678 240 473 175 441C101 495 87 745 65 906Z"/>
+<path d="M150 906C164 760 186 632 241 577L259 568L280 580C326 625 342 758 351 872L329 885C320 760 305 647 268 613L254 616C211 678 204 791 190 905Z"/>
+<path d="M1330 893C1303 727 1335 505 1422 414L1452 397L1481 413C1557 453 1610 593 1627 752L1595 769C1575 602 1519 476 1463 450C1387 509 1355 733 1370 892Z"/>
+<path d="M1433 910C1405 773 1422 643 1476 587L1501 578L1523 589C1595 627 1629 738 1665 870L1632 876C1605 758 1561 656 1509 628C1464 679 1466 791 1477 904Z"/>
+<path d="M15 817L61 763L91 747L152 731L219 751L239 777L207 795L171 785L153 813L101 831L83 817L49 835Z"/>
+<path d="M1220 859L1261 818L1311 797L1358 816L1387 851L1347 854L1329 837L1292 850L1270 876Z"/>
+<path d="M1488 826L1511 779L1573 747L1621 755L1646 797L1597 831L1563 811L1535 845Z"/>
+</g>
+<g fill="none" stroke="#523d29" opacity=".6" stroke-width="2">
+<path d="M84 281L101 317L94 343M237 598L253 619L247 641M1471 443L1451 468L1464 492M169 440L181 467L174 482M83 772L116 784L128 769M1544 784L1561 795L1582 782"/>
+</g>
+<path d="M0 808Q84 774 177 824T345 825T660 845T1120 833T1370 815T1600 793V900H0Z" fill="url(#veil)"/>
+<path d="M0 870Q149 833 289 870T590 888T1003 875T1340 856T1600 859V900H0Z" fill="url(#earth)"/>
+<g fill="#d1ae76" opacity=".35"><ellipse cx="138" cy="843" rx="42" ry="2"/><ellipse cx="300" cy="875" rx="57" ry="2"/><ellipse cx="1440" cy="848" rx="61" ry="2"/></g>
+</svg>

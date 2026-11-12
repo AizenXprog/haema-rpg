@@ -154,6 +154,7 @@ async function openBook(permissions) {
     status((entryId ? 'Registro' : 'Índice')+' · página '+(page+1)+' de '+entries.length);
   }
   function showIndex() {
+    spread.removeAttribute('aria-busy');
     request++;
     entryId = null;
     page = 0;

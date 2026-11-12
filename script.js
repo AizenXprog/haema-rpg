@@ -6,7 +6,7 @@
   const close=()=>{nav.classList.remove('is-open');menu.setAttribute('aria-expanded','false');};
   menu.addEventListener('click',()=>{const open=nav.classList.toggle('is-open');menu.setAttribute('aria-expanded',String(open))});
   nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu.getAttribute('aria-expanded')==='true'){close();menu.focus()}});
   document.addEventListener('click',e=>{if(!e.target.closest('.header-inner'))close()});
  }
  if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion:reduce)').matches){

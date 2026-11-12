@@ -2,7 +2,9 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 let checks=0;const ok=(v,label)=>{assert.ok(v,label);checks++};
 const hashes={"index.html":"298b3255299afe18fe512ea5b5263d1f99baa079c0bb7857b78dbdbb5e864c97","sistema.html":"81736ebab3b5ba3c1646005aa9e6a73fc5f45de505be2048b0021bae9cda7c07","manual.html":"717f7467793b8aee42bb849229c7f15cc84e1cf94fbf22b48af7affe09379b02","biblioteca.html":"f534a4334fdec302916d32d91660bcaba0c56401dfc0267c1b0fa3d16e147a6f","portal.html":"f035a2d4815a41fb641ee3fd7f7288bc689c7150955424534402ab8bad2809f8","campanha.html":"f15ebafdac7ff316c6119d7bae64026885ac17c3fbe6f4c59d893293d002788b","administracao.html":"12832ee4dc3774cba3547536c62813625a76daeed292f4513f23abb29f1cccf1","mesa.html":"f18843cf97b85f543e488b36f5e9d4c7004dbd7e4b6021f06602c31038564e56","atualizacoes.html":"e0191f681c288c7f7b7e2dad13fab4daa75617f958c8ebcc21a761f6428ca4af"};
 for(const [file,expected] of Object.entries(hashes)){
- const main=fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n').match(/<main\b[^>]*>[\s\S]*?<\/main>/)[0];
+ let content=fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n');
+ if(file==='biblioteca.html')content=content.replace(/<section class="archive-container volume-collection"[\s\S]*?<\/section>\n/,'').replace('Os manuscritos de Frikten e Jankinss ocupam a coleção abaixo. Cada volume respeita sua própria liberação.','Outros tomos receberão espaço aqui conforme o universo for desenvolvido e aprovado.');
+ const main=content.match(/<main\b[^>]*>[\s\S]*?<\/main>/)[0];
  ok(crypto.createHash('sha256').update(main).digest('hex')===expected,file+' content preserved');
 }
 function navigationHarness({reduced=false,transition=true}={}){
