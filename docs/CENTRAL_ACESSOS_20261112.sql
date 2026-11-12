@@ -17,10 +17,13 @@ begin
         'status',a.status,'revision',a.revision,
         'admin',exists(select 1 from public.haema_platform_admins f where f.user_id=a.user_id),
         'areas',coalesce((select jsonb_agg(g.area order by g.area) from public.haema_area_grants g where g.user_id=a.user_id),'[]'::jsonb),
-        'books',coalesce((select jsonb_agg(g.book_id order by g.book_id) from haema_private.reserved_grants g where g.user_id=a.user_id),'[]'::jsonb)
+        'books',coalesce((select jsonb_agg(g.book_id order by g.book_id) from haema_private.reserved_grants g where g.user_id=a.user_id),'[]'::jsonb),
+        'campaigns',coalesce((select jsonb_agg(m.campaign_id order by m.campaign_id) from public.haema_members m where m.user_id=a.user_id),'[]'::jsonb)
       ) order by a.display_name)
       from public.haema_access_accounts a left join auth.users u on u.id=a.user_id
     ),'[]'::jsonb),
+    'campaigns',coalesce((select jsonb_agg(jsonb_build_object('id',c.id,'name',c.name) order by c.name)
+      from public.haema_campaigns c where c.gm_id=auth.uid()),'[]'::jsonb),
     'books',coalesce((
       select jsonb_agg(jsonb_build_object(
         'id',b.id,'title',b.title,'subtitle',b.subtitle,
@@ -49,7 +52,7 @@ end $$;
 
 create or replace function haema_private.access_control_user_save(
   target uuid, next_status text, requested_areas text[],
-  requested_books text[], expected_revision integer)
+  requested_books text[], expected_revision integer, campaign uuid)
 returns jsonb
 language plpgsql security definer set search_path='' as $$
 declare
@@ -80,6 +83,9 @@ begin
     where x is null or not exists(select 1 from haema_private.reserved_books b where b.id=x)) then
     raise exception 'Existe um livro não reconhecido.' using errcode='22023';
   end if;
+  if campaign is not null and next_status<>'approved' then
+    raise exception 'A conta precisa estar aprovada antes de entrar em campanhas.' using errcode='22023';
+  end if;
   if next_status<>'approved' and cardinality(requested_areas)>0 then
     raise exception 'Contas não aprovadas não podem receber acesso às áreas.' using errcode='22023';
   end if;
@@ -97,8 +103,8 @@ begin
     into before_areas from public.haema_area_grants g where g.user_id=target;
   select coalesce(array_agg(g.book_id order by g.book_id),'{}'::text[])
     into before_books from haema_private.reserved_grants g where g.user_id=target;
-  if a.status is distinct from next_status or before_areas is distinct from desired_areas then
-    perform haema_private.review_access(target,next_status,desired_areas,null,a.revision);
+  if a.status is distinct from next_status or before_areas is distinct from desired_areas or campaign is not null then
+    perform haema_private.review_access(target,next_status,desired_areas,campaign,a.revision);
   else
     update public.haema_access_accounts
       set revision=revision+1,updated_at=clock_timestamp()
@@ -116,7 +122,7 @@ begin
   values(auth.uid(),target,'access.bundle',
     jsonb_build_object('before_status',a.status,'after_status',next_status,
       'before_areas',before_areas,'after_areas',after_areas,
-      'before_books',before_books,'after_books',after_books));
+      'before_books',before_books,'after_books',after_books,'campaign_added',campaign));
   return jsonb_build_object(
     'id',target,'status',next_status,
     'revision',(select revision from public.haema_access_accounts where user_id=target),
@@ -169,9 +175,9 @@ returns jsonb language sql stable security invoker set search_path='' as $$
  select haema_private.access_control_snapshot();
 $$;
 create or replace function public.haema_access_control_user_save(
-  target uuid,next_status text,requested_areas text[],requested_books text[],expected_revision integer)
-returns jsonb language sql security invoker set search_path='' as $$
- select haema_private.access_control_user_save(target,next_status,requested_areas,requested_books,expected_revision);
+  target uuid,next_status text,requested_areas text[],requested_books text[],expected_revision integer,campaign uuid)
+returns jsonb language sql security invoker set search_path='' as $
+ select haema_private.access_control_user_save(target,next_status,requested_areas,requested_books,expected_revision,campaign);
 $$;
 create or replace function public.haema_access_control_book_save(
   book_key text,requested_users uuid[],expected_users uuid[])
@@ -180,17 +186,17 @@ returns jsonb language sql security invoker set search_path='' as $$
 $$;
 revoke all on function
   haema_private.access_control_snapshot(),
-  haema_private.access_control_user_save(uuid,text,text[],text[],integer),
+  haema_private.access_control_user_save(uuid,text,text[],text[],integer,uuid),
   haema_private.access_control_book_save(text,uuid[],uuid[]),
   public.haema_access_control_snapshot(),
-  public.haema_access_control_user_save(uuid,text,text[],text[],integer),
+  public.haema_access_control_user_save(uuid,text,text[],text[],integer,uuid),
   public.haema_access_control_book_save(text,uuid[],uuid[])
 from public,anon,authenticated;
 grant execute on function
   haema_private.access_control_snapshot(),
-  haema_private.access_control_user_save(uuid,text,text[],text[],integer),
+  haema_private.access_control_user_save(uuid,text,text[],text[],integer,uuid),
   haema_private.access_control_book_save(text,uuid[],uuid[]),
   public.haema_access_control_snapshot(),
-  public.haema_access_control_user_save(uuid,text,text[],text[],integer),
+  public.haema_access_control_user_save(uuid,text,text[],text[],integer,uuid),
   public.haema_access_control_book_save(text,uuid[],uuid[])
 to authenticated;
