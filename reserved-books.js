@@ -233,8 +233,13 @@ function wheel(host,data){
   control.style.left=(50+39*Math.cos(angle))+'%';control.style.top=(50+39*Math.sin(angle))+'%';
   const select=el('select');select.setAttribute('aria-label','Regência na posição '+(i+1));
   for(const [id,label] of choices){const option=el('option','',label);option.value=id;select.append(option);}
-  const guide=el('span','reserved-wheel-guide','◱');guide.setAttribute('aria-hidden','true');
-  const rotor=el('button','reserved-rotor','◱');rotor.type='button';rotor.setAttribute('aria-label','Girar peça '+(i+1));
+  // A pequena marca acompanha a tangente ao próximo encaixe do círculo.
+  // O gabarito completo permanece somente no esquema privado do banco.
+  const nextAngle=-Math.PI/2+((i+1)%7)*2*Math.PI/7;
+  const direction=Math.atan2(Math.sin(nextAngle)-Math.sin(angle),Math.cos(nextAngle)-Math.cos(angle));
+  const targetDirection=Math.round(direction/(Math.PI/2))*90;
+  const guide=el('span','reserved-wheel-guide','➜');guide.style.transform='rotate('+targetDirection+'deg)';guide.setAttribute('aria-hidden','true');
+  const rotor=el('button','reserved-rotor','➜');rotor.type='button';rotor.setAttribute('aria-label','Girar peça '+(i+1));
   let rotation=0;rotor.addEventListener('click',()=>{rotation=(rotation+1)%4;rotor.style.transform='rotate('+rotation*90+'deg)';rotor.setAttribute('aria-label','Girar peça '+(i+1)+'. Orientação '+rotation*90+' graus');});
   select.addEventListener('change',()=>{const repeats=slots.some(other=>other.select!==select&&other.select.value===select.value&&select.value);
    if(repeats)select.value='';});
