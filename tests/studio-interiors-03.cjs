@@ -9,10 +9,11 @@ const types=['empty','bedroom','library','tavern'];
 for(const type of types){
  const s=starterScene();s.props=[];s.walls=[];
  const room=makeRoom(s,{x:5,y:4,w:11,h:9,floor:'wood'});
+ const previous=s.props.length; // the room's door already exists before furnishing
  const n=furnishRoom(s,room,type,'estudio-semente');
- ok(n===s.props.length,'counts generated props '+type);
+ ok(n===s.props.length-previous,'counts newly generated furniture '+type);
  ok(type==='empty'?n===0:n>0,'preset '+type+' expected');
- ok(safeScene(s).props.length===n,'preset '+type+' survives JSON roundtrip');
+ ok(safeScene(s).props.length===s.props.length,'preset '+type+' survives JSON roundtrip');
  ok(s.props.every(p=>p.x>=room.x&&p.x<=room.x+room.w&&p.y>=room.y&&p.y<=room.y+room.h),'props stay in room '+type);
  const clone=starterScene();clone.props=[];clone.walls=[];
  const same=makeRoom(clone,{x:5,y:4,w:11,h:9,floor:'wood'});
