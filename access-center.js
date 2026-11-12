@@ -174,8 +174,18 @@ export async function renderAccessCenter(panel,isCurrent=()=>true){
     wrap.append(input,description);areaChoices.append(wrap);areaInputs.set(area.id,input);
    }
    areasSection.append(areaChoices);
+   const campaignSection=n('section','access-editor-section');
+   campaignSection.append(n('h4','','3. Campanhas'),small('Mantenha os vínculos atuais ou adicione esta pessoa a uma campanha que você administra.'));
+   const memberships=asArray(user.campaigns).map(id=>data.campaigns.find(c=>c.id===id)?.name||'Campanha vinculada');
+   campaignSection.append(small('Vínculos existentes: '+(memberships.length?memberships.join(', '):'nenhum')));
+   const campaignSelect=n('select','access-field');campaignSelect.setAttribute('aria-label','Adicionar pessoa à campanha');
+   const emptyCampaign=n('option','','Não alterar vínculos atuais');emptyCampaign.value='';campaignSelect.append(emptyCampaign);
+   for(const c of asArray(data.campaigns)){
+    const opt=n('option','',c.name+(asArray(user.campaigns).includes(c.id)?' · já participa':''));opt.value=c.id;campaignSelect.append(opt);
+   }
+   campaignSection.append(campaignSelect);
    const booksSection=n('section','access-editor-section');
-   booksSection.append(n('h4','','3. Livros reservados'),small('Marque os volumes atribuídos à pessoa. Sem liberação do livro ou sem Biblioteca, a leitura continuará bloqueada.'));
+   booksSection.append(n('h4','','4. Livros reservados'),small('Marque os volumes atribuídos à pessoa. Sem liberação do livro ou sem Biblioteca, a leitura continuará bloqueada.'));
    const bookControls=n('div','access-books-user'),bookInputs=new Map();
    for(const book of data.books){
     const row=n('label','access-book-option'),input=n('input');input.type='checkbox';input.checked=user.books.includes(book.id);
@@ -185,7 +195,7 @@ export async function renderAccessCenter(panel,isCurrent=()=>true){
    }
    booksSection.append(bookControls);
    const previewSection=n('section','access-editor-section');
-   previewSection.append(n('h4','','Visibilidade efetiva'),small('Esta é a situação que a pessoa terá após salvar estas escolhas.'));
+   previewSection.append(n('h4','','5. Visibilidade efetiva'),small('Esta é a situação que a pessoa terá após salvar estas escolhas.'));
    const preview=n('div','access-visibility');previewSection.append(preview);
    const saveRow=n('div','access-save-row'),saveFeedback=n('p','access-save-feedback');
    saveFeedback.setAttribute('role','status');
@@ -201,7 +211,7 @@ export async function renderAccessCenter(panel,isCurrent=()=>true){
     saveFeedback.textContent='Salvando todas as permissões…';saveFeedback.dataset.error='false';
     try{
      await rpc('haema_access_control_user_save',{
-      target:user.id,next_status:nextStatus,requested_areas:areas,requested_books:books,expected_revision:user.revision
+      target:user.id,next_status:nextStatus,requested_areas:areas,requested_books:books,expected_revision:user.revision,campaign:campaignSelect.value||null
      });
      await refresh('Permissões de '+user.name+' salvas e verificadas no Supabase.');
     }catch(error){
@@ -210,14 +220,15 @@ export async function renderAccessCenter(panel,isCurrent=()=>true){
     }
    },'access-primary');
    saveRow.append(saveButton,saveFeedback);
-   editor.append(statusSection,areasSection,booksSection,previewSection,saveRow);
+   editor.append(statusSection,areasSection,campaignSection,booksSection,previewSection,saveRow);
    function readAreas(){return statusSelect.value==='approved'?[...areaInputs].filter(([,input])=>input.checked).map(([id])=>id):[];}
    function readBooks(){return [...bookInputs].filter(([,input])=>input.checked).map(([id])=>id);}
    function updatePreview(){
     const nextStatus=statusSelect.value,areas=readAreas(),books=readBooks();
     const permitted=nextStatus==='approved';
     for(const control of areaInputs.values())control.disabled=!permitted;
-    if(!permitted)for(const c of areaInputs.values())c.checked=false;
+    campaignSelect.disabled=!permitted;
+    if(!permitted){for(const c of areaInputs.values())c.checked=false;campaignSelect.value='';}
     preview.replaceChildren();
     const summary=n('div','access-visibility-header');
     summary.append(n('strong','',areas.includes('library')&&permitted?'Biblioteca habilitada':'Biblioteca bloqueada'),
@@ -228,13 +239,15 @@ export async function renderAccessCenter(panel,isCurrent=()=>true){
      line.append(n('span','',book.title),labelState(result.label,result.ok?'good':book.published?'muted':'warning'));
      const explanation=n('small','',result.reason);line.append(explanation);preview.append(line);
     }
-    const changed=user.status!==nextStatus||!equal(areas,user.areas)||!equal(books,user.books);
+    const campaignChanged=!!campaignSelect.value&&!asArray(user.campaigns).includes(campaignSelect.value);
+    const changed=user.status!==nextStatus||!equal(areas,user.areas)||!equal(books,user.books)||campaignChanged;
     saveButton.disabled=!changed;
     saveButton.textContent=changed?'Salvar '+(books.length)+' livro(s) e áreas':'Nenhuma alteração pendente';
    }
    statusSelect.addEventListener('change',updatePreview);
+   campaignSelect.addEventListener('change',updatePreview);
    for(const c of areaInputs.values())c.addEventListener('change',updatePreview);
-   for(const [id,c] of bookInputs)c.addEventListener('change',()=>{
+   for(const [,c] of bookInputs)c.addEventListener('change',()=>{
     if(c.checked&&statusSelect.value==='approved'&&!areaInputs.get('library').checked){
      areaInputs.get('library').checked=true;
      saveFeedback.textContent='Biblioteca foi marcada junto com o novo livro para que a leitura possa funcionar.';
