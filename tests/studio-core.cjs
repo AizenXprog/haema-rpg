@@ -10,7 +10,7 @@ check(scene.tokens.length===2,'initial token count');
 check(safeScene(scene).version===1,'scene roundtrip');
 check(scene.fog.every(x=>x===0||x===1),'fog values');
 let labels=0;
-const context=new Proxy({createRadialGradient(){return {addColorStop(){}}},fillText(){labels++}},{get:(obj,k)=>obj[k]??(()=>{}),set:(obj,k,v)=>{obj[k]=v;return true}});
+const context=new Proxy({createRadialGradient(){return {addColorStop(){}}},createLinearGradient(){return {addColorStop(){}}},fillText(){labels++}},{get:(obj,k)=>obj[k]??(()=>{}),set:(obj,k,v)=>{obj[k]=v;return true}});
 drawScene(context,scene,{player:false});check(labels===2,'master sees tokens');
 labels=0;drawScene(context,scene,{player:true});check(labels===2,'player sees revealed tokens');
 scene.fog.fill(1);labels=0;drawScene(context,scene,{player:true});check(labels===0,'hidden fog conceals all');

@@ -1,0 +1,31 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),cp=require('node:child_process');
+const html=fs.readFileSync('estudio.html','utf8');
+const editor=fs.readFileSync('studio/editor.js','utf8');
+const css=fs.readFileSync('studio/clean.css','utf8');
+let count=0;
+function check(v,name){assert.ok(v,name);count++;}
+const ids=Array.from(html.matchAll(/\bid="([^"]+)"/g),m=>m[1]);
+check(ids.length===new Set(ids).size,'no duplicate IDs');
+for(const m of editor.matchAll(/\$\('([^']+)'\)/g))check(ids.includes(m[1]),'referenced DOM ID: '+m[1]);
+check(html.includes('studio/clean.css?v=1'),'isolated clean stylesheet loaded');
+check(html.includes('id="studio-canvas"'),'map canvas remains present');
+check(html.includes('id="studio-active-help"'),'contextual tool guidance exists');
+check(html.includes('data-inspector-tab="build"')&&html.includes('data-inspector-tab="mesa"')&&html.includes('data-inspector-tab="project"'),'three inspector modes');
+check(editor.includes('function showInspectorTab(name)'),'inspector interaction is functional');
+check(editor.includes("document.querySelectorAll('[data-inspector-tab]').forEach"),'tabs wired');
+check(editor.includes('function showToolOptions(next)'),'tool settings controlled by selected tool');
+check(editor.includes("'prop-search').addEventListener('input'"),'object search wired');
+check(html.includes('data-tool="generate"')&&html.includes('data-tool-panel="generation"'),'generation access visible');
+check(html.includes('data-tool-panel="prop"')&&html.includes('id="prop-search"'),'object library searchable');
+check(html.includes('id="grid-toggle"')&&html.includes('id="grid-state"'),'grid accessible in map toolbar');
+check(editor.includes("scene.gridVisible=showGrid"),'grid preference persisted');
+check(editor.includes("drawScene(drawingContext,scene,{player:true,grid:showGrid"),'grid shared by projector and PNG');
+check(css.includes('grid-template-columns:109px minmax(0,1fr) 296px'),'map takes central flexible area');
+check(css.includes('@media(max-width:960px)'),'responsive layout included');
+check(css.includes('prefers-reduced-motion')||fs.readFileSync('studio/studio.css','utf8').includes('prefers-reduced-motion'),'motion reduced supported');
+check(html.includes('id="token-name"')&&html.includes('id="blackout"'),'tabletop controls retained');
+check(html.includes('id="export-json"')&&html.includes('id="import-json"')&&html.includes('id="save-local"'),'project file actions retained');
+for(const f of ['studio/editor.js','studio/scene.js','studio/generator.js','studio/projector.js']){cp.execFileSync('node',['--check',f]);count++;}
+console.log(count+' clean Studio UI static checks passed');

@@ -1,11 +1,12 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
 import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js';
 import {saveProject,loadProject,exportJSON} from './storage.js';
+import {generateScene,makeRoom} from './generator.js';
 
 const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
 const view={x:0,y:0,zoom:1,ready:false};
-let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,showGrid=true;
+let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,showGrid=true,paintedTiles=new Set(),lastStamp=null;
 let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,saveTimer=0,broadcastTimer=0;
 let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
 const status=(message)=>{$('studio-status').textContent=message;};
@@ -27,9 +28,14 @@ function render(){
  ctx.fillStyle='#0a1012';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.translate(view.x,view.y);ctx.scale(view.zoom,view.zoom);
  drawScene(ctx,scene,{grid:showGrid,image:backgroundImage});
- if(hover&&['terrain','reveal','conceal','erase'].includes(tool)){
+ if(hover&&['terrain','reveal','conceal','erase','raise','lower','scatter'].includes(tool)){
   ctx.strokeStyle=tool==='reveal'?'#d6b986':'#f2d1a4';ctx.lineWidth=1.6/view.zoom;ctx.setLineDash([6/view.zoom,4/view.zoom]);
   ctx.beginPath();ctx.arc(hover.x*CELL,hover.y*CELL,brush*CELL,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+ }
+ if(gesture?.mode==='room'&&hover){
+  const a=gesture,x=Math.floor(Math.min(a.startX,hover.x))*CELL,y=Math.floor(Math.min(a.startY,hover.y))*CELL;
+  const w=Math.max(3,Math.ceil(Math.abs(hover.x-a.startX)))*CELL,h=Math.max(3,Math.ceil(Math.abs(hover.y-a.startY)))*CELL;
+  ctx.fillStyle='#d9bc8766';ctx.fillRect(x,y,w,h);ctx.strokeStyle='#f3d7a2';ctx.lineWidth=4;ctx.strokeRect(x,y,w,h);
  }
  if(gesture?.mode==='wall'&&hover){
   ctx.strokeStyle='#e9d09e';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(gesture.startX*CELL,gesture.startY*CELL);
@@ -70,45 +76,113 @@ function redo(){
  if(!future.length)return;history.push(freezeScene());scene=thawScene(future.pop());clearSelection();loadBackground();changed();
 }
 function changed(autosave=true){
+ showGrid=scene.gridVisible!==false;$('grid-toggle').checked=showGrid;$('grid-state').textContent=showGrid?'Visível':'Oculta';
  $('scene-name').value=scene.name;
  $('studio-token-count').textContent=scene.tokens.length;
  render();
  if(autosave)saveLater();
  queueBroadcast();
 }
-function paint(p){
+function paint(p,shouldUpdate=true){
  if(!within(p))return;
  const cx=Math.floor(p.x),cy=Math.floor(p.y);
- if(['terrain','reveal','conceal','erase'].includes(tool)){
+ if(['terrain','reveal','conceal','erase','raise','lower'].includes(tool)){
   for(let y=Math.max(0,cy-brush+1);y<Math.min(scene.rows,cy+brush);y++)
    for(let x=Math.max(0,cx-brush+1);x<Math.min(scene.cols,cx+brush);x++){
-    if(Math.hypot(x+.5-p.x,y+.5-p.y)>brush)continue;
+    const distance=Math.hypot(x+.5-p.x,y+.5-p.y);
+    if(distance>brush)continue;
     const i=tileIndex(scene,x,y);
     if(tool==='terrain')scene.tiles[i]=terrain;
     else if(tool==='reveal')scene.fog[i]=0;
     else if(tool==='conceal')scene.fog[i]=1;
-    else{scene.tiles[i]='grass';scene.props=scene.props.filter(o=>Math.hypot(o.x-p.x,o.y-p.y)>.75);scene.tokens=scene.tokens.filter(t=>Math.hypot(t.x-p.x,t.y-p.y)>.75);}
+    else if(tool==='raise'||tool==='lower'){
+     if(paintedTiles.has(i))continue;
+     paintedTiles.add(i);scene.heights[i]=clamp((scene.heights[i]||0)+(tool==='raise'?1:-1),0,4);
+    }else{
+     scene.tiles[i]='grass';scene.heights[i]=0;
+    }
    }
+  if(tool==='erase'){
+   scene.props=scene.props.filter(o=>Math.hypot(o.x-p.x,o.y-p.y)>brush);
+   scene.tokens=scene.tokens.filter(t=>Math.hypot(t.x-p.x,t.y-p.y)>brush);
+  }
  }else if(tool==='token'){
   if(scene.tokens.length>=120)return status('Limite de 120 tokens nesta versão.');
   const label=$('token-name').value.trim().slice(0,16)||'PJ';
   scene.tokens.push({id:crypto.randomUUID(),x:cx+.5,y:cy+.5,label,color:'#d8b582',hidden:$('token-hidden').checked});
   setTool('select');
- }else if(tool==='prop'){
+ }else if(tool==='prop'||tool==='scatter'){
   if(scene.props.length>=500)return status('Limite de 500 objetos nesta versão.');
-  scene.props.push({x:cx+.5,y:cy+.5,type:prop});
+  const spacing=tool==='scatter'?.9:.72;
+  if(lastStamp&&Math.hypot(lastStamp.x-p.x,lastStamp.y-p.y)<spacing)return;
+  lastStamp={x:p.x,y:p.y};
+  const isScatter=tool==='scatter';
+  const jitter=()=>isScatter?(Math.random()-.5)*.9:0;
+  scene.props.push({x:cx+.5+jitter(),y:cy+.5+jitter(),type:isScatter?'tree':prop,rotation:isScatter?Math.round(Math.random()*360):0});
  }
- changed();
+ if(shouldUpdate)changed(false);
+}
+function paintLine(from,to){
+ if(!from){paint(to);return;}
+ const distance=Math.hypot(to.x-from.x,to.y-from.y),steps=Math.min(80,Math.max(1,Math.ceil(distance/.33)));
+ for(let k=1;k<=steps;k++){
+  const t=k/steps;
+  paint({x:from.x+(to.x-from.x)*t,y:from.y+(to.y-from.y)*t},false);
+ }
+ changed(false);
+}
+// Only relevant controls remain visible. The map remains the primary workspace.
+const toolInfo={
+ pan:['Navegação','Mover a câmera pelo mapa.'],
+ select:['Seleção','Selecione e arraste tokens.'],
+ terrain:['Materiais','Pinte o terreno com materiais.'],
+ raise:['Elevação','Crie camadas de relevo.'],
+ lower:['Rebaixar','Reduza os níveis de terreno.'],
+ prop:['Objetos','Escolha elementos para o cenário.'],
+ wall:['Paredes','Trace paredes livres.'],
+ room:['Cômodos','Desenhe ambientes internos.'],
+ scatter:['Vegetação','Distribua árvores ao arrastar.'],
+ generate:['Geração','Crie uma base procedural editável.'],
+ token:['Tokens','Posicione personagens e criaturas.'],
+ reveal:['Revelar','Abra áreas aos jogadores.'],
+ conceal:['Ocultar','Cubra áreas com neblina.'],
+ erase:['Borracha','Remova elementos selecionados.']
+};
+let activeInspector='build';
+function showInspectorTab(name){
+ if(!['build','mesa','project'].includes(name))return;
+ activeInspector=name;
+ for(const tab of document.querySelectorAll('[data-inspector-tab]')){
+  const on=tab.dataset.inspectorTab===name;
+  tab.setAttribute('aria-selected',String(on));tab.tabIndex=on?0:-1;
+ }
+ for(const nameOfPanel of ['build','mesa','project']){
+  const panel=$('inspector-'+nameOfPanel);
+  panel.hidden=nameOfPanel!==name;
+ }
+}
+function showToolOptions(next){
+ const context=({terrain:'terrain',raise:'elevation',lower:'elevation',prop:'prop',wall:'wall',room:'room',scatter:'scatter',generate:'generation',erase:'erase'})[next]||'default';
+ document.querySelectorAll('[data-tool-panel]').forEach(panel=>{panel.hidden=panel.dataset.toolPanel!==context;});
+ $('studio-inspector-title').textContent=toolInfo[next]?.[0]||'Construção';
+ $('studio-inspector-subtitle').textContent=context==='default'?'ESCOLHA UMA FERRAMENTA':'PROPRIEDADES DA FERRAMENTA';
 }
 function setTool(next){
- tool=next;for(const b of document.querySelectorAll('[data-tool]'))b.setAttribute('aria-pressed',String(b.dataset.tool===tool));
- canvas.style.cursor=tool==='pan'?'grab':tool==='select'?'default':'crosshair';
- $('studio-tool').textContent=tool.toUpperCase();render();
+ if(!toolInfo[next])return;
+ tool=next;
+ for(const b of document.querySelectorAll('[data-tool]'))b.setAttribute('aria-pressed',String(b.dataset.tool===tool));
+ canvas.style.cursor=['pan','generate'].includes(tool)?'grab':tool==='select'?'default':'crosshair';
+ $('studio-tool').textContent=toolInfo[tool][0];
+ $('studio-active-help').textContent=toolInfo[tool][1];
+ showToolOptions(tool);
+ if(['token','reveal','conceal'].includes(tool))showInspectorTab('mesa');
+ else if(!['pan','select'].includes(tool))showInspectorTab('build');
+ render();
 }
 canvas.addEventListener('pointerdown',event=>{
  if(event.button!==0&&event.button!==1)return;
  const p=point(event);hover=p;
- if(tool==='pan'||spaceHeld||event.button===1){
+ if(tool==='pan'||tool==='generate'||spaceHeld||event.button===1){
   gesture={mode:'pan',px:p.px,py:p.py,x:view.x,y:view.y};
  }else if(tool==='select'){
   selected=closestToken(p);
@@ -118,9 +192,11 @@ canvas.addEventListener('pointerdown',event=>{
   if(selected)$('token-visibility').checked=!!selected.hidden;
  }else if(tool==='wall'){
   snapshot();gesture={mode:'wall',startX:round(p.x),startY:round(p.y)};
+ }else if(tool==='room'){
+  snapshot();gesture={mode:'room',startX:p.x,startY:p.y};
  }else{
   if(!within(p))return;
-  snapshot();gesture={mode:'paint'};paint(p);
+  snapshot();paintedTiles.clear();lastStamp=null;gesture={mode:'paint',previous:p};paint(p);
  }
  drawing=true;canvas.setPointerCapture(event.pointerId);render();
 });
@@ -128,7 +204,7 @@ canvas.addEventListener('pointermove',event=>{
  const p=point(event);hover=p;
  if(drawing&&gesture?.mode==='pan'){view.x=gesture.x+p.px-gesture.px;view.y=gesture.y+p.py-gesture.py;}
  else if(drawing&&gesture?.mode==='drag'&&within(p)){gesture.token.x=clamp(p.x,.5,scene.cols-.5);gesture.token.y=clamp(p.y,.5,scene.rows-.5);changed(false);}
- else if(drawing&&gesture?.mode==='paint')paint(p);
+ else if(drawing&&gesture?.mode==='paint'){paintLine(gesture.previous,p);gesture.previous=p;}
  render();
 });
 function release(event){
@@ -139,6 +215,15 @@ function release(event){
   if(Math.hypot(a.startX-b.x,a.startY-b.y)>.15&&scene.walls.length<400)
    scene.walls.push({x1:a.startX,y1:a.startY,x2:b.x,y2:b.y});
  }
+ if(gesture?.mode==='room'&&within(p)){
+  const xa=Math.floor(Math.min(gesture.startX,p.x)),ya=Math.floor(Math.min(gesture.startY,p.y));
+  const xb=Math.ceil(Math.max(gesture.startX,p.x)),yb=Math.ceil(Math.max(gesture.startY,p.y));
+  if(xb-xa>=3&&yb-ya>=3){
+   makeRoom(scene,{x:xa,y:ya,w:xb-xa,h:yb-ya,floor:terrain==='wood'||terrain==='marble'||terrain==='brick'?terrain:'wood'});
+   changed();
+  }else status('Arraste um cômodo com pelo menos três células de largura e altura.');
+ }
+ if(gesture?.mode==='paint')changed();
  if(gesture?.mode==='drag'||gesture?.mode==='wall')changed();
  drawing=false;gesture=null;render();
  try{canvas.releasePointerCapture(event.pointerId);}catch{}
@@ -194,12 +279,46 @@ function download(blob,name){
 }
 function setup(){
  if(initialized)return;initialized=true;
- document.querySelectorAll('[data-tool]').forEach(el=>el.addEventListener('click',()=>setTool(el.dataset.tool)));
+ document.querySelectorAll('[data-inspector-tab]').forEach(el=>el.addEventListener('click',()=>showInspectorTab(el.dataset.inspectorTab)));
+ const tabs=[...document.querySelectorAll('[data-inspector-tab]')];
+ for(const tab of tabs)tab.addEventListener('keydown',event=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+  event.preventDefault();
+  const index=tabs.indexOf(tab);
+  const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:tabs.length-1))%tabs.length;
+  showInspectorTab(tabs[next].dataset.inspectorTab);tabs[next].focus();
+ });
+ document.querySelectorAll('[data-tool]').forEach(el=>{el.title=toolInfo[el.dataset.tool]?.[1]||'';el.addEventListener('click',()=>setTool(el.dataset.tool));});
  document.querySelectorAll('[data-terrain]').forEach(el=>el.addEventListener('click',()=>{terrain=el.dataset.terrain;setTool('terrain');document.querySelectorAll('[data-terrain]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
  document.querySelectorAll('[data-prop]').forEach(el=>el.addEventListener('click',()=>{prop=el.dataset.prop;setTool('prop');document.querySelectorAll('[data-prop]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
- $('brush-size').addEventListener('input',event=>{brush=Number(event.target.value);$('brush-value').textContent=brush;render();});
+ document.querySelectorAll('[data-scene-template]').forEach(el=>el.addEventListener('click',()=>{const type=el.dataset.sceneTemplate;if(!confirm('Substituir o cenário atual por um novo mapa gerado? A ação poderá ser desfeita.'))return;snapshot();scene=generateScene(type,$('seed-input').value||String(Date.now()));scene.gridVisible=showGrid;clearSelection();loadBackground();changed();fit();status('Cenário gerado: '+scene.name); }));
+ const brushInputs=['brush-size','brush-height-mirror','eraser-brush'];
+ for(const id of brushInputs)$(id).addEventListener('input',event=>{
+  brush=Number(event.target.value);
+  for(const input of brushInputs)$(input).value=brush;
+  $('brush-value').textContent=brush;
+  $('height-brush-value').textContent=brush;
+  $('eraser-brush-value').textContent=brush;
+  render();
+ });
+ const normalizeLabel=text=>text.toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ $('prop-search').addEventListener('input',event=>{
+  const query=normalizeLabel(event.target.value.trim());let total=0;
+  for(const group of document.querySelectorAll('[data-prop-group]')){
+   let shown=0;
+   for(const option of group.querySelectorAll('[data-prop]')){
+    const match=normalizeLabel(option.textContent).includes(query);
+    option.hidden=!match;if(match)shown++;
+   }
+   group.hidden=shown===0;
+   if(query&&shown)group.open=true;
+   total+=shown;
+  }
+  $('prop-search-empty').hidden=total!==0;
+ });
+ $('new-room').addEventListener('click',()=>{setTool('room');status('Arraste no mapa para desenhar um cômodo; o editor cria paredes e um acesso.');});
  $('scene-name').addEventListener('change',event=>{snapshot();scene.name=String(event.target.value).slice(0,80)||'Sem título';changed();});
- $('grid-toggle').addEventListener('change',event=>{showGrid=event.target.checked;changed(false);});
+ $('grid-toggle').addEventListener('change',event=>{showGrid=event.target.checked;scene.gridVisible=showGrid;changed();});
  $('token-visibility').addEventListener('change',event=>{if(!selected)return;snapshot();selected.hidden=event.target.checked;changed();});
  $('reveal-all').addEventListener('click',()=>{snapshot();scene.fog.fill(0);changed();});
  $('hide-all').addEventListener('click',()=>{snapshot();scene.fog.fill(1);changed();});
