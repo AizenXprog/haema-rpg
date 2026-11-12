@@ -95,3 +95,121 @@
 @media(prefers-reduced-motion:reduce){
  .reserved-cover-art,.reserved-reader *, .reserved-rotor{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+
+/* HÆMA · Biblioteca reservada / acabamento editorial 2026-11
+   Identidade física alinhada aos demais volumes, sem tocar no CSS deles. */
+.reserved-grid{gap:clamp(22px,3.6vw,56px);align-items:start;justify-items:center}
+.reserved-cover{width:100%;min-width:0;perspective:1400px;align-items:stretch;text-align:center;padding:10px 4px 25px;--cover-metal:#b89968}
+.reserved-cover.reserved-archive{--cover-metal:#bca279}
+.reserved-cover.reserved-crown{--cover-metal:#cbac70}
+.reserved-cover.reserved-regencies{--cover-metal:#b5aba1}
+.reserved-bookstand{position:relative;display:flex;justify-content:center;align-items:flex-start;min-height:495px;padding:12px 10px 28px;perspective:1450px;isolation:isolate;width:100%}
+.reserved-bookstand::before{content:"";position:absolute;bottom:15px;left:8%;width:84%;height:43px;border-radius:50%;background:#050406ac;filter:blur(15px);pointer-events:none}
+.reserved-book-object{position:relative;width:min(305px,94%);height:440px;transform-style:preserve-3d;transform:rotateY(-7deg) rotateZ(-1.5deg);filter:drop-shadow(6px 16px 11px #0008);transition:transform .5s cubic-bezier(.18,.7,.2,1),filter .5s ease}
+.reserved-book-leaves{position:absolute;z-index:0;inset:10px -13px -12px 12px;border-radius:2px 15px 12px 2px;border:5px solid #3f2921;background:repeating-linear-gradient(90deg,#dcc7a3 0 2px,#f4e9d7 2px 4px,#9a8467 4px 5px);box-shadow:inset -9px 0 0 #978265,7px 7px 0 #1c1112,13px 15px 13px #0008;transform:translateZ(-10px)}
+.reserved-cover-art{box-sizing:border-box;position:relative;z-index:1;width:100%;height:100%;min-height:0;display:flex;align-items:center;justify-content:space-between;gap:13px;padding:26px 17px 23px;border:9px solid #140e12;border-left:19px solid #141015;border-radius:6px 8px 7px 4px;box-shadow:inset 1px 0 1px #ffffff20,inset -4px 0 20px #0301029c,inset 0 0 0 2px var(--cover-metal),inset 0 0 0 5px #14101379;background:radial-gradient(ellipse at 50% 36%,#efe1c616,transparent 58%),repeating-linear-gradient(115deg,#fff0 0 9px,#fff1 9.5px 10px),linear-gradient(95deg,#08080f75,transparent 22%,transparent 82%,#0005),var(--cloth);font-family:'Cormorant Garamond',serif;letter-spacing:normal;line-height:1;color:var(--cover-metal)}
+.reserved-cover-art:before{inset:14px;border:1px solid var(--cover-metal);opacity:.52}
+.reserved-cover-art:after{content:"";position:absolute;inset:20px;border:1px solid #d8c59c21;transform:none;opacity:1;pointer-events:none}
+.reserved-book-crest{display:block;width:120px;height:118px;max-width:63%;object-fit:contain;opacity:.84;filter:sepia(.5) saturate(.7) drop-shadow(0 0 8px #b5985325);margin:auto}
+.reserved-regencies .reserved-book-crest{filter:grayscale(1) sepia(.3) drop-shadow(0 0 9px #afabb845)}
+.reserved-crown .reserved-book-crest{filter:sepia(1) saturate(1.1) drop-shadow(0 0 11px #cba6603f)}
+.reserved-eyebrow{font-size:9px;letter-spacing:.13em;line-height:1.5;white-space:nowrap}
+.reserved-cover-title{font:500 clamp(30px,3vw,46px)/1.02 'Cormorant Garamond',serif;max-width:12ch;margin:auto;overflow-wrap:normal;hyphens:manual;min-height:92px;display:grid;place-items:center;color:#e8d1a9;text-shadow:0 1px 2px #080506}
+.reserved-archive .reserved-cover-title{color:#ead4ad}
+.reserved-crown .reserved-cover-title{color:#efdaad}
+.reserved-regencies .reserved-cover-title{color:#ddd7d2}
+.reserved-cover-role{font:800 9px/1.4 'DM Sans',sans-serif;letter-spacing:.17em;color:var(--cover-metal)}
+.reserved-cover-stamp{font-size:18px;color:var(--cover-metal);margin-top:auto}
+.reserved-cover-corner{position:absolute;width:23px;height:23px;background:linear-gradient(140deg,#efd5a4,var(--cover-metal),#78583d);z-index:2;clip-path:polygon(0 0,100% 0,0 100%);pointer-events:none;opacity:.86}
+.reserved-cover-corner.corner-tl{top:10px;left:10px}
+.reserved-cover-corner.corner-tr{top:10px;right:10px;transform:rotate(90deg)}
+.reserved-cover-corner.corner-br{bottom:10px;right:10px;transform:rotate(180deg)}
+.reserved-cover-corner.corner-bl{bottom:10px;left:10px;transform:rotate(270deg)}
+.reserved-book-object .reserved-cover-art:focus-visible{outline:3px solid #f7dab0;outline-offset:5px}
+.reserved-book-object .reserved-cover-art:hover{box-shadow:inset 0 0 0 2px var(--cover-metal),inset 0 0 20px #e8c19c27,0 0 24px #c7a26d18}
+.reserved-cover .reserved-access-note{margin:-3px 0 0;color:#cab89f}
+.reserved-cover .reserved-action{align-self:center;min-width:min(240px,90%);min-height:50px;box-shadow:0 9px 24px #0005}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+ .reserved-cover:hover .reserved-book-object,.reserved-cover:focus-within .reserved-book-object{transform:translateY(-8px) rotateY(-3deg) rotateZ(-.6deg);filter:drop-shadow(12px 23px 15px #0009)}
+ .reserved-cover:hover .reserved-cover-art{transform:none}
+}
+
+/* Native pointer: custom fixed HÆMA cursor lives under the dialog top layer.
+   Scope the override ONLY to these dialogs, keeping the rest of the site untouched. */
+@media(hover:hover) and (pointer:fine){
+ .cursor-ready .reserved-reader,.cursor-ready .reserved-reader *{cursor:auto!important}
+ .cursor-ready .reserved-reader :is(button,[role="button"],summary){cursor:pointer!important}
+ .cursor-ready .reserved-reader :is(button:disabled,[aria-disabled="true"]){cursor:not-allowed!important}
+ .cursor-ready .reserved-reader :is(.reserved-sheet,.reserved-page-copy,.reserved-paragraph){cursor:text!important}
+ .cursor-ready .reserved-reader :is(input,select,textarea){cursor:auto!important}
+}
+
+/* Five complementary layers, with one dedicated ambience per manuscript. */
+.reserved-reader{isolation:isolate;position:fixed}
+.reserved-scenery{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.85}
+.reserved-scenery::before,.reserved-scenery::after{content:"";display:block;position:absolute;inset:-20%;pointer-events:none;transform-origin:center;will-change:transform,opacity}
+.reserved-frame{position:relative;z-index:1}
+.reserved-ambient-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;mix-blend-mode:screen;opacity:.78}
+.reserved-reader-top,.reserved-reader-nav{position:relative;z-index:2}
+.reserved-sheet{position:relative;z-index:2;isolation:isolate}
+.reserved-sheet::selection,.reserved-sheet *::selection{background:#ac835774}
+.reserved-reader.theme-archive .reserved-scenery{background:repeating-linear-gradient(90deg,transparent 0 12.5%,#100c0b85 12.6% 13%,transparent 13.1% 25%),radial-gradient(ellipse at 22% 20%,#d4a26f29,transparent 45%)}
+.reserved-reader.theme-archive .reserved-scenery::before{background:radial-gradient(ellipse at 31% 15%,#f2d5a244,transparent 41%),radial-gradient(ellipse at 85% 81%,#986b4a22,transparent 55%);animation:reserved-candle 9s ease-in-out infinite alternate}
+.reserved-reader.theme-archive .reserved-scenery::after{background:repeating-linear-gradient(95deg,#0b050c12 0 2px,transparent 2px 58px);animation:reserved-archive-shadow 18s ease-in-out infinite alternate}
+.reserved-reader.theme-crown .reserved-scenery{background:repeating-linear-gradient(90deg,#0b090da0 0 15%,#6e514718 15.3% 15.6%,#0b090d44 15.9% 29%),radial-gradient(ellipse at 80% 24%,#c79b6336,transparent 46%)}
+.reserved-reader.theme-crown .reserved-scenery::before{background:linear-gradient(113deg,transparent 29%,#edd09b17 43%,#deae6618 49%,transparent 62%);animation:reserved-metal-sweep 12s ease-in-out infinite alternate}
+.reserved-reader.theme-crown .reserved-scenery::after{background:repeating-linear-gradient(0deg,transparent 0 76px,#b7985817 77px,#06070877 78px,transparent 79px);transform:perspective(650px) rotateX(17deg);opacity:.5}
+.reserved-reader.theme-regencies .reserved-scenery{background:radial-gradient(circle at 50% 56%,transparent 0 20%,#a999a120 20.15%,transparent 20.4% 29%,#d0c9ba17 29.15% 29.3%,transparent 29.5% 39%,#a28d971a 39.2% 39.35%,transparent 39.6%),radial-gradient(ellipse at center,#56425349,transparent 66%)}
+.reserved-reader.theme-regencies .reserved-scenery::before{background:repeating-conic-gradient(from 0deg at 50% 50%,transparent 0 25deg,#dfcbb80b 26deg,transparent 27deg 51deg);animation:reserved-diagram-orbit 110s linear infinite}
+.reserved-reader.theme-regencies .reserved-scenery::after{background:radial-gradient(circle,#c8c1b512 0 1px,transparent 1.5px) 0 0/43px 43px;mask-image:radial-gradient(ellipse,#000,transparent 76%);animation:reserved-diagram-orbit 140s linear infinite reverse}
+.reserved-reader.theme-archive .reserved-sheet{box-shadow:inset 0 0 0 1px #a58d6c,inset 0 0 105px #7b583521,0 22px 46px #0009}
+.reserved-reader.theme-crown .reserved-sheet{box-shadow:inset 0 0 0 2px #ad8a58,inset 0 0 0 12px #a9925f19,inset 0 0 62px #9f694126,0 22px 46px #0009}
+.reserved-reader.theme-regencies .reserved-sheet{box-shadow:inset 0 0 0 1px #9a8f8c,inset 0 0 0 13px #cabda71b,inset 0 0 65px #6f53692b,0 22px 46px #0009}
+.theme-archive .reserved-sheet h2{color:#5f3029}
+.theme-crown .reserved-sheet h2{color:#513121}
+.theme-regencies .reserved-sheet h2{color:#e7d1bb}
+.reserved-page-copy{position:relative;z-index:1}
+.reserved-sheet.is-annex{background-image:repeating-linear-gradient(0deg,#0000 0 61px,var(--edge) 61.5px,#0000 62px),radial-gradient(ellipse at 50% 10%,#c8a86b26,transparent 62%)}
+.reserved-annotation{position:relative;display:grid;gap:7px;justify-items:start;margin:40px 0 0;padding:28px 30px;border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);background:linear-gradient(130deg,#b6956224,transparent 86%);text-align:left}
+.reserved-annotation::after{content:'↘';position:absolute;right:20px;top:20px;font:35px 'Cormorant Garamond',serif;opacity:.28;pointer-events:none}
+.reserved-annotation-seal{font:24px 'Cormorant Garamond',serif;color:var(--accent)}
+.reserved-annotation-overline{font:700 10px 'DM Sans',sans-serif;letter-spacing:.19em;opacity:.68;margin:2px 0}
+.reserved-annotation-copy{font:italic 24px/1.4 'Cormorant Garamond',serif;margin:5px 0 8px;max-width:50ch}
+.reserved-annotation-trigger{appearance:none;border:1px solid var(--edge);background:transparent;color:var(--ink);padding:12px 20px;font:700 13px 'DM Sans',sans-serif;letter-spacing:.03em;cursor:pointer;min-height:48px}
+.reserved-annotation-trigger:hover,.reserved-annotation-trigger:focus-visible{background:#9a7c4832;outline:2px solid var(--accent);outline-offset:2px}
+.reserved-annotation-return{border:0;border-bottom:1px solid var(--edge);padding:10px 0;background:transparent;color:var(--ink);font:700 12px 'DM Sans',sans-serif;cursor:pointer;margin:0 0 18px}
+.reserved-annotation-return:focus-visible{outline:2px solid var(--accent)}
+.reserved-reader .reserved-puzzle{position:relative}
+.reserved-reader .reserved-puzzle-feedback{font-weight:600}
+.reserved-reader[open] .reserved-frame{animation:reserved-reading-room .56s cubic-bezier(.16,.8,.3,1) both}
+@keyframes reserved-reading-room{from{opacity:0;transform:translateY(12px) scale(.992)}to{opacity:1;transform:none}}
+@keyframes reserved-candle{0%,100%{opacity:.56;transform:translate(-1%,0) scale(1)}35%{opacity:.84;transform:translate(1%,1%) scale(1.02)}70%{opacity:.62;transform:translate(-2%,-1%) scale(.98)}}
+@keyframes reserved-archive-shadow{from{transform:translateX(-2%) rotate(-.3deg)}to{transform:translateX(2%) rotate(.7deg)}}
+@keyframes reserved-metal-sweep{from{transform:translateX(-15%);opacity:.2}to{transform:translateX(17%);opacity:.7}}
+@keyframes reserved-diagram-orbit{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@media(max-width:1000px){
+ .reserved-bookstand{min-height:446px}
+ .reserved-book-object{width:min(280px,96%);height:405px}
+ .reserved-book-crest{width:99px;height:99px}
+ .reserved-cover-title{font-size:clamp(30px,3vw,38px);min-height:82px}
+}
+@media(max-width:720px){
+ .reserved-grid{gap:12px}
+ .reserved-cover{padding:9px 10px 22px}
+ .reserved-bookstand{min-height:425px}
+ .reserved-book-object{width:min(285px,88%);height:390px}
+ .reserved-book-crest{height:105px}
+ .reserved-cover-title{font-size:40px;min-height:92px}
+ .reserved-frame{padding:9px}
+ .reserved-ambient-canvas{opacity:.52}
+ .reserved-annotation{padding:20px 15px}
+ .reserved-annotation-copy{font-size:22px}
+ .reserved-reader[open] .reserved-frame{animation-duration:.25s}
+}
+@media(prefers-reduced-motion:reduce){
+ .reserved-reader .reserved-scenery::before,.reserved-reader .reserved-scenery::after,
+ .reserved-reader[open] .reserved-frame{animation:none!important;transform:none!important}
+ .reserved-ambient-canvas{display:none!important}
+}
+html[data-cinema-paused] .reserved-reader :is(.reserved-scenery::before,.reserved-scenery::after){animation-play-state:paused}
