@@ -1,5 +1,5 @@
 // HÆMA 0.2 — geração procedural própria de cenas e cômodos (sem assets externos).
-import {starterScene,tileIndex} from './scene.js';
+import {starterScene,tileIndex} from './scene.js?v=3';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const seedFrom=value=>{let n=2166136261;for(const c of String(value))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0};
 const random=seed=>{let state=seed>>>0;return()=>{state=(state+0x6D2B79F5)>>>0;let t=Math.imul(state^(state>>>15),1|state);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296}};
