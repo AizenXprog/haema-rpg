@@ -137,9 +137,14 @@ async function openBook(id){
    // No early "Enigma" navigation or spoilers in the reader's permanent controls.
    if(book.puzzle && /^VII\s*[—-]/i.test(sections[sectionIndex].title) && pageIndex===segments.length-1){
     const marginal=el('aside','reserved-annotation');
+    const clues={
+     archive:'As cópias reunidas aqui não parecem conservar a mesma superfície.',
+     crown:'Há uma referência no registro cuja autenticidade não foi examinada.',
+     regencies:'O desenho no verso da folha parece ter partes móveis.'
+    };
     marginal.append(el('span','reserved-annotation-seal','✣'),
      el('p','reserved-annotation-overline','ANOTAÇÃO À MARGEM'),
-     el('p','reserved-annotation-copy','Há marcas neste volume que não se esclarecem apenas pela leitura.'));
+     el('p','reserved-annotation-copy',clues[info.theme]));
     marginal.append(button(info.annotation,()=>showPuzzle(),'reserved-annotation-trigger'));
     container.append(marginal);
    }
@@ -198,9 +203,17 @@ function palimpsest(host,data){
  const paint=()=>{
   slots.replaceChildren();
   for(let i=0;i<6;i++){
-   const index=i,slot=el('button','reserved-slot',selected[i]||'Fragmento '+(i+1));slot.type='button';
+   const index=i,part=(data.fragments||[]).find(fragment=>fragment.id===selected[i]);
+   const slot=el('button','reserved-slot',part?part.text:'Espaço '+(i+1));slot.type='button';
+   slot.setAttribute('aria-label',part?'Posição '+(i+1)+' contém: '+part.text+'. Pressione para remover ou use as setas para reordenar.':'Posição '+(i+1)+' vazia');
    slot.title='Remover fragmento da posição '+(i+1);slot.draggable=!!selected[index];slot.addEventListener('dragstart',ev=>{if(selected[index])ev.dataTransfer.setData('text/plain',selected[index]);});
    slot.addEventListener('click',()=>{if(selected[index]){selected.splice(index,1);paint();}});
+   slot.addEventListener('keydown',ev=>{
+    const step=ev.key==='ArrowLeft'?-1:ev.key==='ArrowRight'?1:0;
+    if(!step||!selected[index]||index+step<0||index+step>=selected.length)return;
+    ev.preventDefault();[selected[index],selected[index+step]]=[selected[index+step],selected[index]];paint();
+    slots.children[index+step]?.focus();
+   });
    slot.addEventListener('dragover',ev=>ev.preventDefault());
    slot.addEventListener('drop',ev=>{ev.preventDefault();const id=ev.dataTransfer.getData('text/plain');
     if(!(data.fragments||[]).some(fragment=>fragment.id===id))return;
@@ -220,9 +233,15 @@ function palimpsest(host,data){
  paint();host.append(el('h3','','Mesa de reconstrução'),slots,choices);
  const tools=el('div','reserved-overlay');
  tools.append(el('h3','','Comparação das cópias'));
- const overlay=el('div','reserved-overlay-paper','As duas cópias apresentam sinais diferentes sob a luz. Compare as margens antes de registrar uma hipótese.');
+ const overlay=el('div','reserved-overlay-paper');
+ overlay.append(el('span','reserved-overlay-top','CÓPIA SOB EXAME'),
+   el('p','', 'As margens parecem coincidir. Uma segunda camada de tinta pode não estar visível na iluminação comum.'),
+   el('span','reserved-overlay-hidden','Junto à dobra, há sinais antigos sob um intervalo irregular na linha superior.'));
  tools.append(overlay);
- const lamp=button('Alternar iluminação',()=>overlay.classList.toggle('is-lit'),'reserved-nav-button');tools.append(lamp);
+ const lamp=button('Iluminar sob a dobra',()=>{
+   const lit=overlay.classList.toggle('is-lit');
+   lamp.setAttribute('aria-pressed',String(lit));
+ },'reserved-nav-button');lamp.setAttribute('aria-pressed','false');tools.append(lamp);
  const question=el('label','','Que hipótese os vestígios sustentam?');
  const compare=el('select');for(const [v,label] of [['','Selecionar interpretação'],...(data.comparisons||[]).map(x=>[x.id,x.label])]){const option=el('option','',label);option.value=v;compare.append(option);}
  question.append(compare);tools.append(question);host.append(tools);
@@ -237,10 +256,19 @@ function ledger(host,data){
  const amountLabel=el('label','','Valor faltante do comprovante D, em ₭');amountLabel.append(amount);host.append(amountLabel);
  host.append(el('h3','','Autenticidade dos comprovantes'));
  const documents=el('div','reserved-document-grid');
- for(const doc of data.documents||[])documents.append(el('p','reserved-document',doc.name+' · '+doc.description));
- host.append(documents);
  const pick=el('select'),pickLabel=el('label','','Comprovante autêntico');
- for(const [id,label] of [['','Selecionar documento'],...(data.documents||[]).map(x=>[x.id,x.name])]){const o=el('option','',label);o.value=id;pick.append(o);}pickLabel.append(pick);host.append(pickLabel);
+ const documentButtons=[];
+ for(const doc of data.documents||[]){
+  const card=el('button','reserved-document');
+  card.type='button';card.append(el('strong','',doc.name),el('span','',doc.description));
+  card.setAttribute('aria-pressed','false');
+  card.addEventListener('click',()=>{pick.value=doc.id;documentButtons.forEach(b=>b.setAttribute('aria-pressed',String(b===card)));});
+  documentButtons.push(card);documents.append(card);
+ }
+ host.append(documents);
+ for(const [id,label] of [['','Selecionar documento'],...(data.documents||[]).map(x=>[x.id,x.name])]){const o=el('option','',label);o.value=id;pick.append(o);}
+ pick.addEventListener('change',()=>{documentButtons.forEach((card,index)=>card.setAttribute('aria-pressed',String(data.documents[index]?.id===pick.value)));});
+ pickLabel.append(pick);host.append(pickLabel);
  const origin=el('select'),originLabel=el('label','','Inconsistência de autorização');
  for(const [id,label] of [['','Selecionar registro'],...(data.traces||[]).map(x=>[x.id,x.label])]){const o=el('option','',label);o.value=id;origin.append(o);}originLabel.append(origin);host.append(originLabel);
  return()=>({value:Number(amount.value),document:pick.value,trace:origin.value});
