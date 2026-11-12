@@ -1,3 +1,4 @@
+import {renderReservedAdmin} from './reserved-admin.js';
 import {access, client, rpc, node, button, accessGate, authorizedFetch} from './auth.js';
 
 const AREAS = [['library','Biblioteca de Lore'],['bestiary','Bestiário'],['portal','Campanhas e fichas online'],['mesa','Ficha local e dados'],['materials','Materiais da campanha'],['studio','HÆMA Estúdio — Mapmaker e mesa física']];
@@ -157,7 +158,7 @@ async function initAdmin() {
       }
       if(!logs.length)panel.append(node('p','','As revisões de acesso e as liberações aparecerão aqui.'));
     }
-    tabs.append(button('Pessoas',users),button('Liberações',releases),button('Volumes',volumes),button('Auditoria',audit),button('Atualizar',initAdmin));
+    tabs.append(button('Pessoas',users),button('Liberações',releases),button('Volumes',volumes),button('Livros reservados',()=>renderReservedAdmin(panel)),button('Auditoria',audit),button('Atualizar',initAdmin));
     users();
   } catch(error) {
     if(version!==generation||root!==host())return;
