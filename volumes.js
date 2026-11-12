@@ -10,9 +10,31 @@ async function init(){
   if(permissions.user&&!permissions.areas.includes('library')){accessGate(host,permissions,'Biblioteca');return;}
   host.replaceChildren(node('p','','Os volumes exigem liberação do administrador. O acesso ao Bestiário permanece independente.'));
   for(const [id,[name,subtitle]] of Object.entries(TITLES)){
+   // A physical-looking book is still one native button: keep access and reader logic unchanged.
    const open=button('',()=>permissions.user?openVolume(id,open):login(),'volume-cover');open.dataset.volume=id;
-   open.append(node('small','','HÆMA · MANUSCRITOS'),node('strong','',name),node('span','',subtitle),node('b','',!permissions.user?'ENTRAR PARA LER ↗':permissions.admin?'REVISAR VOLUME ↗':'CONSULTAR VOLUME ↗'));
-   host.append(open);
+   open.setAttribute('aria-label',name+': '+subtitle+'. '+(!permissions.user?'Entrar para ler':permissions.admin?'Revisar volume':'Consultar volume'));
+   const stand=node('div','volume-bookstand');
+   const book=node('div','volume-book');
+   const pages=node('span','volume-book-pages');pages.setAttribute('aria-hidden','true');
+   const border=node('span','volume-cover-border');
+   const emblem=node('span','volume-cover-emblem');
+   const crest=node('img');crest.src='assets/antler-sigil.svg';crest.alt='';crest.loading='lazy';crest.decoding='async';
+   emblem.append(crest);
+   for(const corner of ['tl','tr','br','bl']){
+    const ornament=node('span','cover-corner '+corner);ornament.setAttribute('aria-hidden','true');open.append(ornament);
+   }
+   border.append(
+    node('small','volume-series','HÆMA · ACERVO DE LORE'),
+    emblem,
+    node('strong','volume-title',name),
+    node('span','volume-subtitle',subtitle.toUpperCase()),
+    node('span','volume-cover-seal','✥'),
+    node('b','volume-cover-action',!permissions.user?'ENTRAR PARA LER ↗':permissions.admin?'REVISAR VOLUME ↗':'CONSULTAR VOLUME ↗')
+   );
+   open.append(border);
+   book.append(pages,open);
+   stand.append(book,node('span','volume-book-caption',name.toUpperCase()+' · '+subtitle.toUpperCase()));
+   host.append(stand);
   }
  }catch(error){if(version===generation)host.replaceChildren(node('p','',error.message),button('Tentar novamente',init));}
 }

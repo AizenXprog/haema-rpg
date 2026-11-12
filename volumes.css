@@ -1,14 +1,153 @@
-/* Private manuscripts: shared paper, distinct weather, no effects over text. */
-.volume-collection{padding:3rem 0 6rem;border-top:1px solid #a3814738}
+/* HÆMA Biblioteca: a mesma materialidade do Bestiário, com identidades próprias.
+   A alteração é exclusiva da coleção; não modifica o leitor nem os efeitos climáticos. */
+.volume-collection{
+ position:relative;
+ padding:clamp(3.5rem,6vw,6rem) 0 clamp(5rem,9vw,8rem);
+ border-top:1px solid #a3814738;
+ isolation:isolate;
+}
+.volume-collection::before{
+ content:'';position:absolute;z-index:-1;inset:0 -4vw;
+ background:radial-gradient(ellipse at 26% 56%,#405f681d,transparent 46%),radial-gradient(ellipse at 75% 55%,#91622c18,transparent 45%);
+ pointer-events:none;
+}
 .volume-collection h2{font:500 clamp(2rem,5vw,3.4rem)/1.1 'Cormorant Garamond',serif;color:#e3d4b9}
-#volumes-access{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem;max-width:850px;margin:2rem auto}
-#volumes-access>p,#volumes-access>.access-gate{grid-column:1/-1}
-.volume-cover{min-height:350px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.3rem;padding:2rem;border:1px solid #a8b9c067;border-left:9px solid #394852;background:radial-gradient(ellipse at 70% 10%,#86a9b42e,transparent 60%),linear-gradient(115deg,#1b2930,#080f16);color:#dce9ec;box-shadow:8px 12px 0 -6px #b9ae91,12px 18px 35px #0008;cursor:pointer;transition:transform .35s,box-shadow .35s}
-.volume-cover:before{content:'';position:absolute;inset:13px;border:1px solid #b2b9b13b;pointer-events:none}
-.volume-cover[data-volume=jankinss]{background:radial-gradient(ellipse at 70% 10%,#b8843a42,transparent 65%),linear-gradient(115deg,#472c1b,#160e0a);border-color:#bb925a75;border-left-color:#6d4b2a;color:#ecd7ab}
-.volume-cover strong{font:600 clamp(2.5rem,5vw,3.6rem)/1 'Cormorant Garamond',serif}
-.volume-cover span{font:500 1.3rem 'Cormorant Garamond',serif}.volume-cover small,.volume-cover b{font-size:.65rem;letter-spacing:.16em}.volume-cover b{margin-top:2rem}
-@media(hover:hover){.volume-cover:hover{transform:translateY(-7px) rotate(-.6deg);box-shadow:8px 16px 0 -6px #b9ae91,15px 26px 45px #000b}}
+#volumes-access{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ align-items:start;column-gap:clamp(2rem,5vw,5.5rem);row-gap:1.75rem;
+ width:100%;max-width:1060px;margin:2.25rem auto 0;
+}
+#volumes-access>p,#volumes-access>.access-gate{
+ grid-column:1/-1;max-width:65ch;margin:.15rem auto 0;
+ text-align:center;color:#cbbba9;line-height:1.7;
+}
+.volume-bookstand{
+ min-width:0;min-height:575px;position:relative;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ padding:23px 12px 0;perspective:1400px;
+}
+.volume-bookstand::before{
+ content:'';position:absolute;z-index:0;left:7%;right:7%;bottom:60px;height:26px;
+ background:radial-gradient(ellipse,#000b,transparent 68%);filter:blur(9px);pointer-events:none;
+}
+.volume-book{
+ position:relative;width:min(320px,85%);aspect-ratio:.69;
+ transform:rotateY(-13deg) rotateZ(-3deg);transform-style:preserve-3d;
+ filter:drop-shadow(20px 26px 24px #000a);
+ transition:transform .65s cubic-bezier(.18,.75,.24,1),filter .65s;
+}
+.volume-book-pages{
+ position:absolute;inset:7px -16px -9px 17px;transform:translateZ(-16px);
+ border:1px solid #59452f;border-radius:3px 11px 11px 3px;
+ background:repeating-linear-gradient(0deg,#c6b390 0 1px,#69583d 2px,#b6a27e 3px);
+ box-shadow:3px 4px 0 #382a21,5px 7px 0 #3e2520,10px 11px 13px #0006;
+ pointer-events:none;
+}
+.volume-cover{
+ --cover-metal:#c4a47a;--cover-muted:#c1b09b;
+ position:absolute;inset:0;z-index:1;width:100%;height:100%;min-height:0;min-width:0;
+ display:block;padding:18px 16px 17px 25px;margin:0;
+ border:2px solid #84715e;border-left:10px solid #16242a;
+ border-radius:4px 10px 10px 3px;
+ color:#e6d8c0;text-align:center;cursor:pointer;
+ background:
+  radial-gradient(ellipse at 42% 29%,#7b9baa36,transparent 68%),
+  repeating-linear-gradient(35deg,#e6edf108 0 1px,transparent 1px 4px),
+  linear-gradient(115deg,#243741,#101c24 62%,#0b141c);
+ box-shadow:inset 5px 0 11px #000b,inset -3px -3px 9px #0007,inset 0 0 65px #07141c;
+ font:inherit;letter-spacing:normal;transform:none;
+}
+.volume-cover[data-volume=jankinss]{
+ --cover-metal:#dfbb83;--cover-muted:#dec3a0;
+ border-color:#926b43;border-left-color:#302015;
+ background:
+  radial-gradient(ellipse at 44% 28%,#b1874b44,transparent 69%),
+  repeating-linear-gradient(32deg,#e9bf8010 0 1px,transparent 1px 4px),
+  linear-gradient(116deg,#5a3b28,#342118 62%,#1b110d);
+ box-shadow:inset 5px 0 11px #0009,inset -3px -3px 8px #1b0e09,inset 0 0 72px #241307;
+}
+.volume-cover::before{
+ content:'';pointer-events:none;position:absolute;inset:0 0 0 2px;
+ background:linear-gradient(90deg,#050b104d,transparent 9%,transparent 91%,#e3cda409);
+ border-radius:inherit;
+}
+.volume-cover .cover-corner{z-index:2}
+.volume-cover-border{
+ height:100%;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ position:relative;padding:24px 12px 12px;
+ border:1px solid color-mix(in srgb,var(--cover-metal) 50%,transparent);
+ outline:1px solid color-mix(in srgb,var(--cover-metal) 25%,transparent);outline-offset:5px;
+ pointer-events:none;
+}
+.volume-cover-border::before{
+ content:'';position:absolute;inset:12px;pointer-events:none;
+ border:1px solid color-mix(in srgb,var(--cover-metal) 18%,transparent);
+}
+ .volume-cover .volume-series,.volume-cover .volume-subtitle{
+ display:block;color:var(--cover-muted);font:600 9px/1.65 'DM Sans',sans-serif;
+ letter-spacing:.15em;text-transform:uppercase;
+}
+.volume-series{margin-top:2px}
+.volume-cover-emblem{
+ display:grid;place-items:center;flex:1;width:83%;min-height:98px;max-height:175px;
+ margin:12px auto 1px;position:relative;
+}
+.volume-cover-emblem::before{
+ content:'';position:absolute;inset:12% 8%;border-radius:50%;
+ border:1px solid color-mix(in srgb,var(--cover-metal) 25%,transparent);
+ box-shadow:0 0 0 6px #e2d4b006,0 0 45px color-mix(in srgb,var(--cover-metal) 10%,transparent);
+}
+.volume-cover-emblem img{
+ display:block;width:100%;max-height:140px;object-fit:contain;opacity:.76;
+ filter:sepia(.22) drop-shadow(0 0 5px #bc997333);
+}
+.volume-cover[data-volume=frikten] .volume-cover-emblem img{filter:sepia(.15) hue-rotate(145deg) drop-shadow(0 0 8px #b6e1e455)}
+.volume-cover[data-volume=jankinss] .volume-cover-emblem img{filter:sepia(.72) saturate(1.15) drop-shadow(0 0 7px #b8844244)}
+.volume-cover .volume-title{
+ display:block;margin:2px 0 10px;color:#e8ddc6;
+ font:500 clamp(38px,4vw,50px)/1.05 'Cormorant Garamond',Georgia,serif;
+ letter-spacing:-.025em;text-shadow:0 2px 1px #091219,0 -1px #f9eac024;
+}
+.volume-cover[data-volume=jankinss] .volume-title{color:#f0d4a2;text-shadow:0 2px 1px #1b0b08,0 -1px #ffe4ba38}
+.volume-cover .volume-subtitle{min-height:26px;max-width:26ch;display:block}
+.volume-cover-seal{display:block;color:var(--cover-metal);font-size:18px;opacity:.8;margin:auto 0 0;padding:12px 0 3px}
+.volume-cover .volume-cover-action{
+ display:block;margin:0;color:var(--cover-metal);font:700 9px/1.4 'DM Sans',sans-serif;
+ letter-spacing:.15em;text-transform:uppercase;
+}
+.volume-book-caption{
+ display:block;align-self:stretch;max-width:430px;width:90%;margin:42px auto 0;
+ padding:14px 8px 0;border-top:4px double #95724b35;
+ color:#ac9679;text-align:center;font:600 10px/1.7 'DM Sans',sans-serif;letter-spacing:.13em;
+}
+.volume-cover:focus-visible{
+ outline:2px solid #e7d0a3;outline-offset:12px;
+}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+ .volume-bookstand:hover .volume-book,.volume-bookstand:focus-within .volume-book{
+  transform:rotateY(-5deg) rotateZ(-.8deg) translateY(-8px);
+  filter:drop-shadow(23px 32px 29px #000c);
+ }
+}
+@media(max-width:720px){
+ #volumes-access{grid-template-columns:1fr;max-width:490px;row-gap:0}
+ .volume-bookstand{min-height:535px;padding-top:14px}
+ .volume-book{width:min(295px,78%)}
+ .volume-book-caption{margin-top:34px}
+}
+@media(max-width:480px){
+ #volumes-access{max-width:100%;margin-top:1.65rem}
+ .volume-bookstand{min-height:500px}
+ .volume-book{width:min(267px,79%)}
+ .volume-cover{padding:15px 13px 15px 22px}
+ .volume-cover-border{padding:20px 8px 10px}
+ .volume-cover-emblem{margin:8px auto 0;min-height:70px}
+ .volume-cover .volume-title{font-size:40px}
+ .volume-cover .volume-series,.volume-cover .volume-subtitle{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){
+ .volume-book{transition:none!important}
+}
 .volume-reader{--weather-force:1;--ink:#242c30;--paper:#d8ddd8;max-width:none;max-height:none;width:100%;height:100%;height:100dvh;padding:clamp(12px,3vh,36px) clamp(12px,10vw,180px);margin:0;border:0;overflow:hidden;background:#101c28;color:var(--ink);isolation:isolate}
 .volume-reader::backdrop{background:#080b0e}
 .volume-reader[data-theme=jankinss]{--ink:#382719;--paper:#e6d2ac;background:#3e281d}
@@ -51,10 +190,20 @@
 @keyframes manuscript-dust{0%{opacity:.8;transform:translateX(-15%)}100%{opacity:0;transform:translateX(100%)}}
 @keyframes manuscript-mist{to{transform:translate3d(3%,-2%,0) scale(1.06)}}
 @keyframes manuscript-heat{to{transform:scaleY(1.015) skewX(.3deg);filter:blur(2px)}}
-@media(max-width:720px){#volumes-access{gap:1.3rem}.volume-cover{padding:1.5rem 1rem;min-height:290px}.volume-reader{padding:12px 10px}.volume-top{padding:.5rem 1rem}.volume-copy{padding:26px 22px}.volume-controls{padding:.25rem .5rem .7rem}.volume-status{margin:.5rem}.volume-frost{opacity:.4}.volume-sheet{max-width:570px}}
-@media(max-width:480px){#volumes-access{grid-template-columns:1fr;max-width:330px}.volume-reader{padding:8px}.volume-copy{padding:20px}.volume-copy p{font-size:1.05rem;line-height:1.65}.volume-top{letter-spacing:.08em}.volume-controls button{padding:.65rem .45rem;font-size:.74rem}}
+@media(max-width:720px){.volume-reader{padding:12px 10px}.volume-top{padding:.5rem 1rem}.volume-copy{padding:26px 22px}.volume-controls{padding:.25rem .5rem .7rem}.volume-status{margin:.5rem}.volume-frost{opacity:.4}.volume-sheet{max-width:570px}}
+@media(max-width:480px){.volume-reader{padding:8px}.volume-copy{padding:20px}.volume-copy p{font-size:1.05rem;line-height:1.65}.volume-top{letter-spacing:.08em}.volume-controls button{padding:.65rem .45rem;font-size:.74rem}}
 @media(prefers-reduced-motion:reduce){.volume-reader *,.volume-cover{animation:none!important;transition:none!important}.volume-opening .volume-sheet:before{display:none}}
 
 .weather-still .volume-mist,.weather-still .volume-horizon{animation-play-state:paused}
 
 .volume-reader button{box-shadow:none;text-transform:none;letter-spacing:normal}
+
+
+/* The decorative pointer lives in <body>, below the browser top layer used
+   by showModal(). Restore the native mouse cursor inside both book readers. */
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+ html.cursor-ready :is(.book-reader,.volume-reader){cursor:default}
+ html.cursor-ready :is(.book-reader,.volume-reader) :is(button:not(:disabled),a){cursor:pointer}
+ html.cursor-ready :is(.book-reader,.volume-reader) button:disabled{cursor:not-allowed}
+ html.cursor-ready :is(.book-reader,.volume-reader) :is(input,textarea){cursor:text}
+}
