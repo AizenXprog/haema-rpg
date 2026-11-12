@@ -95,3 +95,34 @@ button:disabled{opacity:.4;cursor:not-allowed}button:active:not(:disabled){trans
  .studio-footer{flex-wrap:wrap;font-size:8px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+
+
+/* v0.2 — prominent grid visibility and future-ready mapmaking instruments */
+.studio-head-tools{align-items:center}
+.studio-grid-switch{
+ display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:7px 12px;
+ background:#242b29;border:1px solid #c0a17673;color:#e8d4b6;
+ cursor:pointer;user-select:none;white-space:nowrap;transition:background .2s,border-color .2s
+}
+.studio-grid-switch:hover,.studio-grid-switch:focus-within{background:#38302a;border-color:#e9c78a}
+.studio-grid-switch input{width:15px;height:15px;accent-color:#cfa776;cursor:pointer;margin:0}
+.studio-grid-indicator{font:600 19px/1 Georgia,serif;color:#cda877}
+.studio-grid-switch span:last-child{font-size:11px}
+.studio-grid-switch b{font-size:10px;margin-left:3px;color:#e9ba7d}
+.studio-grid-switch:has(input:not(:checked)){background:#17191b;color:#aaa19a}
+.studio-grid-switch:has(input:not(:checked)) .studio-grid-indicator{opacity:.55}
+.studio-grid-switch:has(input:not(:checked)) b{color:#d9c3a9}
+.studio-panel-hint{font-size:10px;line-height:1.7;color:#a99a84;margin:12px 0 0}
+.generator-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.generator-grid button,.studio-wide-action{
+ min-height:42px;background:linear-gradient(120deg,#27211d,#181a1b);color:#d8c6ac;
+ border:1px solid #987e5c77;text-align:center;padding:9px 10px;font:600 10px/1.45 'DM Sans',sans-serif
+}
+.generator-grid button:hover,.studio-wide-action:hover{background:#3c2a29;border-color:#cba97f}
+.studio-wide-action{width:100%}
+@media(max-width:570px){
+ .studio-canvas-head{height:auto;min-height:64px;gap:9px;flex-wrap:wrap}
+ .studio-head-tools{gap:5px;flex-wrap:wrap;justify-content:flex-end}
+ .studio-grid-switch{padding:6px 9px}
+ .studio-grid-switch span:last-child{font-size:10px}
+}
