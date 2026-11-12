@@ -7,7 +7,7 @@ const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-can
 const view={x:0,y:0,zoom:1,ready:false};
 let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,showGrid=true;
 let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,saveTimer=0,broadcastTimer=0;
-let output=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
+let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
 const status=(message)=>{$('studio-status').textContent=message;};
 const round=(n)=>Math.round(n*2)/2;
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
@@ -52,7 +52,7 @@ function closestToken(p){
 function saveLater(){
  clearTimeout(saveTimer);
  saveTimer=setTimeout(async()=>{
-  try{await saveProject(scene);status('Projeto salvo neste navegador.');}
+  try{await saveProject(scene,ownerId);status('Projeto salvo neste navegador.');}
   catch{status('Salvamento local indisponível. Exporte o projeto em JSON.');}
  },350);
 }
@@ -201,7 +201,7 @@ function setup(){
  $('hide-all').addEventListener('click',()=>{snapshot();scene.fog.fill(1);changed();});
  $('undo').addEventListener('click',undo);$('redo').addEventListener('click',redo);
  $('fit-map').addEventListener('click',fit);
- $('save-local').addEventListener('click',async()=>{try{await saveProject(scene);status('Projeto salvo no navegador.');}catch{status('Não foi possível salvar. Exporte em JSON.');}});
+ $('save-local').addEventListener('click',async()=>{try{await saveProject(scene,ownerId);status('Projeto salvo no navegador.');}catch{status('Não foi possível salvar. Exporte em JSON.');}});
  $('export-json').addEventListener('click',()=>exportJSON(scene));
  $('import-json').addEventListener('click',()=>$('import-json-input').click());
  $('import-json-input').addEventListener('change',async event=>{
@@ -233,7 +233,12 @@ function setup(){
  });
  window.addEventListener('keyup',event=>{if(event.code==='Space')spaceHeld=false;});
  const enforceAccess=async()=>{
-  try{const response=await authorizedFetch('/api/studio-access');const result=await response.json();if(result.allowed!==true)throw Error('Acesso revogado');}
+  try{
+   const info=await access();
+   if(info.user?.id!==ownerId)throw Error('Conta alterada');
+   const response=await authorizedFetch('/api/studio-access');const result=await response.json();
+   if(result.allowed!==true)throw Error('Acesso revogado');
+  }
   catch{
    if(channel){channel.postMessage({type:'blackout'});channel.close();channel=null;}
    workspace.hidden=true;gate.hidden=false;
@@ -255,8 +260,9 @@ async function boot(){
   const response=await authorizedFetch('/api/studio-access');
   const permission=await response.json();
   if(permission.allowed!==true)throw Error('Seu acesso ao Estúdio não foi autorizado.');
+  ownerId=info.user.id;
   gate.hidden=true;workspace.hidden=false;
-  try{const stored=await loadProject();if(stored)scene=safeScene(stored);}catch{status('Projeto inicial carregado. Exporte JSON se o salvamento não funcionar.');}
+  try{const stored=await loadProject(ownerId);if(stored)scene=safeScene(stored);}catch{status('Projeto inicial carregado. Exporte JSON se o salvamento não funcionar.');}
   setup();loadBackground();resize();fit();changed(false);
  }catch(error){gate.replaceChildren(node('h2','','Estúdio indisponível'),node('p','',error.message),button('Tentar novamente',boot));}
  finally{booting=false;}
