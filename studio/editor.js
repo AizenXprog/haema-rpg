@@ -1,9 +1,9 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
-import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js';
+import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=3';
 import {saveProject,loadProject,exportJSON} from './storage.js';
-import {generateScene,makeRoom} from './generator.js';
-import {invalidateTerrain} from './terrain-renderer.js';
-import {invalidateFog} from './fog-renderer.js';
+import {generateScene,makeRoom} from './generator.js?v=3';
+import {invalidateTerrain} from './terrain-renderer.js?v=1';
+import {invalidateFog} from './fog-renderer.js?v=1';
 
 const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
