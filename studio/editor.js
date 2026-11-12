@@ -180,6 +180,7 @@ function startProjection(){
   const url=new URL('../projecao.html',import.meta.url);url.hash=token;
   projector=window.open(url.href,'haema-projecao','width=1100,height=700');
  }else if(projector&&!projector.closed)projector.focus();
+ else{channel.close();channel=null;projector=null;return startProjection();}
  if(!projector){status('O navegador bloqueou a segunda janela. Permita pop-ups para este site.');channel?.close();channel=null;return;}
  status('Janela de jogadores aberta. Mova-a para o segundo monitor e use tela cheia.');
  queueBroadcast();
@@ -231,6 +232,16 @@ function setup(){
   else if(event.code==='Space'){spaceHeld=true;event.preventDefault();}
  });
  window.addEventListener('keyup',event=>{if(event.code==='Space')spaceHeld=false;});
+ const enforceAccess=async()=>{
+  try{const response=await authorizedFetch('/api/studio-access');const result=await response.json();if(result.allowed!==true)throw Error('Acesso revogado');}
+  catch{
+   if(channel){channel.postMessage({type:'blackout'});channel.close();channel=null;}
+   workspace.hidden=true;gate.hidden=false;
+   gate.replaceChildren(node('h2','','Acesso ao Estúdio encerrado'),node('p','','Sua autorização não está mais disponível. Consulte a administração.'),button('Voltar ao Portal',()=>{location.href='portal.html';}));
+  }
+ };
+ setInterval(enforceAccess,60000);
+ document.addEventListener('haema:auth',enforceAccess);
  window.addEventListener('pagehide',()=>{if(channel){channel.postMessage({type:'blackout'});channel.close();}clearTimeout(saveTimer);clearTimeout(broadcastTimer);});
  new ResizeObserver(resize).observe(canvas.parentElement);
  setTool('pan');
