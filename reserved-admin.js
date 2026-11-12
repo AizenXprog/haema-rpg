@@ -18,7 +18,7 @@ const req=async(action,payload=null)=>{
 const n=(tag,cls='',text)=>node(tag,cls,text);
 const feedback=(target,text,bad=false)=>{let label=target.querySelector('.reserved-admin-feedback');if(!label){label=n('p','reserved-admin-feedback');label.setAttribute('role','status');target.prepend(label);}label.textContent=text;label.dataset.error=bad?'true':'false';};
 export async function renderReservedAdmin(panel){
- panel.replaceChildren(n('h2','','Livros reservados'),n('p','','Acesso individual, importação privada e progresso. Nenhum manuscrito é armazenado nos arquivos públicos do site.'));
+ panel.replaceChildren(n('h2','','Arquivo editorial dos livros'),n('p','','Importação privada e integridade dos manuscritos. As permissões e a liberação dos volumes estão concentradas na Central de Acessos.'));
  try{
   const rights=await access();if(!rights.admin)throw Error('Área exclusiva de administração.');
   const state=await req('admin');
@@ -55,36 +55,11 @@ export async function renderReservedAdmin(panel){
     }catch(error){feedback(form,error.message,true);}
    });
    form.append(importButton);box.append(form);
-   const toggle=button(book.published?'Recolher livro':'Liberar apenas aos autorizados',async()=>{
-    if(!confirm('Confirmar '+(book.published?'recolhimento':'liberação')+' de '+book.title+'?'))return;
-    try{await req('publish',{book_key:book.id,next_published:!book.published});await renderReservedAdmin(panel);}
-    catch(error){feedback(box,error.message,true);}
-   });toggle.disabled=!book.loaded||!book.puzzle_ready&&!book.published;box.append(toggle);books.append(box);
+   box.append(n('p','','Para liberar, pausar ou selecionar leitores deste livro, use Central de Acessos → Por livro.'));
+   books.append(box);
   }
   panel.append(books);
-  const members=n('section','reserved-admin-section');members.append(n('h3','','Permissões por jogador'));
-  for(const user of state.users){
-   const card=n('details','admin-user'),head=n('summary','',user.name+' · '+user.status);card.append(head);
-   const list=n('div','reserved-admin-grants');
-   for(const [id,label] of Object.entries(TITLES)){
-    const holder=n('label',''),checkbox=n('input');checkbox.type='checkbox';
-    checkbox.checked=state.grants.some(x=>x.user===user.id&&x.book===id);
-    checkbox.addEventListener('change',async()=>{checkbox.disabled=true;
-     try{await req('grant',{target:user.id,book_key:id,enable_access:checkbox.checked});feedback(card,'Permissão atualizada.');}
-     catch(error){checkbox.checked=!checkbox.checked;feedback(card,error.message,true);}
-     finally{checkbox.disabled=false;}
-    });holder.append(checkbox,document.createTextNode(label));list.append(holder);
-   }
-   const progresses=state.progress.filter(p=>p.user===user.id);
-   for(const p of progresses){const info=n('div','reserved-admin-progress');
-    info.append(n('span','',TITLES[p.book]+' · Capítulo '+(p.chapter+1)+', página '+(p.page+1)+(p.solved?' · Enigma concluído':'')));
-    info.append(button('Reiniciar progresso',async()=>{if(!confirm('Reiniciar o progresso de '+user.name+' em '+TITLES[p.book]+'?'))return;
-     try{await req('reset',{target:user.id,book_key:p.book});await renderReservedAdmin(panel);}
-     catch(error){feedback(card,error.message,true);}
-    }));list.append(info);
-   }
-   card.append(list);members.append(card);
-  }
-  panel.append(members);
+  panel.append(n('p','access-help','Permissões de pessoas, áreas e livros agora são gerenciadas exclusivamente na Central de Acessos. A importação de um manuscrito interrompe sua liberação até nova revisão administrativa.'));
+
  }catch(error){feedback(panel,error.message,true);}
 }
