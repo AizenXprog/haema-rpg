@@ -1,5 +1,6 @@
 import {renderReservedAdmin} from './reserved-admin.js';
 import {renderAccessCenter} from './access-center.js';
+import {renderActivityAdmin} from './activity-admin.js';
 import {access, client, rpc, node, button, accessGate, authorizedFetch} from './auth.js';
 
 const AREAS = [['library','Biblioteca de Lore'],['bestiary','Bestiário'],['portal','Campanhas e fichas online'],['mesa','Ficha local e dados'],['materials','Materiais da campanha'],['studio','HÆMA Estúdio — Mapmaker e mesa física']];
@@ -13,14 +14,6 @@ async function initAdmin() {
     const permissions=await access();
     if(version!==generation||root!==host())return;
     if(!permissions.admin) {accessGate(root,permissions,'Administração');return;}
-    const db=await client();
-    const result=await Promise.all([
-      db.from('haema_access_accounts').select('user_id,display_name,status').order('created_at',{ascending:false}),
-      db.from('haema_access_log').select('id,subject_id,action,details,created_at').order('id',{ascending:false}).limit(60)
-    ]);
-    for(const r of result)if(r.error)throw r.error;
-    if(version!==generation||root!==host())return;
-    const [accounts,logs]=result.map(r=>r.data);
     const tabs=node('nav','admin-tabs');tabs.setAttribute('aria-label','Administração');
     const panel=node('section','admin-panel');
     root.replaceChildren(tabs,panel);
@@ -109,29 +102,11 @@ async function initAdmin() {
         }
       }catch(error){if(tab===tabVersion&&root===host())panel.append(node('p','',error.message));}
     }
-    function audit() {
-      tabVersion++;
-      panel.replaceChildren(node('h2','','Histórico de acessos e liberações'));
-      const names=Object.fromEntries(accounts.map(a=>[a.user_id,a.display_name]));
-      for(const log of logs) {
-        const row=node('article','audit-row');
-        row.append(node('time','',new Date(log.created_at).toLocaleString('pt-BR')),
-          node('strong','',({
-            'access.review':'Permissões da conta revisadas',
-            'access.bundle':'Visibilidade do usuário atualizada',
-            'reserved.access.book':'Destinatários de livro alterados',
-            'reserved.grant':'Autorização individual de livro alterada',
-            'reserved.publish':'Disponibilidade de livro alterada',
-            'volume.release':'Publicação de volume revisada'
-           })[log.action]||'Liberação de conteúdo revisada'),
-          node('p','',log.subject_id?(names[log.subject_id]||'Conta cadastrada')+
-            (log.details?.before&&log.details?.after?' · '+log.details.before+' → '+log.details.after:''):
-            log.details?.book||log.details?.volume||log.details?.entry||'Biblioteca'));
-        panel.append(row);
-      }
-      if(!logs.length)panel.append(node('p','','As revisões de acesso e as liberações aparecerão aqui.'));
+    async function audit(){
+      const tab=++tabVersion;
+      await renderActivityAdmin(panel,()=>version===generation&&root===host()&&tab===tabVersion);
     }
-    tabs.append(button('Central de acessos',users),button('Liberações do Bestiário',releases),button('Volumes',volumes),button('Textos reservados',()=>{tabVersion++;void renderReservedAdmin(panel)}),button('Auditoria',audit),button('Atualizar',initAdmin));
+    tabs.append(button('Central de acessos',users),button('Liberações do Bestiário',releases),button('Volumes',volumes),button('Textos reservados',()=>{tabVersion++;void renderReservedAdmin(panel)}),button('Atividades e Auditoria',audit),button('Atualizar',initAdmin));
     users();
   } catch(error) {
     if(version!==generation||root!==host())return;
