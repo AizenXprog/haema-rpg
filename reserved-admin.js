@@ -1,4 +1,9 @@
 import {access,authorizedFetch,node,button} from './auth.js';
+const SOURCE_HASHES={
+ 'arquivos-silenciados':'8d8d52dc1589b373b5bcc3c823e928529d0ecc6a65ca3b2ef1ddb860d6ff74d5',
+ 'peso-da-coroa':'4d0d6d3620779b196096094a4f43351d1e33356cec7e146be860d276d0d687fe',
+ 'regencias-conhecidas':'b5ba7331378355a51d098bf9878ece5c57977d1c3049e08a336552e4d0318156'
+};
 const TITLES={
  'arquivos-silenciados':'Os Arquivos Silenciados',
  'peso-da-coroa':'O Peso da Coroa',
@@ -39,6 +44,9 @@ export async function renderReservedAdmin(panel){
      const raw=await manuscript.files[0].text(),setup=JSON.parse(await puzzle.files[0].text());
      const first=(raw.match(/^#\s+(.+)$/m)||[])[1]||'';
      if(first.trim().toLocaleLowerCase('pt-BR')!==book.title.toLocaleLowerCase('pt-BR'))throw Error('O título do manuscrito não corresponde ao volume selecionado.');
+     const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(raw));
+     const sourceHash=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
+     if(sourceHash!==SOURCE_HASHES[book.id])throw Error('O arquivo difere do manuscrito integral aprovado. Confirme a versão antes de importar.');
      if(!setup?.public_data||!setup?.expected_answer||!setup?.revelation)throw Error('O arquivo do enigma está incompleto.');
      if(!confirm('Importar este manuscrito integral e configuração do enigma no armazenamento privado?'))return;
      await req('import',{book_key:book.id,book_title:title.value,book_subtitle:subtitle.value,raw_manuscript:raw,
