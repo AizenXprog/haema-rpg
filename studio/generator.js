@@ -35,6 +35,14 @@ function decorateRoom(s,room,rand,kind='common'){
  else if(kind==='tavern'){addProp(s,{x:cx,y:cy,type:'table'});for(const p of [[-1,0],[1,0],[0,-1],[0,1]])addProp(s,{x:cx+p[0],y:cy+p[1],type:'chair'});addProp(s,{x:x+1.5,y:y+1.5,type:'barrel'});}
  else{addProp(s,{x:cx,y:cy,type:rand()<.5?'table':'pillar'});if(rand()>.4)addProp(s,{x:x+1.5,y:y+1.5,type:'chest'});}
 }
+export function furnishRoom(scene,room,kind='empty',seed='interior'){
+ if(kind==='empty')return 0;
+ if(!['bedroom','library','tavern','common'].includes(kind))throw Error('Ambiente desconhecido.');
+ const before=scene.props.length;
+ const rand=random(seedFrom(String(seed)+':'+room.x+':'+room.y+':'+kind));
+ decorateRoom(scene,room,rand,kind);
+ return scene.props.length-before;
+}
 export function generateScene(kind='forest',seed=Date.now()){
  const rand=random(seedFrom(seed)),s=starterScene();
  s.tiles.fill('grass');s.fog.fill(0);s.heights=Array(s.cols*s.rows).fill(0);
