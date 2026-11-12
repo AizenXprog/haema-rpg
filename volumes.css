@@ -56,3 +56,5 @@
 @media(prefers-reduced-motion:reduce){.volume-reader *,.volume-cover{animation:none!important;transition:none!important}.volume-opening .volume-sheet:before{display:none}}
 
 .weather-still .volume-mist,.weather-still .volume-horizon{animation-play-state:paused}
+
+.volume-reader button{box-shadow:none;text-transform:none;letter-spacing:normal}

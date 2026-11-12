@@ -27,10 +27,12 @@ async function openVolume(id,opener){
  const close=button('Fechar ×',()=>dialog.close(),'volume-close');top.append(title,close);
  const content=node('article','volume-copy');content.tabIndex=-1;
  const footer=node('nav','volume-controls');footer.setAttribute('aria-label','Navegação do livro');
- const prev=button('← Anterior',()=>turn(-1)),index=button('Índice',showIndex),next=button('Próxima →',()=>turn(1)),status=node('p','volume-status');status.setAttribute('role','status');footer.append(prev,index,next);
+ const control=(text,action)=>{const el=node('button','',text);el.type='button';el.addEventListener('click',action);return el;};
+ const prev=control('← Anterior',()=>turn(-1)),index=control('Índice',showIndex),next=control('Próxima →',()=>turn(1)),status=node('p','volume-status');status.setAttribute('role','status');footer.append(prev,index,next);
  sheet.append(top,content,status,footer);dialog.append(scenery,back,sheet,front);document.body.append(dialog);
- function cleanup(){if(!alive)return;alive=false;request++;controller.abort();clearTimeout(timer);weather?.dispose();animation?.cancel();book=null;pages=[];dialog.remove();disposeReader=()=>{};if(opener.isConnected)opener.focus();}
+ function cleanup(){if(!alive)return;alive=false;request++;controller.abort();clearTimeout(timer);weather?.dispose();animation?.cancel();book=null;pages=[];document.body.style.overflow=previousOverflow;dialog.remove();disposeReader=()=>{};if(opener.isConnected)opener.focus();}
  dialog.addEventListener('close',cleanup,options);disposeReader=()=>{if(dialog.open)dialog.close();cleanup()};
+ const previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
  dialog.showModal();close.focus();content.append(node('p','','Verificando autorização…'));prev.disabled=next.disabled=index.disabled=true;
  async function load(revalidate=false){
   const seq=++request;
