@@ -357,3 +357,24 @@ button,input{font-family:inherit}
  font:500 12px/1.4 'DM Sans',sans-serif
 }
 .studio-inspector .field-label select:focus-visible{outline:2px solid #bd8d95;outline-offset:2px}
+
+
+/* Alfa 0.3 fase 2 — ferramentas contextuais para rios, estradas e cenas guiadas. */
+.studio-inspector .field-label textarea{
+ display:block;width:100%;min-height:96px;resize:vertical;
+ padding:10px 11px;color:#e7eaed;background:#272d32;
+ border:1px solid #454c54;border-radius:7px;
+ font:400 12px/1.6 'DM Sans',sans-serif
+}
+.studio-inspector .field-label textarea:focus-visible{
+ outline:2px solid #b78490;outline-offset:2px
+}
+.studio-guided{margin:16px 0 0}
+.studio-guided-body{padding:12px 12px 15px;border-top:1px solid #394047}
+.studio-guided-body .field-label{margin-bottom:12px}
+.studio-guided-body .studio-panel-hint{margin-bottom:0}
+#selected-path-controls[hidden],#selected-prop-controls[hidden],
+#road-material-container[hidden]{display:none!important}
+#selected-path-controls{margin-top:9px}
+#selected-path-controls .brush-label{margin-top:5px}
+#selected-path-width{width:100%;accent-color:#c08b92}
