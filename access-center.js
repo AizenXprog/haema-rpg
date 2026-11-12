@@ -90,7 +90,7 @@ export async function renderAccessCenter(panel,isCurrent=()=>true){
    if(!active()||which!==sequence)return;
    if(!snapshot||!Array.isArray(snapshot.users)||!Array.isArray(snapshot.books))throw Error('A Central não conseguiu consultar as permissões.');
    data={users:snapshot.users.map(u=>({...u,areas:asArray(u.areas),books:asArray(u.books)})),
-    books:snapshot.books, recent:asArray(snapshot.recent)};
+    books:snapshot.books,campaigns:asArray(snapshot.campaigns),recent:asArray(snapshot.recent)};
    if(!data.users.some(u=>u.id===selectedUser))selectedUser=data.users.find(u=>!u.admin)?.id||data.users[0]?.id||'';
    if(!data.books.some(b=>b.id===selectedBook))selectedBook=data.books[0]?.id||'';
    renderOverview();renderMode();if(message)showFeedback(message,'good');
