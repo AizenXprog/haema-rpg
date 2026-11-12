@@ -1,6 +1,6 @@
 import {access, client, rpc, node, button, accessGate, authorizedFetch} from './auth.js';
 
-const AREAS = [['library','Biblioteca de Lore'],['bestiary','Bestiário'],['portal','Campanhas e fichas online'],['mesa','Ficha local e dados'],['materials','Materiais da campanha']];
+const AREAS = [['library','Biblioteca de Lore'],['bestiary','Bestiário'],['portal','Campanhas e fichas online'],['mesa','Ficha local e dados'],['materials','Materiais da campanha'],['studio','HÆMA Estúdio — Mapmaker e mesa física']];
 let generation=0;
 const host=()=>document.getElementById('haema-admin');
 async function initAdmin() {
