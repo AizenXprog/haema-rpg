@@ -13,7 +13,7 @@ export function starterScene(){
   tiles.push(middle?'stone':(Math.abs(x-14)<2||Math.abs(y-9)<2?'earth':'grass'));
   fog.push(Math.hypot(x-13,y-9)>5?1:0);
  }
- return {version:1,id:'local',name:'Ruínas do caminho',cols,rows,tiles,fog,heights:Array(cols*rows).fill(0),
+ return {version:1,id:'local',name:'Ruínas do caminho',cols,rows,tiles,fog,gridVisible:true,heights:Array(cols*rows).fill(0),
   walls:[{x1:8,y1:5,x2:19,y2:5},{x1:8,y1:5,x2:8,y2:14},{x1:19,y1:5,x2:19,y2:14}],
   props:[{x:4.5,y:5.5,type:'tree'},{x:23.5,y:4.5,type:'tree'},{x:5.5,y:13.5,type:'rock'},{x:10.5,y:6.5,type:'pillar'},{x:17.5,y:11.5,type:'torch'}],
   tokens:[{id:'t1',x:13.5,y:9.5,label:'A',color:'#cda379',hidden:false},{id:'t2',x:15.5,y:10.5,label:'B',color:'#809eae',hidden:false}],
@@ -31,7 +31,7 @@ export function safeScene(value){
  const tokens=Array.isArray(value.tokens)?value.tokens.slice(0,120).filter(t=>t&&valid(t.x,t.y)).map(t=>({id:safeLabel(t.id)||crypto.randomUUID(),x:+t.x,y:+t.y,label:safeLabel(t.label),color:/^#[0-9a-f]{6}$/i.test(t.color)?t.color:'#d6ad7b',hidden:!!t.hidden})):[];
  const walls=Array.isArray(value.walls)?value.walls.slice(0,400).filter(w=>w&&valid(w.x1,w.y1)&&valid(w.x2,w.y2)).map(w=>({x1:+w.x1,y1:+w.y1,x2:+w.x2,y2:+w.y2})):[];
  const background=typeof value.background==='string'&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value.background)&&value.background.length<12e6?value.background:null;
- return {version:1,id:'local',name:safeLabel(value.name)||'Cena sem título',cols,rows,
+ return {version:1,id:'local',name:safeLabel(value.name)||'Cena sem título',cols,rows,gridVisible:value.gridVisible!==false,
   tiles:value.tiles.map(t=>terrain.includes(t)?t:'grass'),fog:value.fog.map(f=>f?1:0),heights:Array.isArray(value.heights)&&value.heights.length===cols*rows?value.heights.map(h=>Math.min(4,Math.max(0,Math.round(Number(h)||0)))):Array(cols*rows).fill(0),
   props,tokens,walls,background};
 }
