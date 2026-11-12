@@ -308,13 +308,19 @@ export async function renderAccessCenter(panel,isCurrent=()=>true){
     if(!eligible)box.disabled=true;
     const name=n('span','access-recipient-info');name.append(n('strong','',user.name),
      n('small','',eligible?'Conta aprovada · Biblioteca habilitada':user.status!=='approved'?'Conta '+statusText(user.status).toLowerCase():'Biblioteca não habilitada'));
-    row.append(box,name,labelState(selected.has(user.id)?(book.published&&eligible?'Pode ler':'Atribuído, bloqueado'):'Não atribuído',
-      selected.has(user.id)&&eligible&&book.published?'good':selected.has(user.id)?'warning':'muted'));
+    const badge=labelState(selected.has(user.id)?(book.published&&eligible?'Pode ler':'Atribuído, bloqueado'):'Não atribuído',
+      selected.has(user.id)&&eligible&&book.published?'good':selected.has(user.id)?'warning':'muted');
+    row.append(box,name,badge);
     if(!eligible){
       const open=action('Editar pessoa',()=>{selectedUser=user.id;mode='users';renderMode();},'access-link');
       row.append(open);
     }
-    box.addEventListener('change',()=>{if(box.checked)selected.add(user.id);else selected.delete(user.id);renderRecipients();updateRecipientsSave();});
+    box.addEventListener('change',()=>{
+      if(box.checked)selected.add(user.id);else selected.delete(user.id);
+      badge.className='access-label is-'+(box.checked?(book.published&&eligible?'good':'warning'):'muted');
+      badge.textContent=box.checked?(book.published&&eligible?'Pode ler':'Atribuído, bloqueado'):'Não atribuído';
+      updateRecipientsSave();
+    });
     checkedById.set(user.id,box);chooser.append(row);
    }
   }
