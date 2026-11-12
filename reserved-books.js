@@ -92,9 +92,10 @@ async function openBook(id){
  const feedback=el('p','reserved-feedback');feedback.setAttribute('role','status');feedback.dataset.reservedFeedback='';
  frame.append(header,page,feedback,controls);dialog.append(frame);document.body.append(dialog);
  const oldOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
+ const listenerAbort=new AbortController();
  let book=null,sections=[],sectionIndex=-1,pageIndex=0,requests=0,alive=true,checkTimer=null;
  const snapshot=()=>({chapter:sectionIndex,page:pageIndex});
- function cleanup(){if(!alive)return;alive=false;clearInterval(checkTimer);book=null;sections=[];dialog.remove();document.body.style.overflow=oldOverflow;dispose=()=>{};opener?.focus?.();}
+ function cleanup(){if(!alive)return;alive=false;listenerAbort.abort();clearInterval(checkTimer);book=null;sections=[];dialog.remove();document.body.style.overflow=oldOverflow;dispose=()=>{};opener?.focus?.();}
  dialog.addEventListener('close',cleanup,{once:true});dispose=()=>{if(dialog.open)dialog.close();cleanup();};
  dialog.showModal();close.focus();page.append(el('p','','Conferindo a autorização…'));
  try{
@@ -163,9 +164,8 @@ async function openBook(id){
    reward.append(el('h3','','Documento revelado'),el('p','',book.revelation));surface.append(reward);}
   page.replaceChildren(surface);page.scrollTop=0;counter.textContent='ENIGMA RESERVADO';
   previous.disabled=next.disabled=true;home.disabled=false;puzzle.disabled=true;
-  home.onclick=()=>{}; // The native click handler above already restores the index.
  }
- dialog.addEventListener('keydown',ev=>{if(ev.target.closest('input,select,textarea,button'))return;if(ev.key==='ArrowLeft'){ev.preventDefault();change(-1);}if(ev.key==='ArrowRight'){ev.preventDefault();change(1);}},{signal:(new AbortController()).signal});
+ dialog.addEventListener('keydown',ev=>{if(ev.target.closest('input,select,textarea,button'))return;if(ev.key==='ArrowLeft'){ev.preventDefault();change(-1);}if(ev.key==='ArrowRight'){ev.preventDefault();change(1);}},{signal:listenerAbort.signal});
 }
 
 function palimpsest(host,data){
@@ -177,7 +177,8 @@ function palimpsest(host,data){
   slots.replaceChildren();
   for(let i=0;i<6;i++){
    const index=i,slot=el('button','reserved-slot',selected[i]||'Fragmento '+(i+1));slot.type='button';
-   slot.title='Remover fragmento da posição '+(i+1);slot.addEventListener('click',()=>{if(selected[index]){selected.splice(index,1);paint();}});
+   slot.title='Remover fragmento da posição '+(i+1);slot.draggable=!!selected[index];slot.addEventListener('dragstart',ev=>{if(selected[index])ev.dataTransfer.setData('text/plain',selected[index]);});
+   slot.addEventListener('click',()=>{if(selected[index]){selected.splice(index,1);paint();}});
    slot.addEventListener('dragover',ev=>ev.preventDefault());
    slot.addEventListener('drop',ev=>{ev.preventDefault();const id=ev.dataTransfer.getData('text/plain');
     if(!(data.fragments||[]).some(fragment=>fragment.id===id))return;
