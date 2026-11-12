@@ -21,8 +21,9 @@ async function transact(mode,operation){
   transaction.onerror=()=>reject(transaction.error);
  });
 }
-export async function saveProject(scene){return transact('readwrite',store=>store.put({...scene,id:'local',savedAt:Date.now()}));}
-export async function loadProject(){return transact('readonly',store=>store.get('local'));}
+const ownerKey=owner=>{if(!/^[0-9a-f-]{36}$/i.test(owner||''))throw Error('Identidade de sessão indisponível.');return 'owner:'+owner;};
+export async function saveProject(scene,owner){return transact('readwrite',store=>store.put({...scene,id:ownerKey(owner),savedAt:Date.now()}));}
+export async function loadProject(owner){return transact('readonly',store=>store.get(ownerKey(owner)));}
 export function exportJSON(scene){
  const text=JSON.stringify(scene),blob=new Blob([text],{type:'application/json'});
  const url=URL.createObjectURL(blob),link=document.createElement('a');
