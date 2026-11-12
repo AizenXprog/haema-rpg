@@ -1,9 +1,10 @@
 import {access,authorizedFetch,node,button,login} from './auth.js';
+import {createReservedAtmosphere} from './reserved-atmosphere.js';
 
 const BOOKS={
- 'arquivos-silenciados':{title:'Os Arquivos Silenciados',role:'HISTORIADORES',theme:'archive'},
- 'peso-da-coroa':{title:'O Peso da Coroa',role:'POLÍTICO',theme:'crown'},
- 'regencias-conhecidas':{title:'Tratado das Regências Conhecidas',role:'REGENTES',theme:'regencies'}
+ 'arquivos-silenciados':{title:'Os Arquivos Silenciados',role:'HISTORIADORES',theme:'archive',annotation:'Examinar fragmentos'},
+ 'peso-da-coroa':{title:'O Peso da Coroa',role:'POLÍTICO',theme:'crown',annotation:'Conferir registro de custódia'},
+ 'regencias-conhecidas':{title:'Tratado das Regências Conhecidas',role:'REGENTES',theme:'regencies',annotation:'Inspecionar instrumento de estudo'}
 };
 const root=()=>document.getElementById('reserved-books');
 let epoch=0,dispose=()=>{};
@@ -64,10 +65,18 @@ async function init(){
   host.replaceChildren();
   for(const id of Object.keys(BOOKS)){
    const book=BOOKS[id],record=catalog.find(v=>v.id===id),allowed=!!record?.allowed;
-   const item=el('article','reserved-cover reserved-'+book.theme),cover=el('div','reserved-cover-art');
-   cover.append(el('span','reserved-seal','✥'),el('span','reserved-eyebrow','HÆMA · ACERVO RESERVADO'),
-    el('strong','reserved-cover-title',book.title),el('small','reserved-cover-role',book.role),el('span','reserved-cover-stamp','✧'));
-   item.append(cover,el('p','reserved-access-note',allowed?'Leitura autorizada':'Documento sob custódia'));
+   const item=el('article','reserved-cover reserved-'+book.theme);
+   const stand=el('div','reserved-bookstand'),body=el('div','reserved-book-object');
+   const leaves=el('span','reserved-book-leaves');
+   leaves.setAttribute('aria-hidden','true');
+   const cover=el(allowed?'button':'div','reserved-cover-art');
+   if(allowed){cover.type='button';cover.addEventListener('click',()=>openBook(id));cover.setAttribute('aria-label','Abrir '+book.title);}
+   for(const corner of ['tl','tr','bl','br']){const ornament=el('span','reserved-cover-corner corner-'+corner);ornament.setAttribute('aria-hidden','true');cover.append(ornament);}
+   const crest=el('img','reserved-book-crest');crest.src='assets/antler-sigil.svg';crest.alt='';crest.loading='lazy';crest.decoding='async';
+   cover.append(el('span','reserved-eyebrow','HÆMA · ACERVO DE LORE'),crest,
+    el('strong','reserved-cover-title',book.title),el('small','reserved-cover-role',book.role),el('span','reserved-cover-stamp','✥'));
+   body.append(leaves,cover);stand.append(body);
+   item.append(stand,el('p','reserved-access-note',allowed?'Leitura autorizada':'Documento sob custódia'));
    if(allowed)item.append(button('Abrir manuscrito',()=>openBook(id),'reserved-action'));
    else item.append(el('p','reserved-locked','Acesso concedido individualmente pelo administrador.'));
    host.append(item);
@@ -86,18 +95,17 @@ async function openBook(id){
  const controls=el('nav','reserved-reader-nav');controls.setAttribute('aria-label','Navegação do livro');
  const previous=button('← Anterior',()=>change(-1),'reserved-nav-button'),
   home=button('Sumário',()=>{sectionIndex=-1;pageIndex=0;render()},'reserved-nav-button'),
-  puzzle=button('Enigma',()=>showPuzzle(),'reserved-nav-button'),
   next=button('Próxima →',()=>change(1),'reserved-nav-button');
- const counter=el('span','reserved-counter');controls.append(previous,home,puzzle,counter,next);
+ const counter=el('span','reserved-counter');controls.append(previous,home,counter,next);
  const feedback=el('p','reserved-feedback');feedback.setAttribute('role','status');feedback.dataset.reservedFeedback='';
  frame.append(header,page,feedback,controls);dialog.append(frame);document.body.append(dialog);
  const oldOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
  const listenerAbort=new AbortController();
- let book=null,sections=[],sectionIndex=-1,pageIndex=0,requests=0,alive=true,checkTimer=null;
+ let book=null,sections=[],sectionIndex=-1,pageIndex=0,requests=0,alive=true,checkTimer=null,atmosphere=null;
  const snapshot=()=>({chapter:sectionIndex,page:pageIndex});
- function cleanup(){if(!alive)return;alive=false;listenerAbort.abort();clearInterval(checkTimer);book=null;sections=[];dialog.remove();document.body.style.overflow=oldOverflow;dispose=()=>{};opener?.focus?.();}
+ function cleanup(){if(!alive)return;alive=false;listenerAbort.abort();atmosphere?.dispose();clearInterval(checkTimer);book=null;sections=[];dialog.remove();document.body.style.overflow=oldOverflow;dispose=()=>{};opener?.focus?.();}
  dialog.addEventListener('close',cleanup,{once:true});dispose=()=>{if(dialog.open)dialog.close();cleanup();};
- dialog.showModal();close.focus();page.append(el('p','','Conferindo a autorização…'));
+ dialog.showModal();atmosphere=createReservedAtmosphere(dialog,info.theme);close.focus();page.append(el('p','','Conferindo a autorização…'));
  try{
   const payload=await api('read',{id});if(!alive)return;
   book=payload;sections=parseManuscript(payload.manuscript);
@@ -106,8 +114,8 @@ async function openBook(id){
   render();
   checkTimer=setInterval(async()=>{try{const update=await api('read',{id});if(!alive)return;
    if(update.revision!==book.revision){book=update;sections=parseManuscript(book.manuscript);render();}
-  }catch{if(alive){book=null;page.replaceChildren(el('p','','A leitura foi encerrada porque a autorização não pôde ser confirmada.'));previous.disabled=next.disabled=puzzle.disabled=true;clearInterval(checkTimer);}}},60000);
- }catch(error){if(alive){page.replaceChildren(el('p','',error.message));previous.disabled=next.disabled=puzzle.disabled=true;}}
+  }catch{if(alive){book=null;page.replaceChildren(el('p','','A leitura foi encerrada porque a autorização não pôde ser confirmada.'));previous.disabled=next.disabled=true;clearInterval(checkTimer);}}},60000);
+ }catch(error){if(alive){page.replaceChildren(el('p','',error.message));previous.disabled=next.disabled=true;}}
  function pages(){return sectionIndex<0?[]:paginate(sections[sectionIndex],matchMedia('(max-width:720px)').matches?1050:1650);}
  function render(){
   if(!book||!sections.length)return;
@@ -124,12 +132,23 @@ async function openBook(id){
    const body=el('div','reserved-page-copy');
    for(const block of segments[pageIndex])body.append(manuscriptBlock(block));
    container.append(body);
+   // The document exists in the fiction only as an annex found near the end of chapter VII.
+   // No early "Enigma" navigation or spoilers in the reader's permanent controls.
+   if(book.puzzle && /^VII\s*[—-]/i.test(sections[sectionIndex].title) && pageIndex===segments.length-1){
+    const marginal=el('aside','reserved-annotation');
+    marginal.append(el('span','reserved-annotation-seal','✣'),
+     el('p','reserved-annotation-overline','ANOTAÇÃO À MARGEM'),
+     el('p','reserved-annotation-copy','Há marcas neste volume que não se esclarecem apenas pela leitura.'));
+    marginal.append(button(info.annotation,()=>showPuzzle(),'reserved-annotation-trigger'));
+    container.append(marginal);
+   }
   }
-  page.replaceChildren(container);page.scrollTop=0;
+  page.classList.remove('is-annex');page.replaceChildren(container);page.scrollTop=0;
+  atmosphere?.turn(sectionIndex);
   const last=sectionIndex>=0?pages().length:0;
   previous.disabled=sectionIndex===-1;next.disabled=sectionIndex===sections.length-1&&pageIndex===last-1;
   counter.textContent=sectionIndex===-1?'SUMÁRIO':'CAPÍTULO '+(sectionIndex+1)+'/'+sections.length+' · PÁGINA '+(pageIndex+1)+'/'+last;
-  puzzle.disabled=!book.puzzle;status(dialog,'');
+  status(dialog,'');
   if(!matchMedia('(prefers-reduced-motion: reduce)').matches)page.animate([{opacity:.5,transform:'perspective(900px) rotateY(-5deg)'},{opacity:1,transform:'none'}],{duration:340,easing:'ease-out'});
   page.focus({preventScroll:true});
  }
@@ -147,29 +166,31 @@ async function openBook(id){
   if(!book?.puzzle)return;
   const data=book.puzzle;
   const surface=el('section','reserved-puzzle');
-  surface.append(el('h2','',data.title||'Enigma reservado'),el('p','',data.instructions||'Examine as pistas do manuscrito.'));
+  surface.append(el('span','reserved-kicker','ANEXO · DOCUMENTO SOB EXAME'),
+   el('h2','',data.title||'Documento reservado'),el('p','',data.instructions||'Examine o material encontrado.'));
+  surface.append(button('Voltar ao manuscrito',()=>render(),'reserved-annotation-return'));
   let getAnswer=()=>({});
   if(data.type==='palimpsest')getAnswer=palimpsest(surface,data);
   else if(data.type==='ledger')getAnswer=ledger(surface,data);
   else if(data.type==='wheel')getAnswer=wheel(surface,data);
   const output=el('p','reserved-puzzle-feedback');output.setAttribute('role','status');
-  surface.append(button('Conferir reconstrução',async()=>{
+  if(!book.revelation)surface.append(button('Conferir documento',async()=>{
    output.textContent='Conferindo…';
    try{const result=await api('solve',{book_key:id,attempt:getAnswer()});
-    if(result.correct){output.textContent='O registro reservado foi desbloqueado.';const updated=await api('read',{id});book=updated;showPuzzle();}
-    else output.textContent='A reconstrução ainda apresenta inconsistências. Reexamine os documentos.';}
+    if(result.correct){output.textContent='Um registro adicional foi recuperado.';const updated=await api('read',{id});book=updated;showPuzzle();}
+    else output.textContent='A leitura e os vestígios ainda não coincidem. Revise o anexo.';}
    catch(error){output.textContent=error.message;}
   },'reserved-action'),output);
   if(book.revelation){const reward=el('section','reserved-revelation');
    reward.append(el('h3','','Documento revelado'),el('p','',book.revelation));surface.append(reward);}
-  page.replaceChildren(surface);page.scrollTop=0;counter.textContent='ENIGMA RESERVADO';
-  previous.disabled=next.disabled=true;home.disabled=false;puzzle.disabled=true;
+  page.classList.add('is-annex');page.replaceChildren(surface);page.scrollTop=0;counter.textContent='ANEXO DOCUMENTAL';
+  previous.disabled=next.disabled=true;home.disabled=false;
  }
  dialog.addEventListener('keydown',ev=>{if(ev.target.closest('input,select,textarea,button'))return;if(ev.key==='ArrowLeft'){ev.preventDefault();change(-1);}if(ev.key==='ArrowRight'){ev.preventDefault();change(1);}},{signal:listenerAbort.signal});
 }
 
 function palimpsest(host,data){
- const guide=el('p','','Selecione seis dos oito fragmentos na ordem de leitura, da esquerda para a direita e de cima para baixo. Examine também a camada sobreposta.');
+ const guide=el('p','','Os testemunhos não formam uma única superfície. Observe a escrita, as marcas das fibras e aquilo que pode ter sido acrescentado posteriormente.');
  host.append(guide);
  const selected=[],slots=el('div','reserved-fragment-slots');
  const choices=el('div','reserved-fragment-grid');
@@ -198,10 +219,10 @@ function palimpsest(host,data){
  paint();host.append(el('h3','','Mesa de reconstrução'),slots,choices);
  const tools=el('div','reserved-overlay');
  tools.append(el('h3','','Comparação das cópias'));
- const overlay=el('div','reserved-overlay-paper','Duas cópias apresentam traços divergentes e vestígios de uma passagem omitida.');
+ const overlay=el('div','reserved-overlay-paper','As duas cópias apresentam sinais diferentes sob a luz. Compare as margens antes de registrar uma hipótese.');
  tools.append(overlay);
  const lamp=button('Alternar iluminação',()=>overlay.classList.toggle('is-lit'),'reserved-nav-button');tools.append(lamp);
- const question=el('label','','Qual indício exige uma segunda investigação?');
+ const question=el('label','','Que hipótese os vestígios sustentam?');
  const compare=el('select');for(const [v,label] of [['','Selecionar interpretação'],...(data.comparisons||[]).map(x=>[x.id,x.label])]){const option=el('option','',label);option.value=v;compare.append(option);}
  question.append(compare);tools.append(question);host.append(tools);
  return()=>({positions:selected,comparison:compare.value});
@@ -224,7 +245,7 @@ function ledger(host,data){
  return()=>({value:Number(amount.value),document:pick.value,trace:origin.value});
 }
 function wheel(host,data){
- host.append(el('p','','Use os capítulos para identificar os princípios e ajustar a orientação dos traços. A sequência deste instrumento não representa hierarquia cosmológica.'));
+ host.append(el('p','','O aro conserva traços cuja leitura depende de como as peças se relacionam. Investigue cada associação antes de tentar alinhar as marcas.'));
  const slots=[],layout=el('div','reserved-wheel');
  layout.setAttribute('aria-label','Instrumento circular de sete peças e marcas de alinhamento');
  const choices=[['','Escolher Regência'],...(data.pieces||[]).map(x=>[x.id,x.description])];
