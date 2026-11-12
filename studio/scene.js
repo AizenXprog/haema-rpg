@@ -1,3 +1,4 @@
+import {renderTerrain} from './terrain-renderer.js';
 // HÆMA Estúdio — cena vetorial original. Independente do Manual e da Lore.
 export const CELL=48;
 export const TERRAINS={grass:'#354c3d',stone:'#6b6b62',earth:'#78604b',water:'#2c6470',sand:'#9b815a',wood:'#72503a',brick:'#775a4e',marble:'#969085'};
@@ -104,8 +105,10 @@ function drawProp(ctx,p){
 export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
  const w=scene.cols*CELL,h=scene.rows*CELL;
  ctx.clearRect(0,0,w,h);ctx.fillStyle='#1a211e';ctx.fillRect(0,0,w,h);
- if(image?.complete&&image.naturalWidth)ctx.drawImage(image,0,0,w,h);
- else for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
+ const hasImage=!!(image?.complete&&image.naturalWidth);
+ const organic=!hasImage&&typeof renderTerrain==='function'&&renderTerrain(ctx,scene,CELL);
+ if(hasImage)ctx.drawImage(image,0,0,w,h);
+ else if(!organic)for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
   const type=scene.tiles[tileIndex(scene,x,y)],px=x*CELL,py=y*CELL,r=hash(x,y);
   ctx.fillStyle=TERRAINS[type]||TERRAINS.grass;ctx.fillRect(px,py,CELL,CELL);
   ctx.fillStyle=r%2?'#fff2':'#0002';
@@ -130,7 +133,7 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
   }
  }
  // Blend terrain boundaries: irregular soft edges instead of flat tile seams.
- if(!image?.complete||!image.naturalWidth)for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
+ if(!organic&&!hasImage)for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
   const i=tileIndex(scene,x,y),type=scene.tiles[i],px=x*CELL,py=y*CELL,r=hash(x,y);
   const faded=(horizontal,colA,colB)=>{
    const grad=ctx.createLinearGradient(horizontal?px+CELL-11:px,horizontal?py:py+CELL-11,horizontal?px+CELL+11:px,horizontal?py:py+CELL+11);
@@ -147,7 +150,7 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
   }
  }
  // Height painting creates stacked contours and a shaded cliff edge in the 2D scene.
- if(Array.isArray(scene.heights))for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
+ if(!organic&&Array.isArray(scene.heights))for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
   const idx=tileIndex(scene,x,y),level=scene.heights[idx]||0;if(!level)continue;
   const px=x*CELL,py=y*CELL;
   ctx.fillStyle='rgba(213,196,155,'+(level*.035)+')';ctx.fillRect(px,py,CELL,CELL);
