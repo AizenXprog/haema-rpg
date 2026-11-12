@@ -1,4 +1,4 @@
-import './reserved-books.js?v=1';
+import './reserved-books.js?v=2';
 import './volumes.js?v=2';
 import './portal.js?v=4';
 import './portal-hub.js?v=1';
