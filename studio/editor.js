@@ -131,15 +131,57 @@ function paintLine(from,to){
  }
  changed(false);
 }
+// Only relevant controls remain visible. The map remains the primary workspace.
+const toolInfo={
+ pan:['Navegação','Mover a câmera pelo mapa.'],
+ select:['Seleção','Selecione e arraste tokens.'],
+ terrain:['Materiais','Pinte o terreno com materiais.'],
+ raise:['Elevação','Crie camadas de relevo.'],
+ lower:['Rebaixar','Reduza os níveis de terreno.'],
+ prop:['Objetos','Escolha elementos para o cenário.'],
+ wall:['Paredes','Trace paredes livres.'],
+ room:['Cômodos','Desenhe ambientes internos.'],
+ scatter:['Vegetação','Distribua árvores ao arrastar.'],
+ generate:['Geração','Crie uma base procedural editável.'],
+ token:['Tokens','Posicione personagens e criaturas.'],
+ reveal:['Revelar','Abra áreas aos jogadores.'],
+ conceal:['Ocultar','Cubra áreas com neblina.'],
+ erase:['Borracha','Remova elementos selecionados.']
+};
+let activeInspector='build';
+function showInspectorTab(name){
+ if(!['build','mesa','project'].includes(name))return;
+ activeInspector=name;
+ for(const tab of document.querySelectorAll('[data-inspector-tab]')){
+  const on=tab.dataset.inspectorTab===name;
+  tab.setAttribute('aria-selected',String(on));tab.tabIndex=on?0:-1;
+ }
+ for(const nameOfPanel of ['build','mesa','project']){
+  const panel=$('inspector-'+nameOfPanel);
+  panel.hidden=nameOfPanel!==name;
+ }
+}
+function showToolOptions(next){
+ const context=({terrain:'terrain',raise:'elevation',lower:'elevation',prop:'prop',wall:'wall',room:'room',scatter:'scatter',generate:'generation',erase:'erase'})[next]||'default';
+ document.querySelectorAll('[data-tool-panel]').forEach(panel=>{panel.hidden=panel.dataset.toolPanel!==context;});
+ $('studio-inspector-title').textContent=toolInfo[next]?.[0]||'Construção';
+ $('studio-inspector-subtitle').textContent=context==='default'?'ESCOLHA UMA FERRAMENTA':'PROPRIEDADES DA FERRAMENTA';
+}
 function setTool(next){
- tool=next;for(const b of document.querySelectorAll('[data-tool]'))b.setAttribute('aria-pressed',String(b.dataset.tool===tool));
- canvas.style.cursor=tool==='pan'?'grab':tool==='select'?'default':'crosshair';
- $('studio-tool').textContent=tool.toUpperCase();render();
+ if(!toolInfo[next])return;
+ tool=next;
+ for(const b of document.querySelectorAll('[data-tool]'))b.setAttribute('aria-pressed',String(b.dataset.tool===tool));
+ canvas.style.cursor=['pan','generate'].includes(tool)?'grab':tool==='select'?'default':'crosshair';
+ $('studio-tool').textContent=toolInfo[tool][0];
+ showToolOptions(tool);
+ if(['token','reveal','conceal'].includes(tool))showInspectorTab('mesa');
+ else if(!['pan','select'].includes(tool))showInspectorTab('build');
+ render();
 }
 canvas.addEventListener('pointerdown',event=>{
  if(event.button!==0&&event.button!==1)return;
  const p=point(event);hover=p;
- if(tool==='pan'||spaceHeld||event.button===1){
+ if(tool==='pan'||tool==='generate'||spaceHeld||event.button===1){
   gesture={mode:'pan',px:p.px,py:p.py,x:view.x,y:view.y};
  }else if(tool==='select'){
   selected=closestToken(p);
@@ -236,11 +278,43 @@ function download(blob,name){
 }
 function setup(){
  if(initialized)return;initialized=true;
+ document.querySelectorAll('[data-inspector-tab]').forEach(el=>el.addEventListener('click',()=>showInspectorTab(el.dataset.inspectorTab)));
+ const tabs=[...document.querySelectorAll('[data-inspector-tab]')];
+ for(const tab of tabs)tab.addEventListener('keydown',event=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+  event.preventDefault();
+  const index=tabs.indexOf(tab);
+  const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:tabs.length-1))%tabs.length;
+  showInspectorTab(tabs[next].dataset.inspectorTab);tabs[next].focus();
+ });
  document.querySelectorAll('[data-tool]').forEach(el=>el.addEventListener('click',()=>setTool(el.dataset.tool)));
  document.querySelectorAll('[data-terrain]').forEach(el=>el.addEventListener('click',()=>{terrain=el.dataset.terrain;setTool('terrain');document.querySelectorAll('[data-terrain]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
  document.querySelectorAll('[data-prop]').forEach(el=>el.addEventListener('click',()=>{prop=el.dataset.prop;setTool('prop');document.querySelectorAll('[data-prop]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
  document.querySelectorAll('[data-scene-template]').forEach(el=>el.addEventListener('click',()=>{const type=el.dataset.sceneTemplate;if(!confirm('Substituir o cenário atual por um novo mapa gerado? A ação poderá ser desfeita.'))return;snapshot();scene=generateScene(type,$('seed-input').value||String(Date.now()));scene.gridVisible=showGrid;clearSelection();loadBackground();changed();fit();status('Cenário gerado: '+scene.name); }));
- $('brush-size').addEventListener('input',event=>{brush=Number(event.target.value);$('brush-value').textContent=brush;render();});
+ const brushInputs=['brush-size','brush-height-mirror','eraser-brush'];
+ for(const id of brushInputs)$(id).addEventListener('input',event=>{
+  brush=Number(event.target.value);
+  for(const input of brushInputs)$(input).value=brush;
+  $('brush-value').textContent=brush;
+  $('height-brush-value').textContent=brush;
+  $('eraser-brush-value').textContent=brush;
+  render();
+ });
+ const normalizeLabel=text=>text.toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ $('prop-search').addEventListener('input',event=>{
+  const query=normalizeLabel(event.target.value.trim());let total=0;
+  for(const group of document.querySelectorAll('[data-prop-group]')){
+   let shown=0;
+   for(const option of group.querySelectorAll('[data-prop]')){
+    const match=normalizeLabel(option.textContent).includes(query);
+    option.hidden=!match;if(match)shown++;
+   }
+   group.hidden=shown===0;
+   if(query&&shown)group.open=true;
+   total+=shown;
+  }
+  $('prop-search-empty').hidden=total!==0;
+ });
  $('new-room').addEventListener('click',()=>{setTool('room');status('Arraste no mapa para desenhar um cômodo; o editor cria paredes e um acesso.');});
  $('scene-name').addEventListener('change',event=>{snapshot();scene.name=String(event.target.value).slice(0,80)||'Sem título';changed();});
  $('grid-toggle').addEventListener('change',event=>{showGrid=event.target.checked;scene.gridVisible=showGrid;changed();});
