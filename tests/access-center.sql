@@ -19,13 +19,13 @@ begin
  rev := (u->>'revision')::integer;
  assert rev is not null,'Conta temporária não criada';
  v := public.haema_access_control_user_save('33333333-3333-4333-8333-333333333333','approved',
-   array['library']::text[],array['regencias-conhecidas']::text[],rev);
+   array['library']::text[],array['regencias-conhecidas']::text[],rev,null);
  assert v->>'status'='approved','Aprovação não foi salva';
  assert (v->'books') ? 'regencias-conhecidas','Livro não foi atribuído';
  assert (v->'areas') ? 'library','Área Biblioteca não foi atribuída';
  begin
   perform public.haema_access_control_user_save('33333333-3333-4333-8333-333333333333',
-   'approved',array['library']::text[],array['regencias-conhecidas']::text[],rev);
+   'approved',array['library']::text[],array['regencias-conhecidas']::text[],rev,null);
   raise exception 'Conflito de revisão não detectado';
  exception when sqlstate '40001' then null;
  end;
@@ -46,7 +46,7 @@ begin
    where x->>'id'='33333333-3333-4333-8333-333333333333';
  assert (u->'books') ? 'arquivos-silenciados','Atribuição em lote não foi refletida';
  v := public.haema_access_control_user_save('33333333-3333-4333-8333-333333333333','revoked',
-   array[]::text[],array[]::text[],(u->>'revision')::integer);
+   array[]::text[],array[]::text[],(u->>'revision')::integer,null);
  assert v->>'status'='revoked','Revogação falhou';
  assert jsonb_array_length(v->'areas')=0,'Áreas permaneceram liberadas';
  assert jsonb_array_length(v->'books')=0,'Livros permaneceram atribuídos';
