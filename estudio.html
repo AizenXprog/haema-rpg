@@ -7,8 +7,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="studio/studio.css?v=2">
-<script type="module" src="studio/editor.js?v=2"></script>
+<link rel="stylesheet" href="studio/studio.css?v=3">
+<script type="module" src="studio/editor.js?v=3"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
@@ -20,110 +20,138 @@
 </div>
 <div id="studio-workspace" hidden>
  <header class="studio-topbar">
-  <div class="studio-brand"><a href="portal.html" aria-label="Voltar ao Portal">H<span>Æ</span>MA</a><i></i><div><strong>ESTÚDIO</strong><small>MAPMAKER & TABLETOP · ALFA 0.2</small></div></div>
+  <div class="studio-brand"><a href="portal.html" aria-label="Voltar ao Portal">H<span>Æ</span>MA</a><i></i><div><strong>ESTÚDIO</strong><small>MAPMAKER · ALFA 0.2</small></div></div>
   <label class="scene-name-label"><span>PROJETO</span><input id="scene-name" type="text" maxlength="80" value="Ruínas do caminho" aria-label="Nome do mapa"></label>
-  <div class="studio-actions"><button type="button" id="save-local">Salvar</button><button type="button" id="export-json">Exportar projeto</button><button type="button" id="open-projection" class="studio-primary">Abrir tela dos jogadores <span aria-hidden="true">↗</span></button></div>
+  <div class="studio-actions"><button type="button" id="save-local" class="studio-save">Salvar</button><button type="button" id="open-projection" class="studio-primary">Projetar <span aria-hidden="true">↗</span></button></div>
  </header>
  <div class="studio-layout">
-  <aside class="studio-panel studio-left" aria-label="Ferramentas de criação">
-   <div class="panel-heading"><span>01 / CRIAÇÃO</span><h2>Instrumentos</h2></div>
-   <div class="tool-grid" role="group" aria-label="Ferramentas">
-    <button type="button" data-tool="pan" aria-pressed="true"><span>✥</span>Mover</button>
-    <button type="button" data-tool="select" aria-pressed="false"><span>⌖</span>Selecionar</button>
-    <button type="button" data-tool="terrain" aria-pressed="false"><span>▧</span>Terreno</button>
-    <button type="button" data-tool="raise" aria-pressed="false"><span>⬆</span>Elevar</button>
-    <button type="button" data-tool="lower" aria-pressed="false"><span>⬇</span>Rebaixar</button>
-    <button type="button" data-tool="prop" aria-pressed="false"><span>♧</span>Objetos</button>
-    <button type="button" data-tool="wall" aria-pressed="false"><span>╱</span>Parede</button>
-    <button type="button" data-tool="room" aria-pressed="false"><span>▣</span>Cômodo</button>
-    <button type="button" data-tool="scatter" aria-pressed="false"><span>♧</span>Floresta</button>
-    <button type="button" data-tool="token" aria-pressed="false"><span>◉</span>Token</button>
-    <button type="button" data-tool="reveal" aria-pressed="false"><span>◌</span>Revelar</button>
-    <button type="button" data-tool="conceal" aria-pressed="false"><span>●</span>Ocultar</button>
-    <button type="button" data-tool="erase" aria-pressed="false"><span>⌫</span>Apagar</button>
+ 
+  <aside class="studio-toolrail" aria-label="Ferramentas do mapa">
+   <div class="studio-toolrail-title">FERRAMENTAS</div>
+   <div class="tool-grid" role="toolbar" aria-label="Ferramentas de edição" aria-orientation="vertical">
+<button type="button" data-tool="pan" aria-pressed="true"><span>✥</span>Mover</button>
+<button type="button" data-tool="select" aria-pressed="false"><span>⌖</span>Selecionar</button>
+<button type="button" data-tool="terrain" aria-pressed="false"><span>▧</span>Terreno</button>
+<button type="button" data-tool="raise" aria-pressed="false"><span>⬆</span>Elevar</button>
+<button type="button" data-tool="lower" aria-pressed="false"><span>⬇</span>Rebaixar</button>
+<button type="button" data-tool="prop" aria-pressed="false"><span>♧</span>Objetos</button>
+<button type="button" data-tool="wall" aria-pressed="false"><span>╱</span>Parede</button>
+<button type="button" data-tool="room" aria-pressed="false"><span>▣</span>Cômodo</button>
+<button type="button" data-tool="scatter" aria-pressed="false"><span>♧</span>Floresta</button>
+<button type="button" data-tool="token" aria-pressed="false"><span>◉</span>Token</button>
+<button type="button" data-tool="reveal" aria-pressed="false"><span>◌</span>Revelar</button>
+<button type="button" data-tool="conceal" aria-pressed="false"><span>●</span>Ocultar</button>
+<button type="button" data-tool="erase" aria-pressed="false"><span>⌫</span>Apagar</button>
    </div>
-   <div class="panel-rule"></div>
-   <div class="panel-heading"><span>02 / TERRENO</span><h3>Pincéis e texturas</h3></div>
-   <div class="palette-grid" role="group" aria-label="Pintar terreno">
-    <button type="button" data-terrain="grass" aria-pressed="false"><i style="--swatch:#456a4f"></i>Vegetação</button>
-    <button type="button" data-terrain="stone" aria-pressed="false"><i style="--swatch:#7a7a70"></i>Pedra</button>
-    <button type="button" data-terrain="earth" aria-pressed="false"><i style="--swatch:#94735a"></i>Terra</button>
-    <button type="button" data-terrain="water" aria-pressed="false"><i style="--swatch:#37788a"></i>Água</button>
-    <button type="button" data-terrain="sand" aria-pressed="false"><i style="--swatch:#bea070"></i>Areia</button>
-    <button type="button" data-terrain="wood" aria-pressed="false"><i style="--swatch:#926547"></i>Madeira</button>
-    <button type="button" data-terrain="brick" aria-pressed="false"><i style="--swatch:#927160"></i>Tijolos</button>
-    <button type="button" data-terrain="marble" aria-pressed="false"><i style="--swatch:#bcb4a8"></i>Mármore</button>
-   </div>
-   <label class="brush-label" for="brush-size"><span>Raio do pincel <b id="brush-value">2</b></span><input id="brush-size" type="range" min="1" max="5" value="2"></label>
-   <p class="studio-panel-hint">Arraste o pincel sobre o mapa. Elevar e rebaixar criam níveis de terreno; margens e materiais recebem acabamento automático.</p>
-   <div class="panel-rule"></div>
-   <div class="panel-heading"><span>03 / AMBIENTES</span><h3>Geração de cenas</h3></div>
-   <label class="field-label">Semente (opcional)<input type="text" id="seed-input" maxlength="80" placeholder="Ex.: caminho-do-inverno"></label>
-   <div class="generator-grid" role="group" aria-label="Cenários gerados">
-    <button type="button" data-scene-template="forest">Bosque antigo</button>
-    <button type="button" data-scene-template="lake">Lago e margens</button>
-    <button type="button" data-scene-template="tavern">Estalagem</button>
-    <button type="button" data-scene-template="dungeon">Ruínas e salas</button>
-   </div>
-   <p class="studio-panel-hint">A geração altera apenas o projeto aberto. Salve ou exporte a cena atual antes de substituí-la.</p>
-   <div class="panel-rule"></div>
-   <div class="panel-heading"><span>04 / CONSTRUÇÃO</span><h3>Interiores e arquitetura</h3></div>
-   <button type="button" id="new-room" class="studio-wide-action">Desenhar cômodo com paredes + porta</button>
-   <p class="studio-panel-hint">Arraste sobre o terreno para criar um cômodo com piso, paredes e entrada.</p>
-   <div class="panel-rule"></div>
-   <div class="panel-heading"><span>05 / MOBILIÁRIO</span><h3>Objetos e detalhes</h3></div>
-   <div class="palette-grid" role="group" aria-label="Objetos disponíveis">
-    <button type="button" data-prop="tree" aria-pressed="false">Árvore</button>
-    <button type="button" data-prop="rock" aria-pressed="false">Pedra</button>
-    <button type="button" data-prop="torch" aria-pressed="false">Tocha</button>
-    <button type="button" data-prop="pillar" aria-pressed="false">Coluna</button>
-    <button type="button" data-prop="bush" aria-pressed="false">Arbusto</button>
-    <button type="button" data-prop="table" aria-pressed="false">Mesa</button>
-    <button type="button" data-prop="chair" aria-pressed="false">Cadeira</button>
-    <button type="button" data-prop="bed" aria-pressed="false">Cama</button>
-    <button type="button" data-prop="shelf" aria-pressed="false">Estante</button>
-    <button type="button" data-prop="chest" aria-pressed="false">Baú</button>
-    <button type="button" data-prop="rug" aria-pressed="false">Tapete</button>
-    <button type="button" data-prop="barrel" aria-pressed="false">Barril</button>
-    <button type="button" data-prop="hearth" aria-pressed="false">Lareira</button>
-    <button type="button" data-prop="crate" aria-pressed="false">Caixote</button>
-    <button type="button" data-prop="cabinet" aria-pressed="false">Armário</button>
-    <button type="button" data-prop="stairs" aria-pressed="false">Escadas</button>
-    <button type="button" data-prop="door" aria-pressed="false">Porta</button>
-   </div>
+   <div class="toolrail-foot">Arraste sobre o mapa para editar</div>
   </aside>
   <main class="studio-stage" id="studio-main">
-   <div class="studio-canvas-head"><div><span>VISUALIZAÇÃO DO MESTRE</span><strong>Cena ativa</strong></div><div class="studio-head-tools">
+   <div class="studio-canvas-head"><div><span>EDITOR</span><strong>Mapa</strong></div><div class="studio-head-tools">
      <label class="studio-grid-switch" for="grid-toggle" title="Exibir ou ocultar completamente os quadradinhos, inclusive na projeção e na exportação">
       <input id="grid-toggle" type="checkbox" checked><span class="studio-grid-indicator" aria-hidden="true">▦</span><span>Grade <b id="grid-state">Visível</b></span>
      </label>
      <button type="button" id="undo" title="Desfazer (Ctrl+Z)">↶</button><button type="button" id="redo" title="Refazer (Ctrl+Y)">↷</button><button type="button" id="fit-map">Ajustar mapa</button></div></div>
-   <div class="canvas-viewport"><canvas id="studio-canvas" aria-label="Editor de mapa de RPG em duas dimensões"></canvas><div class="canvas-corner">HÆMA / MESTRE · CONTEÚDO RESERVADO</div></div>
+   <div class="canvas-viewport"><canvas id="studio-canvas" aria-label="Editor de mapa de RPG em duas dimensões"></canvas><div class="canvas-corner">MAPA LOCAL · EDIÇÃO</div></div>
    <div class="studio-statusbar"><span id="studio-status" role="status">Projeto local. Nada é enviado ao servidor.</span><span>FERRAMENTA <b id="studio-tool">MOVER</b></span><span>ZOOM <b id="studio-zoom">100%</b></span></div>
   </main>
-  <aside class="studio-panel studio-right" aria-label="Controle da mesa">
-   <div class="panel-heading"><span>04 / MESA FÍSICA</span><h2>Controle do mestre</h2><p>Somente a visão revelada será projetada. Não é preciso conectar nenhum jogador.</p></div>
-   <div class="panel-rule"></div>
-   <div class="panel-heading"><span>NEBLINA DE GUERRA</span><h3>Visibilidade</h3></div>
-   <div class="stack-actions"><button type="button" id="reveal-all">Revelar todo o mapa</button><button type="button" id="hide-all">Cobrir todo o mapa</button></div>
-   <p class="studio-panel-hint">O controle de grade está acima do mapa. Ao ocultar, os quadradinhos também desaparecem da tela dos jogadores.</p>
-   <div class="panel-rule"></div>
-   <div class="panel-heading"><span>CRIATURAS E PERSONAGENS</span><h3>Tokens <b id="studio-token-count">2</b></h3></div>
-   <label class="field-label">Identificação<input type="text" id="token-name" maxlength="16" value="PJ" placeholder="Nome ou iniciais"></label>
-   <label class="check-label"><input type="checkbox" id="token-hidden"> Novo token invisível aos jogadores</label>
-   <label class="check-label"><input type="checkbox" id="token-visibility" disabled> Ocultar token selecionado</label>
-   <div class="panel-rule"></div>
-   <div class="panel-heading"><span>ARQUIVOS E PROJEÇÃO</span><h3>Controle local</h3></div>
-   <div class="stack-actions">
-    <button type="button" id="import-map">Usar imagem como mapa</button>
-    <button type="button" id="remove-map">Remover imagem de fundo</button>
-    <button type="button" id="import-json">Importar projeto</button>
-    <button type="button" id="export-png">Exportar visão dos jogadores PNG</button>
-    <button type="button" id="blackout" aria-pressed="false">Apagar projeção</button>
+
+  <aside class="studio-inspector" aria-label="Painel de propriedades">
+   <div class="inspector-tabs" role="tablist" aria-label="Painéis do Estúdio">
+    <button type="button" data-inspector-tab="build" role="tab" aria-selected="true" aria-controls="inspector-build" id="tab-build">Criar</button>
+    <button type="button" data-inspector-tab="mesa" role="tab" aria-selected="false" aria-controls="inspector-mesa" id="tab-mesa">Mesa</button>
+    <button type="button" data-inspector-tab="project" role="tab" aria-selected="false" aria-controls="inspector-project" id="tab-project">Projeto</button>
+   </div>
+   <div class="inspector-panel" id="inspector-build" role="tabpanel" aria-labelledby="tab-build">
+    <div class="inspector-panel-title"><span id="studio-inspector-subtitle">EDITOR DE CENAS</span><h2 id="studio-inspector-title">Construção</h2></div>
+    <div data-tool-panel="default" class="context-panel">
+     <p class="context-intro">Escolha uma ferramenta à esquerda para editar o mapa. As opções aparecem aqui conforme o que você estiver fazendo.</p>
+     <div class="studio-tip"><strong>Dica</strong><span>Use a roda do mouse para aproximar, ou mantenha Espaço pressionado para mover a câmera.</span></div>
+    </div>
+    <div data-tool-panel="terrain" class="context-panel" hidden>
+     <p class="context-intro">Escolha o material e arraste o pincel no mapa.</p>
+     <div class="palette-grid" role="group" aria-label="Pintar terreno"><button type="button" data-terrain="grass" aria-pressed="false"><i style="--swatch:#456a4f"></i>Vegetação</button>
+<button type="button" data-terrain="stone" aria-pressed="false"><i style="--swatch:#7a7a70"></i>Pedra</button>
+<button type="button" data-terrain="earth" aria-pressed="false"><i style="--swatch:#94735a"></i>Terra</button>
+<button type="button" data-terrain="water" aria-pressed="false"><i style="--swatch:#37788a"></i>Água</button>
+<button type="button" data-terrain="sand" aria-pressed="false"><i style="--swatch:#bea070"></i>Areia</button>
+<button type="button" data-terrain="wood" aria-pressed="false"><i style="--swatch:#926547"></i>Madeira</button>
+<button type="button" data-terrain="brick" aria-pressed="false"><i style="--swatch:#927160"></i>Tijolos</button>
+<button type="button" data-terrain="marble" aria-pressed="false"><i style="--swatch:#bcb4a8"></i>Mármore</button></div>
+     <label class="brush-label" for="brush-size"><span>Tamanho do pincel <b id="brush-value">2</b></span><input id="brush-size" type="range" min="1" max="5" value="2"></label>
+    </div>
+    <div data-tool-panel="elevation" class="context-panel" hidden>
+     <p class="context-intro">Arraste para elevar ou rebaixar o terreno. Níveis de 0 a 4.</p>
+     <label class="brush-label" for="brush-height-mirror"><span>Tamanho do pincel <b id="height-brush-value">2</b></span><input id="brush-height-mirror" type="range" min="1" max="5" value="2"></label>
+     <div class="studio-tip">Os níveis são mostrados com bordas e sombras. O mapa continua em 2D nesta versão.</div>
+    </div>
+    <div data-tool-panel="prop" class="context-panel" hidden>
+     <p class="context-intro">Escolha um objeto e clique no mapa para posicionar.</p>
+     <label class="field-label">Buscar objetos<input type="search" id="prop-search" placeholder="Ex.: mesa, cama, porta" autocomplete="off"></label>
+     <details class="studio-prop-group" data-prop-group open><summary>Natureza e estruturas</summary><div class="palette-grid" role="group" aria-label="Objetos naturais"><button type="button" data-prop="tree" aria-pressed="false">Árvore</button>
+<button type="button" data-prop="rock" aria-pressed="false">Pedra</button>
+<button type="button" data-prop="torch" aria-pressed="false">Tocha</button>
+<button type="button" data-prop="pillar" aria-pressed="false">Coluna</button>
+<button type="button" data-prop="bush" aria-pressed="false">Arbusto</button></div></details>
+     <details class="studio-prop-group" data-prop-group open><summary>Móveis e interiores</summary><div class="palette-grid" role="group" aria-label="Móveis e interiores"><button type="button" data-prop="table" aria-pressed="false">Mesa</button>
+<button type="button" data-prop="chair" aria-pressed="false">Cadeira</button>
+<button type="button" data-prop="bed" aria-pressed="false">Cama</button>
+<button type="button" data-prop="shelf" aria-pressed="false">Estante</button>
+<button type="button" data-prop="chest" aria-pressed="false">Baú</button>
+<button type="button" data-prop="rug" aria-pressed="false">Tapete</button>
+<button type="button" data-prop="barrel" aria-pressed="false">Barril</button>
+<button type="button" data-prop="hearth" aria-pressed="false">Lareira</button>
+<button type="button" data-prop="crate" aria-pressed="false">Caixote</button>
+<button type="button" data-prop="cabinet" aria-pressed="false">Armário</button>
+<button type="button" data-prop="stairs" aria-pressed="false">Escadas</button>
+<button type="button" data-prop="door" aria-pressed="false">Porta</button></div></details>
+     <p class="studio-panel-hint" id="prop-search-empty" hidden>Nenhum objeto encontrado.</p>
+    </div>
+    <div data-tool-panel="generation" class="context-panel" hidden>
+     <p class="context-intro">Crie uma base de mapa editável. Depois ajuste os detalhes com os pincéis.</p>
+     <label class="field-label">Semente (opcional)<input type="text" id="seed-input" maxlength="80" placeholder="Ex.: floresta-antiga"></label>
+     <div class="generator-grid" role="group" aria-label="Cenários gerados"><button type="button" data-scene-template="forest">Bosque antigo</button>
+<button type="button" data-scene-template="lake">Lago e margens</button>
+<button type="button" data-scene-template="tavern">Estalagem</button>
+<button type="button" data-scene-template="dungeon">Ruínas e salas</button></div>
+     <div class="studio-tip">Gerar substitui a cena aberta. Exporte seu projeto antes, se quiser guardar a versão anterior.</div>
+    </div>
+    <div data-tool-panel="room" class="context-panel" hidden>
+     <p class="context-intro">Arraste um retângulo no mapa. O editor cria automaticamente piso, paredes e uma porta.</p>
+     <button type="button" id="new-room" class="studio-wide-action">Desenhar cômodo</button>
+    </div>
+    <div data-tool-panel="wall" class="context-panel" hidden><p class="context-intro">Clique e arraste para desenhar uma parede entre dois pontos.</p></div>
+    <div data-tool-panel="scatter" class="context-panel" hidden><p class="context-intro">Arraste para distribuir árvores pelo mapa. Evite áreas internas.</p></div>
+    <div data-tool-panel="erase" class="context-panel" hidden><p class="context-intro">Apague o terreno, os objetos ou tokens no raio do pincel. Use Desfazer para recuperar alterações.</p></div>
+   </div>
+   <div class="inspector-panel" id="inspector-mesa" role="tabpanel" aria-labelledby="tab-mesa" hidden>
+    <div class="inspector-panel-title"><span>CONTROLE DE JOGO</span><h2>Mesa</h2></div>
+    <details class="studio-disclosure" open><summary>Neblina de guerra</summary>
+     <div class="stack-actions"><button type="button" id="reveal-all">Revelar tudo</button><button type="button" id="hide-all">Ocultar tudo</button></div>
+     <p class="studio-panel-hint">Revele ou cubra partes específicas usando as ferramentas à esquerda.</p>
+    </details>
+    <details class="studio-disclosure" open><summary>Tokens <b id="studio-token-count">2</b></summary>
+     <label class="field-label">Nome ou identificação<input type="text" id="token-name" maxlength="16" value="PJ" placeholder="Personagem"></label>
+     <label class="check-label"><input type="checkbox" id="token-hidden"> Criar token oculto</label>
+     <label class="check-label"><input type="checkbox" id="token-visibility" disabled> Ocultar token selecionado</label>
+    </details>
+    <details class="studio-disclosure"><summary>Projeção</summary>
+     <div class="stack-actions"><button type="button" id="blackout" aria-pressed="false">Apagar projeção</button></div>
+     <p class="studio-panel-hint">A tela dos jogadores mostra somente as áreas e tokens revelados.</p>
+    </details>
+   </div>
+   <div class="inspector-panel" id="inspector-project" role="tabpanel" aria-labelledby="tab-project" hidden>
+    <div class="inspector-panel-title"><span>ARQUIVOS LOCAIS</span><h2>Projeto</h2></div>
+    <div class="stack-actions">
+     <button type="button" id="export-json">Exportar projeto JSON</button>
+     <button type="button" id="import-json">Importar projeto JSON</button>
+     <button type="button" id="import-map">Importar imagem de mapa</button>
+     <button type="button" id="remove-map">Remover imagem de fundo</button>
+     <button type="button" id="export-png">Exportar imagem PNG</button>
+    </div>
+    <p class="studio-panel-hint">O projeto fica salvo neste navegador. Exporte um JSON para guardar uma cópia.</p>
    </div>
    <input type="file" hidden id="import-map-input" accept="image/png,image/jpeg,image/webp">
    <input type="file" hidden id="import-json-input" accept=".json,application/json">
-   <p class="studio-footnote">Protótipo técnico 0.2. Projetos são salvos neste navegador; exporte cópias JSON para preservar seu trabalho. Efeitos avançados, biblioteca extensa e fichas serão adicionados em etapas posteriores.</p>
   </aside>
  </div>
  <footer class="studio-footer">HÆMA · HAEMATOMANTHÍA <span>Site e Sistema criado por Vitor Monte.</span></footer>
