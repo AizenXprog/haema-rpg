@@ -4,12 +4,14 @@ import {saveProject,loadProject,exportJSON} from './storage.js';
 import {generateScene,makeRoom,furnishRoom} from './generator.js?v=4';
 import {invalidateTerrain} from './terrain-renderer.js?v=1';
 import {invalidateFog} from './fog-renderer.js?v=1';
+import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=1';
+import {generateFromDescription,interpretDescription} from './guided-generator.js?v=1';
 
 const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
 const view={x:0,y:0,zoom:1,ready:false};
-let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,showGrid=true,paintedTiles=new Set(),lastStamp=null;
-let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,measurement=null,saveTimer=0,broadcastTimer=0;
+let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,pathWidth=1.25,roadMaterial='earth',showGrid=true,paintedTiles=new Set(),lastStamp=null;
+let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,selectedPath=null,measurement=null,saveTimer=0,broadcastTimer=0;
 let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
 const status=(message)=>{$('studio-status').textContent=message;};
 const round=(n)=>Math.round(n*2)/2;
@@ -30,6 +32,9 @@ function render(){
  ctx.fillStyle='#0a1012';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.translate(view.x,view.y);ctx.scale(view.zoom,view.zoom);
  drawScene(ctx,scene,{grid:showGrid,image:backgroundImage});
+ if(tool==='select'&&selectedPath&&scene.paths?.includes(selectedPath))drawPath(ctx,selectedPath,CELL,{preview:true});
+ if(gesture?.mode==='path'&&gesture.points.length>1)
+  drawPath(ctx,{kind:gesture.kind,width:gesture.width,material:gesture.material,points:gesture.points},CELL,{preview:true});
  if(tool==='measure'){
   const line=gesture?.mode==='measure'?{x1:gesture.startX,y1:gesture.startY,x2:hover?.x??gesture.startX,y2:hover?.y??gesture.startY}:measurement;
   if(line){
@@ -86,6 +91,16 @@ function closestProp(p){
 }
 function refreshSelection(){
  if(selectedProp&&!scene.props.includes(selectedProp))selectedProp=null;
+ if(selectedPath&&!scene.paths?.includes(selectedPath))selectedPath=null;
+ $('selected-prop-controls').hidden=!!selectedPath;
+ $('selected-path-controls').hidden=!selectedPath;
+ $('selected-path-duplicate').disabled=!selectedPath;
+ $('selected-path-delete').disabled=!selectedPath;
+ if(selectedPath){
+  $('selected-path-label').textContent=selectedPath.kind==='river'?'Rio selecionado':'Estrada selecionada';
+  $('selected-path-width').value=selectedPath.width;
+  $('selected-path-width-value').textContent=selectedPath.width;
+ }
  if(selected&&!scene.tokens.includes(selected))selected=null;
  const valid=!!selectedProp;
  for(const id of ['selected-rotate-left','selected-rotate-right','selected-duplicate','selected-delete'])$(id).disabled=!valid;
@@ -107,7 +122,7 @@ function saveLater(){
 // History stores the large background image by reference, not on every brush stroke.
 const freezeScene=()=>({shape:JSON.stringify({...scene,background:null}),background:scene.background});
 const thawScene=entry=>safeScene({...JSON.parse(entry.shape),background:entry.background});
-function clearSelection(){selected=null;selectedProp=null;refreshSelection();}
+function clearSelection(){selected=null;selectedProp=null;selectedPath=null;refreshSelection();}
 function snapshot(){
  history.push(freezeScene());if(history.length>40)history.shift();future.length=0;
 }
@@ -182,6 +197,8 @@ const toolInfo={
  pan:['Navegação','Mover a câmera pelo mapa.'],
  select:['Seleção','Selecione e arraste tokens.'],
  terrain:['Materiais','Pinte o terreno com materiais.'],
+ road:['Estrada','Desenhe trilhas e caminhos contínuos.'],
+ river:['Rio','Desenhe rios sinuosos com bordas naturais.'],
  raise:['Elevação','Crie camadas de relevo.'],
  lower:['Rebaixar','Reduza os níveis de terreno.'],
  prop:['Objetos','Escolha elementos para o cenário.'],
@@ -209,10 +226,11 @@ function showInspectorTab(name){
  }
 }
 function showToolOptions(next){
- const context=({select:'select',terrain:'terrain',raise:'elevation',lower:'elevation',prop:'prop',wall:'wall',room:'room',scatter:'scatter',generate:'generation',measure:'measure',erase:'erase'})[next]||'default';
+ const context=({select:'select',road:'path',river:'path',terrain:'terrain',raise:'elevation',lower:'elevation',prop:'prop',wall:'wall',room:'room',scatter:'scatter',generate:'generation',measure:'measure',erase:'erase'})[next]||'default';
  document.querySelectorAll('[data-tool-panel]').forEach(panel=>{panel.hidden=panel.dataset.toolPanel!==context;});
  $('studio-inspector-title').textContent=toolInfo[next]?.[0]||'Construção';
  $('studio-inspector-subtitle').textContent=context==='default'?'ESCOLHA UMA FERRAMENTA':'PROPRIEDADES DA FERRAMENTA';
+ $('road-material-container').hidden=next==='river';
 }
 function setTool(next){
  if(!toolInfo[next])return;
@@ -237,10 +255,18 @@ canvas.addEventListener('pointerdown',event=>{
  }else if(tool==='select'){
   selected=closestToken(p);
   selectedProp=selected?null:closestProp(p);
+  selectedPath=(selected||selectedProp)?null:nearestPath(scene.paths||[],p);
   if(selected){snapshot();gesture={mode:'drag',token:selected};}
   else if(selectedProp){snapshot();gesture={mode:'prop-drag',prop:selectedProp};showInspectorTab('build');}
-  else gesture={mode:'noop'};
+  else if(selectedPath){
+   snapshot();gesture={mode:'path-drag',path:selectedPath,startX:p.x,startY:p.y,original:selectedPath.points.map(pt=>({...pt}))};
+   showInspectorTab('build');
+  }else gesture={mode:'noop'};
   refreshSelection();
+ }else if(tool==='road'||tool==='river'){
+  if(!within(p))return;
+  gesture={mode:'path',kind:tool,width:pathWidth,material:roadMaterial,points:[]};
+  addStrokePoint(gesture.points,{x:p.x,y:p.y});
  }else if(tool==='wall'){
   snapshot();gesture={mode:'wall',startX:round(p.x),startY:round(p.y)};
  }else if(tool==='room'){
@@ -256,12 +282,32 @@ canvas.addEventListener('pointermove',event=>{
  if(drawing&&gesture?.mode==='pan'){view.x=gesture.x+p.px-gesture.px;view.y=gesture.y+p.py-gesture.py;}
  else if(drawing&&gesture?.mode==='drag'&&within(p)){gesture.token.x=clamp(p.x,.5,scene.cols-.5);gesture.token.y=clamp(p.y,.5,scene.rows-.5);changed(false);}
  else if(drawing&&gesture?.mode==='prop-drag'&&within(p)){gesture.prop.x=clamp(p.x,0,scene.cols);gesture.prop.y=clamp(p.y,0,scene.rows);changed(false);}
+ else if(drawing&&gesture?.mode==='path-drag'){
+  movePath(gesture.path,gesture.original,p.x-gesture.startX,p.y-gesture.startY,scene.cols,scene.rows);
+  changed(false);
+ }else if(drawing&&gesture?.mode==='path'){
+  addStrokePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)});
+ }
  else if(drawing&&gesture?.mode==='paint'){paintLine(gesture.previous,p);gesture.previous=p;}
  render();
 });
 function release(event){
  if(!drawing)return;
  const p=point(event);
+ if(gesture?.mode==='path'){
+  addStrokePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)},{spacing:.03});
+  const points=simplifyPoints(gesture.points,.075);
+  if(points.length>=2&&Math.hypot(points[0].x-points[points.length-1].x,points[0].y-points[points.length-1].y)>.25){
+   if((scene.paths||[]).length>=90)status('Limite de 90 caminhos e rios nesta versão.');
+   else{
+    try{
+     const path=makePath(gesture.kind,points,{width:gesture.width,material:gesture.material,cols:scene.cols,rows:scene.rows});
+     snapshot();scene.paths=scene.paths||[];scene.paths.push(path);changed();
+     status((gesture.kind==='river'?'Rio':'Estrada')+' criado. Use Selecionar para editar o traçado.');
+    }catch(error){status(error.message);}
+   }
+  }
+ }
  if(gesture?.mode==='measure'){
   measurement={x1:gesture.startX,y1:gesture.startY,x2:p.x,y2:p.y};
   status('Distância: '+Math.hypot(p.x-gesture.startX,p.y-gesture.startY).toFixed(1)+' células.');
@@ -282,7 +328,7 @@ function release(event){
   }else status('Arraste um cômodo com pelo menos três células de largura e altura.');
  }
  if(gesture?.mode==='paint')changed();
- if(['drag','prop-drag','wall'].includes(gesture?.mode))changed();
+ if(['drag','prop-drag','path-drag','wall'].includes(gesture?.mode))changed();
  drawing=false;gesture=null;render();
  try{canvas.releasePointerCapture(event.pointerId);}catch{}
 }
