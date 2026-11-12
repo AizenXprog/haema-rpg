@@ -98,7 +98,8 @@ async function openBook(id){
   next=button('Próxima →',()=>change(1),'reserved-nav-button');
  const counter=el('span','reserved-counter');controls.append(previous,home,counter,next);
  const feedback=el('p','reserved-feedback');feedback.setAttribute('role','status');feedback.dataset.reservedFeedback='';
- frame.append(header,page,feedback,controls);dialog.append(frame);document.body.append(dialog);
+ const scenery=el('div','reserved-scenery');scenery.setAttribute('aria-hidden','true');
+ frame.append(header,page,feedback,controls);dialog.append(scenery,frame);document.body.append(dialog);
  const oldOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
  const listenerAbort=new AbortController();
  let book=null,sections=[],sectionIndex=-1,pageIndex=0,requests=0,alive=true,checkTimer=null,atmosphere=null;
