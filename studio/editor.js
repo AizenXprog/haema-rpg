@@ -56,14 +56,18 @@ function saveLater(){
   catch{status('Salvamento local indisponível. Exporte o projeto em JSON.');}
  },350);
 }
+// History stores the large background image by reference, not on every brush stroke.
+const freezeScene=()=>({shape:JSON.stringify({...scene,background:null}),background:scene.background});
+const thawScene=entry=>safeScene({...JSON.parse(entry.shape),background:entry.background});
+function clearSelection(){selected=null;$('token-visibility').checked=false;$('token-visibility').disabled=true;}
 function snapshot(){
- history.push(JSON.stringify(scene));if(history.length>18)history.shift();future.length=0;
+ history.push(freezeScene());if(history.length>40)history.shift();future.length=0;
 }
 function undo(){
- if(!history.length)return;future.push(JSON.stringify(scene));scene=safeScene(JSON.parse(history.pop()));loadBackground();changed(false);
+ if(!history.length)return;future.push(freezeScene());scene=thawScene(history.pop());clearSelection();loadBackground();changed();
 }
 function redo(){
- if(!future.length)return;history.push(JSON.stringify(scene));scene=safeScene(JSON.parse(future.pop()));loadBackground();changed(false);
+ if(!future.length)return;history.push(freezeScene());scene=thawScene(future.pop());clearSelection();loadBackground();changed();
 }
 function changed(autosave=true){
  $('scene-name').value=scene.name;
@@ -208,7 +212,7 @@ function setup(){
   const file=event.target.files[0];if(!file)return;
   try{
    if(file.size>13e6)throw Error('Arquivo muito grande.');
-   const restored=safeScene(JSON.parse(await file.text()));snapshot();scene=restored;loadBackground();fit();changed();
+   const restored=safeScene(JSON.parse(await file.text()));snapshot();scene=restored;clearSelection();loadBackground();fit();changed();
    status('Projeto importado.');event.target.value='';
   }catch(error){status(error.message||'Projeto inválido.');}
  });
