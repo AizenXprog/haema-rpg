@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=2">
-<script type="module" src="studio/editor.js?v=4"></script>
+<script type="module" src="studio/editor.js?v=5"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
@@ -40,6 +40,7 @@
 <button type="button" data-tool="scatter" aria-pressed="false"><span>♧</span>Floresta</button>
     <button type="button" data-tool="generate" aria-pressed="false"><span>✧</span>Gerar</button>
 <button type="button" data-tool="token" aria-pressed="false"><span>◉</span>Token</button>
+<button type="button" data-tool="measure" aria-pressed="false"><span>⌁</span>Medir</button>
 <button type="button" data-tool="reveal" aria-pressed="false"><span>◌</span>Revelar</button>
 <button type="button" data-tool="conceal" aria-pressed="false"><span>●</span>Ocultar</button>
 <button type="button" data-tool="erase" aria-pressed="false"><span>⌫</span>Apagar</button>
@@ -131,10 +132,23 @@
     </div>
     <div data-tool-panel="room" class="context-panel" hidden>
      <p class="context-intro">Arraste um retângulo no mapa. O editor cria automaticamente piso, paredes e uma porta.</p>
+     <label class="field-label" for="room-preset">Mobiliário inicial
+      <select id="room-preset">
+       <option value="empty">Vazio — apenas estrutura</option>
+       <option value="bedroom">Quarto mobiliado</option>
+       <option value="library">Biblioteca</option>
+       <option value="tavern">Salão de estalagem</option>
+      </select>
+     </label>
      <button type="button" id="new-room" class="studio-wide-action">Desenhar cômodo</button>
+     <p class="studio-panel-hint">Os móveis gerados continuam independentes: você pode movê-los, girá-los ou apagá-los.</p>
     </div>
     <div data-tool-panel="wall" class="context-panel" hidden><p class="context-intro">Clique e arraste para desenhar uma parede entre dois pontos.</p></div>
     <div data-tool-panel="scatter" class="context-panel" hidden><p class="context-intro">Arraste para distribuir árvores pelo mapa. Evite áreas internas.</p></div>
+    <div data-tool-panel="measure" class="context-panel" hidden>
+     <p class="context-intro">Arraste entre dois pontos para medir a distância em células do mapa, mesmo com a grade oculta.</p>
+     <div class="studio-tip">A medida não altera o cenário e aparece somente para o mestre nesta versão.</div>
+    </div>
     <div data-tool-panel="erase" class="context-panel" hidden>
      <p class="context-intro">Apague terreno, objetos ou tokens no raio do pincel. Use Desfazer para recuperar alterações.</p>
      <label class="brush-label" for="eraser-brush"><span>Tamanho da borracha <b id="eraser-brush-value">2</b></span><input id="eraser-brush" type="range" min="1" max="5" value="2"></label>
