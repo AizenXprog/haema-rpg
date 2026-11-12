@@ -1,5 +1,5 @@
-import {renderTerrain} from './terrain-renderer.js';
-import {renderFog} from './fog-renderer.js';
+import {renderTerrain} from './terrain-renderer.js?v=1';
+import {renderFog} from './fog-renderer.js?v=1';
 // HÆMA Estúdio — cena vetorial original. Independente do Manual e da Lore.
 export const CELL=48;
 export const TERRAINS={grass:'#354c3d',stone:'#6b6b62',earth:'#78604b',water:'#2c6470',sand:'#9b815a',wood:'#72503a',brick:'#775a4e',marble:'#969085'};
