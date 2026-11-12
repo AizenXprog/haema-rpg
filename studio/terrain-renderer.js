@@ -34,10 +34,12 @@ function sourceAt(scene,x,y){
 }
 export function sampleTerrain(scene,worldX,worldY,cell=48){
  // Both warps are in *world* coordinates, never restart at tile edges.
- const bendX=(noise(worldX/96+3.12,worldY/96+8.53)-.5)*19+
-   (noise(worldX/37+18,worldY/37+4)-.5)*4;
- const bendY=(noise(worldX/104+27,worldY/104+16)-.5)*19+
-   (noise(worldX/39+6,worldY/39+24)-.5)*4;
+ // Reuse the same low-frequency noise for material boundaries and pigment.
+ // Three samples per pixel, instead of the previous eight, keep brushing responsive.
+ const low=noise(worldX/68+12.4,worldY/68+9.1);
+ const bendX=(low-.5)*24+Math.sin(worldY*.056+low*7)*2.4;
+ const bendY=(noise(worldX/99+27,worldY/99+16)-.5)*20+
+   Math.sin(worldX*.062+low*5)*2.5;
  const u=(worldX+bendX)/cell,v=(worldY+bendY)/cell;
  const ix=Math.floor(u),iy=Math.floor(v),wx=weights(u-ix),wy=weights(v-iy);
  let r=0,g=0,b=0,h=0,water=0;
@@ -51,14 +53,12 @@ export function sampleTerrain(scene,worldX,worldY,cell=48){
    h+=t.height*w;if(t.type==='water')water+=w;
   }
  }
- const low=noise(worldX/68+12.4,worldY/68+9.1);
  const mid=noise(worldX/19+6.3,worldY/19+13.4);
  const fine=random2(Math.floor(worldX/2),Math.floor(worldY/2));
  // Details are continuous across same-material cells, not seeded per tile.
  let shade=(low-.5)*24+(mid-.5)*11+(fine-.5)*7+h*6;
- const wood=noise(worldX/170,worldY/95);
- const woodGrain=Math.cos((worldY+wood*5)*Math.PI/6.9);
- const stoneGrain=noise(worldX/13+8,worldY/13+1);
+ const woodGrain=Math.cos((worldY+low*5)*Math.PI/6.9);
+ const stoneGrain=mid;
  const wave=Math.sin(worldY*.095+worldX*.025+low*4.1);
  const material=sourceAt(scene,clamp(Math.floor(u),0,scene.cols-1),clamp(Math.floor(v),0,scene.rows-1)).type;
  if(material==='wood')shade+=woodGrain*5;
@@ -81,7 +81,7 @@ function createSurface(scene,cell){
  if(typeof document==='undefined')return null;
  const fullW=scene.cols*cell,fullH=scene.rows*cell;
  // Resolution cap protects common machines and large 80x80-cell scenes.
- const quality=Math.min(.78,Math.sqrt(2400000/(fullW*fullH)));
+ const quality=Math.min(.66,Math.sqrt(1600000/(fullW*fullH)));
  const width=Math.max(1,Math.ceil(fullW*quality)),height=Math.max(1,Math.ceil(fullH*quality));
  const canvas=document.createElement('canvas');
  canvas.width=width;canvas.height=height;
