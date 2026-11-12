@@ -1,4 +1,5 @@
 import {renderReservedAdmin} from './reserved-admin.js';
+import {renderAccessCenter} from './access-center.js';
 import {access, client, rpc, node, button, accessGate, authorizedFetch} from './auth.js';
 
 const AREAS = [['library','Biblioteca de Lore'],['bestiary','Bestiário'],['portal','Campanhas e fichas online'],['mesa','Ficha local e dados'],['materials','Materiais da campanha'],['studio','HÆMA Estúdio — Mapmaker e mesa física']];
@@ -14,56 +15,19 @@ async function initAdmin() {
     if(!permissions.admin) {accessGate(root,permissions,'Administração');return;}
     const db=await client();
     const result=await Promise.all([
-      db.from('haema_access_accounts').select('*').order('created_at',{ascending:false}),
-      db.from('haema_area_grants').select('user_id,area'),
-      db.from('haema_campaigns').select('id,name'),
+      db.from('haema_access_accounts').select('user_id,display_name,status').order('created_at',{ascending:false}),
       db.from('haema_access_log').select('id,subject_id,action,details,created_at').order('id',{ascending:false}).limit(60)
     ]);
     for(const r of result)if(r.error)throw r.error;
     if(version!==generation||root!==host())return;
-    const [accounts,grants,campaigns,logs]=result.map(r=>r.data);
+    const [accounts,logs]=result.map(r=>r.data);
     const tabs=node('nav','admin-tabs');tabs.setAttribute('aria-label','Administração');
     const panel=node('section','admin-panel');
     root.replaceChildren(tabs,panel);
     let tabVersion=0;
-    function users() {
-      tabVersion++;
-      panel.replaceChildren(node('h2','','Pessoas e permissões'),
-        node('p','',accounts.filter(a=>a.status==='pending').length+' solicitação(ões) aguardando análise.'));
-      const names=Object.fromEntries(accounts.map(a=>[a.user_id,a.display_name]));
-      for(const account of accounts) {
-        const row=node('details','admin-user');
-        const summary=node('summary','',account.display_name);
-        const status={pending:'Aguardando aprovação',approved:'Aprovado',denied:'Negado',revoked:'Revogado'};
-        summary.append(node('small','',account.user_id===permissions.user.id?'Administrador fundador':status[account.status]));
-        row.append(summary);
-        if(account.user_id===permissions.user.id){row.append(node('p','','Administrador fundador · acesso integral protegido.'));panel.append(row);continue;}
-        const form=node('form','access-review');
-        const choices=node('fieldset');choices.append(node('legend','','Áreas autorizadas'));
-        for(const [area,label]of AREAS) {
-          const wrap=node('label'),input=node('input');
-          input.type='checkbox';input.name='area';input.value=area;
-          input.checked=grants.some(g=>g.user_id===account.user_id&&g.area===area);
-          wrap.append(input,document.createTextNode(label));choices.append(wrap);
-        }
-        const campaignLabel=node('label','','Adicionar à campanha');
-        const campaign=node('select');campaign.name='campaign';campaign.append(new Option('Manter vínculos atuais',''));
-        for(const item of campaigns)campaign.append(new Option(item.name,item.id));
-        campaignLabel.append(campaign);
-        const actions=node('div','admin-actions'),feedback=node('p','admin-feedback');
-        feedback.setAttribute('role','status');
-        for(const [state,label]of [['approved','Aprovar / salvar acessos'],['denied','Negar'],['revoked','Revogar todos os acessos']]) {
-          actions.append(button(label,async()=>{
-            actions.querySelectorAll('button').forEach(b=>b.disabled=true);
-            try {
-              const areas=[...choices.querySelectorAll('input:checked')].map(i=>i.value);
-              await rpc('haema_review_access',{target:account.user_id,next_status:state,areas,campaign:campaign.value||null,expected_revision:account.revision});
-              await initAdmin();
-            }catch(error){feedback.textContent=error.message;actions.querySelectorAll('button').forEach(b=>b.disabled=false);}
-          },state==='approved'?'archive-button':'archive-link-button'));
-        }
-        form.append(choices,campaignLabel,actions,feedback);row.append(form);panel.append(row);
-      }
+    async function users() {
+      const tab=++tabVersion;
+      await renderAccessCenter(panel,()=>version===generation&&root===host()&&tab===tabVersion);
     }
     async function releases() {
       const tab=++tabVersion;
@@ -152,13 +116,22 @@ async function initAdmin() {
       for(const log of logs) {
         const row=node('article','audit-row');
         row.append(node('time','',new Date(log.created_at).toLocaleString('pt-BR')),
-          node('strong','',log.action==='access.review'?'Permissões revisadas':log.action==='volume.release'?'Publicação de volume revisada':'Trechos do Bestiário revisados'),
-          node('p','',log.subject_id?(names[log.subject_id]||'Conta cadastrada')+' · '+log.details.before+' → '+log.details.after:log.action==='volume.release'?log.details.volume+' · '+(log.details.after?'Liberado':'Privado'):log.details.entry));
+          node('strong','',({
+            'access.review':'Permissões da conta revisadas',
+            'access.bundle':'Visibilidade do usuário atualizada',
+            'reserved.access.book':'Destinatários de livro alterados',
+            'reserved.grant':'Autorização individual de livro alterada',
+            'reserved.publish':'Disponibilidade de livro alterada',
+            'volume.release':'Publicação de volume revisada'
+           })[log.action]||'Liberação de conteúdo revisada'),
+          node('p','',log.subject_id?(names[log.subject_id]||'Conta cadastrada')+
+            (log.details?.before&&log.details?.after?' · '+log.details.before+' → '+log.details.after:''):
+            log.details?.book||log.details?.volume||log.details?.entry||'Biblioteca'));
         panel.append(row);
       }
       if(!logs.length)panel.append(node('p','','As revisões de acesso e as liberações aparecerão aqui.'));
     }
-    tabs.append(button('Pessoas',users),button('Liberações',releases),button('Volumes',volumes),button('Livros reservados',()=>renderReservedAdmin(panel)),button('Auditoria',audit),button('Atualizar',initAdmin));
+    tabs.append(button('Central de acessos',users),button('Liberações do Bestiário',releases),button('Volumes',volumes),button('Textos reservados',()=>{tabVersion++;void renderReservedAdmin(panel)}),button('Auditoria',audit),button('Atualizar',initAdmin));
     users();
   } catch(error) {
     if(version!==generation||root!==host())return;
