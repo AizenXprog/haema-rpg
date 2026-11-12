@@ -7,7 +7,7 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="studio/studio.css?v=3">
+<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=1">
 <script type="module" src="studio/editor.js?v=3"></script>
 </head>
 <body class="studio-page">
@@ -38,6 +38,7 @@
 <button type="button" data-tool="wall" aria-pressed="false"><span>╱</span>Parede</button>
 <button type="button" data-tool="room" aria-pressed="false"><span>▣</span>Cômodo</button>
 <button type="button" data-tool="scatter" aria-pressed="false"><span>♧</span>Floresta</button>
+    <button type="button" data-tool="generate" aria-pressed="false"><span>✧</span>Gerar</button>
 <button type="button" data-tool="token" aria-pressed="false"><span>◉</span>Token</button>
 <button type="button" data-tool="reveal" aria-pressed="false"><span>◌</span>Revelar</button>
 <button type="button" data-tool="conceal" aria-pressed="false"><span>●</span>Ocultar</button>
@@ -121,7 +122,10 @@
     </div>
     <div data-tool-panel="wall" class="context-panel" hidden><p class="context-intro">Clique e arraste para desenhar uma parede entre dois pontos.</p></div>
     <div data-tool-panel="scatter" class="context-panel" hidden><p class="context-intro">Arraste para distribuir árvores pelo mapa. Evite áreas internas.</p></div>
-    <div data-tool-panel="erase" class="context-panel" hidden><p class="context-intro">Apague o terreno, os objetos ou tokens no raio do pincel. Use Desfazer para recuperar alterações.</p></div>
+    <div data-tool-panel="erase" class="context-panel" hidden>
+     <p class="context-intro">Apague terreno, objetos ou tokens no raio do pincel. Use Desfazer para recuperar alterações.</p>
+     <label class="brush-label" for="eraser-brush"><span>Tamanho da borracha <b id="eraser-brush-value">2</b></span><input id="eraser-brush" type="range" min="1" max="5" value="2"></label>
+    </div>
    </div>
    <div class="inspector-panel" id="inspector-mesa" role="tabpanel" aria-labelledby="tab-mesa" hidden>
     <div class="inspector-panel-title"><span>CONTROLE DE JOGO</span><h2>Mesa</h2></div>
