@@ -1,0 +1,33 @@
+'use strict';
+const fs=require('node:fs'),assert=require('node:assert/strict'),cp=require('node:child_process');
+const source=fs.readFileSync('studio/scene.js','utf8').replace(/^export /gm,'');
+const {starterScene,safeScene,drawScene}=new Function(source+'\nreturn {starterScene,safeScene,drawScene} ')();
+let passed=0;const check=(test,label)=>{assert.ok(test,label);passed++};
+const scene=starterScene();
+check(scene.tiles.length===scene.cols*scene.rows,'terrain dimensions');
+check(scene.fog.length===scene.tiles.length,'fog dimensions');
+check(scene.tokens.length===2,'initial token count');
+check(safeScene(scene).version===1,'scene roundtrip');
+check(scene.fog.every(x=>x===0||x===1),'fog values');
+let labels=0;
+const context=new Proxy({createRadialGradient(){return {addColorStop(){}}},fillText(){labels++}},{get:(obj,k)=>obj[k]??(()=>{}),set:(obj,k,v)=>{obj[k]=v;return true}});
+drawScene(context,scene,{player:false});check(labels===2,'master sees tokens');
+labels=0;drawScene(context,scene,{player:true});check(labels===2,'player sees revealed tokens');
+scene.fog.fill(1);labels=0;drawScene(context,scene,{player:true});check(labels===0,'hidden fog conceals all');
+labels=0;drawScene(context,scene,{player:false});check(labels===2,'master view retains concealed creatures');
+scene.fog.fill(0);scene.tokens[0].hidden=true;labels=0;drawScene(context,scene,{player:true});check(labels===1,'GM-only token excluded');
+assert.throws(()=>safeScene({...scene,cols:2,rows:2}));passed++;
+for(const file of ['studio/scene.js','studio/storage.js','studio/editor.js','studio/projector.js','api/studio-access.js']){
+ cp.execFileSync('node',['--check',file]);passed++;
+}
+const editor=fs.readFileSync('studio/editor.js','utf8'),projection=fs.readFileSync('studio/projector.js','utf8');
+check(editor.includes('drawScene(drawingContext,scene,{player:true'),'screenshot masks fog in renderer');
+check(editor.includes("toDataURL('image/webp'"),'only projected pixels are transmitted');
+check(projection.includes("data?.type!=='frame'"),'projection only accepts frames');
+check(projection.includes("type:'ready'"),'projection handshakes with master');
+const auth=fs.readFileSync('api/studio-access.js','utf8');
+check(auth.includes('await authorize(req)')&&auth.includes("requested:'studio'"),'server-side permission check');
+const portal=fs.readFileSync('portal-hub.js','utf8'),admin=fs.readFileSync('admin.js','utf8');
+check(portal.includes("info.areas.includes('studio')"),'portal entry conditional');
+check(admin.includes("['studio','HÆMA Estúdio"),'admin grant control');
+console.log(passed+' Studio core/security checks passed');
