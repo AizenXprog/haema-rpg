@@ -173,6 +173,7 @@ function setTool(next){
  for(const b of document.querySelectorAll('[data-tool]'))b.setAttribute('aria-pressed',String(b.dataset.tool===tool));
  canvas.style.cursor=['pan','generate'].includes(tool)?'grab':tool==='select'?'default':'crosshair';
  $('studio-tool').textContent=toolInfo[tool][0];
+ $('studio-active-help').textContent=toolInfo[tool][1];
  showToolOptions(tool);
  if(['token','reveal','conceal'].includes(tool))showInspectorTab('mesa');
  else if(!['pan','select'].includes(tool))showInspectorTab('build');
@@ -287,7 +288,7 @@ function setup(){
   const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:tabs.length-1))%tabs.length;
   showInspectorTab(tabs[next].dataset.inspectorTab);tabs[next].focus();
  });
- document.querySelectorAll('[data-tool]').forEach(el=>el.addEventListener('click',()=>setTool(el.dataset.tool)));
+ document.querySelectorAll('[data-tool]').forEach(el=>{el.title=toolInfo[el.dataset.tool]?.[1]||'';el.addEventListener('click',()=>setTool(el.dataset.tool));});
  document.querySelectorAll('[data-terrain]').forEach(el=>el.addEventListener('click',()=>{terrain=el.dataset.terrain;setTool('terrain');document.querySelectorAll('[data-terrain]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
  document.querySelectorAll('[data-prop]').forEach(el=>el.addEventListener('click',()=>{prop=el.dataset.prop;setTool('prop');document.querySelectorAll('[data-prop]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
  document.querySelectorAll('[data-scene-template]').forEach(el=>el.addEventListener('click',()=>{const type=el.dataset.sceneTemplate;if(!confirm('Substituir o cenário atual por um novo mapa gerado? A ação poderá ser desfeita.'))return;snapshot();scene=generateScene(type,$('seed-input').value||String(Date.now()));scene.gridVisible=showGrid;clearSelection();loadBackground();changed();fit();status('Cenário gerado: '+scene.name); }));
