@@ -420,6 +420,53 @@ function setup(){
   }
   $('prop-search-empty').hidden=total!==0;
  });
+
+ $('path-width').addEventListener('input',event=>{
+  pathWidth=Number(event.target.value);
+  $('path-width-value').textContent=pathWidth;
+ });
+ $('road-material').addEventListener('change',event=>{roadMaterial=event.target.value;});
+ $('selected-path-width').addEventListener('change',event=>{
+  if(!selectedPath||!scene.paths?.includes(selectedPath))return;
+  snapshot();selectedPath.width=clamp(Number(event.target.value),.5,4);changed();
+ });
+ $('selected-path-duplicate').addEventListener('click',()=>{
+  if(!selectedPath||!scene.paths?.includes(selectedPath))return;
+  if(scene.paths.length>=90)return status('Limite de 90 caminhos e rios nesta versão.');
+  snapshot();
+  const original=selectedPath.points.map(p=>({...p}));
+  const copy={...selectedPath,id:'copy-'+(crypto.randomUUID?.()||Date.now()),points:original.map(p=>({...p}))};
+  movePath(copy,original,.65,.65,scene.cols,scene.rows);
+  scene.paths.push(copy);selectedPath=copy;changed();
+ });
+ $('selected-path-delete').addEventListener('click',()=>{
+  if(!selectedPath||!scene.paths?.includes(selectedPath))return;
+  snapshot();scene.paths=scene.paths.filter(p=>p!==selectedPath);
+  selectedPath=null;changed();
+ });
+ $('guided-description').addEventListener('input',event=>{
+  const message=$('guided-feedback'),value=event.target.value.trim();
+  if(!value){message.textContent='Interpretação local por palavras-chave, sem IA e sem envio de dados.';return;}
+  try{
+   const plan=interpretDescription(value);
+   const names={tavern:'Estalagem',dungeon:'Ruínas e salas',lake:'Lago e margens',forest:'Bosque'};
+   const additions=[plan.road?'estrada':null,plan.river?'rio':null,plan.vegetation==='dense'?'vegetação densa':null,
+    plan.vegetation==='none'?'sem árvores':null].filter(Boolean);
+   message.textContent='Entendido: '+names[plan.base]+(additions.length?' + '+additions.join(', '):'')+'. Resultado totalmente editável.';
+  }catch(error){message.textContent=error.message;}
+ });
+ $('guided-generate').addEventListener('click',()=>{
+  const value=$('guided-description').value.trim();
+  let result;
+  try{result=generateFromDescription(value,$('seed-input').value.trim());}
+  catch(error){$('guided-feedback').textContent=error.message;return;}
+  if(!confirm('Substituir o cenário atual por esta cena guiada? Você pode desfazer ou importar seu backup.'))return;
+  snapshot();
+  scene=result.scene;scene.gridVisible=showGrid;
+  clearSelection();loadBackground();fit();changed();
+  status('Cena guiada criada localmente. Edite o terreno, os rios e os objetos.');
+  $('guided-feedback').textContent='Cena gerada com regras locais, sem envio de dados nem IA. Tudo pode ser editado.';
+ });
  $('new-room').addEventListener('click',()=>{setTool('room');status('Arraste no mapa para desenhar um cômodo; o editor cria paredes e um acesso.');});
  for(const [id,degrees] of [['selected-rotate-left',-15],['selected-rotate-right',15]]){
   $(id).addEventListener('click',()=>{
