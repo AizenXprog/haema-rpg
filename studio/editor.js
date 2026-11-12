@@ -2,6 +2,8 @@ import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
 import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js';
 import {saveProject,loadProject,exportJSON} from './storage.js';
 import {generateScene,makeRoom} from './generator.js';
+import {invalidateTerrain} from './terrain-renderer.js';
+import {invalidateFog} from './fog-renderer.js';
 
 const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
@@ -106,6 +108,9 @@ function paint(p,shouldUpdate=true){
    scene.props=scene.props.filter(o=>Math.hypot(o.x-p.x,o.y-p.y)>brush);
    scene.tokens=scene.tokens.filter(t=>Math.hypot(t.x-p.x,t.y-p.y)>brush);
   }
+  const x0=cx-brush,y0=cy-brush,x1=cx+brush+1,y1=cy+brush+1;
+  if(['terrain','raise','lower','erase'].includes(tool))invalidateTerrain(scene,x0,y0,x1,y1,CELL);
+  else if(['reveal','conceal'].includes(tool))invalidateFog(scene,x0,y0,x1,y1,CELL);
  }else if(tool==='token'){
   if(scene.tokens.length>=120)return status('Limite de 120 tokens nesta versão.');
   const label=$('token-name').value.trim().slice(0,16)||'PJ';
@@ -220,6 +225,7 @@ function release(event){
   const xb=Math.ceil(Math.max(gesture.startX,p.x)),yb=Math.ceil(Math.max(gesture.startY,p.y));
   if(xb-xa>=3&&yb-ya>=3){
    makeRoom(scene,{x:xa,y:ya,w:xb-xa,h:yb-ya,floor:terrain==='wood'||terrain==='marble'||terrain==='brick'?terrain:'wood'});
+   invalidateTerrain(scene,xa,ya,xb+1,yb+1,CELL);
    changed();
   }else status('Arraste um cômodo com pelo menos três células de largura e altura.');
  }
@@ -320,8 +326,8 @@ function setup(){
  $('scene-name').addEventListener('change',event=>{snapshot();scene.name=String(event.target.value).slice(0,80)||'Sem título';changed();});
  $('grid-toggle').addEventListener('change',event=>{showGrid=event.target.checked;scene.gridVisible=showGrid;changed();});
  $('token-visibility').addEventListener('change',event=>{if(!selected)return;snapshot();selected.hidden=event.target.checked;changed();});
- $('reveal-all').addEventListener('click',()=>{snapshot();scene.fog.fill(0);changed();});
- $('hide-all').addEventListener('click',()=>{snapshot();scene.fog.fill(1);changed();});
+ $('reveal-all').addEventListener('click',()=>{snapshot();scene.fog.fill(0);invalidateFog(scene);changed();});
+ $('hide-all').addEventListener('click',()=>{snapshot();scene.fog.fill(1);invalidateFog(scene);changed();});
  $('undo').addEventListener('click',undo);$('redo').addEventListener('click',redo);
  $('fit-map').addEventListener('click',fit);
  $('save-local').addEventListener('click',async()=>{try{await saveProject(scene,ownerId);status('Projeto salvo no navegador.');}catch{status('Não foi possível salvar. Exporte em JSON.');}});
