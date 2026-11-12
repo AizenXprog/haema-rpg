@@ -86,11 +86,15 @@ for each row execute function haema_private.activity_campaign_trigger();
 create or replace function haema_private.activity_member_trigger() returns trigger
 language plpgsql security definer set search_path='' as $$
 begin
- perform haema_private.activity_mark('campaign',
-  case when tg_op='INSERT' then 'campaign.member_added' else 'campaign.member_removed' end,
-  coalesce(new.user_id,old.user_id)::text,coalesce(new.campaign_id,old.campaign_id)::text,'servidor',0);
- return coalesce(new,old);
-end $$;
+ if tg_op='DELETE' then
+  perform haema_private.activity_mark('campaign','campaign.member_removed',
+   old.user_id::text,old.campaign_id::text,'servidor',0);
+  return old;
+ end if;
+ perform haema_private.activity_mark('campaign','campaign.member_added',
+   new.user_id::text,new.campaign_id::text,'servidor',0);
+ return new;
+end $;
 drop trigger if exists haema_members_activity on public.haema_members;
 create trigger haema_members_activity after insert or delete on public.haema_members
 for each row execute function haema_private.activity_member_trigger();
