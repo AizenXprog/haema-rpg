@@ -16,6 +16,7 @@ async function init(){
   if(info.admin)link('administracao.html','Pessoas, permissões e liberações','Aprovações de contas, acesso individual, trechos do Bestiário e histórico de revisões.');
   if(info.areas.includes('portal'))link('campanha.html','Campanhas e registros','Materiais, recursos, fichas online, conversas e registros disponíveis para sua conta.');
   if(info.areas.includes('library'))link('biblioteca.html','Biblioteca','Abra o acervo liberado para você.');
+  if(info.admin||info.areas.includes('studio'))link('estudio.html','HÆMA Estúdio · privado','Mapmaker e tela de projeção para mesas físicas. Acesso autorizado individualmente.');
   link('sistema.html','Sistema e ferramentas','Manual Vivo, simuladores, fichas e dados.');
   root.append(list,button('Atualizar acessos',init),button('Sair da conta',logout,'archive-link-button'));
  }catch(error){
