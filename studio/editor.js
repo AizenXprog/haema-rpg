@@ -1,7 +1,7 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
 import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=3';
 import {saveProject,loadProject,exportJSON} from './storage.js';
-import {generateScene,makeRoom} from './generator.js?v=3';
+import {generateScene,makeRoom,furnishRoom} from './generator.js?v=4';
 import {invalidateTerrain} from './terrain-renderer.js?v=1';
 import {invalidateFog} from './fog-renderer.js?v=1';
 
@@ -9,7 +9,7 @@ const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
 const view={x:0,y:0,zoom:1,ready:false};
 let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,showGrid=true,paintedTiles=new Set(),lastStamp=null;
-let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,saveTimer=0,broadcastTimer=0;
+let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,measurement=null,saveTimer=0,broadcastTimer=0;
 let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
 const status=(message)=>{$('studio-status').textContent=message;};
 const round=(n)=>Math.round(n*2)/2;
@@ -30,6 +30,19 @@ function render(){
  ctx.fillStyle='#0a1012';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.translate(view.x,view.y);ctx.scale(view.zoom,view.zoom);
  drawScene(ctx,scene,{grid:showGrid,image:backgroundImage});
+ if(tool==='measure'){
+  const line=gesture?.mode==='measure'?{x1:gesture.startX,y1:gesture.startY,x2:hover?.x??gesture.startX,y2:hover?.y??gesture.startY}:measurement;
+  if(line){
+   const x1=line.x1*CELL,y1=line.y1*CELL,x2=line.x2*CELL,y2=line.y2*CELL;
+   const length=Math.hypot(line.x2-line.x1,line.y2-line.y1);
+   ctx.save();ctx.strokeStyle='#efcf8b';ctx.lineWidth=2.5/Math.max(.2,view.zoom);ctx.setLineDash([8,5]);
+   ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([]);
+   ctx.fillStyle='#14181be6';ctx.font='600 13px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+   const label=length.toFixed(1)+' células',cx=(x1+x2)/2,cy=(y1+y2)/2;
+   ctx.fillRect(cx-43,cy-22,86,18);ctx.fillStyle='#f2d9ac';ctx.fillText(label,cx,cy-13);
+   ctx.restore();
+  }
+ }
  if(selectedProp&&scene.props.includes(selectedProp)&&tool==='select'){
   ctx.save();ctx.lineWidth=2.5/Math.max(.2,view.zoom);ctx.strokeStyle='#f0d3a0';ctx.setLineDash([7,4]);
   ctx.beginPath();ctx.arc(selectedProp.x*CELL,selectedProp.y*CELL,27,0,Math.PI*2);ctx.stroke();ctx.restore();
@@ -177,6 +190,7 @@ const toolInfo={
  scatter:['Vegetação','Distribua árvores ao arrastar.'],
  generate:['Geração','Crie uma base procedural editável.'],
  token:['Tokens','Posicione personagens e criaturas.'],
+ measure:['Régua','Arraste entre dois pontos para medir em células.'],
  reveal:['Revelar','Abra áreas aos jogadores.'],
  conceal:['Ocultar','Cubra áreas com neblina.'],
  erase:['Borracha','Remova elementos selecionados.']
@@ -195,7 +209,7 @@ function showInspectorTab(name){
  }
 }
 function showToolOptions(next){
- const context=({select:'select',terrain:'terrain',raise:'elevation',lower:'elevation',prop:'prop',wall:'wall',room:'room',scatter:'scatter',generate:'generation',erase:'erase'})[next]||'default';
+ const context=({select:'select',terrain:'terrain',raise:'elevation',lower:'elevation',prop:'prop',wall:'wall',room:'room',scatter:'scatter',generate:'generation',measure:'measure',erase:'erase'})[next]||'default';
  document.querySelectorAll('[data-tool-panel]').forEach(panel=>{panel.hidden=panel.dataset.toolPanel!==context;});
  $('studio-inspector-title').textContent=toolInfo[next]?.[0]||'Construção';
  $('studio-inspector-subtitle').textContent=context==='default'?'ESCOLHA UMA FERRAMENTA':'PROPRIEDADES DA FERRAMENTA';
@@ -203,12 +217,13 @@ function showToolOptions(next){
 function setTool(next){
  if(!toolInfo[next])return;
  tool=next;
+ if(tool!=='measure')measurement=null;
  for(const b of document.querySelectorAll('[data-tool]'))b.setAttribute('aria-pressed',String(b.dataset.tool===tool));
  canvas.style.cursor=['pan','generate'].includes(tool)?'grab':tool==='select'?'default':'crosshair';
  $('studio-tool').textContent=toolInfo[tool][0];
  $('studio-active-help').textContent=toolInfo[tool][1];
  showToolOptions(tool);
- if(['token','reveal','conceal'].includes(tool))showInspectorTab('mesa');
+ if(['token','reveal','conceal','measure'].includes(tool))showInspectorTab('mesa');
  else if(!['pan','select'].includes(tool))showInspectorTab('build');
  render();
 }
@@ -217,6 +232,8 @@ canvas.addEventListener('pointerdown',event=>{
  const p=point(event);hover=p;
  if(tool==='pan'||tool==='generate'||spaceHeld||event.button===1){
   gesture={mode:'pan',px:p.px,py:p.py,x:view.x,y:view.y};
+ }else if(tool==='measure'){
+  measurement=null;gesture={mode:'measure',startX:p.x,startY:p.y};
  }else if(tool==='select'){
   selected=closestToken(p);
   selectedProp=selected?null:closestProp(p);
@@ -245,6 +262,10 @@ canvas.addEventListener('pointermove',event=>{
 function release(event){
  if(!drawing)return;
  const p=point(event);
+ if(gesture?.mode==='measure'){
+  measurement={x1:gesture.startX,y1:gesture.startY,x2:p.x,y2:p.y};
+  status('Distância: '+Math.hypot(p.x-gesture.startX,p.y-gesture.startY).toFixed(1)+' células.');
+ }
  if(gesture?.mode==='wall'){
   const a=gesture,b={x:round(clamp(p.x,0,scene.cols)),y:round(clamp(p.y,0,scene.rows))};
   if(Math.hypot(a.startX-b.x,a.startY-b.y)>.15&&scene.walls.length<400)
@@ -254,9 +275,10 @@ function release(event){
   const xa=Math.floor(Math.min(gesture.startX,p.x)),ya=Math.floor(Math.min(gesture.startY,p.y));
   const xb=Math.ceil(Math.max(gesture.startX,p.x)),yb=Math.ceil(Math.max(gesture.startY,p.y));
   if(xb-xa>=3&&yb-ya>=3){
-   makeRoom(scene,{x:xa,y:ya,w:xb-xa,h:yb-ya,floor:terrain==='wood'||terrain==='marble'||terrain==='brick'?terrain:'wood'});
+   const room=makeRoom(scene,{x:xa,y:ya,w:xb-xa,h:yb-ya,floor:terrain==='wood'||terrain==='marble'||terrain==='brick'?terrain:'wood'});
+   const placed=furnishRoom(scene,room,$('room-preset').value,scene.name);
    invalidateTerrain(scene,xa,ya,xb+1,yb+1,CELL);
-   changed();
+   changed();if(placed)status('Cômodo criado com '+placed+' objetos editáveis.');
   }else status('Arraste um cômodo com pelo menos três células de largura e altura.');
  }
  if(gesture?.mode==='paint')changed();
