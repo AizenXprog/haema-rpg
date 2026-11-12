@@ -3,7 +3,7 @@ import './volumes.js?v=2';
 import './portal.js?v=4';
 import './portal-hub.js?v=1';
 import './library.js?v=4';
-import './admin.js?v=4';
+import './admin.js?v=5';
 import './mesa-gate.js';
 import {access} from './auth.js';
 async function updateAccountNavigation() {
