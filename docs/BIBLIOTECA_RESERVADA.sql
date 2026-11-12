@@ -113,7 +113,7 @@ begin
  'books',(select coalesce(jsonb_agg(jsonb_build_object('id',id,'title',title,'published',published,'revision',revision,
   'loaded',length(manuscript)>0,'puzzle_ready',exists(select 1 from haema_private.reserved_puzzles p where p.book_id=id and p.expected_answer<>'{}'::jsonb)) order by id),'[]'::jsonb) from haema_private.reserved_books),
  'users',(select coalesce(jsonb_agg(jsonb_build_object('id',user_id,'name',display_name,'status',status) order by display_name),'[]'::jsonb) from public.haema_access_accounts),
- 'grants',(select coalesce(jsonb_agg(jsonb_build_object('user',user_id,'book',book_id),'[]'::jsonb),'[]'::jsonb) from haema_private.reserved_grants),
+ 'grants',(select coalesce(jsonb_agg(jsonb_build_object('user',user_id,'book',book_id)),'[]'::jsonb) from haema_private.reserved_grants),
  'progress',(select coalesce(jsonb_agg(jsonb_build_object('user',user_id,'book',book_id,'chapter',chapter_index,'page',page_index,'solved',solved_at is not null)),'[]'::jsonb) from haema_private.reserved_progress)
  );
 end $$;
