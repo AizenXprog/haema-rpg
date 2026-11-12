@@ -20,7 +20,7 @@ if(valid&&'BroadcastChannel' in window){
  const greet=()=>{if(!ready)channel.postMessage({type:'ready'});};
  channel.onmessage=event=>{
   const data=event.data;
-  if(data?.type==='blackout'){image=null;idle.hidden=false;idle.querySelector('h1').textContent='Cena ocultada pelo mestre';render();return;}
+  if(data?.type==='blackout'){ready=false;image=null;idle.hidden=false;idle.querySelector('h1').textContent='Cena ocultada pelo mestre';render();return;}
   if(data?.type!=='frame'||typeof data.image!=='string'||!/^data:image\/webp;base64,/.test(data.image)||data.image.length>15000000)return;
   const index=++last,img=new Image();
   img.onload=()=>{if(index!==last)return;image=img;ready=true;idle.hidden=true;render();};
