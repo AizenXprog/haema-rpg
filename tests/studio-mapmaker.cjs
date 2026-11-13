@@ -6,7 +6,9 @@ const ok=(check,label)=>{assert.ok(check,label);passed++};
 const src=fs.readFileSync('studio/scene.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
 const engine=new Function('const drawStyledProp=()=>false;\n'+src+'\nreturn {starterScene,safeScene,drawScene,tileIndex,TERRAINS,PROPS};')();
 const genSource=fs.readFileSync('studio/generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
-const {generateScene,makeRoom}=new Function('starterScene','tileIndex',genSource+'\nreturn {generateScene,makeRoom};')(engine.starterScene,engine.tileIndex);
+const layoutSource=fs.readFileSync('studio/room-layout.js','utf8').replace(/^export /gm,'');
+const {planRoomFurniture}=new Function(layoutSource+'\nreturn {planRoomFurniture};')();
+const {generateScene,makeRoom}=new Function('starterScene','tileIndex','planRoomFurniture',genSource+'\nreturn {generateScene,makeRoom};')(engine.starterScene,engine.tileIndex,planRoomFurniture);
 for(const kind of ['forest','lake','tavern','dungeon']){
  const a=generateScene(kind,'seed-test'),b=generateScene(kind,'seed-test'),safe=engine.safeScene(a);
  ok(JSON.stringify(a)===JSON.stringify(b),kind+' deterministic seed');

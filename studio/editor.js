@@ -1,7 +1,7 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
-import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=3';
+import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=4';
 import {saveProject,loadProject,saveNamedProject,loadNamedProject,listNamedProjects,deleteNamedProject,createMapId,exportJSON} from './storage.js?v=2';
-import {generateScene,makeRoom,furnishRoom} from './generator.js?v=4';
+import {generateScene,makeRoom,furnishRoom} from './generator.js?v=5';
 import {invalidateTerrain} from './terrain-renderer.js?v=1';
 import {invalidateFog} from './fog-renderer.js?v=1';
 import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=2';
@@ -242,6 +242,9 @@ function redo(){
 function changed(autosave=true){
  showGrid=scene.gridVisible!==false;$('grid-toggle').checked=showGrid;$('grid-state').textContent=showGrid?'Visível':'Oculta';
  $('scene-name').value=scene.name;
+ $('atmosphere-preset').value=scene.atmosphere?.preset||'day';
+ $('atmosphere-strength').value=Math.round((scene.atmosphere?.strength??1)*100);
+ $('atmosphere-strength-value').textContent=$('atmosphere-strength').value+'%';
  $('studio-token-count').textContent=scene.tokens.length;
  refreshSelection();
  render();
@@ -651,6 +654,15 @@ function setup(){
 
  $('scene-name').addEventListener('change',event=>{snapshot();scene.name=String(event.target.value).slice(0,80)||'Sem título';changed();});
  $('grid-toggle').addEventListener('change',event=>{showGrid=event.target.checked;scene.gridVisible=showGrid;changed();});
+ $('atmosphere-preset').addEventListener('change',event=>{
+  snapshot();scene.atmosphere={...(scene.atmosphere||{}),preset:event.target.value};changed();
+ });
+ $('atmosphere-strength').addEventListener('input',event=>{
+  $('atmosphere-strength-value').textContent=event.target.value+'%';
+ });
+ $('atmosphere-strength').addEventListener('change',event=>{
+  snapshot();scene.atmosphere={...(scene.atmosphere||{}),strength:Number(event.target.value)/100};changed();
+ });
  $('token-visibility').addEventListener('change',event=>{if(!selected)return;snapshot();selected.hidden=event.target.checked;changed();});
  $('reveal-all').addEventListener('click',()=>{snapshot();scene.fog.fill(0);invalidateFog(scene);changed();});
  $('hide-all').addEventListener('click',()=>{snapshot();scene.fog.fill(1);invalidateFog(scene);changed();});

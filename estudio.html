@@ -7,8 +7,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=6">
-<script type="module" src="studio/editor.js?v=8"></script>
+<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=7">
+<script type="module" src="studio/editor.js?v=9"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
@@ -201,6 +201,20 @@
      <label class="field-label">Nome ou identificação<input type="text" id="token-name" maxlength="16" value="PJ" placeholder="Personagem"></label>
      <label class="check-label"><input type="checkbox" id="token-hidden"> Criar token oculto</label>
      <label class="check-label"><input type="checkbox" id="token-visibility" disabled> Ocultar token selecionado</label>
+    </details>
+    <details class="studio-disclosure"><summary>Atmosfera & iluminação</summary>
+     <label class="field-label" for="atmosphere-preset">Ambiente
+      <select id="atmosphere-preset">
+       <option value="day">Dia natural</option>
+       <option value="sunset">Entardecer</option>
+       <option value="night">Noite</option>
+       <option value="underground">Subterrâneo</option>
+      </select>
+     </label>
+     <label class="brush-label" for="atmosphere-strength"><span>Intensidade <b id="atmosphere-strength-value">100%</b></span>
+      <input type="range" id="atmosphere-strength" min="0" max="100" step="5" value="100">
+     </label>
+     <p class="studio-panel-hint">Luzes sutis surgem automaticamente em tochas e lareiras. Efeito visual, sem alterar as regras do HÆMA.</p>
     </details>
     <details class="studio-disclosure"><summary>Projeção</summary>
      <div class="stack-actions"><button type="button" id="blackout" aria-pressed="false">Apagar projeção</button></div>
