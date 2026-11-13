@@ -1,6 +1,6 @@
 import {renderTerrain} from './terrain-renderer.js?v=3';
-import {renderFog} from './fog-renderer.js?v=1';
-import {drawStyledProp} from './prop-art.js?v=1';
+import {renderFog} from './fog-renderer.js?v=2';
+import {drawStyledProp} from './prop-art.js?v=2';
 import {sanitizePath,drawPath} from './path-geometry.js?v=2';
 import {drawSmartBridges} from './smart-paths.js?v=1';
 import {drawAtmosphere} from './atmosphere.js?v=1';
@@ -118,7 +118,13 @@ function drawProp(ctx,p){
  }
  ctx.restore();
 }
-export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
+export function drawScene(ctx,scene,{player=false,grid=true,image=null,viewport=null}={}){
+ // Editor-only culling. Full-scene export and projection omit viewport,
+ // retaining every player-visible object and the correct fog layering.
+ const visibleObject=(p,margin=68)=>!viewport||(
+  p.x*CELL>=viewport.x0-margin&&p.x*CELL<=viewport.x1+margin&&
+  p.y*CELL>=viewport.y0-margin&&p.y*CELL<=viewport.y1+margin
+ );
  const w=scene.cols*CELL,h=scene.rows*CELL;
  ctx.clearRect(0,0,w,h);ctx.fillStyle='#1a211e';ctx.fillRect(0,0,w,h);
  const hasImage=!!(image?.complete&&image.naturalWidth);
@@ -185,13 +191,14 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
  for(const path of scene.paths||[])drawPath(ctx,path,CELL);
  // Dynamic crossings: a wooden bridge follows road and river edits automatically.
  if((scene.paths||[]).length>=2)drawSmartBridges(ctx,scene.paths,CELL);
- for(const p of scene.props)if(!player||exposed(scene,p.x,p.y)){
+ for(const p of scene.props)if(visibleObject(p)&&(!player||exposed(scene,p.x,p.y))){
   if(!drawStyledProp(ctx,p,CELL))drawProp(ctx,p);
  }
  ctx.save();ctx.lineCap='square';ctx.lineWidth=8;ctx.strokeStyle='#262824';ctx.beginPath();
  for(const w of scene.walls)if(!player||exposed(scene,(w.x1+w.x2)/2,(w.y1+w.y2)/2)){ctx.moveTo(w.x1*CELL,w.y1*CELL);ctx.lineTo(w.x2*CELL,w.y2*CELL);}
  ctx.stroke();ctx.lineWidth=3;ctx.strokeStyle='#ac9b7c';ctx.stroke();ctx.restore();
  for(const t of scene.tokens){
+  if(!visibleObject(t,32))continue;
   if((player&&t.hidden)||(player&&!exposed(scene,t.x,t.y)))continue;
   const x=t.x*CELL,y=t.y*CELL;ctx.fillStyle='#0008';ctx.beginPath();ctx.ellipse(x+3,y+7,15,7,0,0,Math.PI*2);ctx.fill();
   ctx.fillStyle=t.color;ctx.beginPath();ctx.arc(x,y,16,0,Math.PI*2);ctx.fill();
