@@ -8,13 +8,15 @@ import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} fr
 import {nearestControlPoint,moveControlPoint,insertControlPoint,removeControlPoint,drawControlHandles} from './smart-paths.js?v=1';
 import {appendSurfacePoint,sanitizeSurfaceStroke,drawSurfaceStroke,invalidateSurfacePaint} from './surface-paint.js?v=1';
 import {generateFromDescription,interpretDescription} from './guided-generator.js?v=1';
+import {validateMapSize,createEmptyMap,resizeMapScene} from './map-size.js?v=1';
+import {createFrameScheduler} from './frame-scheduler.js?v=1';
 
 const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
 const view={x:0,y:0,zoom:1,ready:false};
 let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,terrainBrushMode='organic',surfaceSoftness=.65,surfaceOpacity=1,pathWidth=1.25,roadMaterial='earth',showGrid=true,paintedTiles=new Set(),lastStamp=null;
-let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,selectedPath=null,pathPointEditing=false,measurement=null,saveTimer=0,broadcastTimer=0;
-let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
+let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,selectedPath=null,pathPointEditing=false,measurement=null,saveTimer=0;
+let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false,frameSequence=0;
 let activeMapId=null,mapSwitching=false,saveChain=Promise.resolve();
 const status=(message)=>{$('studio-status').textContent=message;};
 const round=(n)=>Math.round(n*2)/2;
@@ -170,7 +172,7 @@ async function openMapDocument(id){
   await persistCurrent();
   const stored=await loadNamedProject(ownerId,id);
   if(!stored)throw Error('Mapa não encontrado neste navegador.');
-  scene=safeScene(stored);activeMapId=id;rememberActive();
+  scene=safeScene(stored);activeMapId=id;rememberActive();syncMapSizeControls();
   history=[];future=[];clearSelection();loadBackground();fit();changed(false);
   await refreshMapLibrary();
   $('local-map-message').textContent='Mapa aberto: '+scene.name;
@@ -178,12 +180,27 @@ async function openMapDocument(id){
  }catch(error){status(error.message||'Erro ao abrir mapa.');}
  finally{mapSwitching=false;}
 }
-function blankMap(name){
- const result=starterScene();
- result.name=String(name||'Novo mapa').slice(0,80);
- result.tiles.fill('grass');result.fog.fill(0);result.heights.fill(0);
- result.props=[];result.walls=[];result.tokens=[];result.paths=[];result.background=null;
- return result;
+function selectedMapSize(){return validateMapSize($('map-width').value,$('map-height').value);}
+function syncMapSizeControls(){
+ $('map-width').value=scene.cols;$('map-height').value=scene.rows;
+ const value=scene.cols+'x'+scene.rows;
+ $('map-size-preset').value=Array.from($('map-size-preset').options).some(o=>o.value===value)?value:'custom';
+}
+function blankMap(name,cols,rows){return createEmptyMap(starterScene(),cols,rows,name);}
+function resizeCurrentMap(){
+ if(mapSwitching||!ownerId)return;
+ try{
+  const {cols,rows}=selectedMapSize();
+  if(cols===scene.cols&&rows===scene.rows)return status('O mapa já possui essas dimensões.');
+  const result=resizeMapScene(scene,cols,rows);
+  if(result.cropped){
+   const losses=Object.entries(result.removed).filter(([,n])=>n>0).map(([k,n])=>k+': '+n).join(', ');
+   if(!confirm('Reduzir o mapa pode descartar conteúdo fora das bordas ('+(losses||'áreas excedentes')+'). Exporte JSON antes. Continuar?'))return;
+  }
+  snapshot();scene=safeScene(result.scene);clearSelection();loadBackground();fit();changed();
+  syncMapSizeControls();
+  status('Mapa agora tem '+cols+' × '+rows+' células. '+(result.cropped?'Confira o recorte.':'Novas áreas ficam ocultas para jogadores.'));
+ }catch(error){status(error.message||'Dimensões inválidas.');}
 }
 async function createLocalMap({duplicate=false}={}){
  if(mapSwitching)return;mapSwitching=true;clearTimeout(saveTimer);
@@ -192,10 +209,11 @@ async function createLocalMap({duplicate=false}={}){
   if(answer===null){saveLater();return;}
   const name=answer.trim().slice(0,80)||'Mapa sem título';
   await persistCurrent();
-  const next=duplicate?safeScene({...scene,name}):blankMap(name);
+  const size=duplicate?null:selectedMapSize();
+  const next=duplicate?safeScene({...scene,name}):blankMap(name,size.cols,size.rows);
   const nextId=createMapId();
   await saveNamedProject(next,ownerId,nextId);
-  scene=next;activeMapId=nextId;rememberActive();
+  scene=next;activeMapId=nextId;rememberActive();syncMapSizeControls();
   history=[];future=[];clearSelection();loadBackground();fit();changed(false);
   await refreshMapLibrary();
   showInspectorTab('project');
@@ -217,7 +235,7 @@ async function deleteCurrentMap(){
   // Prevent a queued older write from resurrecting a deleted map.
   await saveChain;
   await deleteNamedProject(ownerId,oldId);
-  activeMapId=next.mapId;scene=safeScene(restored);rememberActive();
+  activeMapId=next.mapId;scene=safeScene(restored);rememberActive();syncMapSizeControls();
   history=[];future=[];clearSelection();loadBackground();fit();changed(false);
   await persistCurrent();
   await refreshMapLibrary();
@@ -530,32 +548,45 @@ function loadBackground(){
  image.onerror=()=>status('Não foi possível carregar a imagem de fundo.');
  image.src=scene.background;
 }
-function visibleImage(){
- const output=document.createElement('canvas');output.width=worldWidth();output.height=worldHeight();
- const drawingContext=output.getContext('2d');drawScene(drawingContext,scene,{player:true,grid:showGrid,image:backgroundImage});
+function visibleImage({maxSide=0}={}){
+ const width=worldWidth(),height=worldHeight();
+ const scale=maxSide>0?Math.min(1,maxSide/Math.max(width,height)):1;
+ const output=document.createElement('canvas');
+ output.width=Math.max(1,Math.round(width*scale));output.height=Math.max(1,Math.round(height*scale));
+ const drawingContext=output.getContext('2d');
+ if(scale!==1)drawingContext.scale(scale,scale);
+ // Only player-visible raster is exported; never the master scene JSON or hidden tokens.
+ drawScene(drawingContext,scene,{player:true,grid:showGrid,image:backgroundImage});
  return output;
 }
-function queueBroadcast(){
+const projectionFrames=createFrameScheduler(async stillAllowed=>{
+ const target=channel;if(!target||blackout)return;
+ try{
+  const image=visibleImage({maxSide:2560});
+  const blob=await new Promise(resolve=>image.toBlob(resolve,'image/webp',.83));
+  if(blob&&blob.size<=16000000&&stillAllowed()&&channel===target&&!blackout){
+   target.postMessage({type:'frame',imageBlob:blob,sequence:++frameSequence,
+    width:image.width,height:image.height});
+  }
+ }catch{status('Não foi possível atualizar a projeção.');}
+},{intervalMs:85});
+function queueBroadcast(immediate=false){
  if(!channel)return;
- clearTimeout(broadcastTimer);broadcastTimer=setTimeout(()=>{
-  if(blackout){channel.postMessage({type:'blackout'});return;}
-  try{
-   // Projection receives ONLY flattened pixels with fog baked in: no unrevealed data or GM-only tokens.
-   const image=visibleImage().toDataURL('image/webp',.88);
-   channel.postMessage({type:'frame',image,width:worldWidth(),height:worldHeight()});
-  }catch{status('Não foi possível atualizar a projeção.');}
- },100);
+ if(blackout){
+  projectionFrames.reset();
+  channel.postMessage({type:'blackout',sequence:++frameSequence});
+ }else projectionFrames.request(immediate);
 }
 function startProjection(){
  if(!('BroadcastChannel' in window)){status('Seu navegador não oferece sincronização entre janelas.');return;}
  if(!channel){
   const token=Array.from(crypto.getRandomValues(new Uint8Array(20)),b=>b.toString(16).padStart(2,'0')).join('');
   channel=new BroadcastChannel('haema-studio-'+token);
-  channel.onmessage=event=>{if(event.data?.type==='ready')queueBroadcast();};
+  channel.onmessage=event=>{if(event.data?.type==='ready')queueBroadcast(true);};
   const url=new URL('../projecao.html',import.meta.url);url.hash=token;
   projector=window.open(url.href,'haema-projecao','width=1100,height=700');
  }else if(projector&&!projector.closed)projector.focus();
- else{channel.close();channel=null;projector=null;return startProjection();}
+ else{projectionFrames.reset();channel.close();channel=null;projector=null;return startProjection();}
  if(!projector){status('O navegador bloqueou a segunda janela. Permita pop-ups para este site.');channel?.close();channel=null;return;}
  status('Janela de jogadores aberta. Mova-a para o segundo monitor e use tela cheia.');
  queueBroadcast();
@@ -577,7 +608,7 @@ function setup(){
  document.querySelectorAll('[data-tool]').forEach(el=>{el.title=toolInfo[el.dataset.tool]?.[1]||'';el.addEventListener('click',()=>setTool(el.dataset.tool));});
  document.querySelectorAll('[data-terrain]').forEach(el=>el.addEventListener('click',()=>{terrain=el.dataset.terrain;setTool('terrain');document.querySelectorAll('[data-terrain]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
  document.querySelectorAll('[data-prop]').forEach(el=>el.addEventListener('click',()=>{prop=el.dataset.prop;setTool('prop');document.querySelectorAll('[data-prop]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
- document.querySelectorAll('[data-scene-template]').forEach(el=>el.addEventListener('click',()=>{const type=el.dataset.sceneTemplate;if(!confirm('Substituir o cenário atual por um novo mapa gerado? A ação poderá ser desfeita.'))return;snapshot();scene=generateScene(type,$('seed-input').value||String(Date.now()));scene.gridVisible=showGrid;clearSelection();loadBackground();changed();fit();status('Cenário gerado: '+scene.name); }));
+ document.querySelectorAll('[data-scene-template]').forEach(el=>el.addEventListener('click',()=>{const type=el.dataset.sceneTemplate;if(!confirm('Substituir o cenário atual por um novo mapa gerado? A ação poderá ser desfeita.'))return;snapshot();scene=generateScene(type,$('seed-input').value||String(Date.now()));scene.gridVisible=showGrid;syncMapSizeControls();clearSelection();loadBackground();changed();fit();status('Cenário gerado: '+scene.name); }));
  const brushInputs=['brush-size','brush-height-mirror','eraser-brush'];
  for(const id of brushInputs)$(id).addEventListener('input',event=>{
   brush=Number(event.target.value);
@@ -658,7 +689,7 @@ function setup(){
   catch(error){$('guided-feedback').textContent=error.message;return;}
   if(!confirm('Substituir o cenário atual por esta cena guiada? Você pode desfazer ou importar seu backup.'))return;
   snapshot();
-  scene=result.scene;scene.gridVisible=showGrid;
+  scene=result.scene;scene.gridVisible=showGrid;syncMapSizeControls();
   clearSelection();loadBackground();fit();changed();
   status('Cena guiada criada localmente. Edite o terreno, os rios e os objetos.');
   $('guided-feedback').textContent='Cena gerada com regras locais, sem envio de dados nem IA. Tudo pode ser editado.';
@@ -723,6 +754,16 @@ function setup(){
  $('undo').addEventListener('click',undo);$('redo').addEventListener('click',redo);
  $('fit-map').addEventListener('click',fit);
  $('open-map-library').addEventListener('click',()=>{showInspectorTab('project');void refreshMapLibrary();});
+ $('map-size-preset').addEventListener('change',event=>{
+  if(event.target.value==='custom')return;
+  const [cols,rows]=event.target.value.split('x').map(Number);
+  $('map-width').value=cols;$('map-height').value=rows;
+ });
+ for(const id of ['map-width','map-height'])$(id).addEventListener('input',()=>{
+  const value=$('map-width').value+'x'+$('map-height').value;
+  $('map-size-preset').value=Array.from($('map-size-preset').options).some(o=>o.value===value)?value:'custom';
+ });
+ $('resize-local-map').addEventListener('click',resizeCurrentMap);
  $('new-local-map').addEventListener('click',()=>{void createLocalMap();});
  $('duplicate-local-map').addEventListener('click',()=>{void createLocalMap({duplicate:true});});
  $('delete-local-map').addEventListener('click',()=>{void deleteCurrentMap();});
@@ -741,7 +782,7 @@ function setup(){
    const restored=safeScene(JSON.parse(await file.text()));
    clearTimeout(saveTimer);await persistCurrent();
    const id=createMapId();await saveNamedProject(restored,ownerId,id);
-   scene=restored;activeMapId=id;rememberActive();
+   scene=restored;activeMapId=id;rememberActive();syncMapSizeControls();
    history=[];future=[];clearSelection();loadBackground();fit();changed(false);
    await refreshMapLibrary();showInspectorTab('project');
    status('Mapa importado e adicionado aos mapas salvos.');event.target.value='';
@@ -776,14 +817,14 @@ function setup(){
    if(result.allowed!==true)throw Error('Acesso revogado');
   }
   catch{
-   if(channel){channel.postMessage({type:'blackout'});channel.close();channel=null;}
+   if(channel){projectionFrames.reset();channel.postMessage({type:'blackout'});channel.close();channel=null;}
    workspace.hidden=true;gate.hidden=false;
    gate.replaceChildren(node('h2','','Acesso ao Estúdio encerrado'),node('p','','Sua autorização não está mais disponível. Consulte a administração.'),button('Voltar ao Portal',()=>{location.href='portal.html';}));
   }
  };
  setInterval(enforceAccess,60000);
  document.addEventListener('haema:auth',enforceAccess);
- window.addEventListener('pagehide',()=>{if(channel){channel.postMessage({type:'blackout'});channel.close();}clearTimeout(saveTimer);clearTimeout(broadcastTimer);});
+ window.addEventListener('pagehide',()=>{projectionFrames.dispose();if(channel){channel.postMessage({type:'blackout'});channel.close();}clearTimeout(saveTimer);});
  new ResizeObserver(resize).observe(canvas.parentElement);
  setTool('pan');
 }
@@ -815,7 +856,7 @@ async function boot(){
    try{const legacy=await loadProject(ownerId);if(legacy)scene=safeScene(legacy);}catch{}
    status('Biblioteca de mapas indisponível; exporte JSON para manter uma cópia.');
   }
-  setup();loadBackground();resize();fit();changed(false);
+  setup();syncMapSizeControls();loadBackground();resize();fit();changed(false);
   if(activeMapId)void refreshMapLibrary();
  }catch(error){gate.replaceChildren(node('h2','','Estúdio indisponível'),node('p','',error.message),button('Tentar novamente',boot));}
  finally{booting=false;}

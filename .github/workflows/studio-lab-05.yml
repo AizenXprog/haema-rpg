@@ -1,0 +1,25 @@
+name: HÆMA Studio lab checks
+on:
+  pull_request:
+    paths:
+      - 'studio/**'
+      - 'tests/studio-*.cjs'
+      - 'estudio.html'
+      - 'projecao.html'
+      - '.github/workflows/studio-lab-05.yml'
+permissions:
+  contents: read
+jobs:
+  studio-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c # v4.2.2
+      - name: Node version
+        run: node --version
+      - name: Run Studio regression suite
+        run: |
+          set -euo pipefail
+          for test in tests/studio-*.cjs; do
+            echo "Running $test"
+            node "$test"
+          done
