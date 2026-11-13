@@ -3,26 +3,26 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#08090b">
-<title>HÆMA Estúdio — Mapmaker 0.3</title>
+<title>HÆMA Estúdio — Mapmaker 0.4 · Laboratório</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=4">
-<script type="module" src="studio/editor.js?v=6"></script>
+<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=5">
+<script type="module" src="studio/editor.js?v=7"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
  <div class="studio-gate-mark">H<span>Æ</span>MA</div>
- <p class="studio-kicker">ATELIÊ RESERVADO · ESTÚDIO 0.3</p>
+ <p class="studio-kicker">ATELIÊ RESERVADO · ESTÚDIO 0.4</p>
  <h1>Onde os mundos<br><em>tomam forma.</em></h1>
  <p>Verificando acesso individual ao Estúdio…</p>
  <a href="portal.html" class="studio-back">← Voltar à minha conta</a>
 </div>
 <div id="studio-workspace" hidden>
  <header class="studio-topbar">
-  <div class="studio-brand"><a href="portal.html" aria-label="Voltar ao Portal">H<span>Æ</span>MA</a><i></i><div><strong>ESTÚDIO</strong><small>MAPMAKER · ALFA 0.3</small></div></div>
+  <div class="studio-brand"><a href="portal.html" aria-label="Voltar ao Portal">H<span>Æ</span>MA</a><i></i><div><strong>ESTÚDIO</strong><small>MAPMAKER · LAB 0.4</small></div></div>
   <label class="scene-name-label"><span>PROJETO</span><input id="scene-name" type="text" maxlength="80" value="Ruínas do caminho" aria-label="Nome do mapa"></label>
-  <div class="studio-actions"><button type="button" id="save-local" class="studio-save">Salvar</button><button type="button" id="open-projection" class="studio-primary">Projetar <span aria-hidden="true">↗</span></button></div>
+  <div class="studio-actions"><button type="button" id="open-map-library" title="Abrir mapas salvos neste navegador">Meus mapas</button><button type="button" id="save-local" class="studio-save">Salvar</button><button type="button" id="open-projection" class="studio-primary">Projetar <span aria-hidden="true">↗</span></button></div>
  </header>
  <div class="studio-layout">
  
@@ -74,7 +74,7 @@
     <div data-tool-panel="select" class="context-panel" hidden>
      <p class="context-intro">Clique para selecionar objetos ou tokens. Arraste para mover.</p>
      <div id="selected-prop-controls" class="studio-selection-card">
-      <strong id="selected-object-label"Nenhum objeto selecionado</strong>
+      <strong id="selected-object-label">Nenhum objeto selecionado</strong>
       <p id="selected-object-hint">Clique em um móvel ou elemento do mapa para editar.</p>
       <div class="studio-selection-actions" role="group" aria-label="Edição de objetos">
        <button type="button" id="selected-rotate-left" disabled title="Girar 15 graus à esquerda">↶ Girar</button>
@@ -205,7 +205,21 @@
     </details>
    </div>
    <div class="inspector-panel" id="inspector-project" role="tabpanel" aria-labelledby="tab-project" hidden>
-    <div class="inspector-panel-title"><span>ARQUIVOS LOCAIS</span><h2>Projeto</h2></div>
+    <div class="inspector-panel-title"><span>MAPAS DO ESTÚDIO</span><h2>Meus mapas</h2></div>
+    <section class="studio-map-library" aria-label="Biblioteca de mapas locais">
+     <div class="studio-map-actions">
+      <button type="button" id="new-local-map" class="studio-map-primary">+ Novo mapa</button>
+      <button type="button" id="duplicate-local-map">Duplicar</button>
+     </div>
+     <div class="studio-map-browser" id="local-map-browser" role="list" aria-label="Mapas salvos">
+      <p class="studio-panel-hint">Carregando mapas locais…</p>
+     </div>
+     <button type="button" id="delete-local-map" class="studio-map-delete">Excluir mapa atual</button>
+     <p id="local-map-message" class="studio-panel-hint" role="status">Os mapas são salvos automaticamente neste navegador.</p>
+    </section>
+    <details class="studio-disclosure studio-files">
+     <summary>Importar e exportar arquivos</summary>
+     <div class="studio-files-content">
     <div class="stack-actions">
      <button type="button" id="export-json">Exportar projeto JSON</button>
      <button type="button" id="import-json">Importar projeto JSON</button>
@@ -213,7 +227,9 @@
      <button type="button" id="remove-map">Remover imagem de fundo</button>
      <button type="button" id="export-png">Exportar imagem PNG</button>
     </div>
-    <p class="studio-panel-hint">O projeto fica salvo neste navegador. Exporte um JSON para guardar uma cópia.</p>
+    <p class="studio-panel-hint">Exportar JSON é recomendado para guardar um backup fora do navegador.</p>
+     </div>
+    </details>
    </div>
    <input type="file" hidden id="import-map-input" accept="image/png,image/jpeg,image/webp">
    <input type="file" hidden id="import-json-input" accept=".json,application/json">

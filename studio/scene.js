@@ -1,5 +1,6 @@
 import {renderTerrain} from './terrain-renderer.js?v=1';
 import {renderFog} from './fog-renderer.js?v=1';
+import {drawStyledProp} from './prop-art.js?v=1';
 import {sanitizePath,drawPath} from './path-geometry.js?v=1';
 // HÆMA Estúdio — cena vetorial original. Independente do Manual e da Lore.
 export const CELL=48;
@@ -169,7 +170,9 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
   }
  }
  for(const path of scene.paths||[])drawPath(ctx,path,CELL);
- for(const p of scene.props)if(!player||exposed(scene,p.x,p.y))drawProp(ctx,p);
+ for(const p of scene.props)if(!player||exposed(scene,p.x,p.y)){
+  if(!drawStyledProp(ctx,p,CELL))drawProp(ctx,p);
+ }
  ctx.save();ctx.lineCap='square';ctx.lineWidth=8;ctx.strokeStyle='#262824';ctx.beginPath();
  for(const w of scene.walls)if(!player||exposed(scene,(w.x1+w.x2)/2,(w.y1+w.y2)/2)){ctx.moveTo(w.x1*CELL,w.y1*CELL);ctx.lineTo(w.x2*CELL,w.y2*CELL);}
  ctx.stroke();ctx.lineWidth=3;ctx.strokeStyle='#ac9b7c';ctx.stroke();ctx.restore();
