@@ -27,6 +27,16 @@ function weights(f){
  const right=f>1-band?smooth((f-1+band)/band):0;
  return [left,1-left-right,right];
 }
+// Water is defined by a continuous coverage field, rather than a per-tile
+// rectangular outline. The profile is also used by deterministic regression tests.
+export function shorelineProfile(coverage){
+ const amount=clamp(Number.isFinite(coverage)?coverage:0,0,1);
+ const blend=smooth(clamp((amount-.08)/.84,0,1));
+ const depth=smooth(clamp((amount-.48)/.52,0,1));
+ const band=clamp((amount-.13)/.74,0,1);
+ const foam=Math.pow(Math.sin(Math.PI*band),4)*(1-depth*.55);
+ return {blend,depth,foam};
+}
 function sourceAt(scene,x,y){
  const xx=clamp(x,0,scene.cols-1),yy=clamp(y,0,scene.rows-1);
  const i=yy*scene.cols+xx;
@@ -53,6 +63,22 @@ export function sampleTerrain(scene,worldX,worldY,cell=48){
    h+=t.height*w;if(t.type==='water')water+=w;
   }
  }
+ // Separate land pigment from water and use depth-dependent pigments.
+ // This avoids the muddy rectangular color band where lakes meet shore.
+ if(water>.001){
+  const shore=shorelineProfile(water),land=Math.max(0,1-water);
+  const landR=land>.001?r/land:COLOR.grass[0];
+  const landG=land>.001?g/land:COLOR.grass[1];
+  const landB=land>.001?b/land:COLOR.grass[2];
+  const ripple=Math.sin(worldY*.17+worldX*.045+low*11)*
+    Math.cos(worldX*.11-worldY*.036+low*6);
+  const waterR=64-35*shore.depth+shore.foam*18+ripple*2;
+  const waterG=125-58*shore.depth+shore.foam*29+ripple*3.5;
+  const waterB=136-44*shore.depth+shore.foam*23+ripple*4;
+  r=landR*(1-shore.blend)+waterR*shore.blend;
+  g=landG*(1-shore.blend)+waterG*shore.blend;
+  b=landB*(1-shore.blend)+waterB*shore.blend;
+ }
  const mid=noise(worldX/19+6.3,worldY/19+13.4);
  const fine=random2(Math.floor(worldX/2),Math.floor(worldY/2));
  // Details are continuous across same-material cells, not seeded per tile.
@@ -64,10 +90,9 @@ export function sampleTerrain(scene,worldX,worldY,cell=48){
  if(material==='wood')shade+=woodGrain*5;
  if(material==='marble')shade+=(Math.sin(worldX*.036+worldY*.02+low*9)> .94?-18:3);
  if(material==='stone'||material==='brick')shade+=(stoneGrain-.5)*12;
- if(material==='water')shade+=wave*5+(mid-.5)*9;
+ if(water>.02)shade+=water*(wave*2.4+(mid-.5)*8);
  if(material==='sand')shade+=Math.sin(worldX*.035+worldY*.12+low*5)*3;
- // Fine light rim at coasts, not a straight line at CELL boundaries.
- if(water>.06&&water<.94)shade+=Math.sin(Math.PI*water)*23;
+ // Coast highlights now follow the organic water coverage, not tile outlines.
  // Elevation follows the warped field. No straight rectangular cliff strokes.
  const elevationContour=h>0&&Math.abs(h-Math.round(h))<.075?-4:0;
  shade+=elevationContour;

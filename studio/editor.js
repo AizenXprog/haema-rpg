@@ -1,18 +1,21 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
-import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=3';
-import {saveProject,loadProject,exportJSON} from './storage.js';
-import {generateScene,makeRoom,furnishRoom} from './generator.js?v=4';
-import {invalidateTerrain} from './terrain-renderer.js?v=1';
+import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=5';
+import {saveProject,loadProject,saveNamedProject,loadNamedProject,listNamedProjects,deleteNamedProject,createMapId,exportJSON} from './storage.js?v=3';
+import {generateScene,makeRoom,furnishRoom} from './generator.js?v=5';
+import {invalidateTerrain} from './terrain-renderer.js?v=2';
 import {invalidateFog} from './fog-renderer.js?v=1';
-import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=1';
+import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=2';
+import {nearestControlPoint,moveControlPoint,insertControlPoint,removeControlPoint,drawControlHandles} from './smart-paths.js?v=1';
+import {appendSurfacePoint,sanitizeSurfaceStroke,drawSurfaceStroke,invalidateSurfacePaint} from './surface-paint.js?v=1';
 import {generateFromDescription,interpretDescription} from './guided-generator.js?v=1';
 
 const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
 const view={x:0,y:0,zoom:1,ready:false};
-let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,pathWidth=1.25,roadMaterial='earth',showGrid=true,paintedTiles=new Set(),lastStamp=null;
-let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,selectedPath=null,measurement=null,saveTimer=0,broadcastTimer=0;
+let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,terrainBrushMode='organic',surfaceSoftness=.65,surfaceOpacity=1,pathWidth=1.25,roadMaterial='earth',showGrid=true,paintedTiles=new Set(),lastStamp=null;
+let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,selectedPath=null,pathPointEditing=false,measurement=null,saveTimer=0,broadcastTimer=0;
 let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
+let activeMapId=null,mapSwitching=false,saveChain=Promise.resolve();
 const status=(message)=>{$('studio-status').textContent=message;};
 const round=(n)=>Math.round(n*2)/2;
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
@@ -32,7 +35,13 @@ function render(){
  ctx.fillStyle='#0a1012';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.translate(view.x,view.y);ctx.scale(view.zoom,view.zoom);
  drawScene(ctx,scene,{grid:showGrid,image:backgroundImage});
- if(tool==='select'&&selectedPath&&scene.paths?.includes(selectedPath))drawPath(ctx,selectedPath,CELL,{preview:true});
+ if(gesture?.mode==='surface'&&gesture.points.length)
+  drawSurfaceStroke(ctx,{material:gesture.material,radius:gesture.radius,softness:gesture.softness,
+   opacity:gesture.opacity,points:gesture.points},CELL,{preview:true});
+ if(tool==='select'&&selectedPath&&scene.paths?.includes(selectedPath)){
+  drawPath(ctx,selectedPath,CELL,{preview:true});
+  if(pathPointEditing)drawControlHandles(ctx,selectedPath,CELL,view.zoom);
+ }
  if(gesture?.mode==='path'&&gesture.points.length>1)
   drawPath(ctx,{kind:gesture.kind,width:gesture.width,material:gesture.material,points:gesture.points},CELL,{preview:true});
  if(tool==='measure'){
@@ -96,7 +105,13 @@ function refreshSelection(){
  $('selected-path-controls').hidden=!selectedPath;
  $('selected-path-duplicate').disabled=!selectedPath;
  $('selected-path-delete').disabled=!selectedPath;
+ $('selected-path-edit-points').disabled=!selectedPath;
+ $('selected-path-smooth').disabled=!selectedPath;
+ $('selected-path-edit-points').setAttribute('aria-pressed',String(!!selectedPath&&pathPointEditing));
+ $('selected-path-help').textContent=pathPointEditing&&selectedPath?'Arraste os pontos. Duplo clique na curva adiciona um ponto. Alt+clique remove.':'Arraste o traçado para movê-lo. Ative Editar pontos para remodelar o caminho.';
+ $('selected-path-bridge-row').hidden=!selectedPath||selectedPath.kind!=='road';
  if(selectedPath){
+  $('selected-path-auto-bridge').checked=selectedPath.bridge!==false;
   $('selected-path-label').textContent=selectedPath.kind==='river'?'Rio selecionado':'Estrada selecionada';
   $('selected-path-width').value=selectedPath.width;
   $('selected-path-width-value').textContent=selectedPath.width;
@@ -112,17 +127,115 @@ function refreshSelection(){
  $('token-visibility').disabled=!selected;
  $('token-visibility').checked=selected?!!selected.hidden:false;
 }
+
+function activeMapKey(){return 'haema:studio:active:'+ownerId;}
+function rememberActive(){
+ if(!ownerId||!activeMapId)return;
+ try{localStorage.setItem(activeMapKey(),activeMapId);}catch{}
+}
+async function persistCurrent(){
+ if(!ownerId)return;
+ const captured=JSON.parse(JSON.stringify(scene)),owner=ownerId,mapId=activeMapId;
+ const task=saveChain.then(async()=>{
+  if(mapId)await saveNamedProject(captured,owner,mapId);
+  // Retain the original owner-scoped snapshot for older versions and recovery.
+  if(mapId===activeMapId)await saveProject(captured,owner);
+ });
+ saveChain=task.catch(()=>{});await task;
+}
+async function refreshMapLibrary(){
+ const host=$('local-map-browser');if(!host||!ownerId)return;
+ const maps=await listNamedProjects(ownerId);
+ const nodes=[];
+ for(const item of maps){
+  const button=document.createElement('button');button.type='button';
+  button.className='studio-map-entry';button.dataset.mapId=item.mapId;
+  button.setAttribute('role','listitem');button.setAttribute('aria-current',String(item.mapId===activeMapId));
+  const title=document.createElement('strong');title.textContent=item.name;
+  const details=document.createElement('small');
+  const date=item.savedAt?new Date(item.savedAt).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):'Sem data';
+  details.textContent=item.cols+' × '+item.rows+' células · '+date;
+  button.append(title,details);
+  if(item.mapId===activeMapId){const marker=document.createElement('em');marker.textContent='ABERTO';button.append(marker);}
+  button.addEventListener('click',()=>{void openMapDocument(item.mapId);});
+  nodes.push(button);
+ }
+ if(!nodes.length){const empty=document.createElement('p');empty.className='studio-panel-hint';empty.textContent='Nenhum mapa salvo neste navegador.';nodes.push(empty);}
+ host.replaceChildren(...nodes);
+}
+async function openMapDocument(id){
+ if(mapSwitching||id===activeMapId)return;
+ mapSwitching=true;clearTimeout(saveTimer);
+ try{
+  await persistCurrent();
+  const stored=await loadNamedProject(ownerId,id);
+  if(!stored)throw Error('Mapa não encontrado neste navegador.');
+  scene=safeScene(stored);activeMapId=id;rememberActive();
+  history=[];future=[];clearSelection();loadBackground();fit();changed(false);
+  await refreshMapLibrary();
+  $('local-map-message').textContent='Mapa aberto: '+scene.name;
+  status('Mapa aberto: '+scene.name);
+ }catch(error){status(error.message||'Erro ao abrir mapa.');}
+ finally{mapSwitching=false;}
+}
+function blankMap(name){
+ const result=starterScene();
+ result.name=String(name||'Novo mapa').slice(0,80);
+ result.tiles.fill('grass');result.fog.fill(0);result.heights.fill(0);
+ result.props=[];result.walls=[];result.tokens=[];result.paths=[];result.background=null;
+ return result;
+}
+async function createLocalMap({duplicate=false}={}){
+ if(mapSwitching)return;mapSwitching=true;clearTimeout(saveTimer);
+ try{
+  const answer=prompt(duplicate?'Nome da cópia:':'Nome do novo mapa:',duplicate?scene.name+' — cópia':'Novo mapa');
+  if(answer===null){saveLater();return;}
+  const name=answer.trim().slice(0,80)||'Mapa sem título';
+  await persistCurrent();
+  const next=duplicate?safeScene({...scene,name}):blankMap(name);
+  const nextId=createMapId();
+  await saveNamedProject(next,ownerId,nextId);
+  scene=next;activeMapId=nextId;rememberActive();
+  history=[];future=[];clearSelection();loadBackground();fit();changed(false);
+  await refreshMapLibrary();
+  showInspectorTab('project');
+  status(duplicate?'Cópia criada: '+name:'Novo mapa criado: '+name);
+ }catch(error){status('Não foi possível criar o mapa: '+error.message);}
+ finally{mapSwitching=false;}
+}
+async function deleteCurrentMap(){
+ if(mapSwitching||!activeMapId)return;
+ mapSwitching=true;clearTimeout(saveTimer);
+ try{
+  const maps=await listNamedProjects(ownerId);
+  if(maps.length<=1){saveLater();status('Mantenha pelo menos um mapa salvo.');return;}
+  if(!confirm('Excluir somente o mapa "'+scene.name+'" deste navegador? Exporte JSON antes, se quiser um backup.')){saveLater();return;}
+  const oldId=activeMapId;
+  const next=maps.find(m=>m.mapId!==oldId);
+  const restored=await loadNamedProject(ownerId,next.mapId);
+  if(!restored)throw Error('Outro mapa salvo não foi encontrado.');
+  // Prevent a queued older write from resurrecting a deleted map.
+  await saveChain;
+  await deleteNamedProject(ownerId,oldId);
+  activeMapId=next.mapId;scene=safeScene(restored);rememberActive();
+  history=[];future=[];clearSelection();loadBackground();fit();changed(false);
+  await persistCurrent();
+  await refreshMapLibrary();
+  status('Mapa excluído somente deste navegador.');
+ }catch(error){status('Não foi possível excluir: '+error.message);}
+ finally{mapSwitching=false;}
+}
 function saveLater(){
  clearTimeout(saveTimer);
  saveTimer=setTimeout(async()=>{
-  try{await saveProject(scene,ownerId);status('Projeto salvo neste navegador.');}
+  try{await persistCurrent();status('Mapa salvo neste navegador.');}
   catch{status('Salvamento local indisponível. Exporte o projeto em JSON.');}
- },350);
+ },400);
 }
 // History stores the large background image by reference, not on every brush stroke.
 const freezeScene=()=>({shape:JSON.stringify({...scene,background:null}),background:scene.background});
 const thawScene=entry=>safeScene({...JSON.parse(entry.shape),background:entry.background});
-function clearSelection(){selected=null;selectedProp=null;selectedPath=null;refreshSelection();}
+function clearSelection(){selected=null;selectedProp=null;selectedPath=null;pathPointEditing=false;refreshSelection();}
 function snapshot(){
  history.push(freezeScene());if(history.length>40)history.shift();future.length=0;
 }
@@ -135,6 +248,9 @@ function redo(){
 function changed(autosave=true){
  showGrid=scene.gridVisible!==false;$('grid-toggle').checked=showGrid;$('grid-state').textContent=showGrid?'Visível':'Oculta';
  $('scene-name').value=scene.name;
+ $('atmosphere-preset').value=scene.atmosphere?.preset||'day';
+ $('atmosphere-strength').value=Math.round((scene.atmosphere?.strength??1)*100);
+ $('atmosphere-strength-value').textContent=$('atmosphere-strength').value+'%';
  $('studio-token-count').textContent=scene.tokens.length;
  refreshSelection();
  render();
@@ -183,20 +299,22 @@ function paint(p,shouldUpdate=true){
  }
  if(shouldUpdate)changed(false);
 }
-function paintLine(from,to){
- if(!from){paint(to);return;}
- const distance=Math.hypot(to.x-from.x,to.y-from.y),steps=Math.min(80,Math.max(1,Math.ceil(distance/.33)));
+function paintLine(from,to,redraw=true){
+ if(!from){paint(to,redraw);return;}
+ // Sub-cell spacing allows fast cursor motion to leave no gaps.
+ const distance=Math.hypot(to.x-from.x,to.y-from.y);
+ const steps=Math.max(1,Math.ceil(distance/.15));
  for(let k=1;k<=steps;k++){
   const t=k/steps;
   paint({x:from.x+(to.x-from.x)*t,y:from.y+(to.y-from.y)*t},false);
  }
- changed(false);
+ if(redraw)changed(false);
 }
 // Only relevant controls remain visible. The map remains the primary workspace.
 const toolInfo={
  pan:['Navegação','Mover a câmera pelo mapa.'],
  select:['Seleção','Selecione e arraste tokens.'],
- terrain:['Materiais','Pinte o terreno com materiais.'],
+ terrain:['Materiais','Pinte livremente sem quadrados ou use a pintura por células lógicas.'],
  road:['Estrada','Desenhe trilhas e caminhos contínuos.'],
  river:['Rio','Desenhe rios sinuosos com bordas naturais.'],
  raise:['Elevação','Crie camadas de relevo.'],
@@ -253,16 +371,33 @@ canvas.addEventListener('pointerdown',event=>{
  }else if(tool==='measure'){
   measurement=null;gesture={mode:'measure',startX:p.x,startY:p.y};
  }else if(tool==='select'){
-  selected=closestToken(p);
-  selectedProp=selected?null:closestProp(p);
-  selectedPath=(selected||selectedProp)?null:nearestPath(scene.paths||[],p);
-  if(selected){snapshot();gesture={mode:'drag',token:selected};}
-  else if(selectedProp){snapshot();gesture={mode:'prop-drag',prop:selectedProp};showInspectorTab('build');}
-  else if(selectedPath){
-   snapshot();gesture={mode:'path-drag',path:selectedPath,startX:p.x,startY:p.y,original:selectedPath.points.map(pt=>({...pt}))};
-   showInspectorTab('build');
-  }else gesture={mode:'noop'};
+  const nodeIndex=pathPointEditing&&selectedPath?
+   nearestControlPoint(selectedPath,p,Math.min(.68,Math.max(.19,10/(CELL*view.zoom)))):-1;
+  if(nodeIndex>=0){
+   if(event.altKey){
+    if(selectedPath.points.length>2){snapshot();removeControlPoint(selectedPath,nodeIndex);changed();status('Ponto removido.');}
+    return;
+   }
+   snapshot();gesture={mode:'path-point',path:selectedPath,index:nodeIndex};
+  }else{
+   selected=closestToken(p);
+   selectedProp=selected?null:closestProp(p);
+   selectedPath=(selected||selectedProp)?null:nearestPath(scene.paths||[],p);
+   if(selected){snapshot();gesture={mode:'drag',token:selected};}
+   else if(selectedProp){snapshot();gesture={mode:'prop-drag',prop:selectedProp};showInspectorTab('build');}
+   else if(selectedPath){
+    snapshot();gesture={mode:'path-drag',path:selectedPath,startX:p.x,startY:p.y,original:selectedPath.points.map(pt=>({...pt}))};
+    showInspectorTab('build');
+   }else gesture={mode:'noop'};
+  }
   refreshSelection();
+ }else if(tool==='terrain'&&terrainBrushMode==='organic'){
+  if(!within(p))return;
+  if((scene.surfaceStrokes||[]).length>=180)return status('Limite de pintura orgânica atingido. Exporte o mapa antes de limpar traços.');
+  snapshot();
+  gesture={mode:'surface',material:terrain,radius:brush,softness:surfaceSoftness,
+   opacity:surfaceOpacity,points:[]};
+  appendSurfacePoint(gesture.points,{x:p.x,y:p.y},{spacing:.18});
  }else if(tool==='road'||tool==='river'){
   if(!within(p))return;
   gesture={mode:'path',kind:tool,width:pathWidth,material:roadMaterial,points:[]};
@@ -273,7 +408,10 @@ canvas.addEventListener('pointerdown',event=>{
   snapshot();gesture={mode:'room',startX:p.x,startY:p.y};
  }else{
   if(!within(p))return;
-  snapshot();paintedTiles.clear();lastStamp=null;gesture={mode:'paint',previous:p};paint(p);
+  snapshot();paintedTiles.clear();lastStamp=null;
+  // Tokens and single props are stamps; terrain/fog/eraser/vegetation are continuous strokes.
+  if(tool==='token'||tool==='prop'){gesture={mode:'stamp'};paint(p);}
+  else{gesture={mode:'paint',previous:p};paint(p);}
  }
  drawing=true;canvas.setPointerCapture(event.pointerId);render();
 });
@@ -285,15 +423,47 @@ canvas.addEventListener('pointermove',event=>{
  else if(drawing&&gesture?.mode==='path-drag'){
   movePath(gesture.path,gesture.original,p.x-gesture.startX,p.y-gesture.startY,scene.cols,scene.rows);
   changed(false);
+ }else if(drawing&&gesture?.mode==='path-point'){
+  moveControlPoint(gesture.path,gesture.index,p,scene.cols,scene.rows);changed(false);
  }else if(drawing&&gesture?.mode==='path'){
   addStrokePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)});
+ }else if(drawing&&gesture?.mode==='surface'){
+  const samples=typeof event.getCoalescedEvents==='function'?event.getCoalescedEvents():[event];
+  for(const sample of samples){
+   const pointSample=point(sample);
+   appendSurfacePoint(gesture.points,{x:clamp(pointSample.x,0,scene.cols),y:clamp(pointSample.y,0,scene.rows)},{spacing:.19,max:450});
+  }
+  appendSurfacePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)},{spacing:.19,max:450});
+  render();return;
  }
- else if(drawing&&gesture?.mode==='paint'){paintLine(gesture.previous,p);gesture.previous=p;}
+ else if(drawing&&gesture?.mode==='paint'){
+  const samples=typeof event.getCoalescedEvents==='function'?event.getCoalescedEvents():[event];
+  for(const sample of samples){
+   const q=point(sample);
+   paintLine(gesture.previous,q,false);
+   gesture.previous=q;
+  }
+  // Always include the current dispatched pointer sample.
+  if(samples[samples.length-1]!==event){paintLine(gesture.previous,p,false);gesture.previous=p;}
+  changed(false);
+  return;
+ }
  render();
 });
 function release(event){
  if(!drawing)return;
  const p=point(event);
+ if(gesture?.mode==='surface'){
+  const end={x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)};
+  appendSurfacePoint(gesture.points,end,{spacing:.03,max:450});
+  const stroke=sanitizeSurfaceStroke({...gesture},scene.cols,scene.rows);
+  if(stroke){
+   scene.surfaceStrokes=scene.surfaceStrokes||[];
+   scene.surfaceStrokes.push(stroke);invalidateSurfacePaint(scene);changed();
+   status('Pincelada orgânica criada. A pintura foi salva como geometria editável.');
+  }
+ }
+ if(gesture?.mode==='paint')paintLine(gesture.previous,p,false);
  if(gesture?.mode==='path'){
   addStrokePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)},{spacing:.03});
   const points=simplifyPoints(gesture.points,.075);
@@ -328,12 +498,24 @@ function release(event){
   }else status('Arraste um cômodo com pelo menos três células de largura e altura.');
  }
  if(gesture?.mode==='paint')changed();
- if(['drag','prop-drag','path-drag','wall'].includes(gesture?.mode))changed();
+ if(['drag','prop-drag','path-drag','path-point','wall'].includes(gesture?.mode))changed();
  drawing=false;gesture=null;render();
  try{canvas.releasePointerCapture(event.pointerId);}catch{}
 }
+canvas.addEventListener('dblclick',event=>{
+ if(tool!=='select'||!pathPointEditing||!selectedPath||event.button!==0)return;
+ const p=point(event);
+ const candidate={...selectedPath,points:selectedPath.points.map(pt=>({...pt}))};
+ const index=insertControlPoint(candidate,p,scene.cols,scene.rows,
+  {tolerance:Math.min(.8,Math.max(.25,12/(CELL*view.zoom)))});
+ if(index>=0){snapshot();selectedPath.points=candidate.points;changed();status('Ponto inserido no traçado.');}
+});
 canvas.addEventListener('pointerup',release);
-canvas.addEventListener('pointercancel',release);
+canvas.addEventListener('pointercancel',event=>{
+ if(!drawing)return;
+ drawing=false;gesture=null;changed();status('Pincel interrompido; alterações anteriores preservadas.');
+ try{canvas.releasePointerCapture(event.pointerId);}catch{}
+});
 canvas.addEventListener('pointerleave',()=>{if(!drawing){hover=null;render();}});
 canvas.addEventListener('wheel',event=>{
  event.preventDefault();const p=point(event),before=view.zoom;
@@ -439,6 +621,20 @@ function setup(){
   movePath(copy,original,.65,.65,scene.cols,scene.rows);
   scene.paths.push(copy);selectedPath=copy;changed();
  });
+ $('selected-path-edit-points').addEventListener('click',()=>{
+  if(!selectedPath)return;
+  pathPointEditing=!pathPointEditing;refreshSelection();render();
+ });
+ $('selected-path-smooth').addEventListener('click',()=>{
+  if(!selectedPath||selectedPath.points.length<3)return;
+  const points=simplifyPoints(selectedPath.points,.21);
+  if(points.length===selectedPath.points.length)return status('Traçado já está suave.');
+  snapshot();selectedPath.points=points;changed();status('Curva simplificada sem perder as extremidades.');
+ });
+ $('selected-path-auto-bridge').addEventListener('change',event=>{
+  if(!selectedPath||selectedPath.kind!=='road')return;
+  snapshot();selectedPath.bridge=event.target.checked;changed();
+ });
  $('selected-path-delete').addEventListener('click',()=>{
   if(!selectedPath||!scene.paths?.includes(selectedPath))return;
   snapshot();scene.paths=scene.paths.filter(p=>p!==selectedPath);
@@ -489,21 +685,68 @@ function setup(){
 
  $('scene-name').addEventListener('change',event=>{snapshot();scene.name=String(event.target.value).slice(0,80)||'Sem título';changed();});
  $('grid-toggle').addEventListener('change',event=>{showGrid=event.target.checked;scene.gridVisible=showGrid;changed();});
+ $('atmosphere-preset').addEventListener('change',event=>{
+  snapshot();scene.atmosphere={...(scene.atmosphere||{}),preset:event.target.value};changed();
+ });
+ $('atmosphere-strength').addEventListener('input',event=>{
+  $('atmosphere-strength-value').textContent=event.target.value+'%';
+ });
+ $('atmosphere-strength').addEventListener('change',event=>{
+  snapshot();scene.atmosphere={...(scene.atmosphere||{}),strength:Number(event.target.value)/100};changed();
+ });
+ $('terrain-brush-mode').addEventListener('change',event=>{
+  terrainBrushMode=event.target.value==='cells'?'cells':'organic';
+  $('terrain-brush-explanation').textContent=terrainBrushMode==='organic'?
+   'Camada visual livre, independente da grade. As células lógicas permanecem preservadas.':
+   'Modo de compatibilidade: a pintura altera as células do terreno.';
+ });
+ $('terrain-softness').addEventListener('input',event=>{
+  surfaceSoftness=Number(event.target.value)/100;
+  $('terrain-softness-value').textContent=event.target.value+'%';
+ });
+ $('terrain-opacity').addEventListener('input',event=>{
+  surfaceOpacity=Number(event.target.value)/100;
+  $('terrain-opacity-value').textContent=event.target.value+'%';
+ });
+ $('surface-undo-stroke').addEventListener('click',()=>{
+  if(!scene.surfaceStrokes?.length)return status('Não existem pinceladas orgânicas para remover.');
+  snapshot();scene.surfaceStrokes.pop();invalidateSurfacePaint(scene);changed();
+ });
+ $('surface-clear-strokes').addEventListener('click',()=>{
+  if(!scene.surfaceStrokes?.length)return;
+  if(!confirm('Remover somente a pintura orgânica deste mapa? Você pode desfazer esta ação.'))return;
+  snapshot();scene.surfaceStrokes=[];invalidateSurfacePaint(scene);changed();
+ });
  $('token-visibility').addEventListener('change',event=>{if(!selected)return;snapshot();selected.hidden=event.target.checked;changed();});
  $('reveal-all').addEventListener('click',()=>{snapshot();scene.fog.fill(0);invalidateFog(scene);changed();});
  $('hide-all').addEventListener('click',()=>{snapshot();scene.fog.fill(1);invalidateFog(scene);changed();});
  $('undo').addEventListener('click',undo);$('redo').addEventListener('click',redo);
  $('fit-map').addEventListener('click',fit);
- $('save-local').addEventListener('click',async()=>{try{await saveProject(scene,ownerId);status('Projeto salvo no navegador.');}catch{status('Não foi possível salvar. Exporte em JSON.');}});
+ $('open-map-library').addEventListener('click',()=>{showInspectorTab('project');void refreshMapLibrary();});
+ $('new-local-map').addEventListener('click',()=>{void createLocalMap();});
+ $('duplicate-local-map').addEventListener('click',()=>{void createLocalMap({duplicate:true});});
+ $('delete-local-map').addEventListener('click',()=>{void deleteCurrentMap();});
+ $('save-local').addEventListener('click',async()=>{
+  clearTimeout(saveTimer);
+  try{await persistCurrent();await refreshMapLibrary();status('Mapa salvo neste navegador.');}
+  catch{status('Não foi possível salvar. Exporte em JSON.');}
+ });
  $('export-json').addEventListener('click',()=>exportJSON(scene));
  $('import-json').addEventListener('click',()=>$('import-json-input').click());
  $('import-json-input').addEventListener('change',async event=>{
-  const file=event.target.files[0];if(!file)return;
+  const file=event.target.files[0];if(!file||mapSwitching)return;
+  mapSwitching=true;
   try{
    if(file.size>13e6)throw Error('Arquivo muito grande.');
-   const restored=safeScene(JSON.parse(await file.text()));snapshot();scene=restored;clearSelection();loadBackground();fit();changed();
-   status('Projeto importado.');event.target.value='';
+   const restored=safeScene(JSON.parse(await file.text()));
+   clearTimeout(saveTimer);await persistCurrent();
+   const id=createMapId();await saveNamedProject(restored,ownerId,id);
+   scene=restored;activeMapId=id;rememberActive();
+   history=[];future=[];clearSelection();loadBackground();fit();changed(false);
+   await refreshMapLibrary();showInspectorTab('project');
+   status('Mapa importado e adicionado aos mapas salvos.');event.target.value='';
   }catch(error){status(error.message||'Projeto inválido.');}
+  finally{mapSwitching=false;event.target.value='';}
  });
  $('import-map').addEventListener('click',()=>$('import-map-input').click());
  $('import-map-input').addEventListener('change',async event=>{
@@ -555,8 +798,25 @@ async function boot(){
   if(permission.allowed!==true)throw Error('Seu acesso ao Estúdio não foi autorizado.');
   ownerId=info.user.id;
   gate.hidden=true;workspace.hidden=false;
-  try{const stored=await loadProject(ownerId);if(stored)scene=safeScene(stored);}catch{status('Projeto inicial carregado. Exporte JSON se o salvamento não funcionar.');}
+  try{
+   const maps=await listNamedProjects(ownerId);
+   if(maps.length){
+    let preferred=null;try{preferred=localStorage.getItem(activeMapKey());}catch{}
+    const chosen=maps.find(m=>m.mapId===preferred)||maps[0];
+    const data=await loadNamedProject(ownerId,chosen.mapId);
+    if(data){scene=safeScene(data);activeMapId=chosen.mapId;}
+   }else{
+    const legacy=await loadProject(ownerId);
+    if(legacy)scene=safeScene(legacy);
+    activeMapId=createMapId();await saveNamedProject(scene,ownerId,activeMapId);
+   }
+   rememberActive();
+  }catch{
+   try{const legacy=await loadProject(ownerId);if(legacy)scene=safeScene(legacy);}catch{}
+   status('Biblioteca de mapas indisponível; exporte JSON para manter uma cópia.');
+  }
   setup();loadBackground();resize();fit();changed(false);
+  if(activeMapId)void refreshMapLibrary();
  }catch(error){gate.replaceChildren(node('h2','','Estúdio indisponível'),node('p','',error.message),button('Tentar novamente',boot));}
  finally{booting=false;}
 }

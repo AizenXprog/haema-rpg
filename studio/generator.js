@@ -1,5 +1,6 @@
 // HÆMA 0.2 — geração procedural própria de cenas e cômodos (sem assets externos).
-import {starterScene,tileIndex} from './scene.js?v=3';
+import {starterScene,tileIndex} from './scene.js?v=4';
+import {planRoomFurniture} from './room-layout.js?v=1';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const seedFrom=value=>{let n=2166136261;for(const c of String(value))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0};
 const random=seed=>{let state=seed>>>0;return()=>{state=(state+0x6D2B79F5)>>>0;let t=Math.imul(state^(state>>>15),1|state);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296}};
@@ -28,12 +29,8 @@ export function makeRoom(s,opts={}){
  return {x,y,w,h,floor,door};
 }
 function decorateRoom(s,room,rand,kind='common'){
- const {x,y,w,h}=room;
- const cx=x+w/2,cy=y+h/2;
- if(kind==='bedroom'){addProp(s,{x:x+1.5,y:y+1.5,type:'bed'});addProp(s,{x:x+w-1.5,y:y+1.5,type:'chest'});addProp(s,{x:cx,y:y+h-1.5,type:'rug'});}
- else if(kind==='library'){for(let xx=x+1;xx<x+w-1;xx+=2)addProp(s,{x:xx+.5,y:y+.6,type:'shelf'});addProp(s,{x:cx,y:cy,type:'table'});addProp(s,{x:cx+1.2,y:cy,type:'chair'});}
- else if(kind==='tavern'){addProp(s,{x:cx,y:cy,type:'table'});for(const p of [[-1,0],[1,0],[0,-1],[0,1]])addProp(s,{x:cx+p[0],y:cy+p[1],type:'chair'});addProp(s,{x:x+1.5,y:y+1.5,type:'barrel'});}
- else{addProp(s,{x:cx,y:cy,type:rand()<.5?'table':'pillar'});if(rand()>.4)addProp(s,{x:x+1.5,y:y+1.5,type:'chest'});}
+ const choices=planRoomFurniture(room,kind,rand,s.props);
+ for(const prop of choices)addProp(s,prop);
 }
 export function furnishRoom(scene,room,kind='empty',seed='interior'){
  if(kind==='empty')return 0;
@@ -45,6 +42,7 @@ export function furnishRoom(scene,room,kind='empty',seed='interior'){
 }
 export function generateScene(kind='forest',seed=Date.now()){
  const rand=random(seedFrom(seed)),s=starterScene();
+ s.atmosphere={preset:kind==='dungeon'?'underground':kind==='tavern'?'sunset':'day',strength:kind==='dungeon'?.86:1};
  s.tiles.fill('grass');s.fog.fill(0);s.heights=Array(s.cols*s.rows).fill(0);
  s.tokens=[];s.props=[];s.walls=[];s.background=null;
  const {cols,rows}=s;

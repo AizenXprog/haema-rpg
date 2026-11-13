@@ -4,7 +4,9 @@ let tests=0;const ok=(v,label)=>{assert.ok(v,label);tests++};
 const sceneSource=fs.readFileSync('studio/scene.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
 const {starterScene,safeScene,tileIndex}=new Function(sceneSource+'\nreturn {starterScene,safeScene,tileIndex};')();
 const genSource=fs.readFileSync('studio/generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
-const {makeRoom,furnishRoom}=new Function('starterScene','tileIndex',genSource+'\nreturn {makeRoom,furnishRoom};')(starterScene,tileIndex);
+const layoutSource=fs.readFileSync('studio/room-layout.js','utf8').replace(/^export /gm,'');
+const {planRoomFurniture}=new Function(layoutSource+'\nreturn {planRoomFurniture};')();
+const {makeRoom,furnishRoom}=new Function('starterScene','tileIndex','planRoomFurniture',genSource+'\nreturn {makeRoom,furnishRoom};')(starterScene,tileIndex,planRoomFurniture);
 const types=['empty','bedroom','library','tavern'];
 for(const type of types){
  const s=starterScene();s.props=[];s.walls=[];

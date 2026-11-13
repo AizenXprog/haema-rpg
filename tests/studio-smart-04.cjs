@@ -1,0 +1,66 @@
+'use strict';
+const fs=require('node:fs'),assert=require('node:assert/strict'),cp=require('node:child_process');
+let count=0;const ok=(v,label)=>{assert.ok(v,label);count++};
+const s=fs.readFileSync('studio/smart-paths.js','utf8');
+const g=fs.readFileSync('studio/path-geometry.js','utf8');
+const {segmentIntersection,collectBridges,drawSmartBridges,nodeIndices,nearestControlPoint,moveControlPoint,insertControlPoint,removeControlPoint,drawControlHandles}=new Function(s.replace(/^export /gm,'')+'\nreturn {segmentIntersection,collectBridges,drawSmartBridges,nodeIndices,nearestControlPoint,moveControlPoint,insertControlPoint,removeControlPoint,drawControlHandles};')();
+const {makePath,sanitizePath}=new Function(g.replace(/^export /gm,'')+'\nreturn {makePath,sanitizePath};')();
+const road=makePath('road',[{x:1,y:6},{x:11,y:6}],{cols:20,rows:20,width:1.5,material:'wood'});
+const river=makePath('river',[{x:6,y:1},{x:6,y:11}],{cols:20,rows:20,width:2});
+const hit=segmentIntersection(road.points[0],road.points[1],river.points[0],river.points[1]);
+ok(hit?.x===6&&hit?.y===6,'segments intersect at actual crossing');
+ok(segmentIntersection({x:0,y:0},{x:10,y:0},{x:0,y:2},{x:10,y:2})===null,'parallel segments');
+ok(segmentIntersection({x:0,y:0},{x:2,y:0},{x:5,y:-2},{x:5,y:2})===null,'no false line extension intersection');
+let bridges=collectBridges([road,river]);
+ok(bridges.length===1,'exactly one bridge at crossing');
+ok(bridges[0].x===6&&bridges[0].y===6,'bridge uses intersection coordinates');
+ok(bridges[0].width>1&&bridges[0].length>2,'road/river dimensions influence bridge');
+ok(collectBridges([river,road]).length===1,'order of drawing does not matter');
+ok(sanitizePath({...road,bridge:false},20,20).bridge===false,'bridge opt-out persisted');
+ok(sanitizePath({...road},20,20).bridge===true,'legacy path defaults to enabled');
+road.bridge=false;ok(collectBridges([road,river]).length===0,'disabled bridge disappears');
+road.bridge=true;
+const ops=[];
+const ctx=new Proxy({},{
+ get(obj,key){if(key in obj)return obj[key];return (...args)=>ops.push([key,...args]);},
+ set(obj,key,value){obj[key]=value;return true;}
+});
+ok(drawSmartBridges(ctx,[road,river],48)===1,'illustrated bridge actually rendered');
+ok(ops.some(x=>x[0]==='rotate')&&ops.some(x=>x[0]==='fillRect'),'wood planks and oriented deck painted');
+const parallel=makePath('river',[{x:1,y:7},{x:11,y:7}],{cols:20,rows:20});
+ok(collectBridges([road,parallel]).length===0,'parallel rivers do not produce fake bridges');
+const edit=makePath('road',[{x:2,y:2},{x:6,y:2},{x:10,y:2}],{cols:20,rows:20});
+ok(nodeIndices(edit).join(',')==='0,1,2','all 3 points are editable');
+ok(nearestControlPoint(edit,{x:6.1,y:2.1})===1,'nearest control point hit');
+ok(nearestControlPoint(edit,{x:12,y:12})===-1,'distant click rejected');
+ok(moveControlPoint(edit,1,{x:5,y:4},20,20),'control point moves');
+ok(edit.points[1].x===5&&edit.points[1].y===4,'move saves new geometry');
+ok(moveControlPoint(edit,1,{x:0,y:20},20,20),'control may move to map edge');
+ok(!moveControlPoint(edit,20,{x:1,y:2},20,20),'invalid point index refused');
+ok(!moveControlPoint(edit,1,{x:NaN,y:1},20,20),'invalid coordinates refused');
+const idx=insertControlPoint(edit,{x:5,y:11},20,20);
+ok(idx>=1&&edit.points.length===4,'double-click inserts a new point along segment');
+ok(removeControlPoint(edit,idx)&&edit.points.length===3,'Alt-click removes inserted point');
+ok(!removeControlPoint(edit,20),'invalid removal refused');
+const two=makePath('road',[{x:1,y:1},{x:8,y:8}],{cols:20,rows:20});
+ok(!removeControlPoint(two,0),'minimum 2 control points');
+ok(insertControlPoint(two,{x:100,y:100},20,20)===-1,'far-off clicks do not insert');
+const many=makePath('road',Array.from({length:120},(_,i)=>({x:i/7,y:5})),{cols:20,rows:20});
+const index=nodeIndices(many);
+ok(index.length<=26&&index[0]===0&&index[index.length-1]===119,'large paths have bounded handle count');
+drawControlHandles(ctx,edit,48,1.5);
+ok(ops.some(o=>o[0]==='arc'),'control handle circles drawn');
+const html=fs.readFileSync('estudio.html','utf8'),editor=fs.readFileSync('studio/editor.js','utf8'),scene=fs.readFileSync('studio/scene.js','utf8');
+for(const id of ['selected-path-edit-points','selected-path-smooth','selected-path-auto-bridge','selected-path-bridge-row','selected-path-help'])
+ ok(html.includes('id="'+id+'"'),'UI includes '+id);
+ok(editor.includes("gesture={mode:'path-point'"),'drag handles starts');
+ok(editor.includes("gesture?.mode==='path-point'"),'drag handles moves');
+ok(editor.includes("canvas.addEventListener('dblclick'"),'double-click adds point');
+ok(editor.includes('selectedPath.points=candidate.points'),'insert snapshots before modifying path');
+ok(editor.includes('snapshot();removeControlPoint'),'removal snapshots before modifying path');
+ok(editor.includes('selectedPath.bridge=event.target.checked'),'bridge toggle persists');
+ok(editor.includes('drawControlHandles(ctx,selectedPath'),'handles are only on editor view');
+ok(scene.includes('drawSmartBridges(ctx,scene.paths,CELL)'),'scene renders automatic bridge');
+ok(scene.indexOf('drawSmartBridges(ctx,scene.paths,CELL)')<scene.indexOf('renderFog(ctx,scene,{player,cell:CELL})'),'bridge appears below player fog');
+for(const path of ['studio/editor.js','studio/scene.js','studio/path-geometry.js','studio/smart-paths.js']){cp.execFileSync('node',['--check',path]);count++;}
+console.log(count+' smart geometry, bridges, editing and privacy checks passed');

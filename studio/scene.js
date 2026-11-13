@@ -1,6 +1,10 @@
-import {renderTerrain} from './terrain-renderer.js?v=1';
+import {renderTerrain} from './terrain-renderer.js?v=2';
 import {renderFog} from './fog-renderer.js?v=1';
-import {sanitizePath,drawPath} from './path-geometry.js?v=1';
+import {drawStyledProp} from './prop-art.js?v=1';
+import {sanitizePath,drawPath} from './path-geometry.js?v=2';
+import {drawSmartBridges} from './smart-paths.js?v=1';
+import {drawAtmosphere} from './atmosphere.js?v=1';
+import {sanitizeSurfaceStroke,renderSurfacePaint} from './surface-paint.js?v=1';
 // HÆMA Estúdio — cena vetorial original. Independente do Manual e da Lore.
 export const CELL=48;
 export const TERRAINS={grass:'#354c3d',stone:'#6b6b62',earth:'#78604b',water:'#2c6470',sand:'#9b815a',wood:'#72503a',brick:'#775a4e',marble:'#969085'};
@@ -18,6 +22,7 @@ export function starterScene(){
  }
  return {version:1,id:'local',name:'Ruínas do caminho',cols,rows,tiles,fog,gridVisible:true,heights:Array(cols*rows).fill(0),
   walls:[{x1:8,y1:5,x2:19,y2:5},{x1:8,y1:5,x2:8,y2:14},{x1:19,y1:5,x2:19,y2:14}],paths:[],
+  atmosphere:{preset:'day',strength:1},surfaceStrokes:[],
   props:[{x:4.5,y:5.5,type:'tree'},{x:23.5,y:4.5,type:'tree'},{x:5.5,y:13.5,type:'rock'},{x:10.5,y:6.5,type:'pillar'},{x:17.5,y:11.5,type:'torch'}],
   tokens:[{id:'t1',x:13.5,y:9.5,label:'A',color:'#cda379',hidden:false},{id:'t2',x:15.5,y:10.5,label:'B',color:'#809eae',hidden:false}],
   background:null};
@@ -34,10 +39,18 @@ export function safeScene(value){
  const tokens=Array.isArray(value.tokens)?value.tokens.slice(0,120).filter(t=>t&&valid(t.x,t.y)).map(t=>({id:safeLabel(t.id)||crypto.randomUUID(),x:+t.x,y:+t.y,label:safeLabel(t.label),color:/^#[0-9a-f]{6}$/i.test(t.color)?t.color:'#d6ad7b',hidden:!!t.hidden})):[];
  const walls=Array.isArray(value.walls)?value.walls.slice(0,400).filter(w=>w&&valid(w.x1,w.y1)&&valid(w.x2,w.y2)).map(w=>({x1:+w.x1,y1:+w.y1,x2:+w.x2,y2:+w.y2})):[];
  const paths=Array.isArray(value.paths)?value.paths.slice(0,90).map(p=>sanitizePath(p,cols,rows)).filter(Boolean):[];
+ const surfaceStrokes=typeof sanitizeSurfaceStroke==='function'&&Array.isArray(value.surfaceStrokes)?
+  value.surfaceStrokes.slice(0,180).map(p=>sanitizeSurfaceStroke(p,cols,rows)).filter(Boolean):[];
+ const allowedAtmospheres=['day','sunset','night','underground'];
+ const atmosphere={
+  preset:allowedAtmospheres.includes(value.atmosphere?.preset)?value.atmosphere.preset:'day',
+  strength:Number.isFinite(Number(value.atmosphere?.strength))?
+   Math.max(0,Math.min(1,Number(value.atmosphere.strength))):1
+ };
  const background=typeof value.background==='string'&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value.background)&&value.background.length<12e6?value.background:null;
  return {version:1,id:'local',name:safeLabel(value.name)||'Cena sem título',cols,rows,gridVisible:value.gridVisible!==false,
   tiles:value.tiles.map(t=>terrain.includes(t)?t:'grass'),fog:value.fog.map(f=>f?1:0),heights:Array.isArray(value.heights)&&value.heights.length===cols*rows?value.heights.map(h=>Math.min(4,Math.max(0,Math.round(Number(h)||0)))):Array(cols*rows).fill(0),
-  props,tokens,walls,paths,background};
+  props,tokens,walls,paths,background,atmosphere,surfaceStrokes};
 }
 const hash=(x,y)=>{let v=Math.imul(x+13,374761393)+Math.imul(y+17,668265263);v=Math.imul(v^(v>>>13),1274126177);return(v^(v>>>16))>>>0};
 function drawProp(ctx,p){
@@ -168,8 +181,13 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
    ctx.stroke();
   }
  }
+ if(typeof renderSurfacePaint==='function')renderSurfacePaint(ctx,scene,CELL);
  for(const path of scene.paths||[])drawPath(ctx,path,CELL);
- for(const p of scene.props)if(!player||exposed(scene,p.x,p.y))drawProp(ctx,p);
+ // Dynamic crossings: a wooden bridge follows road and river edits automatically.
+ if((scene.paths||[]).length>=2)drawSmartBridges(ctx,scene.paths,CELL);
+ for(const p of scene.props)if(!player||exposed(scene,p.x,p.y)){
+  if(!drawStyledProp(ctx,p,CELL))drawProp(ctx,p);
+ }
  ctx.save();ctx.lineCap='square';ctx.lineWidth=8;ctx.strokeStyle='#262824';ctx.beginPath();
  for(const w of scene.walls)if(!player||exposed(scene,(w.x1+w.x2)/2,(w.y1+w.y2)/2)){ctx.moveTo(w.x1*CELL,w.y1*CELL);ctx.lineTo(w.x2*CELL,w.y2*CELL);}
  ctx.stroke();ctx.lineWidth=3;ctx.strokeStyle='#ac9b7c';ctx.stroke();ctx.restore();
@@ -181,6 +199,7 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
   ctx.font='bold 14px Georgia';ctx.fillStyle='#1b1b1c';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText((t.label||'?').slice(0,2).toUpperCase(),x,y+1);
   if(!player&&t.hidden){ctx.strokeStyle='#df8d7e';ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(x,y,20,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}
  }
+ if(typeof drawAtmosphere==='function')drawAtmosphere(ctx,scene,{cell:CELL,player,visible:exposed});
  if(!(typeof renderFog==='function'&&renderFog(ctx,scene,{player,cell:CELL}))){
   // Server-side/mock context fallback only.
   for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++)if(scene.fog[tileIndex(scene,x,y)]){

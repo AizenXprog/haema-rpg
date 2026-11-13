@@ -378,3 +378,49 @@ button,input{font-family:inherit}
 #selected-path-controls{margin-top:9px}
 #selected-path-controls .brush-label{margin-top:5px}
 #selected-path-width{width:100%;accent-color:#c08b92}
+
+
+/* 0.4 LAB — map library without blocking dialogs or crowding the canvas */
+.studio-map-library{display:grid;gap:11px;margin-bottom:17px}
+.studio-map-actions{display:grid;grid-template-columns:1.25fr 1fr;gap:8px}
+.studio-map-actions button,.studio-map-delete{
+ border:1px solid #485159;border-radius:7px;background:#2a3137;color:#dfe3e5;
+ min-height:37px;padding:9px 10px;font:600 11px/1.2 'DM Sans',sans-serif
+}
+.studio-map-actions .studio-map-primary{background:#754d55;border-color:#a37079;color:#fff}
+.studio-map-actions button:hover{background:#404952}
+.studio-map-browser{display:grid;gap:6px;max-height:35dvh;overflow-y:auto;scrollbar-width:thin;padding:2px}
+.studio-map-entry{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 8px;align-items:center;
+ width:100%;text-align:left;background:#22292f;color:#e2e5e8;border:1px solid #343e48;
+ border-radius:7px;padding:10px 11px;cursor:pointer
+}
+.studio-map-entry:hover{border-color:#8b737b;background:#2c343c}
+.studio-map-entry[aria-current="true"]{border-color:#ba7f8b;background:#352b32}
+.studio-map-entry strong{font:600 12px/1.35 'DM Sans',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.studio-map-entry small{grid-column:1;min-width:0;color:#969fa9;font:400 10px/1.45 'DM Sans',sans-serif}
+.studio-map-entry em{font:600 9px/1 'DM Sans',sans-serif;color:#e3b7bf;font-style:normal}
+.studio-map-delete{width:100%;background:transparent;color:#bda2a6;text-align:left;border-color:#41373c}
+.studio-map-delete:hover{background:#352a2d}
+.studio-files{margin:0}
+.studio-files-content{padding:12px 11px 4px}
+.studio-files-content .stack-actions{margin:0 0 12px}
+.studio-files-content .stack-actions button{border-radius:5px}
+#local-map-message{margin:0 0 6px}
+.canvas-viewport{margin:5px;border-radius:4px}
+.studio-toolrail .tool-grid button{min-height:39px;height:39px}
+
+
+/* 0.4 LAB smart geometry — contextual points, never persistent viewport clutter */
+#selected-path-edit-points[aria-pressed="true"]{
+ background:#614950;border-color:#c38f98;color:#fff
+}
+#selected-path-bridge-row[hidden]{display:none!important}
+#selected-path-bridge-row{font:500 11px/1.5 'DM Sans',sans-serif;color:#c6ced0;margin:5px 0}
+#selected-path-bridge-row input{accent-color:#af7a87}
+
+
+/* HÆMA LAB freeform material brushes, contextual, without floating menus */
+#terrain-brush-mode{width:100%}
+#surface-undo-stroke,#surface-clear-strokes{white-space:normal;text-align:center}
+#surface-clear-strokes{color:#d5afb3}
