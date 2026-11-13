@@ -4,14 +4,15 @@ import {saveProject,loadProject,saveNamedProject,loadNamedProject,listNamedProje
 import {generateScene,makeRoom,furnishRoom} from './generator.js?v=4';
 import {invalidateTerrain} from './terrain-renderer.js?v=1';
 import {invalidateFog} from './fog-renderer.js?v=1';
-import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=1';
+import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=2';
+import {nearestControlPoint,moveControlPoint,insertControlPoint,removeControlPoint,drawControlHandles} from './smart-paths.js?v=1';
 import {generateFromDescription,interpretDescription} from './guided-generator.js?v=1';
 
 const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
 const view={x:0,y:0,zoom:1,ready:false};
 let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,pathWidth=1.25,roadMaterial='earth',showGrid=true,paintedTiles=new Set(),lastStamp=null;
-let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,selectedPath=null,measurement=null,saveTimer=0,broadcastTimer=0;
+let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,selectedPath=null,pathPointEditing=false,measurement=null,saveTimer=0,broadcastTimer=0;
 let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
 let activeMapId=null,mapSwitching=false,saveChain=Promise.resolve();
 const status=(message)=>{$('studio-status').textContent=message;};
@@ -33,7 +34,10 @@ function render(){
  ctx.fillStyle='#0a1012';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.translate(view.x,view.y);ctx.scale(view.zoom,view.zoom);
  drawScene(ctx,scene,{grid:showGrid,image:backgroundImage});
- if(tool==='select'&&selectedPath&&scene.paths?.includes(selectedPath))drawPath(ctx,selectedPath,CELL,{preview:true});
+ if(tool==='select'&&selectedPath&&scene.paths?.includes(selectedPath)){
+  drawPath(ctx,selectedPath,CELL,{preview:true});
+  if(pathPointEditing)drawControlHandles(ctx,selectedPath,CELL,view.zoom);
+ }
  if(gesture?.mode==='path'&&gesture.points.length>1)
   drawPath(ctx,{kind:gesture.kind,width:gesture.width,material:gesture.material,points:gesture.points},CELL,{preview:true});
  if(tool==='measure'){
@@ -97,7 +101,13 @@ function refreshSelection(){
  $('selected-path-controls').hidden=!selectedPath;
  $('selected-path-duplicate').disabled=!selectedPath;
  $('selected-path-delete').disabled=!selectedPath;
+ $('selected-path-edit-points').disabled=!selectedPath;
+ $('selected-path-smooth').disabled=!selectedPath;
+ $('selected-path-edit-points').setAttribute('aria-pressed',String(!!selectedPath&&pathPointEditing));
+ $('selected-path-help').textContent=pathPointEditing&&selectedPath?'Arraste os pontos. Duplo clique na curva adiciona um ponto. Alt+clique remove.':'Arraste o traçado para movê-lo. Ative Editar pontos para remodelar o caminho.';
+ $('selected-path-bridge-row').hidden=!selectedPath||selectedPath.kind!=='road';
  if(selectedPath){
+  $('selected-path-auto-bridge').checked=selectedPath.bridge!==false;
   $('selected-path-label').textContent=selectedPath.kind==='river'?'Rio selecionado':'Estrada selecionada';
   $('selected-path-width').value=selectedPath.width;
   $('selected-path-width-value').textContent=selectedPath.width;
@@ -219,7 +229,7 @@ function saveLater(){
 // History stores the large background image by reference, not on every brush stroke.
 const freezeScene=()=>({shape:JSON.stringify({...scene,background:null}),background:scene.background});
 const thawScene=entry=>safeScene({...JSON.parse(entry.shape),background:entry.background});
-function clearSelection(){selected=null;selectedProp=null;selectedPath=null;refreshSelection();}
+function clearSelection(){selected=null;selectedProp=null;selectedPath=null;pathPointEditing=false;refreshSelection();}
 function snapshot(){
  history.push(freezeScene());if(history.length>40)history.shift();future.length=0;
 }
@@ -352,15 +362,25 @@ canvas.addEventListener('pointerdown',event=>{
  }else if(tool==='measure'){
   measurement=null;gesture={mode:'measure',startX:p.x,startY:p.y};
  }else if(tool==='select'){
-  selected=closestToken(p);
-  selectedProp=selected?null:closestProp(p);
-  selectedPath=(selected||selectedProp)?null:nearestPath(scene.paths||[],p);
-  if(selected){snapshot();gesture={mode:'drag',token:selected};}
-  else if(selectedProp){snapshot();gesture={mode:'prop-drag',prop:selectedProp};showInspectorTab('build');}
-  else if(selectedPath){
-   snapshot();gesture={mode:'path-drag',path:selectedPath,startX:p.x,startY:p.y,original:selectedPath.points.map(pt=>({...pt}))};
-   showInspectorTab('build');
-  }else gesture={mode:'noop'};
+  const nodeIndex=pathPointEditing&&selectedPath?
+   nearestControlPoint(selectedPath,p,Math.min(.68,Math.max(.19,10/(CELL*view.zoom)))):-1;
+  if(nodeIndex>=0){
+   if(event.altKey){
+    if(selectedPath.points.length>2){snapshot();removeControlPoint(selectedPath,nodeIndex);changed();status('Ponto removido.');}
+    return;
+   }
+   snapshot();gesture={mode:'path-point',path:selectedPath,index:nodeIndex};
+  }else{
+   selected=closestToken(p);
+   selectedProp=selected?null:closestProp(p);
+   selectedPath=(selected||selectedProp)?null:nearestPath(scene.paths||[],p);
+   if(selected){snapshot();gesture={mode:'drag',token:selected};}
+   else if(selectedProp){snapshot();gesture={mode:'prop-drag',prop:selectedProp};showInspectorTab('build');}
+   else if(selectedPath){
+    snapshot();gesture={mode:'path-drag',path:selectedPath,startX:p.x,startY:p.y,original:selectedPath.points.map(pt=>({...pt}))};
+    showInspectorTab('build');
+   }else gesture={mode:'noop'};
+  }
   refreshSelection();
  }else if(tool==='road'||tool==='river'){
   if(!within(p))return;
@@ -387,6 +407,8 @@ canvas.addEventListener('pointermove',event=>{
  else if(drawing&&gesture?.mode==='path-drag'){
   movePath(gesture.path,gesture.original,p.x-gesture.startX,p.y-gesture.startY,scene.cols,scene.rows);
   changed(false);
+ }else if(drawing&&gesture?.mode==='path-point'){
+  moveControlPoint(gesture.path,gesture.index,p,scene.cols,scene.rows);changed(false);
  }else if(drawing&&gesture?.mode==='path'){
   addStrokePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)});
  }
@@ -442,10 +464,18 @@ function release(event){
   }else status('Arraste um cômodo com pelo menos três células de largura e altura.');
  }
  if(gesture?.mode==='paint')changed();
- if(['drag','prop-drag','path-drag','wall'].includes(gesture?.mode))changed();
+ if(['drag','prop-drag','path-drag','path-point','wall'].includes(gesture?.mode))changed();
  drawing=false;gesture=null;render();
  try{canvas.releasePointerCapture(event.pointerId);}catch{}
 }
+canvas.addEventListener('dblclick',event=>{
+ if(tool!=='select'||!pathPointEditing||!selectedPath||event.button!==0)return;
+ const p=point(event);
+ const candidate={...selectedPath,points:selectedPath.points.map(pt=>({...pt}))};
+ const index=insertControlPoint(candidate,p,scene.cols,scene.rows,
+  {tolerance:Math.min(.8,Math.max(.25,12/(CELL*view.zoom)))});
+ if(index>=0){snapshot();selectedPath.points=candidate.points;changed();status('Ponto inserido no traçado.');}
+});
 canvas.addEventListener('pointerup',release);
 canvas.addEventListener('pointercancel',event=>{
  if(!drawing)return;
@@ -556,6 +586,20 @@ function setup(){
   const copy={...selectedPath,id:'copy-'+(crypto.randomUUID?.()||Date.now()),points:original.map(p=>({...p}))};
   movePath(copy,original,.65,.65,scene.cols,scene.rows);
   scene.paths.push(copy);selectedPath=copy;changed();
+ });
+ $('selected-path-edit-points').addEventListener('click',()=>{
+  if(!selectedPath)return;
+  pathPointEditing=!pathPointEditing;refreshSelection();render();
+ });
+ $('selected-path-smooth').addEventListener('click',()=>{
+  if(!selectedPath||selectedPath.points.length<3)return;
+  const points=simplifyPoints(selectedPath.points,.21);
+  if(points.length===selectedPath.points.length)return status('Traçado já está suave.');
+  snapshot();selectedPath.points=points;changed();status('Curva simplificada sem perder as extremidades.');
+ });
+ $('selected-path-auto-bridge').addEventListener('change',event=>{
+  if(!selectedPath||selectedPath.kind!=='road')return;
+  snapshot();selectedPath.bridge=event.target.checked;changed();
  });
  $('selected-path-delete').addEventListener('click',()=>{
   if(!selectedPath||!scene.paths?.includes(selectedPath))return;

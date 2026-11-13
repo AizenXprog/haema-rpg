@@ -1,6 +1,6 @@
 // Gerador GUIADO e LOCAL do HÆMA: regras interpretam palavras-chave, não usa IA nem envia texto.
 import {generateScene} from './generator.js?v=4';
-import {makePath} from './path-geometry.js?v=1';
+import {makePath} from './path-geometry.js?v=2';
 const normalize=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 const has=(s,...words)=>words.some(word=>s.includes(word));
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));

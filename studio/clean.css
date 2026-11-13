@@ -409,3 +409,12 @@ button,input{font-family:inherit}
 #local-map-message{margin:0 0 6px}
 .canvas-viewport{margin:5px;border-radius:4px}
 .studio-toolrail .tool-grid button{min-height:39px;height:39px}
+
+
+/* 0.4 LAB smart geometry — contextual points, never persistent viewport clutter */
+#selected-path-edit-points[aria-pressed="true"]{
+ background:#614950;border-color:#c38f98;color:#fff
+}
+#selected-path-bridge-row[hidden]{display:none!important}
+#selected-path-bridge-row{font:500 11px/1.5 'DM Sans',sans-serif;color:#c6ced0;margin:5px 0}
+#selected-path-bridge-row input{accent-color:#af7a87}

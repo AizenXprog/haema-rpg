@@ -1,7 +1,8 @@
 import {renderTerrain} from './terrain-renderer.js?v=1';
 import {renderFog} from './fog-renderer.js?v=1';
 import {drawStyledProp} from './prop-art.js?v=1';
-import {sanitizePath,drawPath} from './path-geometry.js?v=1';
+import {sanitizePath,drawPath} from './path-geometry.js?v=2';
+import {drawSmartBridges} from './smart-paths.js?v=1';
 // HÆMA Estúdio — cena vetorial original. Independente do Manual e da Lore.
 export const CELL=48;
 export const TERRAINS={grass:'#354c3d',stone:'#6b6b62',earth:'#78604b',water:'#2c6470',sand:'#9b815a',wood:'#72503a',brick:'#775a4e',marble:'#969085'};
@@ -170,6 +171,8 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
   }
  }
  for(const path of scene.paths||[])drawPath(ctx,path,CELL);
+ // Dynamic crossings: a wooden bridge follows road and river edits automatically.
+ if((scene.paths||[]).length>=2)drawSmartBridges(ctx,scene.paths,CELL);
  for(const p of scene.props)if(!player||exposed(scene,p.x,p.y)){
   if(!drawStyledProp(ctx,p,CELL))drawProp(ctx,p);
  }

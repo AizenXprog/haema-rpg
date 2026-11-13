@@ -20,10 +20,10 @@ export function sanitizePath(raw,cols,rows){
  const material=Object.hasOwn(ROAD_MATERIALS,raw.material)?raw.material:'earth';
  const id=typeof raw.id==='string'&&/^[a-zA-Z0-9_-]{1,64}$/.test(raw.id)?raw.id:null;
  return {id:id||'path-'+points.map(p=>Math.round(p.x*10)+'-'+Math.round(p.y*10)).join('').slice(0,36),
-  kind:raw.kind,width,material,points};
+  kind:raw.kind,width,material,bridge:raw.bridge!==false,points};
 }
 export function makePath(kind,points,options={}){
- const path=sanitizePath({kind,points,width:options.width??1.25,material:options.material??'earth',id:options.id},options.cols??80,options.rows??80);
+ const path=sanitizePath({kind,points,width:options.width??1.25,material:options.material??'earth',bridge:options.bridge!==false,id:options.id},options.cols??80,options.rows??80);
  if(!path)throw Error('Trace um caminho válido, com pelo menos dois pontos.');
  return path;
 }

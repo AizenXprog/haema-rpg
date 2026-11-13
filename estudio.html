@@ -7,8 +7,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=5">
-<script type="module" src="studio/editor.js?v=7"></script>
+<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=6">
+<script type="module" src="studio/editor.js?v=8"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
@@ -90,8 +90,11 @@
       <div class="studio-selection-actions">
        <button type="button" id="selected-path-duplicate" disabled>Duplicar</button>
        <button type="button" id="selected-path-delete" disabled>Excluir</button>
+       <button type="button" id="selected-path-edit-points" aria-pressed="false" disabled>Editar pontos</button>
+       <button type="button" id="selected-path-smooth" disabled>Suavizar curva</button>
       </div>
-      <p class="studio-panel-hint">Arraste o traçado para movê-lo. Use a largura para ajustar a estrada ou o rio.</p>
+      <label id="selected-path-bridge-row" class="check-label"><input type="checkbox" id="selected-path-auto-bridge" checked> Pontes automáticas nos cruzamentos com rios</label>
+      <p class="studio-panel-hint" id="selected-path-help">Arraste o traçado para movê-lo. Ative Editar pontos para remodelar o caminho.</p>
      </div>
     </div>
     <div data-tool-panel="path" class="context-panel" hidden>
