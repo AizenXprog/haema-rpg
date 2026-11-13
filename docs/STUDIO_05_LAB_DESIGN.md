@@ -6,7 +6,7 @@
 - Expansão de mapas mantém coordenadas e dados intactos; novas células ficam cobertas pela neblina para os jogadores.
 - Redução exige confirmação, indica itens cortados e permite Desfazer. Não junta trechos de caminhos e pinceladas que ficaram parcialmente fora do mapa.
 - JSON continua na versão 1, sem migração do IndexedDB ou Supabase.
-- Geração procedural por templates ainda usa seu layout base de 28×18. É uma limitação a atacar na próxima etapa.
+- Geração procedural usa as dimensões do mapa aberto, com relevo/vegetação proporcional e layouts compactos quando necessário.
 
 ## Projeção realmente contínua para segunda tela
 - O debounce de 100 ms impedia atualizações durante arrastos contínuos.

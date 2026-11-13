@@ -1,7 +1,7 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
 import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=5';
 import {saveProject,loadProject,saveNamedProject,loadNamedProject,listNamedProjects,deleteNamedProject,createMapId,exportJSON} from './storage.js?v=3';
-import {generateScene,makeRoom,furnishRoom} from './generator.js?v=5';
+import {generateScene,makeRoom,furnishRoom} from './generator.js?v=6';
 import {invalidateTerrain} from './terrain-renderer.js?v=2';
 import {invalidateFog} from './fog-renderer.js?v=1';
 import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=2';
@@ -258,10 +258,10 @@ function snapshot(){
  history.push(freezeScene());if(history.length>40)history.shift();future.length=0;
 }
 function undo(){
- if(!history.length)return;future.push(freezeScene());scene=thawScene(history.pop());clearSelection();loadBackground();changed();
+ if(!history.length)return;future.push(freezeScene());scene=thawScene(history.pop());syncMapSizeControls();clearSelection();loadBackground();changed();
 }
 function redo(){
- if(!future.length)return;history.push(freezeScene());scene=thawScene(future.pop());clearSelection();loadBackground();changed();
+ if(!future.length)return;history.push(freezeScene());scene=thawScene(future.pop());syncMapSizeControls();clearSelection();loadBackground();changed();
 }
 function changed(autosave=true){
  showGrid=scene.gridVisible!==false;$('grid-toggle').checked=showGrid;$('grid-state').textContent=showGrid?'Visível':'Oculta';
@@ -608,7 +608,7 @@ function setup(){
  document.querySelectorAll('[data-tool]').forEach(el=>{el.title=toolInfo[el.dataset.tool]?.[1]||'';el.addEventListener('click',()=>setTool(el.dataset.tool));});
  document.querySelectorAll('[data-terrain]').forEach(el=>el.addEventListener('click',()=>{terrain=el.dataset.terrain;setTool('terrain');document.querySelectorAll('[data-terrain]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
  document.querySelectorAll('[data-prop]').forEach(el=>el.addEventListener('click',()=>{prop=el.dataset.prop;setTool('prop');document.querySelectorAll('[data-prop]').forEach(x=>x.setAttribute('aria-pressed',String(x===el)));}));
- document.querySelectorAll('[data-scene-template]').forEach(el=>el.addEventListener('click',()=>{const type=el.dataset.sceneTemplate;if(!confirm('Substituir o cenário atual por um novo mapa gerado? A ação poderá ser desfeita.'))return;snapshot();scene=generateScene(type,$('seed-input').value||String(Date.now()));scene.gridVisible=showGrid;syncMapSizeControls();clearSelection();loadBackground();changed();fit();status('Cenário gerado: '+scene.name); }));
+ document.querySelectorAll('[data-scene-template]').forEach(el=>el.addEventListener('click',()=>{const type=el.dataset.sceneTemplate;if(!confirm('Substituir o cenário atual por um novo mapa gerado? A ação poderá ser desfeita.'))return;snapshot();scene=generateScene(type,$('seed-input').value||String(Date.now()),{cols:scene.cols,rows:scene.rows});scene.gridVisible=showGrid;syncMapSizeControls();clearSelection();loadBackground();changed();fit();status('Cenário gerado: '+scene.name); }));
  const brushInputs=['brush-size','brush-height-mirror','eraser-brush'];
  for(const id of brushInputs)$(id).addEventListener('input',event=>{
   brush=Number(event.target.value);
@@ -685,7 +685,7 @@ function setup(){
  $('guided-generate').addEventListener('click',()=>{
   const value=$('guided-description').value.trim();
   let result;
-  try{result=generateFromDescription(value,$('seed-input').value.trim());}
+  try{result=generateFromDescription(value,$('seed-input').value.trim(),{cols:scene.cols,rows:scene.rows});}
   catch(error){$('guided-feedback').textContent=error.message;return;}
   if(!confirm('Substituir o cenário atual por esta cena guiada? Você pode desfazer ou importar seu backup.'))return;
   snapshot();

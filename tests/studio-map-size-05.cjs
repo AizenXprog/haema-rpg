@@ -23,4 +23,20 @@ ok(small.scene.tiles[2*8+3]==='water','shared cells stay intact');
 const html=fs.readFileSync('estudio.html','utf8'),editor=fs.readFileSync('studio/editor.js','utf8');
 for(const id of ['map-size-preset','map-width','map-height','resize-local-map'])ok(html.includes('id="'+id+'"'),'UI '+id);
 ok(editor.includes('resizeMapScene(scene,cols,rows)'),'resize wired');
+
+const sceneModule=fs.readFileSync('studio/scene.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
+const engine=new Function('const drawStyledProp=()=>false;\n'+sceneModule+'\nreturn {starterScene,tileIndex,safeScene};')();
+const furnitureModule=fs.readFileSync('studio/room-layout.js','utf8').replace(/^export /gm,'');
+const {planRoomFurniture}=new Function(furnitureModule+'\nreturn {planRoomFurniture};')();
+const generatedModule=fs.readFileSync('studio/generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
+const {generateScene}=new Function('starterScene','tileIndex','planRoomFurniture',generatedModule+'\nreturn {generateScene};')(
+ engine.starterScene,engine.tileIndex,planRoomFurniture);
+for(const [cols,rows] of [[8,8],[16,12],[40,26],[80,80]]){
+ for(const kind of ['forest','lake','tavern','dungeon']){
+  const generated=generateScene(kind,'size-regression',{cols,rows});
+  ok(generated.cols===cols&&generated.rows===rows,'generator respects '+cols+'x'+rows+'/'+kind);
+  ok(engine.safeScene(generated).tiles.length===cols*rows,'generated JSON valid for '+kind);
+ }
+}
+
 console.log(count+' map dimension tests passed');
