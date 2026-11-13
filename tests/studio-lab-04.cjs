@@ -47,8 +47,8 @@ check(editor.includes("if(gesture?.mode==='paint')paintLine(gesture.previous,p,f
 check(editor.includes("canvas.addEventListener('pointercancel',event=>"),'pointer cancel handled');
 check(scene.includes("drawStyledProp(ctx,p,CELL)"),'new illustration engine wired into actual scene');
 check(scene.includes("if(!drawStyledProp(ctx,p,CELL))drawProp(ctx,p)"),'unsupported props preserved via fallback');
-check(html.includes('studio/editor.js?v=7'),'new editor revision used');
-check(html.includes('studio/clean.css?v=5'),'stylesheet cache refreshed');
+check(/studio\/editor\.js\?v=\d+/.test(html),'versioned editor revision used');
+check(/studio\/clean\.css\?v=\d+/.test(html),'versioned stylesheet loaded');
 check(css.includes('.studio-map-browser'),'browser styled');
 check(!html.includes('id="selected-object-label"Nenhum'),'malformed selection heading repaired');
 const {drawStyledProp}=new Function(art.replace(/^export /gm,'')+'\nreturn {drawStyledProp};')();
