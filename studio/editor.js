@@ -1,8 +1,8 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
-import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=4';
-import {saveProject,loadProject,saveNamedProject,loadNamedProject,listNamedProjects,deleteNamedProject,createMapId,exportJSON} from './storage.js?v=2';
+import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=5';
+import {saveProject,loadProject,saveNamedProject,loadNamedProject,listNamedProjects,deleteNamedProject,createMapId,exportJSON} from './storage.js?v=3';
 import {generateScene,makeRoom,furnishRoom} from './generator.js?v=5';
-import {invalidateTerrain} from './terrain-renderer.js?v=1';
+import {invalidateTerrain} from './terrain-renderer.js?v=2';
 import {invalidateFog} from './fog-renderer.js?v=1';
 import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=2';
 import {nearestControlPoint,moveControlPoint,insertControlPoint,removeControlPoint,drawControlHandles} from './smart-paths.js?v=1';
@@ -214,6 +214,8 @@ async function deleteCurrentMap(){
   const next=maps.find(m=>m.mapId!==oldId);
   const restored=await loadNamedProject(ownerId,next.mapId);
   if(!restored)throw Error('Outro mapa salvo não foi encontrado.');
+  // Prevent a queued older write from resurrecting a deleted map.
+  await saveChain;
   await deleteNamedProject(ownerId,oldId);
   activeMapId=next.mapId;scene=safeScene(restored);rememberActive();
   history=[];future=[];clearSelection();loadBackground();fit();changed(false);
@@ -732,7 +734,8 @@ function setup(){
  $('export-json').addEventListener('click',()=>exportJSON(scene));
  $('import-json').addEventListener('click',()=>$('import-json-input').click());
  $('import-json-input').addEventListener('change',async event=>{
-  const file=event.target.files[0];if(!file)return;
+  const file=event.target.files[0];if(!file||mapSwitching)return;
+  mapSwitching=true;
   try{
    if(file.size>13e6)throw Error('Arquivo muito grande.');
    const restored=safeScene(JSON.parse(await file.text()));
@@ -743,6 +746,7 @@ function setup(){
    await refreshMapLibrary();showInspectorTab('project');
    status('Mapa importado e adicionado aos mapas salvos.');event.target.value='';
   }catch(error){status(error.message||'Projeto inválido.');}
+  finally{mapSwitching=false;event.target.value='';}
  });
  $('import-map').addEventListener('click',()=>$('import-map-input').click());
  $('import-map-input').addEventListener('change',async event=>{

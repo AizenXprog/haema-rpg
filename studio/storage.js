@@ -21,9 +21,13 @@ async function transact(mode,operation){
   let request;
   try{request=operation(tx.objectStore(STORE));}
   catch(error){reject(error);return;}
-  request.onsuccess=()=>resolve(request.result);
-  request.onerror=()=>reject(request.error);
-  tx.onerror=()=>reject(tx.error);
+  let result;
+  // A request can succeed and its transaction still abort. Only report success
+  // after IndexedDB commits the entire transaction.
+  request.onsuccess=()=>{result=request.result;};
+  request.onerror=()=>reject(request.error||Error('Operação IndexedDB falhou.'));
+  tx.oncomplete=()=>resolve(result);
+  tx.onerror=()=>reject(tx.error||Error('Transação IndexedDB falhou.'));
   tx.onabort=()=>reject(tx.error||Error('Transação cancelada.'));
  });
 }

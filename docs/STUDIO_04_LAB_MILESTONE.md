@@ -34,3 +34,11 @@ A captura enviada em 13/11/2026 mostrou:
 7. Revise mobilidade, acessibilidade e 0.1-0.3 regression tests.
 
 Site e Sistema criado por Vitor Monte.
+
+## Marco 02 — consistência de dados e margens aquáticas (LAB, não publicado)
+- O IndexedDB agora resolve operações somente após `transaction.oncomplete`. Falhas e abortos posteriores ao sucesso da requisição não são relatados como gravações concluídas.
+- Exclusões aguardam a fila de gravações, impedindo a recriação tardia de mapas excluídos.
+- Importações JSON bloqueiam simultaneamente a troca de mapa até a operação terminar.
+- O motor do terreno preserva as células e o JSON existentes, mas usa um perfil contínuo de cobertura, profundidade e espuma para diferenciar águas rasas, profundas e margens. A mistura de pigmentos separa água do solo e é determinística.
+- Testes automatizados de perfil aquático e de conclusão/aborto das transações adicionados. A aprovação visual, desempenho real e demais regressões continuam pendentes de execução e validação.
+- Publicação oficial, `main` e esquema do Supabase permanecem fora do escopo.

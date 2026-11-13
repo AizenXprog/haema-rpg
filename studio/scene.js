@@ -1,4 +1,4 @@
-import {renderTerrain} from './terrain-renderer.js?v=1';
+import {renderTerrain} from './terrain-renderer.js?v=2';
 import {renderFog} from './fog-renderer.js?v=1';
 import {drawStyledProp} from './prop-art.js?v=1';
 import {sanitizePath,drawPath} from './path-geometry.js?v=2';
