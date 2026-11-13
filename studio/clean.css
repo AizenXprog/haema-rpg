@@ -418,3 +418,9 @@ button,input{font-family:inherit}
 #selected-path-bridge-row[hidden]{display:none!important}
 #selected-path-bridge-row{font:500 11px/1.5 'DM Sans',sans-serif;color:#c6ced0;margin:5px 0}
 #selected-path-bridge-row input{accent-color:#af7a87}
+
+
+/* HÆMA LAB freeform material brushes, contextual, without floating menus */
+#terrain-brush-mode{width:100%}
+#surface-undo-stroke,#surface-clear-strokes{white-space:normal;text-align:center}
+#surface-clear-strokes{color:#d5afb3}

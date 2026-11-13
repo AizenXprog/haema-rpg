@@ -7,8 +7,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=7">
-<script type="module" src="studio/editor.js?v=9"></script>
+<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=8">
+<script type="module" src="studio/editor.js?v=10"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
@@ -120,6 +120,16 @@
 <button type="button" data-terrain="brick" aria-pressed="false"><i style="--swatch:#927160"></i>Tijolos</button>
 <button type="button" data-terrain="marble" aria-pressed="false"><i style="--swatch:#bcb4a8"></i>Mármore</button></div>
      <label class="brush-label" for="brush-size"><span>Tamanho do pincel <b id="brush-value">2</b></span><input id="brush-size" type="range" min="1" max="5" value="2"></label>
+     <label class="field-label" for="terrain-brush-mode">Modo de pintura
+      <select id="terrain-brush-mode"><option value="organic">Livre e orgânico</option><option value="cells">Células lógicas (legado)</option></select>
+     </label>
+     <label class="brush-label" for="terrain-softness"><span>Suavidade <b id="terrain-softness-value">65%</b></span>
+      <input type="range" id="terrain-softness" min="0" max="100" step="5" value="65"></label>
+     <label class="brush-label" for="terrain-opacity"><span>Opacidade <b id="terrain-opacity-value">100%</b></span>
+      <input type="range" id="terrain-opacity" min="10" max="100" step="5" value="100"></label>
+     <div class="studio-selection-actions"><button type="button" id="surface-undo-stroke">Remover último traço</button>
+      <button type="button" id="surface-clear-strokes">Limpar pintura livre</button></div>
+     <p id="terrain-brush-explanation" class="studio-panel-hint">Camada visual livre, independente da grade. As células lógicas permanecem preservadas.</p>
     </div>
     <div data-tool-panel="elevation" class="context-panel" hidden>
      <p class="context-intro">Arraste para elevar ou rebaixar o terreno. Níveis de 0 a 4.</p>

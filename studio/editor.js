@@ -6,12 +6,13 @@ import {invalidateTerrain} from './terrain-renderer.js?v=1';
 import {invalidateFog} from './fog-renderer.js?v=1';
 import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=2';
 import {nearestControlPoint,moveControlPoint,insertControlPoint,removeControlPoint,drawControlHandles} from './smart-paths.js?v=1';
+import {appendSurfacePoint,sanitizeSurfaceStroke,drawSurfaceStroke,invalidateSurfacePaint} from './surface-paint.js?v=1';
 import {generateFromDescription,interpretDescription} from './guided-generator.js?v=1';
 
 const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
 const view={x:0,y:0,zoom:1,ready:false};
-let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,pathWidth=1.25,roadMaterial='earth',showGrid=true,paintedTiles=new Set(),lastStamp=null;
+let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,terrainBrushMode='organic',surfaceSoftness=.65,surfaceOpacity=1,pathWidth=1.25,roadMaterial='earth',showGrid=true,paintedTiles=new Set(),lastStamp=null;
 let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,selectedPath=null,pathPointEditing=false,measurement=null,saveTimer=0,broadcastTimer=0;
 let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
 let activeMapId=null,mapSwitching=false,saveChain=Promise.resolve();
@@ -34,6 +35,9 @@ function render(){
  ctx.fillStyle='#0a1012';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.translate(view.x,view.y);ctx.scale(view.zoom,view.zoom);
  drawScene(ctx,scene,{grid:showGrid,image:backgroundImage});
+ if(gesture?.mode==='surface'&&gesture.points.length)
+  drawSurfaceStroke(ctx,{material:gesture.material,radius:gesture.radius,softness:gesture.softness,
+   opacity:gesture.opacity,points:gesture.points},CELL,{preview:true});
  if(tool==='select'&&selectedPath&&scene.paths?.includes(selectedPath)){
   drawPath(ctx,selectedPath,CELL,{preview:true});
   if(pathPointEditing)drawControlHandles(ctx,selectedPath,CELL,view.zoom);
@@ -308,7 +312,7 @@ function paintLine(from,to,redraw=true){
 const toolInfo={
  pan:['Navegação','Mover a câmera pelo mapa.'],
  select:['Seleção','Selecione e arraste tokens.'],
- terrain:['Materiais','Pinte o terreno com materiais.'],
+ terrain:['Materiais','Pinte livremente sem quadrados ou use a pintura por células lógicas.'],
  road:['Estrada','Desenhe trilhas e caminhos contínuos.'],
  river:['Rio','Desenhe rios sinuosos com bordas naturais.'],
  raise:['Elevação','Crie camadas de relevo.'],
@@ -385,6 +389,13 @@ canvas.addEventListener('pointerdown',event=>{
    }else gesture={mode:'noop'};
   }
   refreshSelection();
+ }else if(tool==='terrain'&&terrainBrushMode==='organic'){
+  if(!within(p))return;
+  if((scene.surfaceStrokes||[]).length>=180)return status('Limite de pintura orgânica atingido. Exporte o mapa antes de limpar traços.');
+  snapshot();
+  gesture={mode:'surface',material:terrain,radius:brush,softness:surfaceSoftness,
+   opacity:surfaceOpacity,points:[]};
+  appendSurfacePoint(gesture.points,{x:p.x,y:p.y},{spacing:.18});
  }else if(tool==='road'||tool==='river'){
   if(!within(p))return;
   gesture={mode:'path',kind:tool,width:pathWidth,material:roadMaterial,points:[]};
@@ -414,6 +425,14 @@ canvas.addEventListener('pointermove',event=>{
   moveControlPoint(gesture.path,gesture.index,p,scene.cols,scene.rows);changed(false);
  }else if(drawing&&gesture?.mode==='path'){
   addStrokePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)});
+ }else if(drawing&&gesture?.mode==='surface'){
+  const samples=typeof event.getCoalescedEvents==='function'?event.getCoalescedEvents():[event];
+  for(const sample of samples){
+   const pointSample=point(sample);
+   appendSurfacePoint(gesture.points,{x:clamp(pointSample.x,0,scene.cols),y:clamp(pointSample.y,0,scene.rows)},{spacing:.19,max:450});
+  }
+  appendSurfacePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)},{spacing:.19,max:450});
+  render();return;
  }
  else if(drawing&&gesture?.mode==='paint'){
   const samples=typeof event.getCoalescedEvents==='function'?event.getCoalescedEvents():[event];
@@ -432,6 +451,16 @@ canvas.addEventListener('pointermove',event=>{
 function release(event){
  if(!drawing)return;
  const p=point(event);
+ if(gesture?.mode==='surface'){
+  const end={x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)};
+  appendSurfacePoint(gesture.points,end,{spacing:.03,max:450});
+  const stroke=sanitizeSurfaceStroke({...gesture},scene.cols,scene.rows);
+  if(stroke){
+   scene.surfaceStrokes=scene.surfaceStrokes||[];
+   scene.surfaceStrokes.push(stroke);invalidateSurfacePaint(scene);changed();
+   status('Pincelada orgânica criada. A pintura foi salva como geometria editável.');
+  }
+ }
  if(gesture?.mode==='paint')paintLine(gesture.previous,p,false);
  if(gesture?.mode==='path'){
   addStrokePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)},{spacing:.03});
@@ -662,6 +691,29 @@ function setup(){
  });
  $('atmosphere-strength').addEventListener('change',event=>{
   snapshot();scene.atmosphere={...(scene.atmosphere||{}),strength:Number(event.target.value)/100};changed();
+ });
+ $('terrain-brush-mode').addEventListener('change',event=>{
+  terrainBrushMode=event.target.value==='cells'?'cells':'organic';
+  $('terrain-brush-explanation').textContent=terrainBrushMode==='organic'?
+   'Camada visual livre, independente da grade. As células lógicas permanecem preservadas.':
+   'Modo de compatibilidade: a pintura altera as células do terreno.';
+ });
+ $('terrain-softness').addEventListener('input',event=>{
+  surfaceSoftness=Number(event.target.value)/100;
+  $('terrain-softness-value').textContent=event.target.value+'%';
+ });
+ $('terrain-opacity').addEventListener('input',event=>{
+  surfaceOpacity=Number(event.target.value)/100;
+  $('terrain-opacity-value').textContent=event.target.value+'%';
+ });
+ $('surface-undo-stroke').addEventListener('click',()=>{
+  if(!scene.surfaceStrokes?.length)return status('Não existem pinceladas orgânicas para remover.');
+  snapshot();scene.surfaceStrokes.pop();invalidateSurfacePaint(scene);changed();
+ });
+ $('surface-clear-strokes').addEventListener('click',()=>{
+  if(!scene.surfaceStrokes?.length)return;
+  if(!confirm('Remover somente a pintura orgânica deste mapa? Você pode desfazer esta ação.'))return;
+  snapshot();scene.surfaceStrokes=[];invalidateSurfacePaint(scene);changed();
  });
  $('token-visibility').addEventListener('change',event=>{if(!selected)return;snapshot();selected.hidden=event.target.checked;changed();});
  $('reveal-all').addEventListener('click',()=>{snapshot();scene.fog.fill(0);invalidateFog(scene);changed();});
