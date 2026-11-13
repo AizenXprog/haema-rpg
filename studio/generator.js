@@ -1,32 +1,24 @@
 // HÆMA 0.2 — geração procedural própria de cenas e cômodos (sem assets externos).
-import {starterScene,tileIndex} from './scene.js?v=5';
+import {starterScene,tileIndex} from './scene.js?v=6';
 import {planRoomFurniture} from './room-layout.js?v=1';
+import {planRoomTopology} from './room-topology.js?v=1';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const seedFrom=value=>{let n=2166136261;for(const c of String(value))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0};
 const random=seed=>{let state=seed>>>0;return()=>{state=(state+0x6D2B79F5)>>>0;let t=Math.imul(state^(state>>>15),1|state);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296}};
 const addProp=(s,p)=>{if(s.props.length<500&&p.x>=0&&p.y>=0&&p.x<=s.cols&&p.y<=s.rows)s.props.push(p)};
-const wall=(s,x1,y1,x2,y2)=>{if(s.walls.length<400&&Math.hypot(x1-x2,y1-y2)>.05)s.walls.push({x1,y1,x2,y2})};
 export function makeRoom(s,opts={}){
  const x=clamp(Math.floor(opts.x??4),0,s.cols-3),y=clamp(Math.floor(opts.y??4),0,s.rows-3);
  const w=clamp(Math.floor(opts.w??8),3,s.cols-x),h=clamp(Math.floor(opts.h??7),3,s.rows-y);
  const floor=['wood','stone','marble','brick'].includes(opts.floor)?opts.floor:'wood';
- const door=opts.door===false?false:(['north','south','west','east'].includes(opts.door)?opts.door:'south');
- const midX=x+Math.floor(w/2),midY=y+Math.floor(h/2);
- for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++){s.tiles[tileIndex(s,xx,yy)]=floor;s.heights[tileIndex(s,xx,yy)]=0;}
- // Split exactly one wall segment to leave a navigable threshold.
- if(door==='north'){wall(s,x,y,midX,y);wall(s,midX+1,y,x+w,y);}
- else wall(s,x,y,x+w,y);
- if(door==='south'){wall(s,x,y+h,midX,y+h);wall(s,midX+1,y+h,x+w,y+h);}
- else wall(s,x,y+h,x+w,y+h);
- if(door==='west'){wall(s,x,y,x,midY);wall(s,x,midY+1,x,y+h);}
- else wall(s,x,y,x,y+h);
- if(door==='east'){wall(s,x+w,y,x+w,midY);wall(s,x+w,midY+1,x+w,y+h);}
- else wall(s,x+w,y,x+w,y+h);
- if(door){
-  const p=door==='north'?{x:midX+.5,y}:door==='south'?{x:midX+.5,y:y+h}:door==='west'?{x,y:midY+.5}:{x:x+w,y:midY+.5};
-  addProp(s,{...p,type:'door',rotation:door==='north'||door==='south'?0:90});
+ const door=opts.door===false?false:(['north','south','west','east','auto'].includes(opts.door)?opts.door:'south');
+ // Build connected room perimeter before painting, so failures are atomic.
+ const structure=planRoomTopology(s.walls,s.props,{x,y,w,h,door});
+ for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++){
+  s.tiles[tileIndex(s,xx,yy)]=floor;s.heights[tileIndex(s,xx,yy)]=0;
  }
- return {x,y,w,h,floor,door};
+ s.walls=structure.walls;
+ if(structure.doorProp)addProp(s,structure.doorProp);
+ return {x,y,w,h,floor,door:structure.door};
 }
 function decorateRoom(s,room,rand,kind='common'){
  const choices=planRoomFurniture(room,kind,rand,s.props);

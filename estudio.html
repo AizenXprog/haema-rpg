@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=9">
-<script type="module" src="studio/editor.js?v=12"></script>
+<script type="module" src="studio/editor.js?v=13"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
@@ -185,6 +185,16 @@
        <option value="bedroom">Quarto mobiliado</option>
        <option value="library">Biblioteca</option>
        <option value="tavern">Salão de estalagem</option>
+      </select>
+     </label>
+     <label class="field-label" for="room-door-side">Acesso e porta
+      <select id="room-door-side">
+       <option value="auto" selected>Automático — conectar ao cômodo vizinho</option>
+       <option value="north">Norte</option>
+       <option value="south">Sul</option>
+       <option value="west">Oeste</option>
+       <option value="east">Leste</option>
+       <option value="none">Sem porta</option>
       </select>
      </label>
      <button type="button" id="new-room" class="studio-wide-action">Desenhar cômodo</button>

@@ -1,0 +1,48 @@
+'use strict';
+const fs=require('node:fs'),assert=require('node:assert/strict'),cp=require('node:child_process');
+const src=fs.readFileSync('studio/room-topology.js','utf8').replace(/^export /gm,'');
+const {planRoomTopology}=new Function(src+'\nreturn {planRoomTopology};')();
+let checks=0;const ok=(x,label)=>{assert.ok(x,label);checks++};
+const lineCoverage=(walls,x,y)=>{
+ const h=walls.filter(w=>w.y1===y&&w.y2===y&&Math.min(w.x1,w.x2)<=x&&Math.max(w.x1,w.x2)>=x+1).length;
+ const v=walls.filter(w=>w.x1===x&&w.x2===x&&Math.min(w.y1,w.y2)<=y&&Math.max(w.y1,w.y2)>=y+1).length;
+ return {h,v};
+};
+const roomA={x:2,y:2,w:6,h:6,door:'east'};
+const a=planRoomTopology([],[],roomA);
+ok(a.door==='east'&&a.doorProp?.x===8&&a.doorProp?.y===5.5,'first room east door correctly located');
+ok(lineCoverage(a.walls,8,5).v===0,'east door opens a real wall segment');
+const roomB={x:8,y:2,w:6,h:6,door:'auto'};
+const b=planRoomTopology(a.walls,[a.doorProp],roomB);
+ok(b.door==='west','new room recognizes a neighbouring wall');
+ok(b.doorProp===null,'shared doorway reuses existing prop instead of duplicating');
+ok(lineCoverage(b.walls,8,5).v===0,'shared opening remains open after constructing second room');
+for(let y=2;y<8;y++){
+ if(y===5)continue;
+ ok(lineCoverage(b.walls,8,y).v===1,'shared wall is a single segment for y='+y);
+}
+const repeated=planRoomTopology(b.walls,[a.doorProp],roomB);
+ok(JSON.stringify(b.walls)===JSON.stringify(repeated.walls),'rebuilding same room is idempotent');
+ok(repeated.doorProp===null,'repeated room does not introduce a duplicate door');
+const roomC={x:8,y:8,w:6,h:6,door:'north'};
+const c=planRoomTopology(b.walls,[a.doorProp],roomC);
+ok(c.door==='north'&&c.doorProp?.x===11.5,'manual north door supported');
+ok(lineCoverage(c.walls,11,8).h===0,'new opening cuts an existing north wall');
+const diag={x1:1.5,y1:1,x2:4.5,y2:2.5};
+const withFree=planRoomTopology([...a.walls,diag],[a.doorProp],roomB);
+ok(withFree.walls.some(w=>JSON.stringify(w)===JSON.stringify(diag)),'freehand diagonal geometry unchanged');
+const noDoor=planRoomTopology([],[],{x:1,y:1,w:4,h:4,door:false});
+ok(noDoor.doorProp===null&&lineCoverage(noDoor.walls,1,2).v===1,'doorless rooms remain closed');
+const oldWalls=[{x1:2,y1:3,x2:10,y2:3}];
+const opened=planRoomTopology(oldWalls,[],{x:3,y:3,w:6,h:4,door:'north'});
+ok(lineCoverage(opened.walls,6,3).h===0,'new door cuts a pre-existing straight wall');
+ok(lineCoverage(opened.walls,4,3).h===1,'rest of pre-existing wall preserved');
+assert.throws(()=>planRoomTopology([],[],roomA,{maxWalls:1}),/Limite de paredes/);checks++;
+assert.throws(()=>planRoomTopology([],Array(500).fill({type:'rock'}),roomA),/Limite de objetos/);checks++;
+const html=fs.readFileSync('estudio.html','utf8'),editor=fs.readFileSync('studio/editor.js','utf8'),generator=fs.readFileSync('studio/generator.js','utf8');
+ok(html.includes('id="room-door-side"'),'UI provides contextual entrance control');
+ok(editor.includes("door:doorChoice==='none'?false:doorChoice"),'door choice wired to construction');
+ok(generator.includes('planRoomTopology(s.walls,s.props'),'new topology used before floor construction');
+ok(!src.includes('fetch('),'room topology is entirely local');
+cp.execFileSync('node',['--check','studio/room-topology.js']);checks++;
+console.log(checks+' shared-wall, entrance and legacy geometry checks passed');

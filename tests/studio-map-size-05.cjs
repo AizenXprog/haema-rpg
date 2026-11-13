@@ -29,8 +29,10 @@ const engine=new Function('const drawStyledProp=()=>false;\n'+sceneModule+'\nret
 const furnitureModule=fs.readFileSync('studio/room-layout.js','utf8').replace(/^export /gm,'');
 const {planRoomFurniture}=new Function(furnitureModule+'\nreturn {planRoomFurniture};')();
 const generatedModule=fs.readFileSync('studio/generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
-const {generateScene}=new Function('starterScene','tileIndex','planRoomFurniture',generatedModule+'\nreturn {generateScene};')(
- engine.starterScene,engine.tileIndex,planRoomFurniture);
+const topologySource=fs.readFileSync('studio/room-topology.js','utf8').replace(/^export /gm,'');
+const {planRoomTopology}=new Function(topologySource+'\nreturn {planRoomTopology};')();
+const {generateScene}=new Function('starterScene','tileIndex','planRoomFurniture','planRoomTopology',generatedModule+'\nreturn {generateScene};')(
+ engine.starterScene,engine.tileIndex,planRoomFurniture,planRoomTopology);
 for(const [cols,rows] of [[8,8],[16,12],[40,26],[80,80]]){
  for(const kind of ['forest','lake','tavern','dungeon']){
   const generated=generateScene(kind,'size-regression',{cols,rows});

@@ -8,7 +8,9 @@ const engine=new Function('const drawStyledProp=()=>false;\n'+src+'\nreturn {sta
 const genSource=fs.readFileSync('studio/generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
 const layoutSource=fs.readFileSync('studio/room-layout.js','utf8').replace(/^export /gm,'');
 const {planRoomFurniture}=new Function(layoutSource+'\nreturn {planRoomFurniture};')();
-const {generateScene,makeRoom}=new Function('starterScene','tileIndex','planRoomFurniture',genSource+'\nreturn {generateScene,makeRoom};')(engine.starterScene,engine.tileIndex,planRoomFurniture);
+const topologySource=fs.readFileSync('studio/room-topology.js','utf8').replace(/^export /gm,'');
+const {planRoomTopology}=new Function(topologySource+'\nreturn {planRoomTopology};')();
+const {generateScene,makeRoom}=new Function('starterScene','tileIndex','planRoomFurniture','planRoomTopology',genSource+'\nreturn {generateScene,makeRoom};')(engine.starterScene,engine.tileIndex,planRoomFurniture,planRoomTopology);
 for(const kind of ['forest','lake','tavern','dungeon']){
  const a=generateScene(kind,'seed-test'),b=generateScene(kind,'seed-test'),safe=engine.safeScene(a);
  ok(JSON.stringify(a)===JSON.stringify(b),kind+' deterministic seed');

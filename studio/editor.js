@@ -1,13 +1,13 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
-import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=5';
+import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=6';
 import {saveProject,loadProject,saveNamedProject,loadNamedProject,listNamedProjects,deleteNamedProject,createMapId,exportJSON} from './storage.js?v=3';
-import {generateScene,makeRoom,furnishRoom} from './generator.js?v=6';
-import {invalidateTerrain} from './terrain-renderer.js?v=2';
+import {generateScene,makeRoom,furnishRoom} from './generator.js?v=7';
+import {invalidateTerrain} from './terrain-renderer.js?v=3';
 import {invalidateFog} from './fog-renderer.js?v=1';
 import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=2';
 import {nearestControlPoint,moveControlPoint,insertControlPoint,removeControlPoint,drawControlHandles} from './smart-paths.js?v=1';
 import {appendSurfacePoint,sanitizeSurfaceStroke,drawSurfaceStroke,invalidateSurfacePaint} from './surface-paint.js?v=1';
-import {generateFromDescription,interpretDescription} from './guided-generator.js?v=1';
+import {generateFromDescription,interpretDescription} from './guided-generator.js?v=2';
 import {validateMapSize,createEmptyMap,resizeMapScene} from './map-size.js?v=1';
 import {createFrameScheduler} from './frame-scheduler.js?v=1';
 
@@ -509,10 +509,15 @@ function release(event){
   const xa=Math.floor(Math.min(gesture.startX,p.x)),ya=Math.floor(Math.min(gesture.startY,p.y));
   const xb=Math.ceil(Math.max(gesture.startX,p.x)),yb=Math.ceil(Math.max(gesture.startY,p.y));
   if(xb-xa>=3&&yb-ya>=3){
-   const room=makeRoom(scene,{x:xa,y:ya,w:xb-xa,h:yb-ya,floor:terrain==='wood'||terrain==='marble'||terrain==='brick'?terrain:'wood'});
-   const placed=furnishRoom(scene,room,$('room-preset').value,scene.name);
-   invalidateTerrain(scene,xa,ya,xb+1,yb+1,CELL);
-   changed();if(placed)status('Cômodo criado com '+placed+' objetos editáveis.');
+   try{
+    const doorChoice=$('room-door-side').value;
+    const room=makeRoom(scene,{x:xa,y:ya,w:xb-xa,h:yb-ya,
+     floor:terrain==='wood'||terrain==='marble'||terrain==='brick'?terrain:'wood',
+     door:doorChoice==='none'?false:doorChoice});
+    const placed=furnishRoom(scene,room,$('room-preset').value,scene.name);
+    invalidateTerrain(scene,xa,ya,xb+1,yb+1,CELL);
+    changed();status('Cômodo conectado: '+(room.door||'sem porta')+'. '+placed+' móveis posicionados.');
+   }catch(error){status(error.message||'Não foi possível construir o cômodo.');}
   }else status('Arraste um cômodo com pelo menos três células de largura e altura.');
  }
  if(gesture?.mode==='paint')changed();
