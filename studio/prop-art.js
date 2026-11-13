@@ -118,12 +118,20 @@ function chair(ctx){
  ctx.fillStyle='#aa8563';ctx.fillRect(-9,-7,18,14);
  ctx.strokeStyle='#3b2820';ctx.lineWidth=5;stroke(ctx,-12,-10,12,-10,'#2b2420',4);
 }
-export function drawStyledProp(ctx,p,cell=48){
- if(!p||!['tree','bush','rock','pillar','bed','table','chair','shelf','cabinet','crate','chest','barrel'].includes(p.type))return false;
- const random=rng(hash(p.x,p.y,p.type));
- ctx.save();ctx.translate(p.x*cell,p.y*cell);
- const a=Number(p.rotation)||0;
- ctx.rotate(a* Math.PI/180);
+// Sprite memoization retains each illustrated object's stable seeded variation
+// while avoiding dozens of Canvas paths per object on every pointermove.
+const spriteCache=new Map(),SPRITE_SIZE=112,SPRITE_LIMIT=560;
+function createSprite(p,seed){
+ if(typeof document==='undefined')return null;
+ const canvas=document.createElement('canvas');
+ canvas.width=SPRITE_SIZE;canvas.height=SPRITE_SIZE;
+ const c=canvas.getContext('2d');
+ if(!c)return null;
+ c.translate(SPRITE_SIZE/2,SPRITE_SIZE/2);
+ paintPropArt(c,p,rng(seed));
+ return canvas;
+}
+function paintPropArt(ctx,p,random){
  if(p.type==='tree'){
   const rad=20+random()*10;
   trunk(ctx,random);
@@ -136,5 +144,27 @@ export function drawStyledProp(ctx,p,cell=48){
  else if(p.type==='shelf'||p.type==='cabinet')shelf(ctx,random);
  else if(p.type==='chest'||p.type==='crate')chest(ctx,random,p.type==='crate');
  else if(p.type==='barrel')barrel(ctx,random);
+
+}
+export function drawStyledProp(ctx,p,cell=48){
+ if(!p||!['tree','bush','rock','pillar','bed','table','chair','shelf','cabinet','crate','chest','barrel'].includes(p.type))return false;
+ const seed=hash(p.x,p.y,p.type),key=p.type+':'+seed;
+ let sprite=null;
+ if(ctx?.drawImage&&typeof document!=='undefined'){
+  sprite=spriteCache.get(key);
+  if(sprite){
+   spriteCache.delete(key);spriteCache.set(key,sprite);
+  }else{
+   sprite=createSprite(p,seed);
+   if(sprite){
+    spriteCache.set(key,sprite);
+    if(spriteCache.size>SPRITE_LIMIT)spriteCache.delete(spriteCache.keys().next().value);
+   }
+  }
+ }
+ ctx.save();ctx.translate(p.x*cell,p.y*cell);
+ ctx.rotate((Number(p.rotation)||0)*Math.PI/180);
+ if(sprite)ctx.drawImage(sprite,-SPRITE_SIZE/2,-SPRITE_SIZE/2);
+ else paintPropArt(ctx,p,rng(seed));
  ctx.restore();return true;
 }

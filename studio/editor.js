@@ -1,13 +1,13 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
 import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=6';
 import {saveProject,loadProject,saveNamedProject,loadNamedProject,listNamedProjects,deleteNamedProject,createMapId,exportJSON} from './storage.js?v=3';
-import {generateScene,makeRoom,furnishRoom} from './generator.js?v=7';
+import {generateScene,makeRoom,furnishRoom} from './generator.js?v=8';
 import {invalidateTerrain} from './terrain-renderer.js?v=3';
 import {invalidateFog} from './fog-renderer.js?v=1';
 import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=2';
 import {nearestControlPoint,moveControlPoint,insertControlPoint,removeControlPoint,drawControlHandles} from './smart-paths.js?v=1';
 import {appendSurfacePoint,sanitizeSurfaceStroke,drawSurfaceStroke,invalidateSurfacePaint} from './surface-paint.js?v=1';
-import {generateFromDescription,interpretDescription} from './guided-generator.js?v=2';
+import {generateFromDescription,interpretDescription} from './guided-generator.js?v=3';
 import {validateMapSize,createEmptyMap,resizeMapScene} from './map-size.js?v=1';
 import {createFrameScheduler} from './frame-scheduler.js?v=1';
 
@@ -36,7 +36,12 @@ function render(){
  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.fillStyle='#0a1012';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.translate(view.x,view.y);ctx.scale(view.zoom,view.zoom);
- drawScene(ctx,scene,{grid:showGrid,image:backgroundImage});
+ const viewport={
+  x0:-view.x/view.zoom,y0:-view.y/view.zoom,
+  x1:(canvas.clientWidth-view.x)/view.zoom,
+  y1:(canvas.clientHeight-view.y)/view.zoom
+ };
+ drawScene(ctx,scene,{grid:showGrid,image:backgroundImage,viewport});
  if(gesture?.mode==='surface'&&gesture.points.length)
   drawSurfaceStroke(ctx,{material:gesture.material,radius:gesture.radius,softness:gesture.softness,
    opacity:gesture.opacity,points:gesture.points},CELL,{preview:true});
