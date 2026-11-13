@@ -19,7 +19,12 @@ jobs:
       - name: Run Studio regression suite
         run: |
           set -euo pipefail
+          failures=0
           for test in tests/studio-*.cjs; do
             echo "Running $test"
-            node "$test"
+            if ! node "$test"; then
+              failures=$((failures+1))
+            fi
           done
+          echo "Studio suites with failures: $failures"
+          test "$failures" -eq 0
