@@ -7,8 +7,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=8">
-<script type="module" src="studio/editor.js?v=11"></script>
+<link rel="stylesheet" href="studio/studio.css?v=3"><link rel="stylesheet" href="studio/clean.css?v=9">
+<script type="module" src="studio/editor.js?v=13"></script>
 </head>
 <body class="studio-page">
 <div id="studio-gate" class="studio-gate" aria-live="polite">
@@ -20,7 +20,7 @@
 </div>
 <div id="studio-workspace" hidden>
  <header class="studio-topbar">
-  <div class="studio-brand"><a href="portal.html" aria-label="Voltar ao Portal">H<span>Æ</span>MA</a><i></i><div><strong>ESTÚDIO</strong><small>MAPMAKER · LAB 0.4</small></div></div>
+  <div class="studio-brand"><a href="portal.html" aria-label="Voltar ao Portal">H<span>Æ</span>MA</a><i></i><div><strong>ESTÚDIO</strong><small>MAPMAKER · LAB 0.5</small></div></div>
   <label class="scene-name-label"><span>PROJETO</span><input id="scene-name" type="text" maxlength="80" value="Ruínas do caminho" aria-label="Nome do mapa"></label>
   <div class="studio-actions"><button type="button" id="open-map-library" title="Abrir mapas salvos neste navegador">Meus mapas</button><button type="button" id="save-local" class="studio-save">Salvar</button><button type="button" id="open-projection" class="studio-primary">Projetar <span aria-hidden="true">↗</span></button></div>
  </header>
@@ -187,6 +187,16 @@
        <option value="tavern">Salão de estalagem</option>
       </select>
      </label>
+     <label class="field-label" for="room-door-side">Acesso e porta
+      <select id="room-door-side">
+       <option value="auto" selected>Automático — conectar ao cômodo vizinho</option>
+       <option value="north">Norte</option>
+       <option value="south">Sul</option>
+       <option value="west">Oeste</option>
+       <option value="east">Leste</option>
+       <option value="none">Sem porta</option>
+      </select>
+     </label>
      <button type="button" id="new-room" class="studio-wide-action">Desenhar cômodo</button>
      <p class="studio-panel-hint">Os móveis gerados continuam independentes: você pode movê-los, girá-los ou apagá-los.</p>
     </div>
@@ -237,6 +247,25 @@
      <div class="studio-map-actions">
       <button type="button" id="new-local-map" class="studio-map-primary">+ Novo mapa</button>
       <button type="button" id="duplicate-local-map">Duplicar</button>
+     </div>
+     <div class="studio-size-editor">
+      <label class="field-label" for="map-size-preset">Tamanho do mapa (células)
+       <select id="map-size-preset" aria-label="Tamanho do mapa">
+        <option value="12x8">Compacto · 12 × 8</option>
+        <option value="20x12">Mesa · 20 × 12</option>
+        <option value="28x18" selected>Padrão · 28 × 18</option>
+        <option value="40x26">Amplo · 40 × 26</option>
+        <option value="60x40">Grande · 60 × 40</option>
+        <option value="80x80">Máximo · 80 × 80</option>
+        <option value="custom">Personalizado</option>
+       </select>
+      </label>
+      <div class="studio-size-fields">
+       <label>Colunas<input id="map-width" type="number" min="8" max="80" step="1" value="28" inputmode="numeric"></label>
+       <label>Linhas<input id="map-height" type="number" min="8" max="80" step="1" value="18" inputmode="numeric"></label>
+      </div>
+      <button type="button" id="resize-local-map" class="studio-wide-action">Aplicar tamanho ao mapa aberto</button>
+      <p class="studio-panel-hint">Novos mapas usam estas dimensões. Ao ampliar, o mapa mantém a posição original; reduzir exige confirmação e pode cortar conteúdo. Faça backup JSON antes.</p>
      </div>
      <div class="studio-map-browser" id="local-map-browser" role="list" aria-label="Mapas salvos">
       <p class="studio-panel-hint">Carregando mapas locais…</p>

@@ -1,5 +1,5 @@
 // Gerador GUIADO e LOCAL do HÆMA: regras interpretam palavras-chave, não usa IA nem envia texto.
-import {generateScene} from './generator.js?v=5';
+import {generateScene} from './generator.js?v=7';
 import {makePath} from './path-geometry.js?v=2';
 const normalize=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 const has=(s,...words)=>words.some(word=>s.includes(word));
@@ -45,10 +45,10 @@ function curve(cols,rows,seed,kind,axis='vertical'){
  }
  return pts;
 }
-export function generateFromDescription(description,seed=''){
+export function generateFromDescription(description,seed='',dimensions={}){
  const spec=interpretDescription(description);
  const actualSeed=String(seed||spec.description).slice(0,80);
- const scene=generateScene(spec.base,actualSeed);
+ const scene=generateScene(spec.base,actualSeed,dimensions);
  scene.paths=scene.paths||[];
  if(spec.road&&scene.paths.length<90)scene.paths.push(makePath('road',curve(scene.cols,scene.rows,actualSeed,'road','horizontal'),{width:1.15,material:'earth',cols:scene.cols,rows:scene.rows}));
  if(spec.river&&scene.paths.length<90)scene.paths.push(makePath('river',curve(scene.cols,scene.rows,actualSeed,'river'),{width:1.45,cols:scene.cols,rows:scene.rows}));
@@ -70,7 +70,7 @@ export function generateFromDescription(description,seed=''){
  }
  if(spec.requestedLibrary&&spec.base==='dungeon'){
   scene.props=scene.props.filter(p=>!['bed','rug','chest'].includes(p.type));
-  for(let j=0;j<3;j++)scene.props.push({x:21+j*1.65,y:3.6,type:'shelf',rotation:90});
+  for(let j=0;j<3;j++)scene.props.push({x:(21+j*1.65)*scene.cols/28,y:3.6*scene.rows/18,type:'shelf',rotation:90});
  }
  scene.name='Cena guiada · '+spec.description.slice(0,58);
  return {scene,plan:spec};

@@ -22,7 +22,7 @@ for(const file of ['studio/scene.js','studio/storage.js','studio/editor.js','stu
 }
 const editor=fs.readFileSync('studio/editor.js','utf8'),projection=fs.readFileSync('studio/projector.js','utf8');
 check(editor.includes('drawScene(drawingContext,scene,{player:true'),'screenshot masks fog in renderer');
-check(editor.includes("toDataURL('image/webp'"),'only projected pixels are transmitted');
+check(editor.includes("toBlob(resolve,'image/webp'")&&editor.includes("imageBlob:blob"),'player-only compressed image is transmitted');
 check(projection.includes("data?.type!=='frame'"),'projection only accepts frames');
 check(projection.includes("type:'ready'"),'projection handshakes with master');
 const auth=fs.readFileSync('api/studio-access.js','utf8');

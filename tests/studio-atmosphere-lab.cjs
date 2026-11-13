@@ -45,8 +45,8 @@ check(html.includes('id="atmosphere-preset"')&&html.includes('id="atmosphere-str
 check(editor.includes("scene.atmosphere={...(scene.atmosphere||{}),preset:event.target.value}"),'preset UI changes scene');
 check(editor.includes("scene.atmosphere={...(scene.atmosphere||{}),strength:Number(event.target.value)/100}"),'strength control saves');
 check(engine.indexOf("drawAtmosphere(ctx,scene,{cell:CELL,player,visible:exposed})")<engine.indexOf("renderFog(ctx,scene,{player,cell:CELL})"),'lighting drawn under privacy fog');
-check(editor.includes("from './scene.js?v=4'")&&gen.includes("from './scene.js?v=4'"),'scene imports share version');
-check(editor.includes("from './generator.js?v=5'")&&guided.includes("from './generator.js?v=5'"),'generator imports share version');
+check(editor.includes("from './scene.js?v=6'")&&gen.includes("from './scene.js?v=6'"),'scene imports share version');
+check(editor.includes("from './generator.js?v=7'")&&guided.includes("from './generator.js?v=7'"),'generator imports share version');
 for(const path of ['studio/scene.js','studio/atmosphere.js','studio/generator.js','studio/editor.js']){
  cp.execFileSync('node',['--check',path]);tests++;
 }

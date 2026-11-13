@@ -37,6 +37,34 @@ export function shorelineProfile(coverage){
  const foam=Math.pow(Math.sin(Math.PI*band),4)*(1-depth*.55);
  return {blend,depth,foam};
 }
+// Low-cost, deterministic fine detail in world space. No repeating texture files
+// or tile-local noise; architectural materials expose their own coherent pattern.
+export function materialRelief(material,x,y,low=.5,mid=.5,fine=.5){
+ const mod=(v,n)=>((v%n)+n)%n;
+ if(material==='grass')return (mid-.5)*8+(fine>.82?6:-1);
+ if(material==='earth')return (mid-.5)*11+(fine>.88?5:-2);
+ if(material==='sand')return Math.sin(y*.115+low*8)*4+(fine-.5)*5;
+ if(material==='stone'){
+  const vein=Math.abs(Math.sin(x*.046+y*.073+low*5));
+  return (mid-.5)*9+(vein>.984?-16:1);
+ }
+ if(material==='wood'){
+  const row=Math.floor(y/13.5),seam=mod(y,13.5);
+  const end=mod(x+((row%2+2)%2)*48,96);
+  const grain=Math.sin(y*.48+low*5)*2.8+(mid-.5)*5;
+  return (seam<.85||end<1&&seam<11?-17:0)+grain;
+ }
+ if(material==='brick'){
+  const row=Math.floor(y/16),seam=mod(y,16);
+  const joint=mod(x+((row%2+2)%2)*17,34);
+  return (seam<1.4||joint<1.25?-17:1)+(mid-.5)*6;
+ }
+ if(material==='marble'){
+  const vein=Math.abs(Math.sin(x*.055+y*.028+low*9+mid*3));
+  return vein>.955?-20:(mid-.5)*4+2;
+ }
+ return 0;
+}
 function sourceAt(scene,x,y){
  const xx=clamp(x,0,scene.cols-1),yy=clamp(y,0,scene.rows-1);
  const i=yy*scene.cols+xx;
@@ -83,15 +111,10 @@ export function sampleTerrain(scene,worldX,worldY,cell=48){
  const fine=random2(Math.floor(worldX/2),Math.floor(worldY/2));
  // Details are continuous across same-material cells, not seeded per tile.
  let shade=(low-.5)*24+(mid-.5)*11+(fine-.5)*7+h*6;
- const woodGrain=Math.cos((worldY+low*5)*Math.PI/6.9);
- const stoneGrain=mid;
  const wave=Math.sin(worldY*.095+worldX*.025+low*4.1);
  const material=sourceAt(scene,clamp(Math.floor(u),0,scene.cols-1),clamp(Math.floor(v),0,scene.rows-1)).type;
- if(material==='wood')shade+=woodGrain*5;
- if(material==='marble')shade+=(Math.sin(worldX*.036+worldY*.02+low*9)> .94?-18:3);
- if(material==='stone'||material==='brick')shade+=(stoneGrain-.5)*12;
+ shade+=materialRelief(material,worldX,worldY,low,mid,fine);
  if(water>.02)shade+=water*(wave*2.4+(mid-.5)*8);
- if(material==='sand')shade+=Math.sin(worldX*.035+worldY*.12+low*5)*3;
  // Coast highlights now follow the organic water coverage, not tile outlines.
  // Elevation follows the warped field. No straight rectangular cliff strokes.
  const elevationContour=h>0&&Math.abs(h-Math.round(h))<.075?-4:0;

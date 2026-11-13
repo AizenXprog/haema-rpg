@@ -27,8 +27,10 @@ ok(!validateFurniture({x:6,y:4,type:'table'},large,[{x:6.5,y:4,type:'table'}]),'
 const entry=roomDoorPoint(large);
 ok(entry.side==='south'&&entry.x>large.x&&entry.x<large.x+large.w,'doorway calculated from room geometry');
 ok(blocksEntrance({type:'table',x:entry.x,y:entry.y-1},large),'door access path reserved');
-const {makeRoom,furnishRoom}=new Function('planRoomFurniture','starterScene','tileIndex',
- fs.readFileSync('studio/generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'')+'\nreturn {makeRoom,furnishRoom};')(planRoomFurniture,()=>({}),()=>0);
+const topologySource=fs.readFileSync('studio/room-topology.js','utf8').replace(/^export /gm,'');
+const {planRoomTopology}=new Function(topologySource+'\nreturn {planRoomTopology};')();
+const {makeRoom,furnishRoom}=new Function('planRoomFurniture','starterScene','tileIndex','planRoomTopology',
+ fs.readFileSync('studio/generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'')+'\nreturn {makeRoom,furnishRoom};')(planRoomFurniture,()=>({}),()=>0,planRoomTopology);
 ok(typeof furnishRoom==='function'&&typeof makeRoom==='function','new planner integrated into generator');
 for(const path of ['studio/room-layout.js','studio/generator.js']){cp.execFileSync('node',['--check',path]);checks++;}
 console.log(checks+' spatial room furnishing checks passed');

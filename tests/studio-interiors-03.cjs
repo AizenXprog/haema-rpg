@@ -6,7 +6,9 @@ const {starterScene,safeScene,tileIndex}=new Function(sceneSource+'\nreturn {sta
 const genSource=fs.readFileSync('studio/generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
 const layoutSource=fs.readFileSync('studio/room-layout.js','utf8').replace(/^export /gm,'');
 const {planRoomFurniture}=new Function(layoutSource+'\nreturn {planRoomFurniture};')();
-const {makeRoom,furnishRoom}=new Function('starterScene','tileIndex','planRoomFurniture',genSource+'\nreturn {makeRoom,furnishRoom};')(starterScene,tileIndex,planRoomFurniture);
+const topologySource=fs.readFileSync('studio/room-topology.js','utf8').replace(/^export /gm,'');
+const {planRoomTopology}=new Function(topologySource+'\nreturn {planRoomTopology};')();
+const {makeRoom,furnishRoom}=new Function('starterScene','tileIndex','planRoomFurniture','planRoomTopology',genSource+'\nreturn {makeRoom,furnishRoom};')(starterScene,tileIndex,planRoomFurniture,planRoomTopology);
 const types=['empty','bedroom','library','tavern'];
 for(const type of types){
  const s=starterScene();s.props=[];s.walls=[];

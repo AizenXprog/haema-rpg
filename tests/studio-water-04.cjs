@@ -20,7 +20,7 @@ for(let y=0;y<576;y+=24)for(let x=0;x<576;x+=24){
  ok(rgb.length===3&&rgb.every(c=>Number.isInteger(c)&&c>=0&&c<=255),'terrain RGB in 0..255');
 }
 const sceneModule=fs.readFileSync('studio/scene.js','utf8');
-ok(sceneModule.includes("terrain-renderer.js?v=2"),'live scene loads updated terrain renderer');
+ok(sceneModule.includes("terrain-renderer.js?v=3"),'live scene loads updated terrain renderer');
 ok(sceneModule.indexOf('renderTerrain(ctx,scene,CELL)')<sceneModule.indexOf('renderFog(ctx,scene,{player,cell:CELL})'),'water is masked by player fog');
 cp.execFileSync('node',['--check','studio/terrain-renderer.js']);checks++;
 console.log(checks+' organic shoreline and water depth checks passed');
