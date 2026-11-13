@@ -1,15 +1,16 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
-import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=6';
+import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=7';
 import {saveProject,loadProject,saveNamedProject,loadNamedProject,listNamedProjects,deleteNamedProject,createMapId,exportJSON} from './storage.js?v=3';
 import {generateScene,makeRoom,furnishRoom} from './generator.js?v=8';
 import {invalidateTerrain} from './terrain-renderer.js?v=3';
-import {invalidateFog} from './fog-renderer.js?v=1';
+import {invalidateFog} from './fog-renderer.js?v=2';
 import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=2';
 import {nearestControlPoint,moveControlPoint,insertControlPoint,removeControlPoint,drawControlHandles} from './smart-paths.js?v=1';
 import {appendSurfacePoint,sanitizeSurfaceStroke,drawSurfaceStroke,invalidateSurfacePaint} from './surface-paint.js?v=1';
 import {generateFromDescription,interpretDescription} from './guided-generator.js?v=3';
 import {validateMapSize,createEmptyMap,resizeMapScene} from './map-size.js?v=1';
 import {createFrameScheduler} from './frame-scheduler.js?v=1';
+import {createRenderScheduler} from './render-scheduler.js?v=1';
 
 const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
@@ -31,7 +32,10 @@ function resize(){
  canvas.width=Math.max(1,Math.round(r.width*dpr));canvas.height=Math.max(1,Math.round(r.height*dpr));
  if(!view.ready)fit();else render();
 }
-function render(){
+// Coalesce high-frequency pointer events to one scene paint per display frame.
+const canvasRender=createRenderScheduler(paintFrame);
+function render(){canvasRender.request();}
+function paintFrame(){
  const dpr=canvas.width/Math.max(1,canvas.clientWidth);
  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.fillStyle='#0a1012';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
@@ -834,7 +838,7 @@ function setup(){
  };
  setInterval(enforceAccess,60000);
  document.addEventListener('haema:auth',enforceAccess);
- window.addEventListener('pagehide',()=>{projectionFrames.dispose();if(channel){channel.postMessage({type:'blackout'});channel.close();}clearTimeout(saveTimer);});
+ window.addEventListener('pagehide',()=>{canvasRender.dispose();projectionFrames.dispose();if(channel){channel.postMessage({type:'blackout'});channel.close();}clearTimeout(saveTimer);});
  new ResizeObserver(resize).observe(canvas.parentElement);
  setTool('pan');
 }
