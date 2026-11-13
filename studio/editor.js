@@ -175,7 +175,7 @@ async function createLocalMap({duplicate=false}={}){
  if(mapSwitching)return;mapSwitching=true;clearTimeout(saveTimer);
  try{
   const answer=prompt(duplicate?'Nome da cópia:':'Nome do novo mapa:',duplicate?scene.name+' — cópia':'Novo mapa');
-  if(answer===null)return;
+  if(answer===null){saveLater();return;}
   const name=answer.trim().slice(0,80)||'Mapa sem título';
   await persistCurrent();
   const next=duplicate?safeScene({...scene,name}):blankMap(name);
@@ -194,8 +194,8 @@ async function deleteCurrentMap(){
  mapSwitching=true;clearTimeout(saveTimer);
  try{
   const maps=await listNamedProjects(ownerId);
-  if(maps.length<=1){status('Mantenha pelo menos um mapa salvo.');return;}
-  if(!confirm('Excluir somente o mapa "'+scene.name+'" deste navegador? Exporte JSON antes, se quiser um backup.'))return;
+  if(maps.length<=1){saveLater();status('Mantenha pelo menos um mapa salvo.');return;}
+  if(!confirm('Excluir somente o mapa "'+scene.name+'" deste navegador? Exporte JSON antes, se quiser um backup.')){saveLater();return;}
   const oldId=activeMapId;
   const next=maps.find(m=>m.mapId!==oldId);
   const restored=await loadNamedProject(ownerId,next.mapId);

@@ -29,6 +29,19 @@ check(editor.includes("clearTimeout(saveTimer)"),'pending save managed when swit
 check(editor.includes('getCoalescedEvents'),'coalesced mouse/stylus samples supported');
 check(editor.includes('paintLine(gesture.previous,q,false)'),'interpolates movement');
 check(editor.includes('Math.ceil(distance/.15)'),'brush stamps spaced under one cell');
+const section=editor.slice(editor.indexOf('function paintLine('),editor.indexOf('// Only relevant controls'));
+const stamps=[];let updates=0;
+const paintLine=new Function('paint','changed',section+'\nreturn paintLine;')(
+ (point,update)=>{stamps.push({...point});assert.equal(update,false);},()=>{updates++;}
+);
+paintLine({x:1,y:2},{x:9,y:2});
+check(stamps.length>=53,'long drag interpolated across many sub-cell stamps');
+check(stamps[0].x>1&&stamps[stamps.length-1].x===9,'stroke reaches end precisely');
+check(stamps.every((p,i)=>i===0||p.x-stamps[i-1].x<=.151),'no gaps in brush path');
+check(updates===1,'brush rerenders only once per interpolated pointer event');
+stamps.length=0;updates=0;
+paintLine({x:0,y:0},{x:5,y:0},false);
+check(updates===0,'coalesced samples do not trigger redundant full renders');
 check(editor.includes("if(tool==='token'||tool==='prop'){gesture={mode:'stamp'}"),'props and tokens are not painted repeatedly on drag');
 check(editor.includes("if(gesture?.mode==='paint')paintLine(gesture.previous,p,false)"),'pointer up paints the final segment');
 check(editor.includes("canvas.addEventListener('pointercancel',event=>"),'pointer cancel handled');

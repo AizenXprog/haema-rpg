@@ -4,7 +4,7 @@ let checks=0;const ok=(v,msg)=>{assert.ok(v,msg);checks++};
 const geometrySource=fs.readFileSync('studio/path-geometry.js','utf8').replace(/^export /gm,'');
 const g=new Function(geometrySource+'\nreturn {sanitizePath,makePath,simplifyPoints,addStrokePoint,nearestPath,movePath,drawPath};')();
 const sceneSource=fs.readFileSync('studio/scene.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
-const sceneApi=new Function('sanitizePath','drawPath',sceneSource+'\nreturn {starterScene,safeScene,tileIndex,drawScene};')(g.sanitizePath,g.drawPath);
+const sceneApi=new Function('sanitizePath','drawPath','drawStyledProp',sceneSource+'\nreturn {starterScene,safeScene,tileIndex,drawScene};')(g.sanitizePath,g.drawPath,()=>false);
 const genSource=fs.readFileSync('studio/generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
 const gen=new Function('starterScene','tileIndex',genSource+'\nreturn {generateScene,makeRoom,furnishRoom};')(sceneApi.starterScene,sceneApi.tileIndex);
 const promptSource=fs.readFileSync('studio/guided-generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');

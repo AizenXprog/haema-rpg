@@ -63,7 +63,7 @@ export async function deleteNamedProject(owner,mapId){
 export function exportJSON(scene){
  const text=JSON.stringify(scene),blob=new Blob([text],{type:'application/json'});
  const url=URL.createObjectURL(blob),link=document.createElement('a');
- link.href=URL.createObjectURL===undefined?'':url;
+ link.href=url;
  link.download='haema-mapa-'+new Date().toISOString().slice(0,10)+'.json';
  document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
