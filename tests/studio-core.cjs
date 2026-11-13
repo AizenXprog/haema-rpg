@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),assert=require('node:assert/strict'),cp=require('node:child_process');
-const source=fs.readFileSync('studio/scene.js','utf8').replace(/^export /gm,'');
+const source=fs.readFileSync('studio/scene.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
 const {starterScene,safeScene,drawScene}=new Function(source+'\nreturn {starterScene,safeScene,drawScene} ')();
 let passed=0;const check=(test,label)=>{assert.ok(test,label);passed++};
 const scene=starterScene();

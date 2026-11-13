@@ -9,7 +9,7 @@ function check(v,name){assert.ok(v,name);count++;}
 const ids=Array.from(html.matchAll(/\bid="([^"]+)"/g),m=>m[1]);
 check(ids.length===new Set(ids).size,'no duplicate IDs');
 for(const m of editor.matchAll(/\$\('([^']+)'\)/g))check(ids.includes(m[1]),'referenced DOM ID: '+m[1]);
-check(html.includes('studio/clean.css?v=1'),'isolated clean stylesheet loaded');
+check(/studio\/clean\.css\?v=\d+/.test(html),'isolated clean stylesheet loaded');
 check(html.includes('id="studio-canvas"'),'map canvas remains present');
 check(html.includes('id="studio-active-help"'),'contextual tool guidance exists');
 check(html.includes('data-inspector-tab="build"')&&html.includes('data-inspector-tab="mesa"')&&html.includes('data-inspector-tab="project"'),'three inspector modes');

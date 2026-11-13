@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 let passed=0;
 const ok=(check,label)=>{assert.ok(check,label);passed++};
-const src=fs.readFileSync('studio/scene.js','utf8').replace(/^export /gm,'');
+const src=fs.readFileSync('studio/scene.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
 const engine=new Function(src+'\nreturn {starterScene,safeScene,drawScene,tileIndex,TERRAINS,PROPS};')();
 const genSource=fs.readFileSync('studio/generator.js','utf8').replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
 const {generateScene,makeRoom}=new Function('starterScene','tileIndex',genSource+'\nreturn {generateScene,makeRoom};')(engine.starterScene,engine.tileIndex);

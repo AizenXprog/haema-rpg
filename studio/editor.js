@@ -1,13 +1,17 @@
 import {access,accessGate,authorizedFetch,node,button} from '../auth.js';
-import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js';
+import {CELL,TERRAINS,PROPS,starterScene,safeScene,tileIndex,inBounds,drawScene} from './scene.js?v=3';
 import {saveProject,loadProject,exportJSON} from './storage.js';
-import {generateScene,makeRoom} from './generator.js';
+import {generateScene,makeRoom,furnishRoom} from './generator.js?v=4';
+import {invalidateTerrain} from './terrain-renderer.js?v=1';
+import {invalidateFog} from './fog-renderer.js?v=1';
+import {addStrokePoint,drawPath,simplifyPoints,makePath,nearestPath,movePath} from './path-geometry.js?v=1';
+import {generateFromDescription,interpretDescription} from './guided-generator.js?v=1';
 
 const $=id=>document.getElementById(id);
 const gate=$('studio-gate'),workspace=$('studio-workspace'),canvas=$('studio-canvas'),ctx=canvas.getContext('2d');
 const view={x:0,y:0,zoom:1,ready:false};
-let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,showGrid=true,paintedTiles=new Set(),lastStamp=null;
-let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,saveTimer=0,broadcastTimer=0;
+let scene=starterScene(),backgroundImage=null,tool='pan',terrain='stone',prop='tree',brush=2,pathWidth=1.25,roadMaterial='earth',showGrid=true,paintedTiles=new Set(),lastStamp=null;
+let drawing=false,gesture=null,hover=null,spaceHeld=false,selected=null,selectedProp=null,selectedPath=null,measurement=null,saveTimer=0,broadcastTimer=0;
 let ownerId=null,channel=null,projector=null,blackout=false,history=[],future=[],initialized=false;
 const status=(message)=>{$('studio-status').textContent=message;};
 const round=(n)=>Math.round(n*2)/2;
@@ -28,6 +32,26 @@ function render(){
  ctx.fillStyle='#0a1012';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
  ctx.translate(view.x,view.y);ctx.scale(view.zoom,view.zoom);
  drawScene(ctx,scene,{grid:showGrid,image:backgroundImage});
+ if(tool==='select'&&selectedPath&&scene.paths?.includes(selectedPath))drawPath(ctx,selectedPath,CELL,{preview:true});
+ if(gesture?.mode==='path'&&gesture.points.length>1)
+  drawPath(ctx,{kind:gesture.kind,width:gesture.width,material:gesture.material,points:gesture.points},CELL,{preview:true});
+ if(tool==='measure'){
+  const line=gesture?.mode==='measure'?{x1:gesture.startX,y1:gesture.startY,x2:hover?.x??gesture.startX,y2:hover?.y??gesture.startY}:measurement;
+  if(line){
+   const x1=line.x1*CELL,y1=line.y1*CELL,x2=line.x2*CELL,y2=line.y2*CELL;
+   const length=Math.hypot(line.x2-line.x1,line.y2-line.y1);
+   ctx.save();ctx.strokeStyle='#efcf8b';ctx.lineWidth=2.5/Math.max(.2,view.zoom);ctx.setLineDash([8,5]);
+   ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([]);
+   ctx.fillStyle='#14181be6';ctx.font='600 13px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+   const label=length.toFixed(1)+' células',cx=(x1+x2)/2,cy=(y1+y2)/2;
+   ctx.fillRect(cx-43,cy-22,86,18);ctx.fillStyle='#f2d9ac';ctx.fillText(label,cx,cy-13);
+   ctx.restore();
+  }
+ }
+ if(selectedProp&&scene.props.includes(selectedProp)&&tool==='select'){
+  ctx.save();ctx.lineWidth=2.5/Math.max(.2,view.zoom);ctx.strokeStyle='#f0d3a0';ctx.setLineDash([7,4]);
+  ctx.beginPath();ctx.arc(selectedProp.x*CELL,selectedProp.y*CELL,27,0,Math.PI*2);ctx.stroke();ctx.restore();
+ }
  if(hover&&['terrain','reveal','conceal','erase','raise','lower','scatter'].includes(tool)){
   ctx.strokeStyle=tool==='reveal'?'#d6b986':'#f2d1a4';ctx.lineWidth=1.6/view.zoom;ctx.setLineDash([6/view.zoom,4/view.zoom]);
   ctx.beginPath();ctx.arc(hover.x*CELL,hover.y*CELL,brush*CELL,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
@@ -55,6 +79,39 @@ function closestToken(p){
  for(const t of scene.tokens){const d=Math.hypot(t.x-p.x,t.y-p.y);if(d<distance){found=t;distance=d;}}
  return found;
 }
+function closestProp(p){
+ let found=null,distance=.72;
+ // Reverse order follows draw order, so the foremost object is selected first.
+ for(let i=scene.props.length-1;i>=0;i--){
+  const candidate=scene.props[i];
+  const d=Math.hypot(candidate.x-p.x,candidate.y-p.y);
+  if(d<distance){found=candidate;distance=d;}
+ }
+ return found;
+}
+function refreshSelection(){
+ if(selectedProp&&!scene.props.includes(selectedProp))selectedProp=null;
+ if(selectedPath&&!scene.paths?.includes(selectedPath))selectedPath=null;
+ $('selected-prop-controls').hidden=!!selectedPath;
+ $('selected-path-controls').hidden=!selectedPath;
+ $('selected-path-duplicate').disabled=!selectedPath;
+ $('selected-path-delete').disabled=!selectedPath;
+ if(selectedPath){
+  $('selected-path-label').textContent=selectedPath.kind==='river'?'Rio selecionado':'Estrada selecionada';
+  $('selected-path-width').value=selectedPath.width;
+  $('selected-path-width-value').textContent=selectedPath.width;
+ }
+ if(selected&&!scene.tokens.includes(selected))selected=null;
+ const valid=!!selectedProp;
+ for(const id of ['selected-rotate-left','selected-rotate-right','selected-duplicate','selected-delete'])$(id).disabled=!valid;
+ const label=valid?(document.querySelector('[data-prop="'+selectedProp.type+'"]')?.textContent?.trim()||selectedProp.type):
+  selected?'Token '+(selected.label||''): 'Nenhum objeto selecionado';
+ $('selected-object-label').textContent=label;
+ $('selected-object-hint').textContent=valid?'Arraste para mover. Use os controles para girar, duplicar ou excluir.':
+  selected?'Para editar este token, abra a aba Mesa.':'Selecione um móvel ou elemento do mapa para editar.';
+ $('token-visibility').disabled=!selected;
+ $('token-visibility').checked=selected?!!selected.hidden:false;
+}
 function saveLater(){
  clearTimeout(saveTimer);
  saveTimer=setTimeout(async()=>{
@@ -65,7 +122,7 @@ function saveLater(){
 // History stores the large background image by reference, not on every brush stroke.
 const freezeScene=()=>({shape:JSON.stringify({...scene,background:null}),background:scene.background});
 const thawScene=entry=>safeScene({...JSON.parse(entry.shape),background:entry.background});
-function clearSelection(){selected=null;$('token-visibility').checked=false;$('token-visibility').disabled=true;}
+function clearSelection(){selected=null;selectedProp=null;selectedPath=null;refreshSelection();}
 function snapshot(){
  history.push(freezeScene());if(history.length>40)history.shift();future.length=0;
 }
@@ -79,6 +136,7 @@ function changed(autosave=true){
  showGrid=scene.gridVisible!==false;$('grid-toggle').checked=showGrid;$('grid-state').textContent=showGrid?'Visível':'Oculta';
  $('scene-name').value=scene.name;
  $('studio-token-count').textContent=scene.tokens.length;
+ refreshSelection();
  render();
  if(autosave)saveLater();
  queueBroadcast();
@@ -106,6 +164,9 @@ function paint(p,shouldUpdate=true){
    scene.props=scene.props.filter(o=>Math.hypot(o.x-p.x,o.y-p.y)>brush);
    scene.tokens=scene.tokens.filter(t=>Math.hypot(t.x-p.x,t.y-p.y)>brush);
   }
+  const x0=cx-brush,y0=cy-brush,x1=cx+brush+1,y1=cy+brush+1;
+  if(['terrain','raise','lower','erase'].includes(tool))invalidateTerrain(scene,x0,y0,x1,y1,CELL);
+  else if(['reveal','conceal'].includes(tool))invalidateFog(scene,x0,y0,x1,y1,CELL);
  }else if(tool==='token'){
   if(scene.tokens.length>=120)return status('Limite de 120 tokens nesta versão.');
   const label=$('token-name').value.trim().slice(0,16)||'PJ';
@@ -136,6 +197,8 @@ const toolInfo={
  pan:['Navegação','Mover a câmera pelo mapa.'],
  select:['Seleção','Selecione e arraste tokens.'],
  terrain:['Materiais','Pinte o terreno com materiais.'],
+ road:['Estrada','Desenhe trilhas e caminhos contínuos.'],
+ river:['Rio','Desenhe rios sinuosos com bordas naturais.'],
  raise:['Elevação','Crie camadas de relevo.'],
  lower:['Rebaixar','Reduza os níveis de terreno.'],
  prop:['Objetos','Escolha elementos para o cenário.'],
@@ -144,6 +207,7 @@ const toolInfo={
  scatter:['Vegetação','Distribua árvores ao arrastar.'],
  generate:['Geração','Crie uma base procedural editável.'],
  token:['Tokens','Posicione personagens e criaturas.'],
+ measure:['Régua','Arraste entre dois pontos para medir em células.'],
  reveal:['Revelar','Abra áreas aos jogadores.'],
  conceal:['Ocultar','Cubra áreas com neblina.'],
  erase:['Borracha','Remova elementos selecionados.']
@@ -162,20 +226,22 @@ function showInspectorTab(name){
  }
 }
 function showToolOptions(next){
- const context=({terrain:'terrain',raise:'elevation',lower:'elevation',prop:'prop',wall:'wall',room:'room',scatter:'scatter',generate:'generation',erase:'erase'})[next]||'default';
+ const context=({select:'select',road:'path',river:'path',terrain:'terrain',raise:'elevation',lower:'elevation',prop:'prop',wall:'wall',room:'room',scatter:'scatter',generate:'generation',measure:'measure',erase:'erase'})[next]||'default';
  document.querySelectorAll('[data-tool-panel]').forEach(panel=>{panel.hidden=panel.dataset.toolPanel!==context;});
  $('studio-inspector-title').textContent=toolInfo[next]?.[0]||'Construção';
  $('studio-inspector-subtitle').textContent=context==='default'?'ESCOLHA UMA FERRAMENTA':'PROPRIEDADES DA FERRAMENTA';
+ $('road-material-container').hidden=next==='river';
 }
 function setTool(next){
  if(!toolInfo[next])return;
  tool=next;
+ if(tool!=='measure')measurement=null;
  for(const b of document.querySelectorAll('[data-tool]'))b.setAttribute('aria-pressed',String(b.dataset.tool===tool));
  canvas.style.cursor=['pan','generate'].includes(tool)?'grab':tool==='select'?'default':'crosshair';
  $('studio-tool').textContent=toolInfo[tool][0];
  $('studio-active-help').textContent=toolInfo[tool][1];
  showToolOptions(tool);
- if(['token','reveal','conceal'].includes(tool))showInspectorTab('mesa');
+ if(['token','reveal','conceal','measure'].includes(tool))showInspectorTab('mesa');
  else if(!['pan','select'].includes(tool))showInspectorTab('build');
  render();
 }
@@ -184,12 +250,23 @@ canvas.addEventListener('pointerdown',event=>{
  const p=point(event);hover=p;
  if(tool==='pan'||tool==='generate'||spaceHeld||event.button===1){
   gesture={mode:'pan',px:p.px,py:p.py,x:view.x,y:view.y};
+ }else if(tool==='measure'){
+  measurement=null;gesture={mode:'measure',startX:p.x,startY:p.y};
  }else if(tool==='select'){
   selected=closestToken(p);
+  selectedProp=selected?null:closestProp(p);
+  selectedPath=(selected||selectedProp)?null:nearestPath(scene.paths||[],p);
   if(selected){snapshot();gesture={mode:'drag',token:selected};}
-  else gesture={mode:'noop'};
-  $('token-visibility').disabled=!selected;
-  if(selected)$('token-visibility').checked=!!selected.hidden;
+  else if(selectedProp){snapshot();gesture={mode:'prop-drag',prop:selectedProp};showInspectorTab('build');}
+  else if(selectedPath){
+   snapshot();gesture={mode:'path-drag',path:selectedPath,startX:p.x,startY:p.y,original:selectedPath.points.map(pt=>({...pt}))};
+   showInspectorTab('build');
+  }else gesture={mode:'noop'};
+  refreshSelection();
+ }else if(tool==='road'||tool==='river'){
+  if(!within(p))return;
+  gesture={mode:'path',kind:tool,width:pathWidth,material:roadMaterial,points:[]};
+  addStrokePoint(gesture.points,{x:p.x,y:p.y});
  }else if(tool==='wall'){
   snapshot();gesture={mode:'wall',startX:round(p.x),startY:round(p.y)};
  }else if(tool==='room'){
@@ -204,12 +281,37 @@ canvas.addEventListener('pointermove',event=>{
  const p=point(event);hover=p;
  if(drawing&&gesture?.mode==='pan'){view.x=gesture.x+p.px-gesture.px;view.y=gesture.y+p.py-gesture.py;}
  else if(drawing&&gesture?.mode==='drag'&&within(p)){gesture.token.x=clamp(p.x,.5,scene.cols-.5);gesture.token.y=clamp(p.y,.5,scene.rows-.5);changed(false);}
+ else if(drawing&&gesture?.mode==='prop-drag'&&within(p)){gesture.prop.x=clamp(p.x,0,scene.cols);gesture.prop.y=clamp(p.y,0,scene.rows);changed(false);}
+ else if(drawing&&gesture?.mode==='path-drag'){
+  movePath(gesture.path,gesture.original,p.x-gesture.startX,p.y-gesture.startY,scene.cols,scene.rows);
+  changed(false);
+ }else if(drawing&&gesture?.mode==='path'){
+  addStrokePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)});
+ }
  else if(drawing&&gesture?.mode==='paint'){paintLine(gesture.previous,p);gesture.previous=p;}
  render();
 });
 function release(event){
  if(!drawing)return;
  const p=point(event);
+ if(gesture?.mode==='path'){
+  addStrokePoint(gesture.points,{x:clamp(p.x,0,scene.cols),y:clamp(p.y,0,scene.rows)},{spacing:.03});
+  const points=simplifyPoints(gesture.points,.075);
+  if(points.length>=2&&Math.hypot(points[0].x-points[points.length-1].x,points[0].y-points[points.length-1].y)>.25){
+   if((scene.paths||[]).length>=90)status('Limite de 90 caminhos e rios nesta versão.');
+   else{
+    try{
+     const path=makePath(gesture.kind,points,{width:gesture.width,material:gesture.material,cols:scene.cols,rows:scene.rows});
+     snapshot();scene.paths=scene.paths||[];scene.paths.push(path);changed();
+     status((gesture.kind==='river'?'Rio':'Estrada')+' criado. Use Selecionar para editar o traçado.');
+    }catch(error){status(error.message);}
+   }
+  }
+ }
+ if(gesture?.mode==='measure'){
+  measurement={x1:gesture.startX,y1:gesture.startY,x2:p.x,y2:p.y};
+  status('Distância: '+Math.hypot(p.x-gesture.startX,p.y-gesture.startY).toFixed(1)+' células.');
+ }
  if(gesture?.mode==='wall'){
   const a=gesture,b={x:round(clamp(p.x,0,scene.cols)),y:round(clamp(p.y,0,scene.rows))};
   if(Math.hypot(a.startX-b.x,a.startY-b.y)>.15&&scene.walls.length<400)
@@ -219,12 +321,14 @@ function release(event){
   const xa=Math.floor(Math.min(gesture.startX,p.x)),ya=Math.floor(Math.min(gesture.startY,p.y));
   const xb=Math.ceil(Math.max(gesture.startX,p.x)),yb=Math.ceil(Math.max(gesture.startY,p.y));
   if(xb-xa>=3&&yb-ya>=3){
-   makeRoom(scene,{x:xa,y:ya,w:xb-xa,h:yb-ya,floor:terrain==='wood'||terrain==='marble'||terrain==='brick'?terrain:'wood'});
-   changed();
+   const room=makeRoom(scene,{x:xa,y:ya,w:xb-xa,h:yb-ya,floor:terrain==='wood'||terrain==='marble'||terrain==='brick'?terrain:'wood'});
+   const placed=furnishRoom(scene,room,$('room-preset').value,scene.name);
+   invalidateTerrain(scene,xa,ya,xb+1,yb+1,CELL);
+   changed();if(placed)status('Cômodo criado com '+placed+' objetos editáveis.');
   }else status('Arraste um cômodo com pelo menos três células de largura e altura.');
  }
  if(gesture?.mode==='paint')changed();
- if(gesture?.mode==='drag'||gesture?.mode==='wall')changed();
+ if(['drag','prop-drag','path-drag','wall'].includes(gesture?.mode))changed();
  drawing=false;gesture=null;render();
  try{canvas.releasePointerCapture(event.pointerId);}catch{}
 }
@@ -316,12 +420,78 @@ function setup(){
   }
   $('prop-search-empty').hidden=total!==0;
  });
+
+ $('path-width').addEventListener('input',event=>{
+  pathWidth=Number(event.target.value);
+  $('path-width-value').textContent=pathWidth;
+ });
+ $('road-material').addEventListener('change',event=>{roadMaterial=event.target.value;});
+ $('selected-path-width').addEventListener('change',event=>{
+  if(!selectedPath||!scene.paths?.includes(selectedPath))return;
+  snapshot();selectedPath.width=clamp(Number(event.target.value),.5,4);changed();
+ });
+ $('selected-path-duplicate').addEventListener('click',()=>{
+  if(!selectedPath||!scene.paths?.includes(selectedPath))return;
+  if(scene.paths.length>=90)return status('Limite de 90 caminhos e rios nesta versão.');
+  snapshot();
+  const original=selectedPath.points.map(p=>({...p}));
+  const copy={...selectedPath,id:'copy-'+(crypto.randomUUID?.()||Date.now()),points:original.map(p=>({...p}))};
+  movePath(copy,original,.65,.65,scene.cols,scene.rows);
+  scene.paths.push(copy);selectedPath=copy;changed();
+ });
+ $('selected-path-delete').addEventListener('click',()=>{
+  if(!selectedPath||!scene.paths?.includes(selectedPath))return;
+  snapshot();scene.paths=scene.paths.filter(p=>p!==selectedPath);
+  selectedPath=null;changed();
+ });
+ $('guided-description').addEventListener('input',event=>{
+  const message=$('guided-feedback'),value=event.target.value.trim();
+  if(!value){message.textContent='Interpretação local por palavras-chave, sem IA e sem envio de dados.';return;}
+  try{
+   const plan=interpretDescription(value);
+   const names={tavern:'Estalagem',dungeon:'Ruínas e salas',lake:'Lago e margens',forest:'Bosque'};
+   const additions=[plan.road?'estrada':null,plan.river?'rio':null,plan.vegetation==='dense'?'vegetação densa':null,
+    plan.vegetation==='none'?'sem árvores':null].filter(Boolean);
+   message.textContent='Entendido: '+names[plan.base]+(additions.length?' + '+additions.join(', '):'')+'. Resultado totalmente editável.';
+  }catch(error){message.textContent=error.message;}
+ });
+ $('guided-generate').addEventListener('click',()=>{
+  const value=$('guided-description').value.trim();
+  let result;
+  try{result=generateFromDescription(value,$('seed-input').value.trim());}
+  catch(error){$('guided-feedback').textContent=error.message;return;}
+  if(!confirm('Substituir o cenário atual por esta cena guiada? Você pode desfazer ou importar seu backup.'))return;
+  snapshot();
+  scene=result.scene;scene.gridVisible=showGrid;
+  clearSelection();loadBackground();fit();changed();
+  status('Cena guiada criada localmente. Edite o terreno, os rios e os objetos.');
+  $('guided-feedback').textContent='Cena gerada com regras locais, sem envio de dados nem IA. Tudo pode ser editado.';
+ });
  $('new-room').addEventListener('click',()=>{setTool('room');status('Arraste no mapa para desenhar um cômodo; o editor cria paredes e um acesso.');});
+ for(const [id,degrees] of [['selected-rotate-left',-15],['selected-rotate-right',15]]){
+  $(id).addEventListener('click',()=>{
+   if(!selectedProp||!scene.props.includes(selectedProp))return;
+   snapshot();selectedProp.rotation=((Number(selectedProp.rotation)||0)+degrees+360)%360;changed();
+  });
+ }
+ $('selected-duplicate').addEventListener('click',()=>{
+  if(!selectedProp||!scene.props.includes(selectedProp))return;
+  if(scene.props.length>=500)return status('Limite de 500 objetos nesta versão.');
+  snapshot();
+  const clone={...selectedProp,x:clamp(selectedProp.x+.65,0,scene.cols),y:clamp(selectedProp.y+.65,0,scene.rows)};
+  scene.props.push(clone);selectedProp=clone;changed();
+ });
+ $('selected-delete').addEventListener('click',()=>{
+  if(!selectedProp||!scene.props.includes(selectedProp))return;
+  snapshot();scene.props=scene.props.filter(item=>item!==selectedProp);
+  selectedProp=null;changed();
+ });
+
  $('scene-name').addEventListener('change',event=>{snapshot();scene.name=String(event.target.value).slice(0,80)||'Sem título';changed();});
  $('grid-toggle').addEventListener('change',event=>{showGrid=event.target.checked;scene.gridVisible=showGrid;changed();});
  $('token-visibility').addEventListener('change',event=>{if(!selected)return;snapshot();selected.hidden=event.target.checked;changed();});
- $('reveal-all').addEventListener('click',()=>{snapshot();scene.fog.fill(0);changed();});
- $('hide-all').addEventListener('click',()=>{snapshot();scene.fog.fill(1);changed();});
+ $('reveal-all').addEventListener('click',()=>{snapshot();scene.fog.fill(0);invalidateFog(scene);changed();});
+ $('hide-all').addEventListener('click',()=>{snapshot();scene.fog.fill(1);invalidateFog(scene);changed();});
  $('undo').addEventListener('click',undo);$('redo').addEventListener('click',redo);
  $('fit-map').addEventListener('click',fit);
  $('save-local').addEventListener('click',async()=>{try{await saveProject(scene,ownerId);status('Projeto salvo no navegador.');}catch{status('Não foi possível salvar. Exporte em JSON.');}});

@@ -1,3 +1,6 @@
+import {renderTerrain} from './terrain-renderer.js?v=1';
+import {renderFog} from './fog-renderer.js?v=1';
+import {sanitizePath,drawPath} from './path-geometry.js?v=1';
 // HÆMA Estúdio — cena vetorial original. Independente do Manual e da Lore.
 export const CELL=48;
 export const TERRAINS={grass:'#354c3d',stone:'#6b6b62',earth:'#78604b',water:'#2c6470',sand:'#9b815a',wood:'#72503a',brick:'#775a4e',marble:'#969085'};
@@ -14,7 +17,7 @@ export function starterScene(){
   fog.push(Math.hypot(x-13,y-9)>5?1:0);
  }
  return {version:1,id:'local',name:'Ruínas do caminho',cols,rows,tiles,fog,gridVisible:true,heights:Array(cols*rows).fill(0),
-  walls:[{x1:8,y1:5,x2:19,y2:5},{x1:8,y1:5,x2:8,y2:14},{x1:19,y1:5,x2:19,y2:14}],
+  walls:[{x1:8,y1:5,x2:19,y2:5},{x1:8,y1:5,x2:8,y2:14},{x1:19,y1:5,x2:19,y2:14}],paths:[],
   props:[{x:4.5,y:5.5,type:'tree'},{x:23.5,y:4.5,type:'tree'},{x:5.5,y:13.5,type:'rock'},{x:10.5,y:6.5,type:'pillar'},{x:17.5,y:11.5,type:'torch'}],
   tokens:[{id:'t1',x:13.5,y:9.5,label:'A',color:'#cda379',hidden:false},{id:'t2',x:15.5,y:10.5,label:'B',color:'#809eae',hidden:false}],
   background:null};
@@ -30,10 +33,11 @@ export function safeScene(value){
  const props=Array.isArray(value.props)?value.props.slice(0,500).filter(p=>p&&valid(p.x,p.y)&&PROPS.includes(p.type)).map(p=>({x:+p.x,y:+p.y,type:p.type,rotation:Number.isFinite(+p.rotation)?Math.max(-360,Math.min(360,+p.rotation)):0})):[];
  const tokens=Array.isArray(value.tokens)?value.tokens.slice(0,120).filter(t=>t&&valid(t.x,t.y)).map(t=>({id:safeLabel(t.id)||crypto.randomUUID(),x:+t.x,y:+t.y,label:safeLabel(t.label),color:/^#[0-9a-f]{6}$/i.test(t.color)?t.color:'#d6ad7b',hidden:!!t.hidden})):[];
  const walls=Array.isArray(value.walls)?value.walls.slice(0,400).filter(w=>w&&valid(w.x1,w.y1)&&valid(w.x2,w.y2)).map(w=>({x1:+w.x1,y1:+w.y1,x2:+w.x2,y2:+w.y2})):[];
+ const paths=Array.isArray(value.paths)?value.paths.slice(0,90).map(p=>sanitizePath(p,cols,rows)).filter(Boolean):[];
  const background=typeof value.background==='string'&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value.background)&&value.background.length<12e6?value.background:null;
  return {version:1,id:'local',name:safeLabel(value.name)||'Cena sem título',cols,rows,gridVisible:value.gridVisible!==false,
   tiles:value.tiles.map(t=>terrain.includes(t)?t:'grass'),fog:value.fog.map(f=>f?1:0),heights:Array.isArray(value.heights)&&value.heights.length===cols*rows?value.heights.map(h=>Math.min(4,Math.max(0,Math.round(Number(h)||0)))):Array(cols*rows).fill(0),
-  props,tokens,walls,background};
+  props,tokens,walls,paths,background};
 }
 const hash=(x,y)=>{let v=Math.imul(x+13,374761393)+Math.imul(y+17,668265263);v=Math.imul(v^(v>>>13),1274126177);return(v^(v>>>16))>>>0};
 function drawProp(ctx,p){
@@ -104,8 +108,10 @@ function drawProp(ctx,p){
 export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
  const w=scene.cols*CELL,h=scene.rows*CELL;
  ctx.clearRect(0,0,w,h);ctx.fillStyle='#1a211e';ctx.fillRect(0,0,w,h);
- if(image?.complete&&image.naturalWidth)ctx.drawImage(image,0,0,w,h);
- else for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
+ const hasImage=!!(image?.complete&&image.naturalWidth);
+ const organic=!hasImage&&typeof renderTerrain==='function'&&renderTerrain(ctx,scene,CELL);
+ if(hasImage)ctx.drawImage(image,0,0,w,h);
+ else if(!organic)for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
   const type=scene.tiles[tileIndex(scene,x,y)],px=x*CELL,py=y*CELL,r=hash(x,y);
   ctx.fillStyle=TERRAINS[type]||TERRAINS.grass;ctx.fillRect(px,py,CELL,CELL);
   ctx.fillStyle=r%2?'#fff2':'#0002';
@@ -130,7 +136,7 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
   }
  }
  // Blend terrain boundaries: irregular soft edges instead of flat tile seams.
- if(!image?.complete||!image.naturalWidth)for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
+ if(!organic&&!hasImage)for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
   const i=tileIndex(scene,x,y),type=scene.tiles[i],px=x*CELL,py=y*CELL,r=hash(x,y);
   const faded=(horizontal,colA,colB)=>{
    const grad=ctx.createLinearGradient(horizontal?px+CELL-11:px,horizontal?py:py+CELL-11,horizontal?px+CELL+11:px,horizontal?py:py+CELL+11);
@@ -147,7 +153,7 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
   }
  }
  // Height painting creates stacked contours and a shaded cliff edge in the 2D scene.
- if(Array.isArray(scene.heights))for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
+ if(!organic&&Array.isArray(scene.heights))for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++){
   const idx=tileIndex(scene,x,y),level=scene.heights[idx]||0;if(!level)continue;
   const px=x*CELL,py=y*CELL;
   ctx.fillStyle='rgba(213,196,155,'+(level*.035)+')';ctx.fillRect(px,py,CELL,CELL);
@@ -162,6 +168,7 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
    ctx.stroke();
   }
  }
+ for(const path of scene.paths||[])drawPath(ctx,path,CELL);
  for(const p of scene.props)if(!player||exposed(scene,p.x,p.y))drawProp(ctx,p);
  ctx.save();ctx.lineCap='square';ctx.lineWidth=8;ctx.strokeStyle='#262824';ctx.beginPath();
  for(const w of scene.walls)if(!player||exposed(scene,(w.x1+w.x2)/2,(w.y1+w.y2)/2)){ctx.moveTo(w.x1*CELL,w.y1*CELL);ctx.lineTo(w.x2*CELL,w.y2*CELL);}
@@ -174,8 +181,11 @@ export function drawScene(ctx,scene,{player=false,grid=true,image=null}={}){
   ctx.font='bold 14px Georgia';ctx.fillStyle='#1b1b1c';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText((t.label||'?').slice(0,2).toUpperCase(),x,y+1);
   if(!player&&t.hidden){ctx.strokeStyle='#df8d7e';ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(x,y,20,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}
  }
- for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++)if(scene.fog[tileIndex(scene,x,y)]){
-  ctx.fillStyle=player?'#0b0d11':'#080d16b3';ctx.fillRect(x*CELL,y*CELL,CELL,CELL);
+ if(!(typeof renderFog==='function'&&renderFog(ctx,scene,{player,cell:CELL}))){
+  // Server-side/mock context fallback only.
+  for(let y=0;y<scene.rows;y++)for(let x=0;x<scene.cols;x++)if(scene.fog[tileIndex(scene,x,y)]){
+   ctx.fillStyle=player?'#0b0d11':'#080d16b3';ctx.fillRect(x*CELL,y*CELL,CELL,CELL);
+  }
  }
  if(grid){ctx.lineWidth=1;ctx.strokeStyle=player?'#b1a48a1a':'#d2c6a039';ctx.beginPath();
   for(let x=0;x<=scene.cols;x++){ctx.moveTo(x*CELL+.5,0);ctx.lineTo(x*CELL+.5,h);}
