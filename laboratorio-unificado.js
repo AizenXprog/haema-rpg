@@ -1,7 +1,10 @@
 'use strict';
 /* Interface opcional do candidato. Não importa nem sobrescreve fichas 0.1. */
-document.addEventListener('DOMContentLoaded',()=>{
- const h=window.HAEMAUnified;if(!h)return;
+function initHAEMAUnifiedLaboratory(){
+ const root=document.getElementById('criacao');
+ if(!root||root.dataset.haemaInit==='yes'||!window.HAEMAUnified)return;
+ root.dataset.haemaInit='yes';
+ const h=window.HAEMAUnified;
  const $=id=>document.getElementById(id);
  const store='haema-character-unified-playtest-20261119';
  let character=h.createdCharacter(),marks=null,available=[],lastRoll=null;
@@ -263,4 +266,6 @@ document.addEventListener('DOMContentLoaded',()=>{
  syncInjury();invictaMsg('A elegibilidade do grupo precisa de confirmação do mestre.');
 
  render();
-});
+}
+document.addEventListener('DOMContentLoaded',initHAEMAUnifiedLaboratory);
+document.addEventListener('haema:navigated',initHAEMAUnifiedLaboratory);
