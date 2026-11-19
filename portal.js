@@ -20,13 +20,16 @@ const PORTAL=(()=>{
  const currentRoot=()=>document.getElementById('haema-portal-app');
  const errorText=e=>safe(e?.message||'Não foi possível concluir esta operação.',350);
  const message=(root,text,isError=false)=>{let target=$('.portal-feedback',root);if(!target){target=node('div','portal-feedback');root.prepend(target)}target.className='portal-feedback '+(isError?'portal-err':'portal-success');target.textContent=text;};
+ let portalFieldSequence=0;
  const field=(label,type='text',value='',maxLength)=>{
   const wrap=node('div','portal-field');const lab=node('label','',label);const el=type==='textarea'?node('textarea'):node('input');
+  const id='haema-portal-field-'+(++portalFieldSequence);lab.htmlFor=id;el.id=id;
   if(type!=='textarea')el.type=type;el.value=value??'';if(maxLength)el.maxLength=maxLength;
   wrap.append(lab,el);return {wrap,input:el};
  };
  const selectField=(label,options,value)=>{
-  const wrap=node('div','portal-field');wrap.append(node('label','',label));const select=node('select');
+  const wrap=node('div','portal-field'),lab=node('label','',label),select=node('select');
+  const id='haema-portal-field-'+(++portalFieldSequence);lab.htmlFor=id;select.id=id;wrap.append(lab);
   for(const [code,title] of options){const o=node('option','',title);o.value=code;select.append(o)}
   select.value=value??options[0]?.[0];wrap.append(select);return{wrap,input:select};
  };
@@ -146,13 +149,14 @@ const PORTAL=(()=>{
  }
  function characterCard(character,panel,root){
   const card=node('article','portal-item'),top=node('div','portal-item-top'),head=node('div');head.append(node('h3','',character.title),node('span','portal-meta',(state.data.names[character.user_id]||'Jogador')+' · HÆMA '+character.rules_version));
-  top.append(head,node('span','portal-tag','FICHA 0.1'));card.append(top);
+  top.append(head,node('span','portal-tag',character.rules_version==='0.1'?'FICHA 0.1':'UNIFICADO · PLAYTEST'));card.append(top);
   const controls=node('div','portal-flex');const mine=character.user_id===state.user.id;
-  controls.append(b(mine?'Editar ficha':'Consultar ficha',()=>editCharacter(panel,root,character,!mine)));
+  controls.append(b(mine?'Editar ficha':'Consultar ficha',()=>character.rules_version==='unified-playtest-20261119'?editUnifiedCharacter(panel,root,character,!mine):editCharacter(panel,root,character,!mine)));
   card.append(controls);return card;
  }
  function showCharacters(panel,root){
-  const actions=node('div','portal-flex');actions.append(b('Criar personagem',()=>editCharacter(panel,root,null,false),'portal-action'));
+  const actions=node('div','portal-flex');actions.append(b('Criar ficha 0.1',()=>editCharacter(panel,root,null,false),'portal-action'));
+  actions.append(b('Nova ficha Unificada · experimental',()=>editUnifiedCharacter(panel,root,null,false),'portal-action'));
   let hasLocal=false;try{hasLocal=!!localStorage.getItem('haema-character-0.1')}catch{}
   if(hasLocal)actions.append(b('Importar ficha deste dispositivo',()=>void importLocal(panel,root)));
   panel.append(title('Personagens',isGM()?'Veja as fichas dos integrantes da campanha. Cada jogador edita a própria ficha.':'Crie personagens e mantenha a ficha atualizada. Sua ficha local antiga nunca é apagada.',actions));
@@ -165,6 +169,182 @@ const PORTAL=(()=>{
    if(r)await renderDashboard(root);
   }catch(e){message(panel,errorText(e),true)}
  }
+
+ function editUnifiedCharacter(panel,root,existing,readOnly){
+  const core=window.HAEMAUnified;
+  panel.replaceChildren();
+  if(!core){panel.append(empty('Núcleo experimental indisponível. Nenhuma ficha foi alterada.'));return}
+  const p=existing?structuredClone(existing.payload):core.createdCharacter();
+  panel.append(title(readOnly?'Consultar ficha experimental':existing?'Editar ficha experimental':'Criar ficha experimental',
+   'Manual Unificado candidato de 19/11/2026 · sem conversão automática de versões antigas.',
+   b('Voltar',()=>void renderDashboard(root))));
+  const form=node('form','portal-form');
+  const name=field('Nome do personagem','text',p.name||'',80),job=field('Profissão ou ofício','text',p.job||'',100);
+  name.input.required=true;form.append(name.wrap,job.wrap);
+  let initialOnly=!existing;
+  const buildGroup=(label,names,arr,budget)=>{
+   const section=node('section'),header=node('h3','',label),counter=node('p','portal-info'),grid=node('div','portal-sheet-grid');
+   function count(){return arr.reduce((acc,d)=>acc+(d-4)/2,0)}
+   function update(){counter.textContent=initialOnly?count()+'/'+budget+' aumentos na criação · teto d6':'Evolução registrada na ficha · dados até d12';}
+   for(let i=0;i<names.length;i++){
+    const wrap=node('div','portal-dice-field'),lab=node('span','',names[i]),sel=node('select');
+    sel.setAttribute('aria-label',names[i]);
+    for(const size of (initialOnly?[4,6]:core.DICE)){
+     const opt=node('option','','d'+size);opt.value=size;sel.append(opt);
+    }
+    sel.value=String(arr[i]);
+    sel.addEventListener('change',()=>{
+     const old=arr[i],wanted=Number(sel.value);
+     if(initialOnly){
+      arr[i]=wanted;
+      if(count()>budget){arr[i]=old;sel.value=String(old);message(form,'Limite de criação atingido: alteração desfeita.',true)}
+      if(label==='Seis atributos'&&i===2){
+       p.integrity=core.integrity(arr[i]);
+       const integrityInput=widgets.find(([key])=>key==='integrity')?.[1];
+       if(integrityInput)integrityInput.value=String(p.integrity);
+      }
+     }else{
+      const kind=label==='Seis atributos'?'atributo':'competencia';
+      if(wanted!==old+2){sel.value=String(old);message(form,'Evolução ocorre um grau por compra. Para corrigir uma ficha, consulte o mestre.',true);return}
+      const peInput=widgets.find(([key])=>key==='pe')[1];
+      p.pe=Number(peInput.value);
+      const reason=description.input.value.trim();
+      const approved=reason.length>0&&confirm('A vivência "'+reason.slice(0,120)+'" justifica esta evolução e foi aprovada pelo mestre?');
+      const progress=core.improveDie(p,{type:kind,index:i,experienced:reason.length>0,masterApproved:approved});
+      if(!progress.ok){sel.value=String(old);message(form,progress.reason,true);return}
+      arr[i]=progress.to;p.pe=progress.character.pe;peInput.value=String(p.pe);
+      if(kind==='atributo'&&i===2){
+       p.integrity=Math.min(core.integrity(arr[i]),p.integrity);
+       widgets.find(([key])=>key==='integrity')[1].value=String(p.integrity);
+      }
+      message(form,'Evolução registrada por '+progress.cost+' PE. Salve a ficha para persistir.');
+     }
+     update();
+    });
+    sel.disabled=readOnly;
+    wrap.append(lab,sel);grid.append(wrap);
+   }
+   section.append(header,counter,grid);update();return section;
+  };
+  form.append(buildGroup('Seis atributos',core.ATTR,p.attributes,4),
+              buildGroup('Vinte e quatro competências',core.SKILLS,p.skills,6));
+  const extra=node('div','portal-form-row');
+  const numericFields=[['Guarda (faces)','guard',6,12],['Integridade atual','integrity',0,18],
+    ['Ferimentos','wounds',0,2],['Riscos de Morte','deathRisks',0,3],
+    ['PE disponíveis','pe',0,9999],['Invicta armazenada','invicta',0,1]];
+  const widgets=[];
+  for(const [label,key,min,max] of numericFields){
+   const v=field(label,'number',p[key]??'',5);v.input.min=min;v.input.max=max;v.input.step=key==='guard'?2:1;
+   if(readOnly)v.input.disabled=true;
+   widgets.push([key,v.input]);extra.append(v.wrap);
+  }
+  form.append(node('h3','','Condições e progressão'),extra);
+  // PE is earned through recorded events, not arbitrary free-form editing.
+  const peInput=widgets.find(([key])=>key==='pe')[1];
+  peInput.readOnly=true;
+  peInput.title='PE cresce por sessão/arco com evento registrado; compras deduzem o valor.';
+  const ledger=node('div','portal-form-row');
+  const eventField=field('Código único da sessão ou arco','text','',100);
+  const eventType=selectField('Tipo de conquista',[['session','Sessão relevante · +1 PE'],['arc','Fim de arco importante · +2 PE']],'session');
+  const ledgerButton=b('Registrar conquista de PE',()=>{
+   if(readOnly)return;
+   const id=eventField.input.value.trim(),type=eventType.input.value;
+   if(id.length<3||id.length>100)return message(form,'Identifique a sessão ou arco (3 a 100 caracteres).',true);
+   const history=Array.isArray(p.peHistory)?p.peHistory:[];
+   if(history.some(entry=>entry.id===id))return message(form,'Este evento já foi usado nesta ficha.',true);
+   if(!confirm('O mestre confirmou que este evento de '+(type==='session'?'sessão':'arco')+' concede PE?'))return;
+   const gain=type==='session'?1:2;
+   p.pe=Number(peInput.value)+gain;
+   if(!Number.isSafeInteger(p.pe)||p.pe<0||p.pe>9999)return message(form,'Saldo de PE fora do limite.',true);
+   p.peHistory=[...history,{id,type,amount:gain,recordedAt:new Date().toISOString()}];
+   peInput.value=String(p.pe);eventField.input.value='';
+   message(form,'Evento registrado: +'+gain+' PE. Salve a ficha online para persistir.');
+  },'portal-action');
+  ledgerButton.disabled=readOnly;
+  ledger.append(eventField.wrap,eventType.wrap,ledgerButton);
+  form.append(node('h3','','Registro de PE'),ledger);
+
+  if(existing&&!readOnly){
+   const guardInput=widgets.find(([key])=>key==='guard')[1];
+   guardInput.readOnly=true;guardInput.title='Guarda aumenta somente por compra verificada de PE';
+   const button=b('Aprimorar Guarda com PE',()=>{
+    const peInput=widgets.find(([key])=>key==='pe')[1];p.pe=Number(peInput.value);
+    const context=description.input.value.trim();
+    const approved=context.length>0&&confirm('O mestre confirmou a vivência para aumentar Guarda?');
+    const result=core.improveDie(p,{type:'guarda',experienced:context.length>0,masterApproved:approved});
+    if(!result.ok)return message(form,result.reason,true);
+    p.guard=result.to;p.pe=result.character.pe;peInput.value=String(p.pe);guardInput.value=String(p.guard);
+    message(form,'Guarda evoluiu por '+result.cost+' PE. Salve a ficha para persistir.');
+   },'portal-action');
+   form.append(button);
+  }
+
+  const description=field('Vivências e aprendizados (uma por linha)','textarea',(p.experiences||[]).join('\n'),8000);
+  const techniques=field('Técnicas adquiridas (somente leitura)','textarea',(p.techniques||[]).join('\n'),4000);
+  techniques.input.readOnly=true;
+  const techniqueRules=window.HAEMATechniquesRules;
+  const purchase=node('div','portal-form-row');
+  const purchaseTitle=node('p','portal-info','Adquirir técnica exige PE, competência adequada e vivência confirmada pelo mestre.');
+  const purchaseSelect=node('select');purchaseSelect.setAttribute('aria-label','Técnica para adquirir');
+  if(techniqueRules)for(const tech of techniqueRules.catalog){
+   const o=node('option','',tech.name+' · '+tech.cost+' PE · '+tech.requirement);o.value=tech.id;purchaseSelect.append(o);
+  }
+  const purchaseButton=b('Conferir e adquirir técnica',()=>{
+   if(!techniqueRules)return message(form,'Catálogo indisponível.',true);
+   const peInput=widgets.find(([key])=>key==='pe')[1];p.pe=Number(peInput.value);
+   if(!Number.isInteger(p.pe)||p.pe<0)return message(form,'Saldo de PE inválido.',true);
+   const assessment=techniqueRules.evaluate(p,Number(purchaseSelect.value));
+   if(assessment.reason==='PE insuficiente'||assessment.reason==='Já adquirida'||!assessment.required?.met)
+    return message(form,assessment.reason,true);
+   if(!confirm('O mestre confirmou a vivência e a condição material exigida por esta técnica?'))return;
+   const result=techniqueRules.acquire(p,Number(purchaseSelect.value),{masterApproved:true});
+   if(!result.ok)return message(form,result.reason,true);
+   p.pe=result.character.pe;p.techniques=result.character.techniques;
+   peInput.value=String(p.pe);techniques.input.value=p.techniques.join('\n');
+   message(form,'Técnica registrada nesta ficha. Salve a ficha online para persistir.');
+  },'portal-action');
+  if(readOnly)purchaseButton.disabled=true;
+  purchase.append(purchaseSelect,purchaseButton);
+  form.append(description.wrap,techniques.wrap,purchaseTitle,purchase);
+  if(readOnly){name.input.disabled=true;job.input.disabled=true;description.input.disabled=true;techniques.input.disabled=true;
+   form.append(brief('Consulta somente leitura. Não converte fichas antigas.'));}
+  else{
+   const footer=node('div','portal-form-foot');
+   footer.append(b('Cancelar',()=>void renderDashboard(root)));
+   const save=b('Salvar ficha experimental',()=>{},'portal-action');save.type='submit';footer.append(save);form.append(footer);
+   form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    p.name=name.input.value.trim();p.job=job.input.value.trim();
+    p.experiences=description.input.value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,150);
+    // Aquisições só acontecem pelo catálogo validado; não aceitar texto arbitrário da ficha.
+    for(const[key,input]of widgets) {
+     if(input.value.trim()===''||!Number.isInteger(Number(input.value))){message(form,'Preencha valores inteiros nas condições.',true);return}
+     p[key]=Number(input.value);
+    }
+    if(!p.name||p.name.length>80||!['haema-character'].includes(p.format)||p.version!==core.VERSION){
+     message(form,'Ficha experimental inválida: nome ou versão incorretos.',true);return;
+    }
+    if(!core.DICE.includes(p.guard)||p.guard<6||![0,1,2].includes(p.wounds)||p.deathRisks<0||p.deathRisks>3||
+       p.pe<0||![0,1].includes(p.invicta)||p.integrity<0||p.integrity>core.integrity(p.attributes[2])){
+      message(form,'Verifique Guarda, Integridade, Ferimentos, Riscos, PE e Invicta.',true);return;
+    }
+    if(initialOnly&&!core.validateCreation(p).valid){message(form,'A distribuição inicial não é válida. Revise o teto d6 e os limites 4/6.',true);return}
+    if(!Array.isArray(p.attributes)||p.attributes.length!==6||!p.attributes.every(d=>core.DICE.includes(d))||
+      !Array.isArray(p.skills)||p.skills.length!==24||!p.skills.every(d=>core.DICE.includes(d))){
+      message(form,'Dados de atributo ou competência inválidos.',true);return;
+    }
+    save.disabled=true;
+    const payload={title:p.name,payload:p,updated_at:new Date().toISOString()};
+    const op=existing?
+      state.client.from('haema_characters').update(payload).eq('id',existing.id).eq('user_id',state.user.id).eq('rules_version',core.VERSION):
+      state.client.from('haema_characters').insert({...payload,campaign_id:campaignId(),user_id:state.user.id,rules_version:core.VERSION});
+    const result=await notify(op,form,'Ficha experimental salva na campanha. A versão anterior não foi alterada.');
+    save.disabled=false;if(result)await renderDashboard(root);
+   });
+  }
+  panel.append(form);
+ }
+
  function editCharacter(panel,root,existing,readOnly){
   panel.replaceChildren();const p=existing?structuredClone(existing.payload):fresh();
   panel.append(title(readOnly?'Ficha do personagem':existing?'Editar personagem':'Criar personagem','Dados do Núcleo Jogável 0.1. Não há classes obrigatórias nem regras sobrenaturais inventadas.',b('Voltar',()=>void renderDashboard(root))));

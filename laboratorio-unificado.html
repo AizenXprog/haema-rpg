@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR" data-soundtrack="assets/media-vita-ambient.mp3">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="author" content="Vitor Monte">
+<title>Laboratório Unificado — HÆMA · Candidato experimental</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script defer src="rules-unified-playtest.js"></script><script defer src="laboratorio-unificado.js"></script>
+<style data-haema-view-style="unified-lab">
+:root{color-scheme:dark}body{margin:0;background:#120d10;color:#ebdfd4;font:16px/1.6 system-ui,sans-serif}
+a{color:#e9c38d}footer{padding:20px max(20px,calc((100% - 1050px)/2));background:#1d1017;border-bottom:1px solid #744d49}
+h1,h2,h3{font-family:Georgia,serif;line-height:1.2}h1{font-size:clamp(2.1rem,6vw,4.2rem);margin:.3em 0}h2{font-size:1.8rem}h3{font-size:1.2rem}
+main{max-width:1050px;padding:24px 18px 100px;margin:auto}
+.eyebrow{color:#d5a35c;font-size:.8rem;letter-spacing:.15em;text-transform:uppercase}
+.panel{border:1px solid #69403d;border-radius:16px;background:linear-gradient(130deg,#251419,#181216);padding:clamp(16px,3vw,26px);margin:20px 0}
+.warning{border-inline-start:4px solid #c69d65;padding:12px 15px;background:#30201d}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:8px}
+.stat{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:8px 10px;border-bottom:1px solid #533136}
+label{display:block;font-size:.93rem;color:#f0ddd4}
+input,select,button,textarea{font:inherit;border-radius:8px;padding:10px 12px;max-width:100%;box-sizing:border-box}
+input,select,textarea{background:#110e12;border:1px solid #865d56;color:#fff;width:100%;margin:4px 0 8px}
+button{cursor:pointer;border:1px solid #b78b66;background:#4e2029;color:#fff;font-weight:650}
+button:disabled{cursor:not-allowed;opacity:.5}
+button:hover:not(:disabled){background:#72313b}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #e1bb79;outline-offset:2px}
+.stat button{padding:3px 9px}.stat output{min-width:2.5em;text-align:center;color:#efd2a3;font-weight:700}
+.controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.stat .controls{flex-wrap:nowrap}
+.result{padding:15px;border:1px solid #a07a58;background:#110e12;border-radius:8px;margin-top:15px;min-height:30px}
+small,.muted{color:#c4aca2}
+footer{border-top:1px solid #744d49;border-bottom:0}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="foundation.css?v=1"><link rel="stylesheet" href="cinema.css?v=1">
+<script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script>
+<script defer src="rules-0.1.js?v=0.1"></script><script defer src="haema01.js?v=0.4"></script>
+<script defer src="experience.js?v=0.4"></script><script defer src="trailer-gallery.js?v=2"></script>
+<script defer src="cinema.js?v=1"></script><script defer src="navigation.js?v=4"></script><script type="module" src="app.js?v=9"></script></head>
+<body data-page="unified-lab"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div aria-hidden="true" class="grain"></div><header class="topbar"><div class="header-inner">
+<a aria-label="HÆMA, página inicial" class="brand" href="index.html"><img src="assets/favicon.svg" width="35" height="35" alt=""><span>H<span class="accent">Æ</span>MA</span></a>
+<nav class="nav" id="main-nav" aria-label="Navegação principal"><a href="index.html">Início</a><a href="sistema.html">Sistema</a><a href="biblioteca.html">Biblioteca</a></nav>
+<button class="sound-toggle" type="button" id="haema-sound-toggle" aria-label="Ativar música ambiente" aria-pressed="false" title="Controle de música ambiente"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span id="haema-sound-label">SOM DESLIGADO</span></button>
+<button class="menu-toggle" id="menu-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span></button><a class="top-action" href="portal.html">CONTA <span aria-hidden="true">↗</span></a>
+</div></header>
+<main id="conteudo" class="unified-lab">
+<p class="eyebrow">HÆMA · Haematomanthía / Laboratório isolado</p>
+<h1>Manual Unificado<br><em>em experiência.</em></h1>
+<p class="warning"><strong>Playtest experimental, NÃO oficial.</strong> Esta ferramenta usa o núcleo candidato de 19/11/2026 e não substitui o Manual Vivo 0.1 nem converte fichas antigas. Resultados narrativos, acesso a Regências, oportunidade real, linha de ataque e efeitos de manobras continuam sob validação do mestre.</p>
+<nav class="panel" aria-label="Navegação do laboratório"><a href="#criacao">Criação</a> · <a href="#teste">Testes e críticos</a> · <a href="#combate">Combate</a> · <a href="#metus">Metus</a> · <a href="#latebra">Latebra</a> · <a href="#evolucao">Evolução</a> · <a href="#ferimentos">Ferimentos</a> · <a href="#invicta">Invicta</a> · <a href="#tanger">Tanger</a></nav>
+<section class="panel" id="criacao"><p class="eyebrow">01 · Criação humana</p><h2>Construa uma pessoa, não uma classe</h2>
+<p>Todo mundo começa com d4 em cada campo. Distribua até <strong>4 aumentos de atributos</strong> e <strong>6 de competências</strong>; o máximo inicial é d6. Uma profissão descreve oportunidades, não concede bônus automático.</p>
+<div class="grid"><label>Nome<input id="name" maxlength="80" placeholder="Nome do personagem"></label><label>Ofício<input id="job" maxlength="100" placeholder="Ofício ou profissão"></label></div>
+<h3>Atributos <small id="attrBudget"></small></h3><div class="stats" id="attributes"></div>
+<h3>Competências <small id="skillBudget"></small></h3><div id="skills"></div>
+<p id="derived" class="warning" aria-live="polite"></p>
+<div class="controls"><button id="save">Salvar ficha experimental</button><button id="export">Exportar JSON</button><button id="reset">Nova ficha</button></div>
+<p class="muted" id="sheetStatus" role="status"></p></section>
+<section class="panel" id="teste"><p class="eyebrow">02 · Atributo + Competência</p><h2>Uma dúvida. Dois dados.</h2>
+<p>O mestre declara o risco e uma DT antes da rolagem. DT5 simples sob risco, DT7 significativa, DT9 difícil, DT11 excepcional. Uma impossibilidade física não se torna possível por tirar um número alto.</p>
+<div class="grid"><label>Atributo<select id="testAttr"></select></label><label>Competência<select id="testSkill"></select></label><label>Dificuldade<select id="testDT"><option>5</option><option selected>7</option><option>9</option><option>11</option><option>13</option></select></label>
+<label>Modificador fixo combinado<select id="modifier"><option>-2</option><option>-1</option><option selected>0</option><option>1</option><option>2</option></select></label></div>
+<label><input id="danger" type="checkbox" style="width:auto"> Perigo real anunciado antes (elegibilidade de Invicta)</label>
+<button id="rollTest">Rolar e explicar</button><div id="rollResult" class="result" role="status" aria-live="polite">Escolha seus dados.</div></section>
+<section class="panel" id="combate"><p class="eyebrow">03 · Ataque e defesa</p><h2>O impacto importa</h2>
+<p>Uma Ação Principal, até 6 metros de movimento divisível e uma Reação por rodada. Manobras livres escolhem <strong>dano ou efeito tático</strong>, não ambos. Aparo exige instrumento compatível; Esquiva gasta Reação se possível.</p>
+<div class="grid"><label>Guarda do defensor<select id="guard"></select></label><label>Arma<select id="weapon"><option value="4">Pequena d4</option><option value="6" selected>Comum d6</option><option value="8">Pesada d8</option><option value="10">Devastadora d10*</option></select></label>
+<label>Armadura<select id="armor"><option>0</option><option>1</option><option>2</option></select></label><label>Aparo aplicável<select id="parry"><option>0</option><option>1</option><option>2</option></select></label></div>
+<p><small>*A arma devastadora exige condição e acesso adequados, definidos pelo mestre.</small></p>
+<p>Escudo +1 Defesa ou cobertura parcial +2 (apenas o maior).</p>
+<label><input type="checkbox" id="shield" style="width:auto"> Escudo</label>
+<label><input type="checkbox" id="cover" style="width:auto"> Cobertura parcial</label>
+<button id="rollCombat">Simular golpe</button><div class="result" id="combatResult" role="status" aria-live="polite">O mestre ainda precisa confirmar alcance, risco e condições.</div></section>
+<section class="panel" id="metus"><p class="eyebrow">04 · Medo contextual</p><h2>Metus não é dano mental genérico</h2>
+<p>O dado de Metus anula cada dado regular <em>estritamente menor</em> que seu resultado. Um empate permanece. Use somente quando a fonte de medo realmente pressiona a ação.</p>
+<label>Nível<select id="metusLevel"><option value="4">Inquietação d4</option><option value="6">Pavor d6</option><option value="8">Terror d8</option></select></label>
+<button id="rollMetus">Experimentar Metus</button><div class="result" id="metusResult" role="status"></div></section>
+<section class="panel" id="latebra"><p class="eyebrow">05 · Furtividade</p><h2>Marcas secretas de Latebra</h2>
+<p>Crie Marcas apenas com cobertura plausível. Os números são identificadores, não bônus. O painel abaixo revela as Marcas: <strong>uso exclusivo do mestre, não compartilhe a tela com jogadores.</strong></p>
+<label>Furtividade<select id="latebraDie"></select></label><button id="createMarks">Criar Marcas</button><button id="quickSearch">Busca rápida 1d6</button><button id="intensiveSearch">Busca intensiva 2d6</button><button id="reinforceMarks">Reforçar esconderijo (Ação)</button><button id="noiseMarks">Ruído forte (−1 Marca)</button><button id="exposeMarks">Exposição direta</button>
+<div class="result" id="latebraResult" role="status"></div></section>
+<section class="panel" id="evolucao"><p class="eyebrow">06 · Campanhas longas</p><h2>Evoluir leva tempo e vivência</h2>
+<p>O candidato concede 1 PE por sessão relevante e mais 2 PE coletivos ao fim de arco importante. Ter PE não substitui estudo, experiências ou condições adequadas.</p>
+<div class="grid"><label>Tipo<select id="progressType"><option value="competencia">Competência</option><option value="atributo">Atributo</option><option value="guarda">Guarda</option><option value="regencia">Regência Desperta</option></select></label><label>Dado atual<select id="progressDie"></select></label></div>
+<button id="calcPE">Consultar custo do próximo dado</button><div class="result" id="peResult" role="status"></div></section>
+<p class="warning">Esta é uma ferramenta de verificação parcial. Para decisões oficiais do jogo, consulte o Manual Unificado integral do criador. Não publica cores provisórias de Regências nem informações internas de Lore.</p>
+
+<section class="panel" id="ferimentos"><p class="eyebrow">07 · Integridade e socorro</p><h2>Feridas têm consequência</h2>
+<p>Uma fonte com dano final de pelo menos 6 causa um Ferimento. Cair a zero também causa um. São, no máximo, dois Ferimentos e um por fonte. Dano não descreve por si só a lesão: o mestre registra o que foi atingido.</p>
+<div class="grid"><label>Integridade atual<input type="number" id="woundCurrent" min="0" max="18" value="10"></label>
+<label>Integridade máxima<input type="number" id="woundMax" min="1" max="18" value="10"></label>
+<label>Dano final da fonte<input type="number" id="woundDamage" min="0" max="50" value="6"></label>
+<label>Ferimentos registrados<select id="woundCount"><option>0</option><option>1</option><option>2</option></select></label></div>
+<button id="applyWound">Aplicar dano</button><button id="firstDeathCheck">Teste de Risco de Morte</button>
+<button id="dangerRound">Rodada sem socorro sob perigo</button><button id="stabilize">Registrar socorro válido</button>
+<button id="safeRecover">Dez minutos em segurança</button><button id="longRest">Descanso longo seguro (1d6)</button>
+<div class="result" id="woundResult" role="status" aria-live="polite">Só marque Risco de Morte quando o perigo físico real continua. Ao estabilizar, o personagem não volta a agir imediatamente.</div></section>
+<section class="panel" id="invicta"><p class="eyebrow">08 · Realização técnica</p><h2>Invicta e as quatro formas de Ápice</h2>
+<p>Uma Invicta exige ambos os dados altos, um máximo natural, sucesso com margem natural de pelo menos 6 e perigo real anunciado antes da rolagem. Máximo de uma por personagem e uma nova por cena para o grupo.</p>
+<p>As rolagens do laboratório de testes podem gerar uma oportunidade técnica. O mestre confirma sua elegibilidade.</p>
+<button id="awardInvicta">Registrar Invicta da última rolagem elegível</button><button id="newScene">Iniciar nova cena significativa</button>
+<div class="grid"><label>Tipo de Ápice<select id="apexType"><option value="golpe">Golpe</option><option value="protecao">Proteção</option><option value="superacao">Superação</option><option value="tanger">Tanger</option></select></label>
+<label><input type="checkbox" id="apexSituation" style="width:auto"> Condições físicas e táticas confirmadas pelo mestre</label></div>
+<button id="spendInvicta">Experimentar gasto de Invicta</button><div class="result" id="invictaResult" role="status" aria-live="polite">Invicta guardada: 0</div></section>
+<section class="panel" id="tanger"><p class="eyebrow">09 · Regências sem classes</p><h2>Descobrir, estudar e Tanger</h2>
+<p>As sete Regências conhecidas são formas de influência, não listas automáticas de magias. O Despertar requer acesso narrativo validado; registrar uma cor ou símbolo não concede poder.</p>
+<div class="grid">
+<label>Regência<select id="regency"></select></label>
+<label>Dado da Regência<select id="regencyDie"></select></label>
+<label>Estado da Descoberta<select id="discoveryState"><option value="suspeita">Suspeita</option><option value="provisoria">Provisória</option><option value="estavel">Estável</option></select></label>
+<label>Escala<select id="discoveryScale"><option value="ajuste">Ajuste · DT5</option><option value="intervencao">Intervenção · DT7</option><option value="maior">Maior · DT9</option></select></label>
+</div>
+<div class="grid"><label>Fenômeno observado<input id="discoveryPhenomenon" placeholder="O que foi estudado?"></label>
+<label>Âncora real<input id="discoveryAnchor" placeholder="O que mantém o efeito?"></label>
+<label>Competência humana<select id="discoverySkill"></select></label>
+<label>Efeito aprendido<input id="discoveryEffect" placeholder="O que especificamente pode mudar?"></label>
+<label>Limites<input id="discoveryLimits" placeholder="Alvo, alcance, escala..."></label>
+<label>Duração<input id="discoveryDuration" placeholder="Quanto tempo?"></label>
+<label>Sinal perceptível<input id="discoverySignal" placeholder="Como se percebe?"></label>
+<label>Contrajogo<input id="discoveryCounterplay" placeholder="Como impedir ou interromper?"></label>
+<label>Risco anunciado<input id="discoveryRisk" placeholder="O que acontece na falha?"></label>
+<label>Assinatura visual individual<input id="visualSignature" placeholder="Fios, placas, marcas..."></label></div>
+<label><input id="awakenedConfirmed" type="checkbox" style="width:auto"> O mestre confirmou Despertar e acesso efetivo a esta Regência</label>
+<label><input id="anchorConfirmed" type="checkbox" style="width:auto"> A âncora existe e as condições materiais estão satisfeitas</label>
+<label><input id="preparedConfirmed" type="checkbox" style="width:auto"> Preparações e sustentação foram realizadas (escala Maior)</label>
+<label><input id="studyConfirmed" type="checkbox" style="width:auto"> A investigação/estudo foi demonstrada em jogo</label>
+<button id="tangerRoll">Manifestar ou ensaiar</button><button id="stabilizeDiscovery">Estabilizar Descoberta com PE</button>
+<div id="tangerResult" class="result" role="status" aria-live="polite">Preencha as condições para experimentar. Nenhuma descoberta é cânone automaticamente.</div></section>
+</main><footer>Site e Sistema criado por <strong>Vitor Monte</strong> · HÆMA — Candidato experimental de playtest</footer>
+</body></html>

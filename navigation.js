@@ -3,7 +3,29 @@
  * main content changes; old pages remain directly accessible to browsers/crawlers.
  */
 (()=>{
- const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html','campanha.html']);
+ const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html','campanha.html','manual-unificado.html','laboratorio-unificado.html','tecnicas-unificadas.html']);
+ const viewScripts=Object.freeze({
+  'manual-unificado.html':['manual-unificado.js'],
+  'laboratorio-unificado.html':['rules-unified-playtest.js','laboratorio-unificado.js'],
+  'tecnicas-unificadas.html':['techniques-unified-playtest.js','tecnicas-unificadas.js'],
+  'campanha.html':['rules-unified-playtest.js','techniques-unified-playtest.js','techniques-unified-logic.js']
+ });
+ const scriptPromises=new Map();
+ async function ensureViewScripts(key){
+  for(const path of viewScripts[key]||[]){
+   if(document.querySelector('script[src="'+path+'"],script[src^="'+path+'?"]'))continue;
+   if(!scriptPromises.has(path)){
+    const script=document.createElement('script');
+    script.src=path;
+    script.dataset.haemaViewScript='yes';
+    scriptPromises.set(path,new Promise((resolve,reject)=>{
+     script.onload=resolve;script.onerror=()=>{scriptPromises.delete(path);script.remove();reject(Error('Falha ao carregar '+path));};
+    }));
+    document.head.append(script);
+   }
+   await scriptPromises.get(path);
+  }
+ }
  const main=document.querySelector('main#conteudo');
  if(!main||!window.fetch||!window.history?.pushState)return;
  let pending=null,sequence=0,viewTransition=null,revealObserver=null;
@@ -69,6 +91,12 @@
    });
    styles.set(href,promise);document.head.append(link);return promise;
   }));
+  // Single-route inline stylesheet: do not leak the experimental color scheme
+  // into other HÆMA pages when the main view is swapped.
+  document.querySelectorAll('head style[data-haema-view-style]').forEach(element=>element.remove());
+  for(const template of parsed.querySelectorAll('head style[data-haema-view-style]')){
+   document.head.append(document.importNode(template,true));
+  }
   // Scoped styles remain loaded: an older navigation cannot remove a newer route's CSS.
  };
  const fetchPage=async(url,signal)=>{
@@ -99,7 +127,7 @@
   const parsed=new DOMParser().parseFromString(markup,'text/html');
   const nextMain=parsed.querySelector('main#conteudo');
   if(!nextMain){location.assign(url.href);return;}
-  try{await syncPageStyles(parsed)}catch{if(request===sequence)location.assign(url.href);return;}
+  try{await syncPageStyles(parsed);await ensureViewScripts(canon(url))}catch{if(request===sequence)location.assign(url.href);return;}
   if(request!==sequence)return;
   const commit=()=>{
    if(request!==sequence)return;

@@ -1,0 +1,31 @@
+name: Manual Unificado — núcleo experimental
+on:
+  push:
+    branches:
+      - feat/manual-unificado-playtest-20261119
+  pull_request:
+    paths:
+      - 'rules-unified-playtest.js'
+      - 'tests/unified-playtest.cjs'
+      - '.github/workflows/unified-playtest.yml'
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check rules-unified-playtest.js
+      - run: node --check laboratorio-unificado.js
+      - run: node --check techniques-unified-playtest.js
+      - run: node --check portal.js
+      - run: node --test tests/unified-playtest.cjs
+      - name: Validar sintaxe do código JavaScript inteiro
+        run: find . -type f \( -name '*.js' -o -name '*.cjs' \) -not -path './node_modules/*' -print0 | xargs -0 -n1 node --check
+      - name: Regressões do Estúdio e mapas
+        run: |
+          set -e
+          for test in tests/studio-*.cjs; do node "$test"; done
