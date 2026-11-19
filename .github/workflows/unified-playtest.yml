@@ -23,3 +23,9 @@ jobs:
       - run: node --check techniques-unified-playtest.js
       - run: node --check portal.js
       - run: node --test tests/unified-playtest.cjs
+      - name: Validar sintaxe do código JavaScript inteiro
+        run: find . -type f \( -name '*.js' -o -name '*.cjs' \) -not -path './node_modules/*' -print0 | xargs -0 -n1 node --check
+      - name: Regressões do Estúdio e mapas
+        run: |
+          set -e
+          for test in tests/studio-*.cjs; do node "$test"; done
