@@ -4,11 +4,11 @@
 <meta name="robots" content="noindex,nofollow"><meta name="author" content="Vitor Monte">
 <title>Laboratório Unificado — HÆMA · Candidato experimental</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="style.css"><script defer src="audio.js"></script>
+<link rel="stylesheet" href="style.css">
 <script defer src="rules-unified-playtest.js"></script><script defer src="laboratorio-unificado.js"></script>
-<style>
+<style data-haema-view-style="unified-lab">
 :root{color-scheme:dark}body{margin:0;background:#120d10;color:#ebdfd4;font:16px/1.6 system-ui,sans-serif}
-a{color:#e9c38d}header,footer{padding:20px max(20px,calc((100% - 1050px)/2));background:#1d1017;border-bottom:1px solid #744d49}
+a{color:#e9c38d}footer{padding:20px max(20px,calc((100% - 1050px)/2));background:#1d1017;border-bottom:1px solid #744d49}
 h1,h2,h3{font-family:Georgia,serif;line-height:1.2}h1{font-size:clamp(2.1rem,6vw,4.2rem);margin:.3em 0}h2{font-size:1.8rem}h3{font-size:1.2rem}
 main{max-width:1050px;padding:24px 18px 100px;margin:auto}
 .eyebrow{color:#d5a35c;font-size:.8rem;letter-spacing:.15em;text-transform:uppercase}
@@ -31,10 +31,16 @@ small,.muted{color:#c4aca2}
 footer{border-top:1px solid #744d49;border-bottom:0}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
-</head>
-<body>
-<header><a href="sistema.html">← Sistema HÆMA</a><span style="float:right">CANDIDATO · 19/11/2026</span></header>
-<main>
+<link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="foundation.css?v=1"><link rel="stylesheet" href="cinema.css?v=1">
+<script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script>
+<script defer src="navigation.js?v=4"></script><script type="module" src="app.js?v=9"></script></head>
+<body data-page="unified-lab"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div aria-hidden="true" class="grain"></div><header class="topbar"><div class="header-inner">
+<a aria-label="HÆMA, página inicial" class="brand" href="index.html"><img src="assets/favicon.svg" width="35" height="35" alt=""><span>H<span class="accent">Æ</span>MA</span></a>
+<nav class="nav" id="main-nav" aria-label="Navegação principal"><a href="index.html">Início</a><a href="sistema.html">Sistema</a><a href="biblioteca.html">Biblioteca</a></nav>
+<button class="sound-toggle" type="button" id="haema-sound-toggle" aria-label="Ativar música ambiente" aria-pressed="false" title="Controle de música ambiente"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span id="haema-sound-label">SOM DESLIGADO</span></button>
+<button class="menu-toggle" id="menu-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span></button><a class="top-action" href="portal.html">CONTA <span aria-hidden="true">↗</span></a>
+</div></header>
+<main id="conteudo" class="unified-lab">
 <p class="eyebrow">HÆMA · Haematomanthía / Laboratório isolado</p>
 <h1>Manual Unificado<br><em>em experiência.</em></h1>
 <p class="warning"><strong>Playtest experimental, NÃO oficial.</strong> Esta ferramenta usa o núcleo candidato de 19/11/2026 e não substitui o Manual Vivo 0.1 nem converte fichas antigas. Resultados narrativos, acesso a Regências, oportunidade real, linha de ataque e efeitos de manobras continuam sob validação do mestre.</p>
