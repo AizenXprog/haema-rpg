@@ -116,6 +116,24 @@ function initHAEMAUnifiedLaboratory(){
   $('latebraResult').textContent='MESTRE: Busca '+(intensive?'Intensiva (Ação + Movimento)':'Rápida (Ação)')+', resultado '+rolls.join(', ')+'. Reveladas '+(r.discovered.join(', ')||'nenhuma')+'. Restam '+(available.join(', ')||'nenhuma')+'. '+(r.located?'Esconderijo localizado.':'Ainda oculto.');
  }
  $('quickSearch').addEventListener('click',()=>search(false));$('intensiveSearch').addEventListener('click',()=>search(true));
+ $('reinforceMarks').addEventListener('click',()=>{
+  if(!marks){$('latebraResult').textContent='Crie as Marcas primeiro.';return;}
+  if(!confirm('O personagem gastou uma Ação Principal para reforçar o esconderijo, com cobertura plausível?'))return;
+  const result=h.reinforceLatebra(available,h.roll(6));available=result.marks;
+  $('latebraResult').textContent='MESTRE: '+(result.added?'Uma Marca nova foi adicionada.':'Nenhuma Marca acrescentada (duplicata ou limite).')+' Restam '+(available.join(', ')||'nenhuma')+'.';
+ });
+ $('noiseMarks').addEventListener('click',()=>{
+  if(!marks)return;
+  if(!confirm('Houve ruído forte que remove uma Marca oculta?'))return;
+  const result=h.disturbLatebra(available,{noise:true});available=result.marks;
+  $('latebraResult').textContent='MESTRE: ruído forte removeu a Marca '+(result.removed.join(', ')||'nenhuma')+'. '+(result.located?'Esconderijo localizado.':'Restam '+available.join(', '));
+ });
+ $('exposeMarks').addEventListener('click',()=>{
+  if(!marks)return;
+  if(!confirm('Houve exposição direta: esconderijo revelado independentemente das Marcas?'))return;
+  const result=h.disturbLatebra(available,{exposed:true});available=result.marks;
+  $('latebraResult').textContent='MESTRE: exposição direta. Esconderijo localizado, Marcas reveladas: '+result.removed.join(', ')+'.';
+ });
  $('calcPE').addEventListener('click',()=>{
   const type=$('progressType').value,die=Number($('progressDie').value);
   try{$('peResult').textContent='Custo de d'+die+' para d'+(die+2)+': '+h.progressCost(type,die)+' PE. Requer vivência e condição apropriada, não só pontos.';}
