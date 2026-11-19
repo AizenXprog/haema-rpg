@@ -7,7 +7,8 @@
  const viewScripts=Object.freeze({
   'manual-unificado.html':['manual-unificado.js'],
   'laboratorio-unificado.html':['rules-unified-playtest.js','laboratorio-unificado.js'],
-  'tecnicas-unificadas.html':['techniques-unified-playtest.js','tecnicas-unificadas.js']
+  'tecnicas-unificadas.html':['techniques-unified-playtest.js','tecnicas-unificadas.js'],
+  'campanha.html':['rules-unified-playtest.js','techniques-unified-playtest.js','techniques-unified-logic.js']
  });
  const scriptPromises=new Map();
  async function ensureViewScripts(key){
