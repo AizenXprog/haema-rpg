@@ -1,15 +1,15 @@
 <!doctype html><html lang="pt-BR" data-soundtrack="assets/media-vita-ambient.mp3">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="author" content="Vitor Monte">
 <title>Manual Unificado do Criador — HÆMA | Playtest experimental</title>
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script defer src="audio.js"></script>
-<style>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
+<style data-haema-view-style="unified-manual">
 :root{color-scheme:dark}body{background:#120e12;color:#efe2d5;font:16px/1.7 system-ui,sans-serif;margin:0}
-a{color:#e6c091}header,footer{background:#21141a;padding:15px max(20px,calc((100% - 1200px)/2));border-block:1px solid #62413d}
+a{color:#e6c091}footer{background:#21141a;padding:15px max(20px,calc((100% - 1200px)/2));border-block:1px solid #62413d}
 main{max-width:1200px;margin:auto;padding:32px 20px 80px}h1,h2,h3,h4{font-family:Georgia,serif}h1{font-size:clamp(2.2rem,5vw,4.2rem);line-height:1.12;margin:.4em 0}
 .layout{display:grid;grid-template-columns:minmax(215px,285px) minmax(0,1fr);gap:26px;align-items:start}
-nav{position:sticky;top:15px;max-height:90vh;overflow:auto;border:1px solid #66433e;background:#1d1519;padding:16px;border-radius:12px}
-nav a{display:block;padding:5px 9px;text-decoration:none;font-size:.85rem;border-bottom:1px solid #483039}
-nav a:hover{text-decoration:underline}input{box-sizing:border-box;width:100%;padding:12px;background:#120e12;border:1px solid #936a5a;border-radius:6px;color:white;font:inherit}
+main.unified-manual nav{position:sticky;top:15px;max-height:90vh;overflow:auto;border:1px solid #66433e;background:#1d1519;padding:16px;border-radius:12px}
+main.unified-manual nav a{display:block;padding:5px 9px;text-decoration:none;font-size:.85rem;border-bottom:1px solid #483039}
+main.unified-manual nav a:hover{text-decoration:underline}input{box-sizing:border-box;width:100%;padding:12px;background:#120e12;border:1px solid #936a5a;border-radius:6px;color:white;font:inherit}
 .chapter{margin:0 0 12px;border:1px solid #62413d;border-radius:13px;background:#21171c;overflow:hidden;scroll-margin-top:15px}
 .chapter summary{cursor:pointer;display:flex;align-items:baseline;gap:12px;padding:17px 20px;font-weight:700;font-size:1.13rem;font-family:Georgia,serif}
 .chapter summary span{color:#dfbd88;font:700 .78rem system-ui,sans-serif;min-width:2em}
@@ -23,9 +23,15 @@ code{background:#120c11;border-radius:4px;padding:2px 5px;color:#f1c7a2}strong{c
 #empty{display:none}.muted{color:#bba59b}
 @media(max-width:850px){.layout{grid-template-columns:1fr}nav{position:static;max-height:260px}main{padding:20px 12px}.chapter-body{padding:5px 14px 25px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
-</style></head><body>
-<header><a href="sistema.html">← HÆMA Sistema</a> · <a href="laboratorio-unificado.html">Laboratório de testes</a></header>
-<main class="unified-manual"><p class="muted">HÆMA · HAEMATOMANTHÍA · 19/11/2026</p>
+</style><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="foundation.css?v=1"><link rel="stylesheet" href="cinema.css?v=1">
+<script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script>
+<script defer src="navigation.js?v=4"></script><script type="module" src="app.js?v=9"></script></head><body data-page="unified-manual"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div aria-hidden="true" class="grain"></div><header class="topbar"><div class="header-inner">
+<a aria-label="HÆMA, página inicial" class="brand" href="index.html"><img src="assets/favicon.svg" width="35" height="35" alt=""><span>H<span class="accent">Æ</span>MA</span></a>
+<nav class="nav" id="main-nav" aria-label="Navegação principal"><a href="index.html">Início</a><a href="sistema.html">Sistema</a><a href="biblioteca.html">Biblioteca</a></nav>
+<button class="sound-toggle" type="button" id="haema-sound-toggle" aria-label="Ativar música ambiente" aria-pressed="false" title="Controle de música ambiente"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span id="haema-sound-label">SOM DESLIGADO</span></button>
+<button class="menu-toggle" id="menu-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span></button><a class="top-action" href="portal.html">CONTA <span aria-hidden="true">↗</span></a>
+</div></header>
+<main id="conteudo" class="unified-manual"><p class="muted">HÆMA · HAEMATOMANTHÍA · 19/11/2026</p>
 <h1>Manual Unificado<br><em>do Criador.</em></h1>
 <p class="warning"><strong>EDIÇÃO CANDIDATA PARA PLAYTEST · NÃO OFICIAL.</strong> Esta é uma reprodução didática do candidato integrado. As regras ainda precisam de validação do criador e de playtests humanos. Propostas de cores de Regências foram omitidas para não serem confundidas com cânone. Os registros de versões anteriores permanecem preservados.</p>
 <div class="layout"><nav aria-label="Sumário do Manual"><label for="filter">Pesquisar nos capítulos</label><input type="search" id="filter" placeholder="Ex.: Metus, Esquiva, Invicta" autocomplete="off"><p id="count" class="muted"></p><a href="#cap-0">HÆMA — MANUAL UNIFICADO DO CRIADOR</a>
