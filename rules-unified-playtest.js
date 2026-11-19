@@ -83,7 +83,7 @@
   return {integrity:next,wounds:Math.min(2,wounds+(injured?1:0)),incapacitated:next===0,newWound:injured&&wounds<2};
  }
  function metus(a,b,m){
-  if(![0,4,6,8].includes(m))throw Error('Metus inválido');
+  if(!Number.isInteger(m)||m<0||m>8)throw Error('Resultado de Metus inválido');
   if(!m)return {rolls:[a,b],canceled:[false,false],total:a+b};
   return {rolls:[a<m?0:a,b<m?0:b],canceled:[a<m,b<m],total:(a<m?0:a)+(b<m?0:b)};
  }
