@@ -214,9 +214,31 @@ const PORTAL=(()=>{
   }
   form.append(node('h3','','Condições e progressão'),extra);
   const description=field('Vivências e aprendizados (uma por linha)','textarea',(p.experiences||[]).join('\n'),8000);
-  const techniques=field('Técnicas adquiridas (nomes, uma por linha)','textarea',(p.techniques||[]).join('\n'),4000);
-  const discoveries=field('Descobertas e Regências (registros narrativos)','textarea',JSON.stringify({awakened:p.awakened||[],discoveries:p.discoveries||[]},null,2),8000);
-  form.append(description.wrap,techniques.wrap);
+  const techniques=field('Técnicas adquiridas (somente leitura)','textarea',(p.techniques||[]).join('\n'),4000);
+  techniques.input.readOnly=true;
+  const techniqueRules=window.HAEMATechniquesRules;
+  const purchase=node('div','portal-form-row');
+  const purchaseTitle=node('p','portal-info','Adquirir técnica exige PE, competência adequada e vivência confirmada pelo mestre.');
+  const purchaseSelect=node('select');purchaseSelect.setAttribute('aria-label','Técnica para adquirir');
+  if(techniqueRules)for(const tech of techniqueRules.catalog){
+   const o=node('option','',tech.name+' · '+tech.cost+' PE · '+tech.requirement);o.value=tech.id;purchaseSelect.append(o);
+  }
+  const purchaseButton=b('Conferir e adquirir técnica',()=>{
+   if(!techniqueRules)return message(form,'Catálogo indisponível.',true);
+   const peInput=widgets.find(([key])=>key==='pe')[1];p.pe=Number(peInput.value);
+   if(!Number.isInteger(p.pe)||p.pe<0)return message(form,'Saldo de PE inválido.',true);
+   const assessment=techniqueRules.evaluate(p,Number(purchaseSelect.value));
+   if(assessment.reason==='PE insuficiente'||assessment.reason==='Já adquirida'||!assessment.required?.met)
+    return message(form,assessment.reason,true);
+   if(!confirm('O mestre confirmou a vivência e a condição material exigida por esta técnica?'))return;
+   const result=techniqueRules.acquire(p,Number(purchaseSelect.value),{masterApproved:true});
+   if(!result.ok)return message(form,result.reason,true);
+   p.pe=result.character.pe;p.techniques=result.character.techniques;
+   peInput.value=String(p.pe);techniques.input.value=p.techniques.join('\n');
+   message(form,'Técnica registrada nesta ficha. Salve a ficha online para persistir.');
+  },'portal-action');
+  purchase.append(purchaseSelect,purchaseButton);
+  form.append(description.wrap,techniques.wrap,purchaseTitle,purchase);
   if(readOnly){name.input.disabled=true;job.input.disabled=true;description.input.disabled=true;techniques.input.disabled=true;
    form.append(brief('Consulta somente leitura. Não converte fichas antigas.'));}
   else{
@@ -227,7 +249,7 @@ const PORTAL=(()=>{
     e.preventDefault();
     p.name=name.input.value.trim();p.job=job.input.value.trim();
     p.experiences=description.input.value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,150);
-    p.techniques=techniques.input.value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,22);
+    // Aquisições só acontecem pelo catálogo validado; não aceitar texto arbitrário da ficha.
     for(const[key,input]of widgets) {
      if(input.value.trim()===''||!Number.isInteger(Number(input.value))){message(form,'Preencha valores inteiros nas condições.',true);return}
      p[key]=Number(input.value);
