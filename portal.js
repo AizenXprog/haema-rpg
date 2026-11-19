@@ -146,13 +146,14 @@ const PORTAL=(()=>{
  }
  function characterCard(character,panel,root){
   const card=node('article','portal-item'),top=node('div','portal-item-top'),head=node('div');head.append(node('h3','',character.title),node('span','portal-meta',(state.data.names[character.user_id]||'Jogador')+' · HÆMA '+character.rules_version));
-  top.append(head,node('span','portal-tag','FICHA 0.1'));card.append(top);
+  top.append(head,node('span','portal-tag',character.rules_version==='0.1'?'FICHA 0.1':'UNIFICADO · PLAYTEST'));card.append(top);
   const controls=node('div','portal-flex');const mine=character.user_id===state.user.id;
-  controls.append(b(mine?'Editar ficha':'Consultar ficha',()=>editCharacter(panel,root,character,!mine)));
+  controls.append(b(mine?'Editar ficha':'Consultar ficha',()=>character.rules_version==='unified-playtest-20261119'?editUnifiedCharacter(panel,root,character,!mine):editCharacter(panel,root,character,!mine)));
   card.append(controls);return card;
  }
  function showCharacters(panel,root){
-  const actions=node('div','portal-flex');actions.append(b('Criar personagem',()=>editCharacter(panel,root,null,false),'portal-action'));
+  const actions=node('div','portal-flex');actions.append(b('Criar ficha 0.1',()=>editCharacter(panel,root,null,false),'portal-action'));
+  actions.append(b('Nova ficha Unificada · experimental',()=>editUnifiedCharacter(panel,root,null,false),'portal-action'));
   let hasLocal=false;try{hasLocal=!!localStorage.getItem('haema-character-0.1')}catch{}
   if(hasLocal)actions.append(b('Importar ficha deste dispositivo',()=>void importLocal(panel,root)));
   panel.append(title('Personagens',isGM()?'Veja as fichas dos integrantes da campanha. Cada jogador edita a própria ficha.':'Crie personagens e mantenha a ficha atualizada. Sua ficha local antiga nunca é apagada.',actions));
@@ -165,6 +166,96 @@ const PORTAL=(()=>{
    if(r)await renderDashboard(root);
   }catch(e){message(panel,errorText(e),true)}
  }
+
+ function editUnifiedCharacter(panel,root,existing,readOnly){
+  const core=window.HAEMAUnified;
+  panel.replaceChildren();
+  if(!core){panel.append(empty('Núcleo experimental indisponível. Nenhuma ficha foi alterada.'));return}
+  const p=existing?structuredClone(existing.payload):core.createdCharacter();
+  panel.append(title(readOnly?'Consultar ficha experimental':existing?'Editar ficha experimental':'Criar ficha experimental',
+   'Manual Unificado candidato de 19/11/2026 · sem conversão automática de versões antigas.',
+   b('Voltar',()=>void renderDashboard(root))));
+  const form=node('form','portal-form');
+  const name=field('Nome do personagem','text',p.name||'',80),job=field('Profissão ou ofício','text',p.job||'',100);
+  name.input.required=true;form.append(name.wrap,job.wrap);
+  let initialOnly=!existing;
+  const buildGroup=(label,names,arr,budget)=>{
+   const section=node('section'),header=node('h3','',label),counter=node('p','portal-info'),grid=node('div','portal-sheet-grid');
+   function count(){return arr.reduce((acc,d)=>acc+(d-4)/2,0)}
+   function update(){counter.textContent=initialOnly?count()+'/'+budget+' aumentos na criação · teto d6':'Evolução registrada na ficha · dados até d12';}
+   for(let i=0;i<names.length;i++){
+    const wrap=node('div','portal-dice-field'),lab=node('span','',names[i]),sel=node('select');
+    sel.setAttribute('aria-label',names[i]);
+    for(const size of (initialOnly?[4,6]:core.DICE)){
+     const opt=node('option','','d'+size);opt.value=size;sel.append(opt);
+    }
+    sel.value=String(arr[i]);
+    sel.addEventListener('change',()=>{
+     const old=arr[i];arr[i]=Number(sel.value);
+     if(initialOnly&&count()>budget){arr[i]=old;sel.value=String(old);message(form,'Limite de criação atingido: alteração desfeita.',true)}
+     update();
+    });
+    sel.disabled=readOnly;
+    wrap.append(lab,sel);grid.append(wrap);
+   }
+   section.append(header,counter,grid);update();return section;
+  };
+  form.append(buildGroup('Seis atributos',core.ATTR,p.attributes,4),
+              buildGroup('Vinte e quatro competências',core.SKILLS,p.skills,6));
+  const extra=node('div','portal-form-row');
+  const numericFields=[['Guarda (faces)','guard',6,12],['Integridade atual','integrity',0,18],
+    ['Ferimentos','wounds',0,2],['Riscos de Morte','deathRisks',0,3],
+    ['PE disponíveis','pe',0,9999],['Invicta armazenada','invicta',0,1]];
+  const widgets=[];
+  for(const [label,key,min,max] of numericFields){
+   const v=field(label,'number',p[key]??'',5);v.input.min=min;v.input.max=max;v.input.step=key==='guard'?2:1;
+   if(readOnly)v.input.disabled=true;
+   widgets.push([key,v.input]);extra.append(v.wrap);
+  }
+  form.append(node('h3','','Condições e progressão'),extra);
+  const description=field('Vivências e aprendizados (uma por linha)','textarea',(p.experiences||[]).join('\n'),8000);
+  const techniques=field('Técnicas adquiridas (nomes, uma por linha)','textarea',(p.techniques||[]).join('\n'),4000);
+  const discoveries=field('Descobertas e Regências (registros narrativos)','textarea',JSON.stringify({awakened:p.awakened||[],discoveries:p.discoveries||[]},null,2),8000);
+  form.append(description.wrap,techniques.wrap);
+  if(readOnly){name.input.disabled=true;job.input.disabled=true;description.input.disabled=true;techniques.input.disabled=true;
+   form.append(brief('Consulta somente leitura. Não converte fichas antigas.'));}
+  else{
+   const footer=node('div','portal-form-foot');
+   footer.append(b('Cancelar',()=>void renderDashboard(root)));
+   const save=b('Salvar ficha experimental',()=>{},'portal-action');save.type='submit';footer.append(save);form.append(footer);
+   form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    p.name=name.input.value.trim();p.job=job.input.value.trim();
+    p.experiences=description.input.value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,150);
+    p.techniques=techniques.input.value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,22);
+    for(const[key,input]of widgets) {
+     if(input.value.trim()===''||!Number.isInteger(Number(input.value))){message(form,'Preencha valores inteiros nas condições.',true);return}
+     p[key]=Number(input.value);
+    }
+    if(!p.name||p.name.length>80||!['haema-character'].includes(p.format)||p.version!==core.VERSION){
+     message(form,'Ficha experimental inválida: nome ou versão incorretos.',true);return;
+    }
+    if(!core.DICE.includes(p.guard)||p.guard<6||![0,1,2].includes(p.wounds)||p.deathRisks<0||p.deathRisks>3||
+       p.pe<0||![0,1].includes(p.invicta)||p.integrity<0||p.integrity>core.integrity(p.attributes[2])){
+      message(form,'Verifique Guarda, Integridade, Ferimentos, Riscos, PE e Invicta.',true);return;
+    }
+    if(initialOnly&&!core.validateCreation(p).valid){message(form,'A distribuição inicial não é válida. Revise o teto d6 e os limites 4/6.',true);return}
+    if(!Array.isArray(p.attributes)||p.attributes.length!==6||!p.attributes.every(d=>core.DICE.includes(d))||
+      !Array.isArray(p.skills)||p.skills.length!==24||!p.skills.every(d=>core.DICE.includes(d))){
+      message(form,'Dados de atributo ou competência inválidos.',true);return;
+    }
+    save.disabled=true;
+    const payload={title:p.name,payload:p,updated_at:new Date().toISOString()};
+    const op=existing?
+      state.client.from('haema_characters').update(payload).eq('id',existing.id).eq('user_id',state.user.id).eq('rules_version',core.VERSION):
+      state.client.from('haema_characters').insert({...payload,campaign_id:campaignId(),user_id:state.user.id,rules_version:core.VERSION});
+    const result=await notify(op,form,'Ficha experimental salva na campanha. A versão anterior não foi alterada.');
+    save.disabled=false;if(result)await renderDashboard(root);
+   });
+  }
+  panel.append(form);
+ }
+
  function editCharacter(panel,root,existing,readOnly){
   panel.replaceChildren();const p=existing?structuredClone(existing.payload):fresh();
   panel.append(title(readOnly?'Ficha do personagem':existing?'Editar personagem':'Criar personagem','Dados do Núcleo Jogável 0.1. Não há classes obrigatórias nem regras sobrenaturais inventadas.',b('Voltar',()=>void renderDashboard(root))));
