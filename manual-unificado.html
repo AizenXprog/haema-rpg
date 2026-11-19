@@ -1,0 +1,448 @@
+<!doctype html><html lang="pt-BR" data-soundtrack="assets/media-vita-ambient.mp3">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="author" content="Vitor Monte">
+<title>Manual Unificado do Criador — HÆMA | Playtest experimental</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script defer src="audio.js"></script>
+<style>
+:root{color-scheme:dark}body{background:#120e12;color:#efe2d5;font:16px/1.7 system-ui,sans-serif;margin:0}
+a{color:#e6c091}header,footer{background:#21141a;padding:15px max(20px,calc((100% - 1200px)/2));border-block:1px solid #62413d}
+main{max-width:1200px;margin:auto;padding:32px 20px 80px}h1,h2,h3,h4{font-family:Georgia,serif}h1{font-size:clamp(2.2rem,5vw,4.2rem);line-height:1.12;margin:.4em 0}
+.layout{display:grid;grid-template-columns:minmax(215px,285px) minmax(0,1fr);gap:26px;align-items:start}
+nav{position:sticky;top:15px;max-height:90vh;overflow:auto;border:1px solid #66433e;background:#1d1519;padding:16px;border-radius:12px}
+nav a{display:block;padding:5px 9px;text-decoration:none;font-size:.85rem;border-bottom:1px solid #483039}
+nav a:hover{text-decoration:underline}input{box-sizing:border-box;width:100%;padding:12px;background:#120e12;border:1px solid #936a5a;border-radius:6px;color:white;font:inherit}
+.chapter{margin:0 0 12px;border:1px solid #62413d;border-radius:13px;background:#21171c;overflow:hidden;scroll-margin-top:15px}
+.chapter summary{cursor:pointer;display:flex;align-items:baseline;gap:12px;padding:17px 20px;font-weight:700;font-size:1.13rem;font-family:Georgia,serif}
+.chapter summary span{color:#dfbd88;font:700 .78rem system-ui,sans-serif;min-width:2em}
+.chapter summary:hover{background:#35232a}.chapter-body{padding:6px 22px 26px;overflow-wrap:anywhere}
+.chapter-body p{margin:12px 0}.chapter-body h2,.chapter-body h3{margin-top:28px;color:#f1cfaf}
+.warning{border-left:4px solid #dab178;padding:15px 20px;background:#33221e;margin:24px 0}
+blockquote{margin:18px 0;padding:8px 18px;background:#302028;border-left:3px solid #ba8058}
+.table-scroll{overflow-x:auto}table{border-collapse:collapse;font-size:.88rem;min-width:420px;width:100%}
+td{padding:8px 10px;border:1px solid #694743}tr:first-child{background:#3b292c;font-weight:700}
+code{background:#120c11;border-radius:4px;padding:2px 5px;color:#f1c7a2}strong{color:#ffe2c4}
+#empty{display:none}.muted{color:#bba59b}
+@media(max-width:850px){.layout{grid-template-columns:1fr}nav{position:static;max-height:260px}main{padding:20px 12px}.chapter-body{padding:5px 14px 25px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style></head><body>
+<header><a href="sistema.html">← HÆMA Sistema</a> · <a href="laboratorio-unificado.html">Laboratório de testes</a></header>
+<main><p class="muted">HÆMA · HAEMATOMANTHÍA · 19/11/2026</p>
+<h1>Manual Unificado<br><em>do Criador.</em></h1>
+<p class="warning"><strong>EDIÇÃO CANDIDATA PARA PLAYTEST · NÃO OFICIAL.</strong> Esta é uma reprodução didática do candidato integrado. As regras ainda precisam de validação do criador e de playtests humanos. Propostas de cores de Regências foram omitidas para não serem confundidas com cânone. Os registros de versões anteriores permanecem preservados.</p>
+<div class="layout"><nav aria-label="Sumário do Manual"><label for="filter">Pesquisar nos capítulos</label><input type="search" id="filter" placeholder="Ex.: Metus, Esquiva, Invicta" autocomplete="off"><p id="count" class="muted"></p><a href="#cap-0">HÆMA — MANUAL UNIFICADO DO CRIADOR</a>
+<a href="#cap-1">PRIMEIRO, ENTENDA EM DOIS MINUTOS</a>
+<a href="#cap-2">1. Comece a jogar em cinco minutos</a>
+<a href="#cap-3">2. Criação de personagens — frágeis, mas nunca incapazes de tentar</a>
+<a href="#cap-4">3. Regra universal — uma decisão, uma resolução</a>
+<a href="#cap-5">4. Combate fluido, sem uma lista fechada de golpes</a>
+<a href="#cap-6">5. Integridade, Ferimentos, socorro e descanso</a>
+<a href="#cap-7">6. Metus, medo que interfere em dados</a>
+<a href="#cap-8">7. Latebra, furtividade por Marcas secretas</a>
+<a href="#cap-9">8. Exploração, investigação, interação, perseguição e sobrevivência</a>
+<a href="#cap-10">9. Campanha longa: progresso lento, descobertas frequentes</a>
+<a href="#cap-11">10. Regências, Tanger e assinatura visual individual</a>
+<a href="#cap-12">11. Invicta e Ápice — o instante que a mesa lembra</a>
+<a href="#cap-13">12. Teste de mesa integrado para cinco pessoas</a>
+<a href="#cap-14">13. Auditoria do candidato e contrato de publicação</a>
+<a href="#cap-15">14. Entenda o HÆMA como se tivesse 10 anos</a>
+<a href="#cap-16">15. Simulações completas: a mesma cena por cinco caminhos</a>
+<a href="#cap-17">16. As decisões do mestre em 15 segundos</a>
+<a href="#cap-18">17. Como criar personagens para testar em cinco minutos</a>
+<a href="#cap-19">18. Campanha longa: 12, 30, 60 e 100 sessões</a>
+<a href="#cap-20">19. O Tanger que cada jogador imagina, sem perder identidade</a>
+<a href="#cap-21">20. Revisão final: o que está resolvido, o que precisa ser aprovado</a></nav>
+<section id="chapters"><p id="empty">Nenhum capítulo corresponde à busca.</p><details class="chapter" id="cap-0" open><summary><span>00</span>HÆMA — MANUAL UNIFICADO DO CRIADOR</summary><div class="chapter-body"><h2>Edição integral para jogar, ensinar e aprovar • Base 0.9.1 revisada em 19/11/2026</h2>
+<p><strong>Data:</strong> 19/11/2026</p>
+<p><strong>Autoria e direção criativa:</strong> Vitor Monte</p>
+<p><strong>Estado:</strong> <strong>CANDIDATO INTEGRADO, OPERACIONAL PARA PLAYTEST — NÃO OFICIAL; NÃO PUBLICAR COMO REGRA APROVADA.</strong> Todas as decisões numéricas abaixo são uma <strong>proposta única escolhida para o teste</strong>, não múltiplas variantes concorrentes.</p>
+<p><strong>Para uma criança entender:</strong> você diz o que seu personagem quer fazer, joga dois dados quando há risco e descobre o que mudou na história. Não é preciso saber todas as regras antes de começar.</p>
+<p><strong>Escopo:</strong> regras internas; não altera o cânone, o Sistema Mestre, dados existentes, site, fichas publicadas ou repositório. A paleta de Regências é exclusivamente uma proposta de direção de arte.</p>
+<p><strong>Fonte mecânica anterior:</strong> <code>HAEMA_MANUAL_INTEGRADO_0_9_RC.md</code>, preservado integralmente na Biblioteca. Esta edição é <strong>autossuficiente</strong> para jogar um playtest declarado “Manual Unificado”; não é um suplemento que exija o 0.9 aberto.</p>
+<blockquote><strong>Princípio central:</strong> um jogador pode tentar qualquer ação possível na ficção. As técnicas não concedem permissão para ter ideias; tornam a execução mais segura, flexível ou confiável. A dificuldade vem das condições, do domínio e das consequências, não da quantidade de recursos e exceções. O sistema quer sustentar campanhas muito longas, cinco jogadores e momentos narrativos e táticos memoráveis.</blockquote></div></details>
+<details class="chapter" id="cap-1" open><summary><span>01</span>PRIMEIRO, ENTENDA EM DOIS MINUTOS</summary><div class="chapter-body"><p>Imagine que você e seus amigos atravessam uma ponte velha. Há um guarda à frente e uma pessoa precisando de ajuda. <strong>Você decide o que tentar</strong>: conversar, correr, se esconder, distrair, construir uma escora ou combater. O mestre descreve o mundo e pede dados <strong>apenas se o resultado estiver em dúvida e houver algo em risco</strong>.</p>
+<p><strong>Três perguntas para qualquer ação:</strong> (1) O que você quer conseguir? (2) Como vai tentar? (3) O que acontece se não der certo? A resposta normalmente cabe numa única rolagem.</p>
+<p><strong>O que você deve anotar na ficha:</strong> os seis atributos, as competências, Integridade, Guarda/Defesa, equipamento, Ferimentos, Pontos de Evolução e, quando aparecerem, Metus, Marcas de Latebra, Invicta ou uma Regência Desperta. <strong>Não</strong> existe barra geral de Fôlego, Sobrecarga ou Ímpeto tático neste candidato.</p>
+<p><strong>Índice de consulta:</strong> 1–3 criar e rolar; 4 combate e manobras; 5 ferimentos; 6 medo; 7 furtividade; 8 viagem e conversa; 9 evolução; 10 Tanger; 11 Invicta/Ápice; 12 aventura-modelo; 13 integração; 14–20 explicações de criança, tabelas, fichas, testes, auditoria e instruções para mestre.</p>
+<blockquote><strong>Contrato com a Lore:</strong> nomes e conceitos de Regências conhecidos são respeitados, mas cores individuais e exemplos de Descobertas permanecem <strong>visuais/mecânicos experimentais</strong>. Nenhum segredo do universo é reproduzido aqui.</blockquote>
+<h2>0.1 Uma única jogada, muito simples</h2>
+<p><strong>Mestre:</strong> “A janela está alta e chove. Se errar o salto, você ficará pendurado e perderá tempo.”</p>
+<p><strong>Jogadora:</strong> “Quero alcançar a janela correndo e saltando.”</p>
+<p><strong>Mestre:</strong> “Destreza + Atletismo, DT 7.”</p>
+<p><strong>Jogadora:</strong> “Tenho d6 em Destreza e d4 em Atletismo. Tirei 4 e 3. Somei 7.”</p>
+<p><strong>Mestre:</strong> “Conseguiu. Você agarra a borda. O que faz agora?”</p>
+<p>Foi isso. A intenção veio primeiro; os dados apenas decidiram um ponto de dúvida.</p>
+<h2>0.2 Coisas que o mestre NÃO precisa fazer</h2>
+<p>Não precisa exigir teste para abrir porta comum; contar Fôlego para cada Esquiva; impedir jogador de derrubar alguém porque não comprou a técnica “Derrubar”; criar três barras de esforço; permitir uma rolagem máxima resolver tarefa fisicamente impossível; inventar um preço depois de ver falha; nem fazer todos os inimigos lutarem até a morte.</p></div></details>
+<details class="chapter" id="cap-2" open><summary><span>02</span>1. Comece a jogar em cinco minutos</summary><div class="chapter-body"><p>1. Diga o que quer fazer e por quê. O mestre pergunta como, esclarece o obstáculo, informa risco e estabelece <strong>DT 5/7/9/11</strong> quando a incerteza realmente importa.</p>
+<p>2. Role <strong>um dado do atributo + um dado da competência</strong>. Resultado <strong>≥ DT</strong> vence. A combinação acompanha a abordagem, não o rótulo profissional.</p>
+<p>3. Uma consequência anunciada acontece na falha. Não repita o mesmo teste sem mudança material de abordagem, informação ou situação. Uma pista essencial não é apagada por um dado ruim.</p>
+<p>4. Em combate, você tem <strong>uma Ação Principal, movimento total até 6 m (divisível) e uma Reação por rodada</strong>. Ataque contra Defesa, escolha defesa ativa, resolva dano <strong>ou</strong> manobra.</p>
+<p>5. Não há contadores de <strong>Fôlego, Sobrecarga ou Ímpeto tático</strong> neste núcleo. Anote apenas Integridade, Ferimentos, PE e, quando acontecerem, Metus, Marcas de Latebra e Invicta.</p>
+<p>6. Um personagem começa humano comum, sem classes e sem Despertar automático. Pode aprender práticas humanas por toda a campanha; ter acesso a uma Regência não torna os demais irrelevantes.</p></div></details>
+<details class="chapter" id="cap-3" ><summary><span>03</span>2. Criação de personagens — frágeis, mas nunca incapazes de tentar</summary><div class="chapter-body"><p><strong>Seis atributos:</strong> Força, Destreza, Vigor, Intelecto, Percepção, Presença.</p>
+<p><strong>Vinte e quatro competências:</strong></p>
+<ul>
+<li>Sociais: Enganação, Persuasão, Empatia, Intimidação, Diplomacia, Liderança, Atuação;</li>
+<li>Físicas: Atletismo, Acrobacia, Luta, Pontaria, Armas Brancas, Furtividade;</li>
+<li>Conhecimento: Observação, Investigação, Ciências, Cultura, Estratégia;</li>
+<li>Práticas: Medicina, Tecnologia, Engenharia, Sobrevivência, Condução, Ladinagem.</li>
+</ul>
+<p><strong>Distribuição do playtest 0.9.1:</strong> todos os atributos e competências começam em <strong>d4</strong>; distribuir <strong>4 aumentos de atributos</strong> e <strong>6 aumentos de competências</strong>. Cada aumento sobe um degrau d4→d6→d8→d10→d12; <strong>teto d6 na criação</strong>. Logo, esses primeiros aumentos vão para campos diferentes. <strong>Guarda inicial d6; Defesa 6.</strong> Todos começam sem Ferimentos e sem Regências Despertas. A versão 0.9 RC anterior usava 6/8 avanços até d8: <strong>não misturar fichas dessas versões num playtest sem adaptação declarada</strong>.</p>
+<p>Personagem também define: uma história breve, profissão/ofício, duas relações, um desejo de desenvolvimento e uma dificuldade pessoal. O ofício pode justificar ferramentas, conhecimentos, contatos e acesso, <strong>não um bônus universal</strong>. Equipamento inicial plausível: instrumentos do ofício, arma pequena ou comum se fizer sentido, proteção leve quando justificada, pertences ordinários. Armas devastadoras não são equipamento inicial automático.</p>
+<p><strong>Integridade máxima = 6 + número de faces de Vigor</strong>: d4→10; d6→12; d8→14; d10→16; d12→18. <strong>Guarda</strong> d4→Defesa5; d6→6; d8→7; d10→8; d12→9, pela fórmula <code>Defesa = 4 + grau(Guarda)</code> (graus d4=1 a d12=5). Não há Fôlego.</p>
+<p><strong>Exemplo:</strong> uma pessoa que se prepara para luta tem Força d6 e Armas Brancas d6, mas outras competências permanecem d4. Ela é treinada num aspecto, ainda vulnerável em outros. Um médico pode ter Intelecto d6 e Medicina d6 e tentar lutar se necessário.</p></div></details>
+<details class="chapter" id="cap-4" ><summary><span>04</span>3. Regra universal — uma decisão, uma resolução</summary><div class="chapter-body"><p><strong>DT5:</strong> simples com risco real; <strong>DT7:</strong> obstáculo significativo; <strong>DT9:</strong> difícil, pede competência ou preparo; <strong>DT11:</strong> excepcional; <strong>DT13+:</strong> apenas quando condições sustentam possibilidade. Não role ações triviais e não autorize impossível sob pretexto de DT alta.</p>
+<p><strong>Ajuda:</strong> um aliado que muda materialmente a situação pode gastar a Ação Principal sob pressão e fornecer <strong>+1</strong> a um teste pertinente; apenas uma ajuda numérica comum por teste. Modificadores fixos somados têm teto <strong>+2</strong>. Ferramentas ou preparo podem tornar uma tentativa possível <strong>sem bônus</strong>. Nenhum bônus faz um teste deixar de exigir uma condição física necessária.</p>
+<p><strong>Testes opostos:</strong> ambos rolam atributo+competência pertinentes; maior total vence. Empate mantém a situação ou favorece quem já a sustentava, conforme anunciado antes. O mestre não cria segunda rolagem quando a primeira já respondeu à pergunta.</p>
+<p><strong>Êxito com custo:</strong> quando o objetivo for plausível mas o dado falhar, o mestre pode oferecer uma escolha previamente compatível: não conseguir <strong>ou</strong> conseguir pagando tempo, ruído, posição, recurso real ou consequência narrativa anunciável. Não oferecer isso para ultrapassar uma proibição cosmológica ou física.</p>
+<p><strong>Exemplo:</strong> Artífice (Intelecto d6 + Engenharia d6) tira 4+3=7 em DT7 e instala a escora; com 2+2=4, pode escolher entre abandonar o reparo ou gastar o único material adequado e atrasar a ruptura por pouco tempo, <strong>somente se esse custo for compatível com o que o mestre já tinha apresentado</strong>.</p></div></details>
+<details class="chapter" id="cap-5" ><summary><span>05</span>4. Combate fluido, sem uma lista fechada de golpes</summary><div class="chapter-body"><h3>Regras de oportunidade e posicionamento</h3>
+<p><strong>Cada ataque deve ter uma linha plausível.</strong> Se uma parede bloqueia completamente, não é possível acertar por aquele caminho. Personagens podem usar a ação para mudar posição, derrubar obstáculo ou abrir ângulo. Não existe uma lista obrigatória de “ataques de oportunidade”; a movimentação provoca consequências apenas quando a cena já possui risco declarado.</p>
+<p><strong>O que torna um inimigo perigoso:</strong> objetivos, alcance, terreno, habilidade de lutar e número de aliados. Um inimigo assustador não precisa ter 50 pontos de Integridade: pode manter refém, ter posição superior ou ameaçar uma rota.</p>
+<p><strong>Evite o combate parado.</strong> A cada rodada importante, o mestre atualiza o que mudou: rotas, objetivos, recursos reais, luz, cobertura, confiança e Ferimentos. Quando nenhuma decisão nova existe, o encontro precisa mudar de situação ou terminar.</p>
+<h2>4.1 Ritmo, iniciativa e escolhas</h2>
+<p>Antes do confronto: diga <strong>objetivo de cada lado</strong>, o que cada adversário pretende preservar, uma possibilidade de retirada/acordo e um risco perceptível. Uma rolagem <strong>1d6 por lado</strong>, uma vez no começo; empate rerrola. Alternar ativações entre lados enquanto houver pessoas para agir; cada combatente age <strong>uma vez por rodada</strong>. Não há uma rolagem nova a cada rodada. Iniciar a rodada seguinte, se possível, pelo lado contrário ao da última ativação anterior; não permitir agir duas vezes na mesma rodada.</p>
+<p>No turno: <strong>1 Ação Principal + até 6 m totais de Movimento, que podem ser divididos antes e depois da ação + 1 Reação por rodada</strong>. Movimentar-se de modo plausível não exige técnica comprada. Quem está agarrado, preso ou atravessando obstáculo pode ter opções limitadas pela própria cena, explicadas antes. Reações se renovam no início da rodada; não gastam Fôlego.</p>
+<p>O personagem pode <strong>atacar, tentar uma manobra, ajudar, proteger posição, interagir com objeto, agir socialmente sob ameaça, socorrer, estudar terreno ou fugir</strong>. Não existe catálogo exaustivo que proíba ideias novas.</p>
+<h2>4.2 Ataque e reação</h2>
+<p>Ataque = <strong>atributo + Luta/Armas Brancas/Pontaria</strong> apropriada contra <strong>Defesa</strong> e dentro de alcance e linha válidos. O defensor conhece o <strong>total ofensivo</strong>, ainda não o dano, e pode gastar sua única <strong>Reação</strong> para:</p>
+<ul>
+<li><strong>Esquiva:</strong> Destreza+Acrobacia ≥ total do ataque: evita completamente o golpe. Falha não evita.</li>
+<li><strong>Aparo:</strong> se há objeto/arma/escudo que realmente pode interceptar <strong>aquela fonte</strong>, redução fixa <strong>1</strong> no dano, ou <strong>2</strong> se Luta/Armas Brancas ≥d8. Não serve automaticamente contra projéteis, fogo, quedas ou áreas.</li>
+</ul>
+<p>Após reação não evitada: rolar dado de arma, aplicar <strong>crítico ou Virada</strong>, depois Aparo e armadura; dano final mínimo zero, reduzir Integridade. A Reação fica usada até próxima rodada. A armadura não é contador por golpe.</p>
+<p><strong>Armas abstratas:</strong> pequena d4, comum d6, pesada d8; devastadora d10 só mediante situação, treino, acesso ou condição apropriada. <strong>Armaduras:</strong> nenhuma Abs0, leve Abs1, pesada Abs2. Escudo interposto +1 Defesa <strong>OU</strong> cobertura parcial efetiva +2, maior dos dois; cobertura total sem linha física impede o ataque dessa posição. Equipamentos da Lore ainda dependem de validação de descrição, material e procedência.</p>
+<p><strong>Defender Posição:</strong> Ação Principal para +1 Defesa até o próximo turno; não acumula consigo. Pode proteger posição por consequência e geometria, sem bônus se o risco não for numérico.</p>
+<h2>4.3 Manobra livre: a regra que substitui uma lista de movimentos</h2>
+<p><strong>O jogador declara intenção, alvo, método e qual oportunidade deseja criar.</strong> Um iniciante <strong>pode tentar</strong> desarmar, deslocar, derrubar, prender um braço, saltar por um obstáculo, mudar ângulo, distrair ou bloquear uma passagem sem comprar técnica específica.</p>
+<p><strong>Resolução única:</strong> se há resistência de alguém, escolha atributo+competência coerentes contra <strong>Defesa</strong> do alvo (ou, quando a resistência não for física, use teste oposto declarado). Se é obstáculo material, DT5/7/9/11. O mestre descreve <strong>antes</strong> da rolagem: (a) o efeito limitado plausível do sucesso; (b) o risco de falhar; (c) o que precisa existir para a tentativa fazer sentido. Não criar DT mais alta <strong>apenas</strong> porque a ação foi criativa. É possível que uma ação exija antes descobrir uma fraqueza, obter contato ou vencer uma barreira material.</p>
+<p><strong>Escolha um propósito por ação:</strong> <strong>DANO</strong> <em>ou</em> <strong>EFEITO TÁTICO</strong>. Na manobra por efeito, um sucesso produz a consequência declarada <strong>sem dano normal da arma</strong>. Não combinar derrubar+desarmar+causar dano numa única ação comum. Se houver ameaça específica e difícil, primeiro é necessário criar condição no cenário; uma boa ideia não ignora física, tamanho ou perícia do inimigo.</p>
+<p>Exemplos de efeito tático plausível:</p>
+<ul>
+<li><strong>Desarmar:</strong> derrubar uma arma ao alcance de alguém se sua empunhadura estiver vulnerável; retomar pode exigir ação, acesso e risco. Não apagar equipamentos presos ou protegidos do nada.</li>
+<li><strong>Derrubar:</strong> colocar adversário no chão; ele pode recuperar postura quando agir, usando movimento/tempo viável. Não significa perder automaticamente todos os turnos.</li>
+<li><strong>Deslocar:</strong> empurrar o alvo <strong>um passo plausível</strong>, sem precipitar automaticamente morte por queda. Um desnível letal requer risco e resistências próprios conhecidos antes.</li>
+<li><strong>Conter:</strong> manter contato físico relevante e impedir <strong>uma ação específica</strong> de movimento/uso do braço enquanto o contato é mantido; o alvo pode tentar se libertar em seu turno. Não prender corpo inteiro sem condição excepcional.</li>
+<li><strong>Expor:</strong> revelar um ponto de apoio, cortar visão, abrir uma rota ou tirar objeto de cobertura, desde que a ação tenha alcance material.</li>
+</ul>
+<p>O defensor pode gastar sua Reação tentando <strong>Esquiva</strong> para evitar uma manobra física que o atinge, se fisicamente viável. <strong>Aparo normal reduz dano, não cancela automaticamente efeitos que não causam dano</strong>; se a ação é interceptar a manobra, resolva pela Esquiva ou pela oposição material declarada <strong>sem segundo minijogo</strong>. O mestre decide, antes da rolagem, se a ação exige contestação especial, sem mudar de critério após ver o resultado.</p>
+<p><strong>Falha:</strong> avanço do perigo, exposição do próprio corpo, perda de posição, arma presa ou outro risco anunciado. Não adicionar penalidade universal '−2 por improvisar'. Técnicas futuras tornam a manobra mais segura ou ampliam sua consequência, nunca concedem direito exclusivo de tentá-la.</p>
+<h3>4.3.1 Cinco exemplos sem técnicas compradas</h3>
+<div class="table-scroll"><table><tbody>
+<tr><td>O jogador diz</td><td>Ação possível</td><td>Teste típico</td><td>Resultado de sucesso (escolhido antes)</td></tr>
+<tr><td>“Quero desarmar o vigia”</td><td>Se a empunhadura está vulnerável e ao alcance</td><td>Força+Luta vs Defesa</td><td>Arma cai próxima; retomá-la exige oportunidade</td></tr>
+<tr><td>“Quero derrubá-lo”</td><td>Se tamanhos e apoio permitem</td><td>Força+Atletismo vs Defesa</td><td>Alvo perde postura; pode levantá-la no próprio turno</td></tr>
+<tr><td>“Quero passar sob a mesa e fugir”</td><td>Se há espaço real</td><td>Destreza+Acrobacia DT5/7</td><td>Reposiciona até limite de movimento, sem imunidade a ataque</td></tr>
+<tr><td>“Quero cortar a corda do portão”</td><td>Se há alcance e ferramenta</td><td>Destreza+Armas Brancas DT5/7</td><td>Cordão se rompe, portão muda de condição</td></tr>
+<tr><td>“Quero segurar o braço que ativa o mecanismo”</td><td>Se há contato e força suficiente</td><td>Força+Luta vs Defesa</td><td>Suspende uso desse braço enquanto o contato é mantido</td></tr>
+</tbody></table></div>
+<p><strong>Importante:</strong> para uma manobra de efeito, o alvo pode escolher uma Reação de Esquiva <strong>se for fisicamente aplicável</strong>; o sistema não pede um segundo teste de resistência além disso. Se a oposição escolhida <strong>já foi um teste oposto</strong>, use a rolagem do defensor como resistência principal e não peça nova Esquiva. O mestre declara antes qual é o método de defesa. Aparo é uma resposta para dano físico, e não um anulador universal de manobras.</p>
+<p><strong>Não existe bônus automático por frase bonita.</strong> Uma descrição criativa pode tornar uma ação possível ao explorar algo real. Se o jogador tenta derrubar um ser imenso, primeiro precisa de uma condição material válida — como quebrar um apoio, usar corda ou trabalhar com aliados.</p>
+<h2>4.4 Crítico, Impacto e Virada — raro e marcante</h2>
+<p>Crítico <strong>não</strong> acontece apenas porque o jogador tirou um número alto. Ele ocorre quando <strong>todas</strong> as condições abaixo são verdadeiras, <strong>nos dois dados originais</strong> de um ataque ou manobra:</p>
+<p>1. A ação <strong>acertou</strong> ou venceu a DT/oposição previamente estabelecida.</p>
+<p>2. A soma original ficou <strong>pelo menos 3 pontos acima</strong> da Defesa ou DT original; bônus de Ajuda/técnica não contam para essa margem.</p>
+<p>3. <strong>Os dois dados</strong> mostram valores da <strong>faixa alta</strong>: d4=4; d6=5–6; d8=7–8; d10=8–10; d12=10–12.</p>
+<p>4. <strong>Pelo menos um</strong> dos dois dados chegou ao <strong>máximo natural</strong> dele.</p>
+<p>Se o alvo <strong>evitar completamente o contato</strong> com uma Esquiva válida, não existe Virada de impacto nesse ataque; as escolhas abaixo só são aplicadas <strong>após</strong> a defesa.</p>
+<p><strong>Escolha só uma recompensa:</strong></p>
+<ul>
+<li><strong>IMPACTO:</strong> o ataque de dano recebe <strong>+2 de dano bruto</strong>. Resolve-se Aparo e armadura normalmente.</li>
+<li><strong>VIRADA:</strong> conserva o dano <strong>normal</strong> da arma, <strong>sem os +2</strong>, e cria <strong>uma</strong> mudança concreta, pequena e coerente com a ação: expor uma saída, afastar um objeto solto, quebrar uma cobertura já frágil, fazer o alvo recuar um passo para uma posição possível ou beneficiar um aliado que estava pronto. Uma Virada não concede ação extra, turno perdido ao inimigo, execução, teleporte ou controle mental.</li>
+</ul>
+<p>Em <strong>manobra sem dano</strong>, só existe Virada: ela melhora <strong>um aspecto do mesmo efeito declarado</strong>, e não acrescenta um segundo efeito independente. Uma abertura criada por Virada dura até ser aproveitada ou a situação mudar, normalmente no máximo até o próximo turno do autor. Críticos repetidos não empilham o mesmo efeito.</p>
+<p><strong>Exemplo para criança:</strong> você deu um golpe de espada e acertou muito bem. Pode machucar um pouco mais <strong>OU</strong> fazer a espada do adversário bater numa grade e abrir o caminho para sua amiga. Não faz as duas coisas ao mesmo tempo, a menos que uma regra extraordinária (Ápice) diga expressamente o contrário.</p>
+<p><strong>Frequência exata por rolagem, contra Defesa 7 antes de reações:</strong> d6+d6 = 8,33%; d8+d8 = 4,69%; d10+d10 = 5,00%. São raros sem exigir uma confirmação adicional. Um iniciante com d4+d4 contra Defesa 6 <strong>não consegue crítico</strong> por insuficiência de margem: isso é intencional neste ensaio, porque ainda está aprendendo.</p>
+<h2>4.5 Abertura e trabalho em equipe</h2>
+<p><strong>Criar Abertura</strong> custa Ação Principal e uma intervenção real na cena. Escolher <strong>uma</strong> para a próxima ação válida de aliado antes de seu próximo turno: <strong>Precisão</strong> (+2 no teste ofensivo, sujeito ao teto) <strong>OU Brecha</strong> (se acertar, ignora até 2 Abs) <strong>OU Oportunidade</strong> (rota/acesso/posição antes indisponível, com teste quando houver oposição). Não são três etapas obrigatórias para uma boa ideia. Aberturas não se empilham para o mesmo ataque. O aliado precisa agir: Abertura não ataca por ele.</p>
+<h2>4.6 Combate em três ações de exemplo</h2>
+<ul>
+<li><strong>Ataque:</strong> Iniciante d4+d6 tira 3+4=7 vs Defesa6, acerta, arma comum d6=4, absorção leve1 →3 dano. O alvo ainda pode gastar reação para Esquiva ou Aparo antes do dano.</li>
+<li><strong>Improviso:</strong> Artífice usa Destreza d4 + Engenharia d6 para prender uma trava e bloquear uma passagem; o mestre estabelece DT7, efeito 'porta bloqueada por uma rodada enquanto a trava resistir' e falha 'a ferramenta se rompe'. Sai 4+3=7: funciona. Não comprou a técnica 'Bloqueio de Porta'.</li>
+<li><strong>Virada:</strong> Combatente d6+d6 tira 6+5=11 vs Defesa6; os dois dados estão na faixa alta, um é máximo e a margem é 5. Após o alvo falhar na Esquiva, escolhe dano normal e faz a arma adversária bater numa grade já ao alcance, abrindo espaço para uma passagem. Não desarma automaticamente arma bem presa nem causa dano crítico adicional.</li>
+</ul></div></details>
+<details class="chapter" id="cap-6" ><summary><span>06</span>5. Integridade, Ferimentos, socorro e descanso</summary><div class="chapter-body"><p><strong>Integridade máxima</strong> como na criação: 10/12/14/16/18 conforme Vigor d4/d6/d8/d10/d12. <strong>Um Ferimento</strong> ocorre quando uma única fonte causa <strong>≥6 dano final</strong> ou provoca queda a <strong>0 Integridade</strong>; máximo <strong>dois</strong>, e máximo um por golpe. Ferimento é lesão específica registrada: pode causar <strong>−1 num teste físico realmente prejudicado por ela</strong>, sem acumular penalidades de dois Ferimentos no mesmo teste. Não subtrai dados em tudo.</p>
+<p><strong>Zero Integridade:</strong> incapacitado; se a queda foi de fonte evidentemente letal (ex.: precipício impossível de sobreviver), anuncie isso antes da ação e resolva a ameaça específica, não finja que a fórmula de Integridade cria imunidade. Na próxima ocasião em que agir após a queda, uma única tentativa de Vigor+Sobrevivência <strong>DT5</strong>. Sucesso estabiliza; falha marca <strong>1 Risco de Morte</strong>. Se continuar instável <strong>sob ameaça física efetiva</strong>, ganha +1 Risco por rodada completa sem socorro; novo dano final efetivo acrescenta +1 por fonte. <strong>3 riscos = morte</strong>. Se o perigo imediato termina e há cuidados básicos, <strong>o relógio de risco é pausado; 10 minutos de cuidados em segurança estabilizam mesmo sem kit se isso for fisicamente viável</strong>. Isso não devolve Integridade automaticamente até o tratamento de retorno descrito abaixo. Não continue marcando riscos arbitrários; estabilizar em segurança exige atenção e tempo plausíveis, não relógio punitivo. Risco é contado só enquanto incapacitado e instável, não é uma barra permanente. Quando estabilizado, não atua até recuperar condições.</p>
+<p><strong>Socorro:</strong> Ação Principal adjacente, Intelecto+Medicina <strong>DT5 com material</strong>, <strong>DT7 sem material com improviso plausível</strong>. Sucesso estabiliza imediatamente. Uma tentativa por pessoa caída por rodada; aliados podem usar a ação para deslocá-la até <strong>3 m</strong> em terreno possível ou oferecer proteção. Em segurança real e com cuidados, retornar com <strong>1 Integridade após 10 min</strong>, uma vez por cena de perigo; não elimina Ferimento. Descanso longo ~8h seguros recupera <strong>1d6 Integridade</strong>. Tratamento de Ferimento: Intelecto+Medicina <strong>DT7</strong> com material, uma tentativa por ferimento/descanso; sem assistência adequada, um Ferimento plausivelmente recuperável melhora após dois descansos longos seguros. Não existe cura instantânea genérica.</p>
+<p><strong>Sem regra de execução automática de caído:</strong> adversários respondem a seus objetivos. Morte ainda é possível por agressão contínua/risco anunciado. Conflitos de captura, retirada, resgate e negociação contam como resultados legítimos.</p></div></details>
+<details class="chapter" id="cap-7" ><summary><span>07</span>6. Metus, medo que interfere em dados</summary><div class="chapter-body"><p>Falhou ao resistir ao perigo? Nos testes sob pressão <strong>daquela fonte</strong>, role dado extra de <strong>Metus</strong> e anule <strong>cada dado normal estritamente menor</strong>; empate permanece. Inquietação <strong>d4</strong>, Pavor <strong>d6</strong>, Terror <strong>d8</strong>. Resistência candidata Presença+Empatia DT5/7/9. Só o nível maior se aplica; fora do perigo relacionado, os dados normais não são anulados. Não se pede resistência repetitiva sem mudança material da ameaça.</p>
+<p><strong>Recuperar-se:</strong> Ação Principal, Presença+Empatia DT5 <strong>sem o dado de Metus da própria fonte</strong>; sucesso reduz um grau. Uma rodada completa realmente protegida da fonte também reduz um grau. Segurança real encerra o medo contextual. Um medo excepcional não pode anular automaticamente a possibilidade de fugir ou buscar abrigo: jogador ainda possui escolhas de ação.</p>
+<p><strong>Exemplo:</strong> Destreza d6=4, Atletismo d6=6 e Metus Pavor d6=5: 4 é anulado, resta 6. Contra DT7 falha; pode tentar mudar rota, pedir ajuda ou se recompor.</p></div></details>
+<details class="chapter" id="cap-8" ><summary><span>08</span>7. Latebra, furtividade por Marcas secretas</summary><div class="chapter-body"><p>Se houver <strong>cobertura/oclusão plausível</strong>, gastar Ação Principal sob risco e criar Marcas conforme Furtividade: <strong>d4:2d4 sem rerrolagem; d6:2d6 com uma rerrolagem de duplicata; d8:3d6 com uma; d10:3d6 com duas; d12:4d6 com duas</strong>. Resultados repetidos são uma Marca só; máximo quatro Marcas. Esses números são identificadores, não bônus de rolagem.</p>
+<p>Procurador com <strong>indício concreto</strong> pode gastar Ação Principal numa <strong>Busca Rápida 1d6</strong>, ou Ação Principal+Movimento inteiro numa <strong>Busca Intensiva 2d6</strong>. Números iguais às Marcas ainda ocultas as revelam; quando não sobra nenhuma, esconderijo é localizado. Reforçar esconderijo custa ação e tenta gerar uma Marca nova d6 ausente (até limite). Ruído forte remove uma Marca ainda secreta; exposição direta revela localização mesmo que sobrem marcas. Armadura pesada só reduz em uma Marca disponível quando realmente impedir silêncio/ocultação; não subtrair valor numérico. Não há 'invisibilidade automática' nem buscas sem qualquer pista.</p>
+<p><strong>Exemplo:</strong> Marcas 2,4,5. Guarda em Busca Rápida tira4 e revela uma. Outra Busca Intensiva tira3 e5 e revela mais uma; a Marca2 permanece até ser descoberta ou o oculto ficar exposto.</p></div></details>
+<details class="chapter" id="cap-9" ><summary><span>09</span>8. Exploração, investigação, interação, perseguição e sobrevivência</summary><div class="chapter-body"><p><strong>Investigação:</strong> o mestre revela os fatos evidentes da cena sem rolagem. Testes obtêm detalhe, interpretação, tempo ou segurança, não apagam pista indispensável por falha. Preparação profissional e conhecimento humano continuam decisivos sem Tanger.</p>
+<p><strong>Exploração:</strong> decidir intenção, risco, recurso e consequência; um teste por abordagem relevante, não cinco rolagens redundantes. Relógios de <strong>3,4 ou 6</strong> etapas são opcionais quando o tempo importa, não uma barra obrigatória da aventura. Em ambiente seguro, não contar cada minuto.</p>
+<p><strong>Negociação:</strong> definir interesse, limite, concessão real e preço para as partes. Presença+Diplomacia, Enganação, Persuasão, Empatia etc. conforme abordagem. Um NPC não perde vontade por alta rolagem. Repetir teste demanda oferta, informação ou condição nova. Personagem tímido pode declarar seu argumento em vez de encenar.</p>
+<p><strong>Perseguição opcional:</strong> quatro etapas, distância 0 alcançado/1 perto/2 médio/3 distante; um teste pertinente por lado/etapa. Quem vence e atinge DT5 muda uma faixa na direção de sua meta; empate ou ambos falham mantêm distância e podem avançar perigo anunciado. Fim das quatro etapas sem alcançar significa fuga, salvo bloqueio conhecido. Não aplicar numa corrida curta comum.</p>
+<p><strong>Sobrevivência:</strong> em viagens com abastecimento, não contar refeições. Em escassez, cerca de uma porção de água+alimento por pessoa/dia; calor/esforço altera necessidade com aviso. Dois dias completos com água insuficiente <strong>OU</strong> quatro dias com comida insuficiente geram uma condição leve de <strong>Escassez (−1 em resistência prolongada e marcha sob pressão, não em ataques por padrão)</strong>; não somar duas penalidades iguais. Após 48h sem descanso, −1 em atenção prolongada sob risco. Carga só importa quando transporte/peso alteram escolhas; sem slots universais ou barra de exaustão. Consequências graves exigem sinais, oportunidade de resposta e coerência.</p>
+<h3>8.1 O mundo reage às escolhas (sem nova barra de reputação)</h3>
+<p>Ao final de uma cena importante, registre <strong>somente três frases</strong>, se houver consequência que mereça continuar existindo: <strong>o que mudou</strong>, <strong>quem sabe</strong> e <strong>como isso pode voltar</strong>. Exemplo: “o portão foi reparado; os guardas sabem que a Artífice ajudou; a vila pode oferecer abrigo mais tarde”. Isso dá recompensa narrativa real para escolhas sociais e técnicas, sem pontuação arbitrária de fama.</p></div></details>
+<details class="chapter" id="cap-10" ><summary><span>10</span>9. Campanha longa: progresso lento, descobertas frequentes</summary><div class="chapter-body"><p><strong>Ritmo candidato:</strong> <strong>1 PE por sessão realmente jogada com consequências/progresso +2 PE coletivos ao fechar arco relevante</strong>. Nenhum bônus por falar mais, interpretar teatralmente ou matar. Grupos de cinco devem ter oportunidades equivalentes de evolução em Medicina, combate, investigação, negociação, ofício e exploração. <strong>Não</strong> misturar com os 2 PE/sessão do 0.9 RC.</p>
+<div class="table-scroll"><table><tbody>
+<tr><td>Aprendizado comprado</td><td>PE por avanço</td><td>Condição</td></tr>
+<tr><td>Competência d4→d6→d8→d10→d12</td><td><strong>6 / 10 / 16 / 24</strong></td><td>Vivência e estudo pertinentes</td></tr>
+<tr><td>Atributo d4→d6→d8→d10→d12</td><td><strong>14 / 22 / 34 / 50</strong></td><td>Desenvolvimento amplo, treino e circunstâncias</td></tr>
+<tr><td>Guarda d6→d8→d10→d12</td><td><strong>12 / 20 / 30</strong></td><td>Experiência defensiva concreta</td></tr>
+<tr><td>Especialização estreita +1</td><td><strong>5</strong></td><td>Contexto preciso, uma por teste; teto fixo +2</td></tr>
+<tr><td>Técnica humana simples / desenvolvida / rara</td><td><strong>4 / 8 / 12</strong></td><td>Método aprendido, uso relevante, sem classe</td></tr>
+<tr><td>Regência Desperta d4→d6→d8→d10→d12</td><td><strong>10 / 16 / 24 / 36</strong></td><td>Acesso prévio, vivência e prática</td></tr>
+<tr><td>Descoberta Estável Ajuste / Intervenção / Maior</td><td><strong>4 / 8 / 12</strong></td><td>Ensaio, conhecimento, estabilização</td></tr>
+</tbody></table></div>
+<p><strong>Como a lentidão não vira estagnação:</strong> sempre que uma pessoa aprender algo na história, o mestre registra <strong>uma frase de vivência</strong> (sem nova barra): <code>aprendeu a proteger a retirada com o escudo</code>, <code>descobriu a rota de abastecimento</code>, <code>conheceu a fraqueza das travas</code>. Essa experiência pode abrir técnica, contatos, material ou compreensão <strong>na própria aventura</strong>, mesmo antes do próximo aumento de dado. Não concede +1 permanente de graça. Somente comprar técnicas/números consome PE; o personagem não precisa comprar autorização para tentar uma ação plausível.</p>
+<p><strong>Exemplo matemático:</strong> se cada arco levar quatro sessões, uma pessoa obtém ~<strong>18 PE em 12 sessões</strong>, <strong>45 em 30</strong>, <strong>90 em 60</strong> e <strong>150 em 100</strong>. Ir de uma competência d4 a d12 custa <strong>56 PE</strong>, portanto requer ~<strong>38 sessões</strong> dedicando todos os pontos à mesma competência, além de vivências para avanços excepcionais. Gastando em técnicas e outras áreas, o ritmo vertical é mais lento. D10/d12 exigem domínio comprovado na história, não apenas saldo numérico. Nenhuma pessoa precisa ser sobrenatural para seguir relevante.</p>
+<h2>9.1 Técnicas que aumentam domínio — nunca permitem algo proibido a iniciantes</h2>
+<p>Ação livre pertence a todos. Uma técnica deve melhorar <strong>segurança, abrangência, consistência ou cooperação</strong>. Catálogo de ensaio inicial (todas disponíveis a qualquer profissão com requisitos):</p>
+<p>1. <strong>Manobra Segura — 4 PE, competência física pertinente d6:</strong> uma vez por cena, após falhar numa manobra plausível, evita <strong>uma consequência puramente posicional</strong> anunciada (não evita falha, dano inevitável nem perigo já realizado). Jogadores sem técnica ainda tentam manobras.</p>
+<p>2. <strong>Passagem Fluida — 4 PE, Acrobacia d6:</strong> atravessa uma região de terreno irregular <strong>não bloqueada</strong> durante Movimento sem perder uma oportunidade de interação simples, quando isso for fisicamente plausível; nunca ignora abismo, imobilização ou barreira real. <strong>Dividir movimento é direito comum</strong>, não benefício comprado.</p>
+<p>3. <strong>Guarda de Companhia — 8 PE, Luta ou Armas Brancas d6:</strong> gastar própria Reação para Aparar <strong>um golpe corpo a corpo</strong> contra aliado adjacente quando puder interpor algo; no lugar da Reação dele, não soma duas reações ao mesmo golpe.</p>
+<p>4. <strong>Desarme Medido — 8 PE, Luta ou Armas Brancas d8:</strong> num desarme bem-sucedido quando empunhadura estiver vulnerável, pode deixar o objeto <strong>fora do alcance imediato</strong> sem ação adicional, caso haja espaço real para isso. Sem técnica, ainda é possível desarmar, mas objeto normalmente cai próximo.</p>
+<p>5. <strong>Leitura de Terreno — 4 PE, Observação/Investigação/Estratégia d6:</strong> ao observar de verdade uma cena, pode solicitar ao mestre um <strong>detalhe já presente e acessível</strong> que sustenta o perigo, sem rolar outra vez se tempo e vista bastarem. Não revela segredo impossível nem substitui raciocínio.</p>
+<p>6. <strong>Ofício Adaptável — 4 PE, competência prática d6:</strong> com ferramenta adequada e tempo, improvisa substituição simples para <strong>viabilizar</strong> uma ação que seria impossível sem equipamento; deve declarar o que perde ou desgasta no processo. Qualquer pessoa pode improvisar, mas precisa testar se não tiver domínio.</p>
+<p>7. <strong>Socorro em Retirada — 8 PE, Medicina d6 e Atletismo d6:</strong> ao prestar socorro a alguém adjacente sob risco, pode também deslocar essa pessoa <strong>um passo seguro</strong> como parte da mesma Ação, se houver caminho e força; o teste médico ainda é exigido.</p>
+<p>8. <strong>Acordo de Duas Pontas — 4 PE, Diplomacia d6:</strong> após negociação bem-sucedida, pode incluir <strong>uma pequena contrapartida bilateral explícita</strong> no acordo, se ambas as partes tiverem motivo real; não obriga aceitar pedidos absurdos.</p>
+<p>9. <strong>Cartografia de Risco — 4 PE, Sobrevivência/Investigação d6:</strong> quando uma rota foi observada/preparada, consegue identificar com confiabilidade <strong>uma alternativa plausível já existente</strong> e um preço concreto, sem criar um caminho do nada.</p>
+<p>10. <strong>Recuperação de Método — 8 PE, competência selecionada d8:</strong> uma vez por cena, após falhar num teste dessa competência, pode propor <strong>sucesso com custo</strong> previamente compatível com a situação, sem nova rolagem; o mestre apresenta um custo real e visível, que o jogador pode aceitar ou recusar. Não sobrepõe impossibilidade nem anula perigo crítico.</p>
+<p><strong>Critério de poda:</strong> qualquer técnica que só diga 'pode tentar' ou 'ganha +1 sempre' deve ser removida/reprojetada antes da edição oficial. A lista aqui é um catálogo <strong>jogável para testar escolhas</strong>, não árvore obrigatória nem coleção canônica de ofícios.</p>
+<h3>9.2 Mais doze técnicas de repertório — escolhas para campanhas extensas</h3>
+<p>Todas são <strong>opcionais, intercambiáveis e não vinculadas a classes</strong>. O personagem sempre pode tentar a ação base; a técnica só melhora segurança, alcance limitado ou a leitura da cena. Os requisitos d8 representam estudo avançado. Não é necessário consultar essa lista durante o primeiro combate de um iniciante.</p>
+<p>11. <strong>Janela de Disparo — 8 PE, Pontaria d8:</strong> depois de usar uma Ação Principal para estudar uma linha de tiro, <strong>um</strong> disparo posterior pelo mesmo ângulo ignora <strong>1 ponto do bônus de cobertura parcial</strong>, antes da próxima mudança relevante da posição. Parede total continua impossível.</p>
+<p>12. <strong>Proteção em Movimento — 8 PE, Atletismo d8:</strong> uma vez por cena, quando gastar Ação Principal para retirar um aliado incapacitado, transporta até <strong>6 metros no total</strong>, em vez de 3, se massa e caminho permitirem. Não concede ação adicional.</p>
+<p>13. <strong>Escudo à Frente — 8 PE, Luta d8:</strong> uma vez por cena, depois de Aparar validamente um ataque de corpo a corpo, pode declarar que preservou uma <strong>linha de proteção estreita</strong> para a próxima ação de um aliado adjacente; é oportunidade espacial, <strong>não bônus de Defesa</strong> nem anulação de segundo golpe.</p>
+<p>14. <strong>Rastro Desviado — 8 PE, Furtividade d8:</strong> com Marcas válidas e Ação Principal, pode produzir <strong>um indício falso material</strong> que conduza a próxima busca para outra área plausível. Procuradores inteligentes podem verificar; isso não elimina Marcas nem torna invisível.</p>
+<p>15. <strong>Leitura do Confronto — 4 PE, Estratégia d6:</strong> após observar uma ameaça que revela ações e posições, uma vez por cena pode perguntar ao mestre <strong>qual objetivo observável o inimigo tenta proteger</strong>. A resposta não revela motivo secreto nem obriga o alvo a agir de certa forma.</p>
+<p>16. <strong>Marco Recordado — 4 PE, Cultura ou Sobrevivência d6:</strong> em lugar que visitou ou estudou com referências, uma vez por jornada recorda <strong>um ponto reconhecível real</strong> útil para orientar-se. Se a rota mudou, o mestre esclarece; não cria caminho seguro.</p>
+<p>17. <strong>Voz de Coordenação — 8 PE, Liderança d8:</strong> uma vez por cena, ao gastar Ação Principal para coordenar aliados que possam ouvir, permite que <strong>dois</strong> aliados preparados usem <strong>um único plano compartilhado</strong> sem precisarem discutir novamente posições conhecidas sob pressão. Não dá +2 bônus, ações ou movimentos gratuitos.</p>
+<p>18. <strong>Concessão Reconhecida — 8 PE, Diplomacia d8:</strong> uma vez por cena, após uma negociação fracassar por resistência <strong>compreensível</strong>, recebe do mestre <strong>um motivo público para a recusa e uma condição viável a investigar</strong>; não força um novo teste nem altera automaticamente a vontade do interlocutor.</p>
+<p>19. <strong>História Consistente — 8 PE, Enganação d8:</strong> após enganar alguém com sucesso, uma vez por cena pode manter <strong>um detalhe material coerente de sua versão</strong> preparado para uma pergunta previsível. Se prova real a contradiz, a mentira cai. Não cria memórias falsas.</p>
+<p>20. <strong>Triagem de Campo — 4 PE, Medicina d6:</strong> com observação próxima e ação quando há urgência, identifica <strong>quem corre risco físico imediato e o que precisa de cuidado primeiro</strong> entre feridos visíveis. Não remove Ferimento nem substitui o socorro sob perigo.</p>
+<p>21. <strong>Peça Preservada — 8 PE, Engenharia ou Tecnologia d8:</strong> uma vez por cena, após falhar num reparo com ferramentas, pode aceitar uma falha <strong>sem destruir a ferramenta principal</strong>, trocando a perda anunciada por gasto de tempo ou um consumível real, se essa alternativa já era materialmente possível.</p>
+<p>22. <strong>Trajeto Preparado — 8 PE, Condução d8:</strong> depois de examinar veículo/rota e gastar uma ação preparatória sob risco, uma vez por cena pode escolher <strong>uma manobra de passagem plausível</strong> que evita apenas um obstáculo pequeno conhecido; oposição ativa continua pedindo teste, e veículos não fazem impossíveis.</p>
+<p><strong>Avaliação de design:</strong> habilidades que só reproduzem bom senso podem acabar cortadas depois de playtest. Seu texto explicita limites para evitar vantagens universais e coloca a maior parte do valor em planejamento, cooperação e identidade de personagem.</p></div></details>
+<details class="chapter" id="cap-11" ><summary><span>11</span>10. Regências, Tanger e assinatura visual individual</summary><div class="chapter-body"><p><strong>Cânone conceitual preservado:</strong> sete Regências <strong>conhecidas</strong>, não necessariamente únicas: <strong>Kórven (Forma), Sælir (Pulso), Vraek (Ímpeto), Ithren (Vínculo), Ossyra (Vestígio), Nælth (Limiar), Eyris (Percepção)</strong>. <strong>Despertar</strong> = obter acesso; <strong>Tanger</strong> = influenciar; <strong>HÆM</strong> pode estudar sem Tanger. Não fundir Motus com Metus nem impor o antigo dualismo Ignis/Motus como base do universo. Despertar não é comprado automaticamente por PE; mecanismo canônico permanece com a Lore.</p>
+<h2>10.1 Descobertas em vez de lista rígida de poderes</h2>
+<p>Quem Despertou pode estudar <strong>fenômenos</strong> e produzir <strong>Descobertas</strong>: Suspeita → Provisória → Estável. Toda Descoberta tem:</p>
+<p>1. Regência acessível e fenômeno real observado;</p>
+<p>2. Condição/âncora e competência humana pertinente;</p>
+<p>3. Alteração concreta que permite;</p>
+<p>4. Limite de alvo, alcance, escala e duração;</p>
+<p>5. Sinal perceptível e maneira material/narrativa de impedir ou interromper;</p>
+<p>6. Possível consequência de falha, anunciada antes do teste.</p>
+<p><strong>Manifestar:</strong> anunciar intenção + Descoberta + condição → rolar <strong>dado da Regência + competência humana ≥ DT</strong> se houver risco. <strong>Ajuste DT5</strong>, pequeno/instantâneo; <strong>Intervenção DT7</strong>, alteração localizada até uma rodada, com âncora real; <strong>Maior DT9</strong>, requer <strong>duas preparações distintas</strong>, ação para manifestar e para sustentar uma segunda rodada, e risco de cena anunciado. Apenas Descobertas expressamente estudadas naquela escala podem operar ali. Um praticante sustenta <strong>uma manifestação contínua</strong>; perder a âncora encerra. <strong>Sem Fôlego obrigatório</strong>. Resultado não concede poder que a Descoberta não permite; falhar produz consequência anunciada e não autoriza tentar idêntico infinitamente.</p>
+<p><strong>Ensaio:</strong> hipótese plausível após observação; uma ação para preparar, DT+1 e risco específico; uma tentativa por hipótese/personagem/cena. Sucesso gera Descoberta <strong>Provisória para aquela circunstância</strong>; torná-la Estável requer estudo/demonstração e PE (Ajuste 4, Intervenção 8, Maior 12). <strong>Primeira Descoberta Estável</strong> pode ser gratuita uma única vez após Despertar e investigação/Ensaio reais, em playtest. Nenhuma Regência concede automaticamente teleporte, cura, controle mental, invisibilidade, dano em área ou uma lista de feitiços. Ajuste não cura Integridade nem causa dano direto; Intervenção ofensiva específica no laboratório limitada a 1d4 e oposição/proteção coerentes. Aplicações mais potentes precisam de trabalho de Lore e balanceamento próprios.</p>
+<p><strong>Cooperação:</strong> humanos preparam suporte, obtêm conhecimento, retiram perigos, protegem o praticante; outros Despertos não somam automaticamente seus dados à rolagem. Descoberta combinando Regências exige pesquisa e acesso real, não mistura improvisada irrestrita.</p>
+<h2>10.2 Novo: cor da Regência, forma individual livre</h2>
+<p><strong>Direção criativa expressa pelo criador:</strong> cada Regência terá <strong>uma cor de manifestação predefinida</strong>, e os jogadores poderão <strong>descrever livremente a forma visual</strong> de seus efeitos. A mesma Regência pode aparecer como fios, marcas, fragmentos, superfícies luminosas, fumaça, pulsos, padrões ou manifestações orgânicas de acordo com a assinatura pessoal, <strong>desde que não implique efeito mecânico não aprendido</strong>. A cor <strong>não pode ser trocada pela escolha pessoal</strong> depois de definida em cânone. A forma pode evoluir com a expressão e experiência do personagem, sem bônus automático.</p>
+<p><strong>As cores das Regências ainda aguardam aprovação da Lore. Nenhum código ou paleta provisória é exibido nesta consulta pública.</strong></p>
+<h2>10.3 Exemplo aplicável no laboratório, não acontecimento canônico</h2>
+<p>Artífice com Kórven d4 e Engenharia d6 conhece uma Descoberta Estável de <strong>Intervenção</strong> que redistribui por uma rodada a tensão de junta <strong>já estudada</strong>, mediante toque e segundo suporte capaz de receber carga. Jogador descreve filamentos luminosos da <strong>cor experimental</strong> de Kórven acompanhando ranhuras da madeira. O mestre informa que o suporte receptor ficará ameaçado se a tentativa falhar. Rola d4=4+d6=4=8 ≥ DT7: sucesso. Junta principal aguenta, receptor passa a ser risco; colegas ainda precisam agir. Outro personagem de Kórven poderia usar a <strong>mesma regra</strong> descrevendo placas/fragmentos, desde que preserve cor e condições, sem criar novo poder mecânico.</p></div></details>
+<details class="chapter" id="cap-12" ><summary><span>12</span>11. Invicta e Ápice — o instante que a mesa lembra</summary><div class="chapter-body"><p><strong>Invicta</strong> é um feito <strong>técnico de dados</strong>, e não uma medalha concedida por interpretação. Não é a mesma coisa que Crítico. Neste candidato, usa uma verificação que já está no lançamento, sem jogar 5d20 ou administrar outra barra.</p>
+<h2>11.1 Como conquistar Invicta</h2>
+<p>Antes da ação, deve haver <strong>ameaça real e consequência importante caso falhe</strong>, estabelecidas pelo mestre. Pode ser combate, resgate, uma investigação sob risco ou uma Descoberta de Tanger válida. O mestre <strong>não pode elevar a DT depois de ver os dados</strong>. Uma tarefa trivial ou repetida para farm não é elegível.</p>
+<p>A ação só gera <strong>uma Invicta</strong> quando:</p>
+<p>1. Os <strong>dois dados originais</strong> estão nas <strong>faixas altas</strong> e <strong>ao menos um</strong> está no máximo natural — por exemplo, d6=6 e d8=7 (d6 alto = 5–6; d8 alto = 7–8).</p>
+<p>2. A ação <strong>tem sucesso</strong> e a soma natural supera a DT/Defesa em <strong>6 ou mais</strong> (margem extraordinária).</p>
+<p>3. A oportunidade era genuinamente perigosa antes da rolagem.</p>
+<p>4. O personagem ainda não armazenava uma Invicta e o grupo não recebeu outra Invicta naquela cena significativa.</p>
+<p><strong>Máximo 1 Invicta guardada por pessoa; máximo 1 Invicta nova por cena para o grupo.</strong> O feito também é um Crítico se ocorrer em ataque/manobra e satisfizer os limites do crítico. A Virada resolve a ação; a Invicta fica guardada.</p>
+<p><strong>Por que é raro:</strong> sem outros modificadores, d6+d6 contra DT6 alcança essa condição em <strong>1 de 36 lançamentos (2,78%)</strong>; d8+d8 contra DT7 em <strong>3 de 64 (4,69%)</strong>. Outras Defesas mudam as chances. Isso não é uma taxa por sessão: se quase não há rolagens elegíveis, pode não acontecer. Em uma campanha longa, o ritmo real precisa ser medido.</p>
+<p><strong>Atenção ao crescimento:</strong> esta condição usa a margem alta de êxito, em vez de exigir dois máximos. Ela pode se tornar mais acessível para veteranos enfrentando tarefas fáceis; por isso, só há elegibilidade em <strong>perigo real declarado antes da rolagem</strong>, nunca em ações fáceis repetidas. Ainda é necessário medir frequência humana de Invicta.</p>
+<h2>11.2 Ápice: gastar Invicta</h2>
+<p>Gastar uma Invicta é uma escolha especial, após uma ação ou ataque válido obter sucesso e <strong>antes de resolver seu efeito</strong>. Não salva automaticamente rolagem fracassada e não concede ação extra. Escolha uma forma:</p>
+<p><strong>A. Ápice de Golpe</strong> — no ataque acertado, substituir o dano bruto da arma por <strong>máximo do seu dado +2</strong> e realizar <strong>uma Virada física pequena e compatível</strong> com o golpe se houver condição real. Não somar novamente +2 de crítico. Aparo e armadura continuam válidos. Exemplo: arma d6 vira 8 bruto; com Aparo1 e Abs1 resulta 6.</p>
+<p><strong>B. Ápice de Proteção</strong> — usar a sua Reação disponível e Invicta para interceptar <strong>um único golpe</strong> contra aliado <strong>adjacente</strong>, anulando o impacto quando for fisicamente possível interpor corpo, arma ou escudo. Não protege automaticamente de incêndio, explosão ou ataque inalcançável. A posição de quem protege deve continuar coerente.</p>
+<p><strong>C. Ápice de Superação</strong> — ampliar uma ação humana bem-sucedida com <strong>uma oportunidade adicional</strong> específica da situação, escolhida entre duas possibilidades que o mestre explicita <strong>antes do gasto</strong>; como ganhar tempo para duas pessoas fugirem juntas ou recuperar prova e preservar a ferramenta. Não cria informação inexistente nem controla a vontade alheia.</p>
+<p><strong>D. Ápice de Tanger</strong> — após sucesso numa Descoberta Estável, escolher <strong>um</strong> aprimoramento que a própria Descoberta possa suportar: <strong>mais uma rodada de sustentação com ação pertinente</strong> OU <strong>uma âncora adjacente fisicamente viável</strong>. Não salta de Ajuste para Maior nem inventa efeito não estudado.</p>
+<p><strong>Exemplo infantil:</strong> Invicta não é uma bomba que destrói tudo. É aquele momento raro em que você consegue fazer uma coisa que já sabia, mas de maneira excepcional, e todos percebem a diferença.</p></div></details>
+<details class="chapter" id="cap-13" ><summary><span>13</span>12. Teste de mesa integrado para cinco pessoas</summary><div class="chapter-body"><p><strong>Cena não canônica — 'Passarela em Ruptura'.</strong> Ameaça de colapso em 4 etapas, dois viajantes para retirar e dois guardas que querem impedir novos acidentes. Há caminho alternativo e possibilidade de diálogo. PCs são humanos comuns; dois podem ser mais aptos a lutar, três podem se destacar em Medicina, Engenharia, Investigação e interação.</p>
+<p><strong>Ação 1, solução sem combate:</strong> Investigadora identifica apoio vulnerável com Percepção+Observação DT5 e Artífice coloca escora Intelecto+Engenharia DT7. Mediadora negocia passagem oferecendo retirada dos viajantes com Presença+Diplomacia DT7; guarda aceita com condição de não expor mais ninguém. Vanguarda sustenta corda; Médica atende ferido. Nenhum poder é obrigatório.</p>
+<p><strong>Ação 2, manobra livre:</strong> se o guarda obstrui passagem e possui uma arma empunhada de modo exposto, Vanguarda anuncia 'quero desviar a arma e empurrá-lo um passo para abrir corredor'. O mestre pede escolher um efeito: <strong>abrir corredor</strong> (não também desarmar), Força+Luta vs Defesa6. Tira 4(d6)+3(d6)=7, sucesso; corredor abre brevemente. Se tivesse falhado, risco anunciado era terminar de costas para a saída. Jogador iniciante pode tentar isso sem técnica.</p>
+<p><strong>Ação 3, crítico e Virada:</strong> Rastreadora ataca, tirando Destreza d6=6+Pontaria d6=5 vs Defesa6. Ambos estão na faixa alta e um está no máximo; é crítico. Escolhe dano d6=4 e Virada de acertar suporte frágil de cobertura <strong>já visível</strong>, deixando uma rota para colega; não ganha +2 dano. Se o alvo Esquivar com sucesso, não há Virada derivada do impacto.</p>
+<p><strong>Ação 4, Tanger opcional em ensaio separado:</strong> uma pessoa com Kórven d4 e descoberta válida prepara suporte e tange uma junta DT7 para segurar uma rodada. Outros salvam pessoas. Os efeitos visuais seguem a cor proposta até a Lore aprová-la.</p>
+<p><strong>Ação 5, consequência:</strong> um PC chega a 0 Integridade; médica adjacente gasta ação e testa Medicina DT5 com kit, ou grupo escolhe retirada. Guardas podem recuar ao perceber risco de colapso. Não precisam morrer para haver vitória do grupo.</p></div></details>
+<details class="chapter" id="cap-14" ><summary><span>14</span>13. Auditoria do candidato e contrato de publicação</summary><div class="chapter-body"><h2>13.1 O que ficou concretamente resolvido na 0.9.1</h2>
+<ul>
+<li>Não há gasto de Fôlego para ações humanas, e o jogador pode dividir os 6 m de Movimento livremente.</li>
+<li><strong>Toda manobra plausível pode ser tentada</strong> sem compra de habilidade; escolher dano ou efeito evita duplo benefício automático.</li>
+<li>Crítico oferece uma escolha concreta entre dano adicional e <strong>Virada</strong>, com escala limitada e sem ação extra.</li>
+<li>Criação mais fraca (<strong>4/6 avanços, teto d6</strong>) e economia de PE mais lenta (<strong>1/sessão+2/arco, custos mais altos</strong>).</li>
+<li>Técnicas demonstram domínio, não bloqueiam imaginação; há catálogo experimental de 10 caminhos diversos.</li>
+<li>Regências terão cores <strong>fixas depois de aprovadas</strong> e manifestação <strong>visual individual livre</strong>; uma paleta provisória está isolada e identificada.</li>
+<li>Invicta requer <strong>dados excepcionais, margem natural≥6 e risco verdadeiro</strong>, sem rolagem adicional; Ápices têm uso concreto para teste.</li>
+<li>Sem alterações cosmológicas ou de dados do site; o 0.9 RC antigo permanece intacto como histórico.</li>
+</ul>
+<h2>13.2 O que NÃO pode ser chamado de validado</h2>
+<ul>
+<li>Nenhum teste presencial com cinco pessoas foi executado nesta edição. Critérios de dano, acesso à manobra, frequência de Virada, economia de PE, raridade de Invicta e efeito dos quatro Ápices exigem observação de sessões.</li>
+<li>A <strong>paleta cromática não foi aprovada</strong>; nenhuma cor individual foi encontrada como regra canônica confirmada na Bíblia Mestra consultada. A exigência geral 'cor fixa por Regência, forma livre' vem do criador.</li>
+<li>Gatilhos/limites cosmológicos de Despertar, tecnologia específica e manifestações Maiores dependem da Lore; não publicar exemplos como verdade universal.</li>
+<li>Fichas antigas e Manual público 0.1 não devem ser migrados automaticamente. Para publicar, aprovar bloco de mecânicas, registrar em <code>REGISTRO_DECISOES.md</code>, atualizar <code>SISTEMA_MESTRE.md</code> preservando histórico, preparar migração não destrutiva de ficha/rolador e comunicar mudanças na página Atualizações.</li>
+</ul>
+<h2>13.3 Checklist para playtest de aprovação</h2>
+<div class="table-scroll"><table><tbody>
+<tr><td>Teste</td><td>Medição objetiva</td><td>Alerta</td></tr>
+<tr><td>5 humanos, cenário com objetivo</td><td>Turnos, duração real, contribuições</td><td>Só combatentes agem / 12+ rodadas sem mudança</td></tr>
+<tr><td>6 manobras não catalogadas</td><td>Tempo de arbitragem, consistência</td><td>Mestre cria modificador arbitrário toda vez</td></tr>
+<tr><td>Crítico/Virada em 50 ações</td><td>Frequência e efeitos</td><td>Virada vira atordoamento sem custo, ou nunca vale a pena</td></tr>
+<tr><td>Evolução 12/30/60 sessões</td><td>Compras por estilo, domínio humano</td><td>Dados d12 cedo demais / suporte sem escolhas</td></tr>
+<tr><td>1 Desperto + 4 humanos</td><td>Ações relevantes, riscos, tempo para Tanger</td><td>Desperto substitui especialistas / efeito sem limite</td></tr>
+<tr><td>Invicta/Ápice em 8h</td><td>Oportunidades elegíveis, ganhos/gastos</td><td>Nunca acontece em muitas sessões / ocorre várias por cena</td></tr>
+<tr><td>Medo e furtividade</td><td>Turnos com escolha real, buscas</td><td>Metus remove agência / Latebra vira invisibilidade</td></tr>
+</tbody></table></div>
+<h2>13.4 Referência rápida para a mesa</h2>
+<ul>
+<li><strong>Teste:</strong> atributo+competência ≥ DT5/7/9/11; bônus fixos até +2.</li>
+<li><strong>Turno:</strong> 1 Ação, Movimento <strong>até 6 m divisível</strong>, 1 Reação.</li>
+<li><strong>Ataque:</strong> dados vs Defesa (inicial6); reação Esquiva por dados ou Aparo fixo; dano d4/d6/d8/d10−proteção.</li>
+<li><strong>Manobra livre:</strong> descreva efeito e risco; teste único; <strong>dano OU efeito</strong>; técnica só melhora domínio.</li>
+<li><strong>Crítico:</strong> dois dados na faixa alta, um no máximo natural e margem original≥3; <strong>+2 dano OU Virada</strong>.</li>
+<li><strong>Integridade:</strong> 6+faces(Vigor); Ferimento por dano≥6 ou queda a0; Medicina DT5/7.</li>
+<li><strong>Metus:</strong> d4/d6/d8 anulam dados menores sob medo; recuperar DT5.</li>
+<li><strong>Latebra:</strong> Marcas secretas e buscas 1d6 ou 2d6.</li>
+<li><strong>Evolução:</strong> 1 PE/sessão+2/arco; subida lenta, técnicas frequentes, vivência real.</li>
+<li><strong>Tanger:</strong> Regência+competência; DT5/7/9; descobrir/ensaiar/estabilizar; forma livre, <strong>cor pendente</strong>.</li>
+<li><strong>Invicta/Ápice:</strong> ambos dados altos, um no máximo e margem original≥6 <strong>sob perigo real</strong>; guardar1, gastar por 4 efeitos situacionais.</li>
+</ul>
+<p><strong>HÆMA — Site e Sistema criado por Vitor Monte.</strong></p></div></details>
+<details class="chapter" id="cap-15" ><summary><span>15</span>14. Entenda o HÆMA como se tivesse 10 anos</summary><div class="chapter-body"><h2>14.1 O que é RPG?</h2>
+<p>Você inventa um personagem e faz escolhas por ele. O mestre conta o que acontece no mundo. Quando a resposta não é óbvia, vocês jogam dados. <strong>O mestre não joga contra os jogadores</strong>; ele representa o mundo, suas pessoas, perigos e consequências.</p>
+<h2>14.2 Por que existem dois dados?</h2>
+<p>Um dado mostra <strong>como você é</strong> (atributo); o outro mostra <strong>o que sabe fazer</strong> (competência). Alguém forte, mas sem treino, é diferente de alguém mais fraco que treinou muito. Os dois conseguem tentar; os resultados médios são diferentes.</p>
+<h2>14.3 O que é d4 ou d12?</h2>
+<p>“d” é dado e o número é a quantidade de faces. Um d4 vai de 1 a 4; um d12 vai de 1 a 12. Conforme o personagem cresce, um dado pode subir d4→d6→d8→d10→d12. <strong>Não se acrescentam todos os dados antigos:</strong> o novo substitui o anterior naquela capacidade.</p>
+<h2>14.4 O que fazer se tirar número baixo?</h2>
+<p>O personagem pode errar, perder posição, gastar tempo ou descobrir que precisa de outro método. Uma falha não significa que você jogou mal. <strong>Só significa que o mundo reagiu.</strong> O mestre precisa mostrar uma nova decisão possível quando a cena continuar.</p>
+<h2>14.5 O que é Defesa e Integridade?</h2>
+<p>Defesa é a dificuldade de acertar alguém. Integridade mostra quanto dano físico o personagem ainda suporta antes de cair. Uma armadura pode diminuir parte do dano; uma Esquiva pode impedir o golpe; uma pessoa pode desistir de lutar antes de ficar sem Integridade.</p>
+<h2>14.6 Eu posso inventar um golpe?</h2>
+<p><strong>Sim!</strong> Você não precisa encontrar o nome do golpe num livro. Conte o que pretende conseguir e como. Se for possível, o mestre escolhe um único teste e explica o risco. A experiência ajuda você a realizar melhor essas ideias, mas não proíbe iniciantes de imaginá-las.</p>
+<h2>14.7 O que é Tanger?</h2>
+<p>Depois de Despertar, alguém pode aprender maneiras específicas de influenciar fenômenos de uma Regência. Uma descoberta funciona quando há condição, aprendizado e risco coerentes. <strong>Descrever luzes bonitas não cria poderes extras.</strong></p>
+<h2>14.8 O que é Invicta?</h2>
+<p>Um acontecimento de dados muito raro numa situação realmente perigosa. A pessoa guarda uma Invicta e pode usar depois para um <strong>Ápice</strong>, um efeito excepcional mas ainda limitado pelo que está acontecendo.</p>
+<hr></div></details>
+<details class="chapter" id="cap-16" ><summary><span>16</span>15. Simulações completas: a mesma cena por cinco caminhos</summary><div class="chapter-body"><p><strong>Cenário de laboratório, não canônico:</strong> uma passarela ameaça ceder; há dois viajantes e dois vigias. O grupo começa com humanos comuns.</p>
+<h2>15.1 Resolver conversando</h2>
+<p>A Mediadora oferece retirar as pessoas antes de atravessar. O guarda quer segurança, não uma luta. O mestre fixa DT7 porque há desconfiança real. Ela rola Presença d6=5 + Diplomacia d6=3 → <strong>8, sucesso</strong>. Guarda abre a passagem por uma rodada, com a condição de ninguém carregar novas caixas. <strong>Nenhum dano, nenhuma luta e um objetivo alcançado.</strong></p>
+<h2>15.2 Resolver com conhecimento</h2>
+<p>A Artífice observa o apoio e vê madeira quebrada. Para montar escora precisa de ferramentas e madeira disponível. O grupo oferece corda e barra. Ela rola Intelecto d6=4 + Engenharia d6=3 = <strong>7</strong> contra DT7. A escora funciona, adiando um avanço do relógio; outro apoio continua instável. <strong>O mundo mudou de verdade.</strong></p>
+<h2>15.3 Resolver com furtividade</h2>
+<p>A Rastreadora encontra tábuas empilhadas e usa Furtividade d6 para criar 2d6 Marcas, tirando 2 e 5. Um vigia percebe ruído: Busca Rápida d6=2 revela a primeira Marca. Na próxima rodada, ele precisa decidir se gasta sua Ação para continuar procurando ou se ajuda a evacuar. A Rastreadora pode fugir, reforçar o esconderijo ou usar a chance para abrir o portão. <strong>Latebra cria uma disputa de atenção.</strong></p>
+<h2>15.4 Resolver com uma manobra</h2>
+<p>O vigia bloqueia a porta com uma lança. A Vanguarda diz: “quero afastar a ponta da lança e passar com a criança”. O mestre pede escolher um efeito único: <strong>abrir a passagem por um instante</strong>. Força d6=4 + Luta d6=4 = <strong>8</strong> contra Defesa6: sucesso. O golpe <strong>não</strong> causa dano simultâneo; o aliado precisa aproveitar a rota.</p>
+<h2>15.5 Resolver com Tanger (segunda sessão de teste, sem afirmar cânone)</h2>
+<p>A Artífice recebe uma Descoberta Estável de laboratório de Kórven. Toca a junta, identifica suporte receptor e rola Kórven d4=3 + Engenharia d6=5 = <strong>8</strong> contra DT7. A tensão muda temporariamente de apoio; há um novo risco identificado. Os humanos ainda precisam terminar o resgate. <strong>Tanger abriu uma opção diferente, não substituiu o grupo.</strong></p>
+<h2>15.6 Um combate turno por turno</h2>
+<p><strong>Iniciativa:</strong> jogadores 4 no d6, vigias 2; jogadores começam. Os lados alternam enquanto ainda há pessoas para agir.</p>
+<p><strong>Turno da Vanguarda:</strong> Força d6=5 + Armas Brancas d6=4 = <strong>9</strong> contra Defesa6. É acerto, <strong>mas não Crítico</strong>: 5 não é máximo do d6 e 4 não está na faixa alta (5–6). O vigia Aparou, gastando sua Reação; redução1. Dano da arma d6=4, armadura leve1 → <strong>2 de dano final</strong>.</p>
+<p><strong>Turno do vigia:</strong> tenta empurrar a Vanguarda para longe da corda, não causar dano. Rola Força d6=5 + Luta d6=3 = <strong>8</strong> contra Defesa6. A Vanguarda tenta Esquivar usando Destreza d4=3 + Acrobacia d4=2 = <strong>5</strong>, não evita. É deslocada um passo plausível, mas não cai automaticamente da ponte, pois o mestre não declarou isso como risco da ação.</p>
+<p><strong>Turno da Médica:</strong> em vez de atacar, usa sua Ação para retirar a pessoa mais próxima. O objetivo avança.</p>
+<p><strong>Turno da Rastreadora:</strong> ataca o mesmo vigia, agora sem Reação. Destreza d6=6 + Pontaria d6=5 = <strong>11</strong> contra Defesa6: <strong>Crítico</strong> (ambos altos, um máximo, margem5). Escolhe <strong>Virada</strong> em vez de +2 dano: seu disparo rompe uma correia de cobertura já exposta, abrindo uma linha de travessia; o dano bruto normal d6=3, menos Abs1 → <strong>2</strong>.</p>
+<p><strong>Consequência:</strong> o vigia percebe que a passarela pode ceder e aceita negociar retirada. <strong>A luta termina porque o objetivo mudou, não porque todos morreram.</strong></p>
+<hr></div></details>
+<details class="chapter" id="cap-17" ><summary><span>17</span>16. As decisões do mestre em 15 segundos</summary><div class="chapter-body"><p><strong>Para qualquer ação:</strong></p>
+<p>1. “O que você quer?” — O jogador fala o resultado, não a regra.</p>
+<p>2. “Como?” — O jogador explica meios, ferramentas ou posição.</p>
+<p>3. “É possível?” — Se impossível, diga o que falta; se óbvio, permita; se incerto, anuncie risco.</p>
+<p>4. “Qual é o teste?” — Atributo+competência e DT ou resistência escolhida <strong>antes dos dados</strong>.</p>
+<p>5. “O que muda?” — Aplique resultado, mantenha consequências e abra a decisão seguinte.</p>
+<p><strong>Exemplos rápidos:</strong> “Quero pular a grade” → Destreza+Atletismo; “quero escutar passos” → Percepção+Observação; “quero enganar os guardas” → Presença+Enganação; “quero construir uma trava” → Intelecto+Engenharia; “quero cuidar da criança” → Intelecto+Medicina. Essas combinações são exemplos e mudam com a abordagem.</p>
+<p><strong>Não crie um teste extra para punir criatividade.</strong> Se a ação representa um único propósito, há normalmente uma única resolução. Se a ideia tem três objetivos distintos, o jogador escolhe um agora e os outros tornam-se novas decisões ou dependem de técnicas que já tenha aprendido.</p>
+<h2>16.1 Como preparar inimigos em menos de um minuto</h2>
+<p>Preencha: “quer impedir quê?”, “o que teme perder?”, “quando recua?”, “qual terreno aproveita?”, “que ação não violenta aceita?”. Em seguida escolha <strong>dados ofensivos, Defesa, Integridade e absorção</strong> coerentes. Não infle vida só para alongar cena.</p>
+<div class="table-scroll"><table><tbody>
+<tr><td>Oponente de laboratório</td><td>Ataque</td><td>Defesa</td><td>Integridade</td><td>Armadura</td><td>Comportamento</td></tr>
+<tr><td>Assustado sem treino</td><td>d4+d4</td><td>5</td><td>10</td><td>0</td><td>Foge ou pede ajuda</td></tr>
+<tr><td>Vigia comum</td><td>d6+d4</td><td>6</td><td>12</td><td>1</td><td>Bloqueia, recua quando a missão falha</td></tr>
+<tr><td>Guarda treinado</td><td>d6+d6</td><td>7</td><td>12</td><td>1</td><td>Protege companheiros e usa reação</td></tr>
+<tr><td>Veterano perigoso</td><td>d8+d6</td><td>8</td><td>14</td><td>2</td><td>Usa posição e negocia a própria sobrevivência</td></tr>
+</tbody></table></div>
+<p><strong>Esses quatro blocos NÃO são um bestiário da Lore.</strong> Servem para equilibrar a experiência e testar mecânicas. Dois vigias comuns com objetivo de bloquear uma porta são encontro apropriado para cinco humanos iniciantes; quatro treinados lutando até o último podem ser muito letais. Nunca anuncie porcentagem fixa de vitória como verdade geral.</p>
+<h2>16.2 Se o combate ficar chato</h2>
+<p><strong>Sintoma:</strong> ninguém consegue causar dano à armadura. <strong>Não faça:</strong> inventar +10 dano. <strong>Faça:</strong> permitir cobrir, flanquear, desarmar quando possível, negociar, ameaçar objetivos, deslocar equipamento, chamar ajuda. Se ainda travar em vários testes, anote o problema de absorção para rever matematicamente.</p>
+<p><strong>Sintoma:</strong> inimigo cai em dois ataques e não teve chance de atuar. <strong>Faça:</strong> verificar excesso de adversários com d8, concentração de fogo, alcance e reação inicial; trocar o objetivo pode ser mais interessante do que mais vida.</p>
+<p><strong>Sintoma:</strong> jogador de apoio não tem o que fazer. <strong>Faça:</strong> colocar duas ou três oportunidades reais: destravar passagem, socorrer pessoa, atrair atenção, interpretar pista, estabilizar apoio, negociar rota. Não obrigue todas as decisões a causar dano.</p>
+<hr></div></details>
+<details class="chapter" id="cap-18" ><summary><span>18</span>17. Como criar personagens para testar em cinco minutos</summary><div class="chapter-body"><p>Todos começam com seis atributos e 24 competências em d4. Os quatro aumentos de atributos e seis aumentos de competências vão para <strong>campos diferentes</strong> no início, porque o teto inicial é d6. Abaixo, qualquer campo não citado continua d4. Todos: Guarda d6, Defesa6, nenhuma Regência, nenhum Ferimento. Os perfis são <strong>pessoas</strong>, não classes.</p>
+<div class="table-scroll"><table><tbody>
+<tr><td>Exemplo</td><td>Quatro atributos d6</td><td>Seis competências d6</td><td>Integridade</td></tr>
+<tr><td>Vanguarda</td><td>Força, Destreza, Vigor, Percepção</td><td>Armas Brancas, Luta, Atletismo, Observação, Estratégia, Empatia</td><td>12</td></tr>
+<tr><td>Rastreadora</td><td>Destreza, Vigor, Percepção, Presença</td><td>Furtividade, Pontaria, Sobrevivência, Observação, Investigação, Acrobacia</td><td>12</td></tr>
+<tr><td>Médica</td><td>Intelecto, Percepção, Presença, Vigor</td><td>Medicina, Empatia, Ciências, Sobrevivência, Diplomacia, Observação</td><td>12</td></tr>
+<tr><td>Artífice</td><td>Intelecto, Percepção, Destreza, Força</td><td>Engenharia, Tecnologia, Investigação, Ciências, Estratégia, Ladinagem</td><td>10</td></tr>
+<tr><td>Mediadora</td><td>Presença, Intelecto, Vigor, Destreza</td><td>Diplomacia, Persuasão, Enganação, Liderança, Empatia, Investigação</td><td>12</td></tr>
+</tbody></table></div>
+<p><strong>Exemplo de escolha:</strong> a Artífice pode trocar Ladinagem por Medicina d6 antes de iniciar. Isso não cria uma classe diferente; é apenas escolha de aprendizado.</p>
+<hr></div></details>
+<details class="chapter" id="cap-19" ><summary><span>19</span>18. Campanha longa: 12, 30, 60 e 100 sessões</summary><div class="chapter-body"><p>A progressão foi desenhada para que dados grandes sejam conquistas, e não algo alcançado em duas semanas. <strong>1 PE por sessão com progresso e 2 PE por arco concluído</strong>. O exemplo abaixo supõe arcos de quatro sessões; aventuras reais podem ter outra duração.</p>
+<div class="table-scroll"><table><tbody>
+<tr><td>Sessões</td><td>Arcos completos no exemplo</td><td>PE recebidos se participar de todas</td><td>O que pode acontecer</td></tr>
+<tr><td>12</td><td>3</td><td>18</td><td>Uma técnica, um ou dois avanços de competência, algum PE guardado</td></tr>
+<tr><td>30</td><td>7</td><td>44</td><td>Algumas técnicas variadas e um avanço relevante de atributo/Guarda</td></tr>
+<tr><td>60</td><td>15</td><td>90</td><td>Um especialista forte, mas não necessariamente bom em todas as áreas</td></tr>
+<tr><td>100</td><td>25</td><td>150</td><td>Uma trajetória longa com repertório diverso e áreas ainda por aprender</td></tr>
+</tbody></table></div>
+<p><strong>Competência d4→d12 custa 56 PE</strong> (6+10+16+24); alguém que começa em d6 precisa de 50 PE para d12. Isso custa dezenas de sessões se o jogador também investir em outras áreas. Uma Regência só pode evoluir se estiver de fato Desperta; PE não força um Despertar.</p>
+<p><strong>Pequenas conquistas sem inflar números:</strong> experiência pode render um contato confiável, acesso a oficina, entendimento de uma técnica, reconhecimento por comunidade, passagem segura, linguagem de sinais compartilhada ou uma pista fundamental. Isso não aumenta dados de graça nem substitui PE, mas torna o personagem mais capaz de agir no mundo.</p>
+<hr></div></details>
+<details class="chapter" id="cap-20" ><summary><span>20</span>19. O Tanger que cada jogador imagina, sem perder identidade</summary><div class="chapter-body"><h2>19.1 Modelo de ficha para nova Descoberta</h2>
+<p>```text</p>
+<p>NOME DA DESCOBERTA: _____________________</p>
+<p>REGÊNCIA DESPERTA: ______________________</p>
+<p>ESCALA (Ajuste/Intervenção/Maior): _______</p>
+<p>FENÔMENO QUE EU OBSERVEI: ________________</p>
+<p>CONDIÇÃO REAL / ÂNCORA: _________________</p>
+<p>COMPETÊNCIA HUMANA UTILIZADA: ____________</p>
+<p>O QUE MUDA DE VERDADE: ___________________</p>
+<p>O QUE NÃO PODE FAZER: ____________________</p>
+<p>ALCANCE / DURAÇÃO / ALVOS: _______________</p>
+<p>SINAL E CONDIÇÃO PARA INTERROMPER: _______</p>
+<p>CONSEQUÊNCIA ANUNCIADA NA FALHA: _________</p>
+<p>MINHA ASSINATURA VISUAL (FORMA): _________</p>
+<p>COR FIXA DA REGÊNCIA [AGUARDA APROVAÇÃO]: ____</p>
+<p>ESTADO (Suspeita/Provisória/Estável): ____</p>
+<p>```</p>
+<h2>19.2 Três descobertas de mesa, NÃO canônicas</h2>
+<p><strong>A. Junta Emprestada — Kórven / Intervenção DT7.</strong> Ao tocar uma junta conhecida e ter outro suporte capaz de receber carga, desvia parte da tensão por uma rodada. Efeito: o primeiro apoio resiste tempo suficiente para <strong>uma ação de aliado</strong>, mas o receptor torna-se vulnerável. Contrajogo: quebrar o receptor, retirar o toque, aumentar peso. Visual livre, cor da Regência fixa quando aprovada. Não cria parede, matéria ou cura.</p>
+<p><strong>B. Marca do Caminho — Ossyra / Ajuste DT5.</strong> Ao examinar superfície usada de modo repetido, identifica direção de desgaste real que o olho não interpretava antes. Efeito: oferece <strong>uma pista concreta</strong> para uma ação humana de rastrear ou escolher rota. Contrajogo: adulteração de superfície ou ausência de vestígio. Não vê lembranças ou o passado verdadeiro.</p>
+<p><strong>C. Vibração de Trava — Vraek / Intervenção DT7.</strong> Após estudar uma trava e conseguir acesso a meio físico de transmissão, conduz vibração compatível para soltá-la por uma rodada. Efeito: abre <strong>uma oportunidade de passagem</strong>, mas ruído denuncia a tentativa. Contrajogo: amortecer via, retirar mecanismo, quebrar transmissão. Não abre toda porta desconhecida.</p>
+<p><strong>Teste de criatividade:</strong> os três efeitos não são apenas +1. Eles mudam o que os humanos podem fazer na cena. O jogador inventa o visual, mas não adiciona propriedades mecânicas que a descoberta não contém.</p>
+<p><strong>D. Ritmo Localizado — Sælir / Ajuste DT5.</strong> Com acesso a sinais físicos observáveis, um praticante ajuda a diferenciar um ritmo vital de outro, permitindo ao médico identificar <strong>um sinal confiável</strong> que antes não estava claro. Não cura, ressuscita nem controla corpos. Contra: impedir acesso ou adulterar sinais.</p>
+<p><strong>E. Ponto de Dependência — Ithren / Ajuste DT5.</strong> Após observar um mecanismo de duas partes conectadas, destaca <strong>qual contato material sustenta uma função específica</strong> e permite ao aliado tentar modificá-la com suas ferramentas. Não controla laços sociais nem lê pensamentos. Contra: ocultar ou modificar a conexão real.</p>
+<p><strong>F. Borda Sustentada — Nælth / Intervenção DT7.</strong> Com uma passagem real parcialmente acessível e apoio físico já existente, mantém <strong>a borda utilizável por uma rodada</strong> para uma pessoa atravessar. Não cria portais nem atravessa paredes sólidas. Contra: retirar apoio ou bloquear fisicamente a passagem.</p>
+<p><strong>G. Foco Separado — Eyris / Ajuste DT5.</strong> Diante de um estímulo real mascarado por ruídos, permite a uma pessoa distinguir <strong>uma variação perceptível</strong> relevante para investigar. Não concede visão total, leitura mental nem conhecimento falso. Contra: eliminar estímulo, aumentar interferência real ou interromper observação.</p>
+<p><strong>Importante:</strong> estas sete hipóteses cobrem as sete Regências conhecidas <strong>somente como exercícios de procedimento</strong>; não são árvores de poderes, nem autorizam efeitos cosmológicos sem a aprovação da Lore. Os personagens podem pesquisar aplicações diferentes.</p>
+<h2>19.3 Como escolher cores sem ferir a Lore</h2>
+<p>A regra criativa do projeto é <strong>cor fixa por Regência, forma visual livre por personagem</strong>. Até a equipe definir oficialmente as sete cores, esta edição apresenta apenas uma <strong>paleta interna de estudo</strong> na seção 10.2; <strong>não publique esses códigos no Site como cânone</strong>. Uma assinatura pode evoluir visualmente com a experiência, sem bônus escondido.</p>
+<hr></div></details>
+<details class="chapter" id="cap-21" ><summary><span>21</span>20. Revisão final: o que está resolvido, o que precisa ser aprovado</summary><div class="chapter-body"><div class="table-scroll"><table><tbody>
+<tr><td>Verificação</td><td>Estado honesto</td></tr>
+<tr><td>Criação frágil 4/6, teto d6; 6 atributos, 24 competências</td><td>Procedimento completo para jogar — candidato</td></tr>
+<tr><td>Teste humano, oposição, Ajuda e falha com custo</td><td>Procedimento completo — candidato</td></tr>
+<tr><td>Combate livre, reação, absorção e crítico raro/Virada</td><td>Procedimento completo e números auditáveis — candidato</td></tr>
+<tr><td>Integridade, socorro, tratamento, Ferimentos e morte</td><td>Procedimento completo — candidato, letalidade humana não testada</td></tr>
+<tr><td>Metus e Latebra</td><td>Procedimentos completos — núcleos preservados</td></tr>
+<tr><td>Exploração, conversa, perseguição e sobrevivência</td><td>Procedimentos completos ou opcionais claramente identificados</td></tr>
+<tr><td>PE, dados e 22 técnicas humanas</td><td>Economia completa para ensaio de até 100 sessões, sem campanha real</td></tr>
+<tr><td>Regências, Tanger, Ensaios e estética pessoal</td><td>Mecânica operacional para treino; limites/cor exata aguardam Lore</td></tr>
+<tr><td>Invicta/Ápice</td><td>Fórmula técnica única definida para ensaio; raridade humana não medida</td></tr>
+<tr><td>Testes reais com cinco pessoas</td><td><strong>NÃO REALIZADOS NESTA ENTREGA</strong></td></tr>
+<tr><td>Manual/fichas/banco/site público</td><td><strong>NÃO MODIFICADOS</strong></td></tr>
+</tbody></table></div>
+<h2>20.1 Qualidade mínima antes de oficializar</h2>
+<p><strong>Mesa com cinco humanos:</strong> pelo menos três oportunidades por cena para não combatentes, consequências compreensíveis e 3–7 rodadas frequentes em conflitos por objetivo. <strong>Manobras:</strong> seis improvisos diferentes sem inventar DT arbitrária. <strong>Crítico:</strong> contar 50 ataques elegíveis e descrever o que realmente mudou. <strong>Metus:</strong> ninguém fica dois ou mais turnos sem qualquer decisão. <strong>Latebra:</strong> buscar deve gastar tempo, mas não travar a aventura. <strong>Tanger:</strong> um praticante oferece alternativa, não resolve tudo sozinho. <strong>Invicta:</strong> registrar elegibilidades e usos em oito horas de jogo. <strong>Progressão:</strong> comparar projetos de personagem de 12, 30, 60, 100 sessões.</p>
+<p><strong>Não confundir cálculo com diversão comprovada.</strong> As chances de dados podem ser exatas; equilíbrio e prazer dependem de sessões reais.</p>
+<h2>20.2 O que pode ir ao Site depois da aprovação</h2>
+<p><strong>Público:</strong> mecânicas fechadas, exemplos didáticos sem fatos canônicos novos, Glossário, simulador de dados, ficha compatível, lista de mudanças.</p>
+<p><strong>Privado:</strong> hipóteses históricas, segredos da Bíblia Mestra, fenômenos ainda não revelados, cores provisórias, eventos não canônicos e materiais de teste que estragariam mistérios.</p>
+<p>A migração deve preservar personagens legados, autenticação, banco, permissões, documentos originais e créditos. Primeiro aprovação do criador e cópia de segurança; depois migração versionada e testes da ficha/rolador; por último publicação e página Atualizações.</p>
+<p><strong>Site e Sistema criado por Vitor Monte.</strong></p>
+<hr>
+<p><strong>FIM — Manual Unificado do Criador, edição candidata para mesa, ainda não oficial.</strong></p></div></details>
+<p class="warning"><strong>Fonte:</strong> Manual Unificado do Criador, edição candidata de 19/11/2026. Resultados narrativos e possibilidades físicas dependem do mestre. <a href="laboratorio-unificado.html">Abrir laboratório experimental</a>.</p></section></div></main>
+<footer>Site e Sistema criado por <strong>Vitor Monte</strong></footer>
+<script>
+const input=document.getElementById('filter'),items=[...document.querySelectorAll('.chapter')];
+function filter(){const q=input.value.toLocaleLowerCase('pt-BR').trim();let count=0;for(const d of items){const ok=!q||d.textContent.toLocaleLowerCase('pt-BR').includes(q);d.hidden=!ok;if(ok)count++;if(q&&ok)d.open=true;}document.getElementById('count').textContent=count+' capítulos encontrados';document.getElementById('empty').style.display=count?'none':'block';}
+input.addEventListener('input',filter);filter();
+document.querySelectorAll('nav a').forEach(link=>link.addEventListener('click',()=>{const d=document.querySelector(link.getAttribute('href'));if(d)d.open=true;}));
+</script></body></html>
