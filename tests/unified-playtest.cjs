@@ -80,3 +80,46 @@ test('páginas experimentais existem e não importam núcleo legado',()=>{
  assert.match(lab,/haema-character-unified-playtest-20261119/);
  assert.doesNotMatch(lab,/localStorage\.removeItem/);
 });
+
+test('incapacitação, primeiros socorros, segurança e descanso',()=>{
+ let state={integrity:0,deathRisks:0,stable:false,firstDeathCheckDone:false};
+ state=h.deathRisk(state,{kind:'turn',rollSuccess:false});
+ assert.equal(state.deathRisks,1);
+ state=h.deathRisk(state,{kind:'turn',rollSuccess:false});
+ assert.equal(state.deathRisks,1,'Primeiro teste ocorre uma vez');
+ state=h.deathRisk(state,{kind:'dangerRound',underThreat:false});
+ assert.equal(state.deathRisks,1,'Sem ameaça efetiva não aumenta');
+ state=h.deathRisk(state,{kind:'dangerRound',underThreat:true});
+ assert.equal(state.deathRisks,2);
+ state=h.deathRisk(state,{kind:'effectiveDamage',underThreat:true});
+ assert.equal(state.deathRisks,3);assert.equal(state.dead,true);
+ assert.equal(h.aid({withKit:true,attributeRoll:2,medicineRoll:3}).success,true);
+ assert.equal(h.aid({withKit:false,attributeRoll:2,medicineRoll:3}).success,false);
+ assert.equal(h.safeRecovery({current:0,max:12,safe:true,stable:true,minutes:10}).integrity,1);
+ assert.equal(h.safeRecovery({current:0,max:12,safe:false,stable:true,minutes:10}).integrity,0);
+ assert.equal(h.longRest({current:10,max:12,rollValue:5,safe:true}).integrity,12);
+ assert.equal(h.longRest({current:10,max:12,rollValue:5,safe:false}).integrity,10);
+});
+test('quatro modalidades de Ápice respeitam oportunidade e custo',()=>{
+ for(const type of ['golpe','protecao','superacao','tanger']){
+  const denied=h.apex(type,{stored:0,actionSucceeded:true,validAnchor:true,adjacent:true,reactionAvailable:true,physicallyPossible:true,stableDiscovery:true,choiceOffered:true});
+  assert.equal(denied.allowed,false);
+  const allowed=h.apex(type,{stored:1,actionSucceeded:true,validAnchor:true,adjacent:true,reactionAvailable:true,physicallyPossible:true,stableDiscovery:true,choiceOffered:true});
+  assert.equal(allowed.allowed,true);assert.equal(allowed.remaining,0);
+ }
+ assert.equal(h.apex('protecao',{stored:1,adjacent:false,reactionAvailable:true,physicallyPossible:true}).allowed,false);
+ assert.equal(h.apex('tanger',{stored:1,actionSucceeded:true,validAnchor:true,stableDiscovery:false}).allowed,false);
+ assert.equal(h.apex('superacao',{stored:1,actionSucceeded:true,physicallyPossible:true,choiceOffered:false}).allowed,false);
+});
+test('portal usa versão separada e não derruba verificação da 0.1',()=>{
+ const fs=require('node:fs');
+ const portal=fs.readFileSync(require('node:path').join(__dirname,'..','portal.js'),'utf8');
+ assert.match(portal,/editUnifiedCharacter/);
+ assert.match(portal,/editCharacter\(panel,root,character,!mine\)/);
+ assert.match(portal,/rules_version:core.VERSION/);
+ assert.match(portal,/rules_version:'0.1'/);
+ const schema=fs.readFileSync(require('node:path').join(__dirname,'..','docs','UNIFIED_PLAYTEST_CHARACTERS_MIGRATION.sql'),'utf8');
+ assert.match(schema,/BEGIN;/);assert.match(schema,/COMMIT;/);
+ assert.match(schema,/unified-playtest-20261119/);
+ assert.doesNotMatch(schema,/DROP TABLE|TRUNCATE|DELETE FROM/i);
+});
