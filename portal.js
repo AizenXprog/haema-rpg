@@ -191,8 +191,26 @@ const PORTAL=(()=>{
     }
     sel.value=String(arr[i]);
     sel.addEventListener('change',()=>{
-     const old=arr[i];arr[i]=Number(sel.value);
-     if(initialOnly&&count()>budget){arr[i]=old;sel.value=String(old);message(form,'Limite de criação atingido: alteração desfeita.',true)}
+     const old=arr[i],wanted=Number(sel.value);
+     if(initialOnly){
+      arr[i]=wanted;
+      if(count()>budget){arr[i]=old;sel.value=String(old);message(form,'Limite de criação atingido: alteração desfeita.',true)}
+     }else{
+      const kind=label==='Seis atributos'?'atributo':'competencia';
+      if(wanted!==old+2){sel.value=String(old);message(form,'Evolução ocorre um grau por compra. Para corrigir uma ficha, consulte o mestre.',true);return}
+      const peInput=widgets.find(([key])=>key==='pe')[1];
+      p.pe=Number(peInput.value);
+      const reason=description.input.value.trim();
+      const approved=reason.length>0&&confirm('A vivência "'+reason.slice(0,120)+'" justifica esta evolução e foi aprovada pelo mestre?');
+      const progress=core.improveDie(p,{type:kind,index:i,experienced:reason.length>0,masterApproved:approved});
+      if(!progress.ok){sel.value=String(old);message(form,progress.reason,true);return}
+      arr[i]=progress.to;p.pe=progress.character.pe;peInput.value=String(p.pe);
+      if(kind==='atributo'&&i===2){
+       p.integrity=Math.min(core.integrity(arr[i]),p.integrity);
+       widgets.find(([key])=>key==='integrity')[1].value=String(p.integrity);
+      }
+      message(form,'Evolução registrada por '+progress.cost+' PE. Salve a ficha para persistir.');
+     }
      update();
     });
     sel.disabled=readOnly;
@@ -213,6 +231,21 @@ const PORTAL=(()=>{
    widgets.push([key,v.input]);extra.append(v.wrap);
   }
   form.append(node('h3','','Condições e progressão'),extra);
+  if(existing&&!readOnly){
+   const guardInput=widgets.find(([key])=>key==='guard')[1];
+   guardInput.readOnly=true;guardInput.title='Guarda aumenta somente por compra verificada de PE';
+   const button=b('Aprimorar Guarda com PE',()=>{
+    const peInput=widgets.find(([key])=>key==='pe')[1];p.pe=Number(peInput.value);
+    const context=description.input.value.trim();
+    const approved=context.length>0&&confirm('O mestre confirmou a vivência para aumentar Guarda?');
+    const result=core.improveDie(p,{type:'guarda',experienced:context.length>0,masterApproved:approved});
+    if(!result.ok)return message(form,result.reason,true);
+    p.guard=result.to;p.pe=result.character.pe;peInput.value=String(p.pe);guardInput.value=String(p.guard);
+    message(form,'Guarda evoluiu por '+result.cost+' PE. Salve a ficha para persistir.');
+   },'portal-action');
+   form.append(button);
+  }
+
   const description=field('Vivências e aprendizados (uma por linha)','textarea',(p.experiences||[]).join('\n'),8000);
   const techniques=field('Técnicas adquiridas (somente leitura)','textarea',(p.techniques||[]).join('\n'),4000);
   techniques.input.readOnly=true;
