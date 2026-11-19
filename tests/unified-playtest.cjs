@@ -200,3 +200,11 @@ test('contrato dos controles de laboratório: todo ID usado existe no HTML',()=>
  const missing=[...new Set(ids)].filter(id=>!html.includes('id="'+id+'"'));
  assert.deepEqual(missing,[]);
 });
+
+test('Latebra: reforço, ruído e exposição real obedecem ao manual',()=>{
+ assert.deepEqual(h.reinforceLatebra([2,4],5),{marks:[2,4,5],added:true,limitReached:false});
+ assert.deepEqual(h.reinforceLatebra([2,4],4),{marks:[2,4],added:false,limitReached:false});
+ assert.deepEqual(h.reinforceLatebra([1,2,3,4],5),{marks:[1,2,3,4],added:false,limitReached:true});
+ assert.deepEqual(h.disturbLatebra([2,4,5],{noise:true,mark:4}),{marks:[2,5],located:false,removed:[4]});
+ assert.deepEqual(h.disturbLatebra([2,4],{exposed:true}),{marks:[],located:true,removed:[2,4]});
+});
