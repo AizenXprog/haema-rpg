@@ -20,13 +20,16 @@ const PORTAL=(()=>{
  const currentRoot=()=>document.getElementById('haema-portal-app');
  const errorText=e=>safe(e?.message||'Não foi possível concluir esta operação.',350);
  const message=(root,text,isError=false)=>{let target=$('.portal-feedback',root);if(!target){target=node('div','portal-feedback');root.prepend(target)}target.className='portal-feedback '+(isError?'portal-err':'portal-success');target.textContent=text;};
+ let portalFieldSequence=0;
  const field=(label,type='text',value='',maxLength)=>{
   const wrap=node('div','portal-field');const lab=node('label','',label);const el=type==='textarea'?node('textarea'):node('input');
+  const id='haema-portal-field-'+(++portalFieldSequence);lab.htmlFor=id;el.id=id;
   if(type!=='textarea')el.type=type;el.value=value??'';if(maxLength)el.maxLength=maxLength;
   wrap.append(lab,el);return {wrap,input:el};
  };
  const selectField=(label,options,value)=>{
-  const wrap=node('div','portal-field');wrap.append(node('label','',label));const select=node('select');
+  const wrap=node('div','portal-field'),lab=node('label','',label),select=node('select');
+  const id='haema-portal-field-'+(++portalFieldSequence);lab.htmlFor=id;select.id=id;wrap.append(lab);
   for(const [code,title] of options){const o=node('option','',title);o.value=code;select.append(o)}
   select.value=value??options[0]?.[0];wrap.append(select);return{wrap,input:select};
  };
