@@ -194,6 +194,11 @@ const PORTAL=(()=>{
      const old=arr[i],wanted=Number(sel.value);
      if(initialOnly){
       arr[i]=wanted;
+      if(label==='Seis atributos'&&i===2){
+       p.integrity=core.integrity(wanted);
+       const integrityInput=typeof widgets!=='undefined'&&widgets.find(([key])=>key==='integrity')?.[1];
+       if(integrityInput)integrityInput.value=String(p.integrity);
+      }
       if(count()>budget){arr[i]=old;sel.value=String(old);message(form,'Limite de criação atingido: alteração desfeita.',true)}
      }else{
       const kind=label==='Seis atributos'?'atributo':'competencia';
@@ -231,6 +236,31 @@ const PORTAL=(()=>{
    widgets.push([key,v.input]);extra.append(v.wrap);
   }
   form.append(node('h3','','Condições e progressão'),extra);
+  // PE is earned through recorded events, not arbitrary free-form editing.
+  const peInput=widgets.find(([key])=>key==='pe')[1];
+  peInput.readOnly=true;
+  peInput.title='PE cresce por sessão/arco com evento registrado; compras deduzem o valor.';
+  const ledger=node('div','portal-form-row');
+  const eventField=field('Código único da sessão ou arco','text','',100);
+  const eventType=selectField('Tipo de conquista',[['session','Sessão relevante · +1 PE'],['arc','Fim de arco importante · +2 PE']],'session');
+  const ledgerButton=b('Registrar conquista de PE',()=>{
+   if(readOnly)return;
+   const id=eventField.input.value.trim(),type=eventType.input.value;
+   if(id.length<3||id.length>100)return message(form,'Identifique a sessão ou arco (3 a 100 caracteres).',true);
+   const history=Array.isArray(p.peHistory)?p.peHistory:[];
+   if(history.some(entry=>entry.id===id))return message(form,'Este evento já foi usado nesta ficha.',true);
+   if(!confirm('O mestre confirmou que este evento de '+(type==='session'?'sessão':'arco')+' concede PE?'))return;
+   const gain=type==='session'?1:2;
+   p.pe=Number(peInput.value)+gain;
+   if(!Number.isSafeInteger(p.pe)||p.pe<0||p.pe>9999)return message(form,'Saldo de PE fora do limite.',true);
+   p.peHistory=[...history,{id,type,amount:gain,recordedAt:new Date().toISOString()}];
+   peInput.value=String(p.pe);eventField.input.value='';
+   message(form,'Evento registrado: +'+gain+' PE. Salve a ficha online para persistir.');
+  },'portal-action');
+  ledgerButton.disabled=readOnly;
+  ledger.append(eventField.wrap,eventType.wrap,ledgerButton);
+  form.append(node('h3','','Registro de PE'),ledger);
+
   if(existing&&!readOnly){
    const guardInput=widgets.find(([key])=>key==='guard')[1];
    guardInput.readOnly=true;guardInput.title='Guarda aumenta somente por compra verificada de PE';
@@ -270,6 +300,7 @@ const PORTAL=(()=>{
    peInput.value=String(p.pe);techniques.input.value=p.techniques.join('\n');
    message(form,'Técnica registrada nesta ficha. Salve a ficha online para persistir.');
   },'portal-action');
+  if(readOnly)purchaseButton.disabled=true;
   purchase.append(purchaseSelect,purchaseButton);
   form.append(description.wrap,techniques.wrap,purchaseTitle,purchase);
   if(readOnly){name.input.disabled=true;job.input.disabled=true;description.input.disabled=true;techniques.input.disabled=true;
