@@ -38,7 +38,7 @@ footer{border-top:1px solid #744d49;border-bottom:0}
 <p class="eyebrow">HÆMA · Haematomanthía / Laboratório isolado</p>
 <h1>Manual Unificado<br><em>em experiência.</em></h1>
 <p class="warning"><strong>Playtest experimental, NÃO oficial.</strong> Esta ferramenta usa o núcleo candidato de 19/11/2026 e não substitui o Manual Vivo 0.1 nem converte fichas antigas. Resultados narrativos, acesso a Regências, oportunidade real, linha de ataque e efeitos de manobras continuam sob validação do mestre.</p>
-<nav class="panel" aria-label="Navegação do laboratório"><a href="#criacao">Criação</a> · <a href="#teste">Testes e críticos</a> · <a href="#combate">Combate</a> · <a href="#metus">Metus</a> · <a href="#latebra">Latebra</a> · <a href="#evolucao">Evolução</a></nav>
+<nav class="panel" aria-label="Navegação do laboratório"><a href="#criacao">Criação</a> · <a href="#teste">Testes e críticos</a> · <a href="#combate">Combate</a> · <a href="#metus">Metus</a> · <a href="#latebra">Latebra</a> · <a href="#evolucao">Evolução</a> · <a href="#ferimentos">Ferimentos</a> · <a href="#invicta">Invicta</a> · <a href="#tanger">Tanger</a></nav>
 <section class="panel" id="criacao"><p class="eyebrow">01 · Criação humana</p><h2>Construa uma pessoa, não uma classe</h2>
 <p>Todo mundo começa com d4 em cada campo. Distribua até <strong>4 aumentos de atributos</strong> e <strong>6 de competências</strong>; o máximo inicial é d6. Uma profissão descreve oportunidades, não concede bônus automático.</p>
 <div class="grid"><label>Nome<input id="name" maxlength="80" placeholder="Nome do personagem"></label><label>Ofício<input id="job" maxlength="100" placeholder="Ofício ou profissão"></label></div>
@@ -75,5 +75,47 @@ footer{border-top:1px solid #744d49;border-bottom:0}
 <div class="grid"><label>Tipo<select id="progressType"><option value="competencia">Competência</option><option value="atributo">Atributo</option><option value="guarda">Guarda</option><option value="regencia">Regência Desperta</option></select></label><label>Dado atual<select id="progressDie"></select></label></div>
 <button id="calcPE">Consultar custo do próximo dado</button><div class="result" id="peResult" role="status"></div></section>
 <p class="warning">Esta é uma ferramenta de verificação parcial. Para decisões oficiais do jogo, consulte o Manual Unificado integral do criador. Não publica cores provisórias de Regências nem informações internas de Lore.</p>
+
+<section class="panel" id="ferimentos"><p class="eyebrow">07 · Integridade e socorro</p><h2>Feridas têm consequência</h2>
+<p>Uma fonte com dano final de pelo menos 6 causa um Ferimento. Cair a zero também causa um. São, no máximo, dois Ferimentos e um por fonte. Dano não descreve por si só a lesão: o mestre registra o que foi atingido.</p>
+<div class="grid"><label>Integridade atual<input type="number" id="woundCurrent" min="0" max="18" value="10"></label>
+<label>Integridade máxima<input type="number" id="woundMax" min="1" max="18" value="10"></label>
+<label>Dano final da fonte<input type="number" id="woundDamage" min="0" max="50" value="6"></label>
+<label>Ferimentos registrados<select id="woundCount"><option>0</option><option>1</option><option>2</option></select></label></div>
+<button id="applyWound">Aplicar dano</button><button id="firstDeathCheck">Teste de Risco de Morte</button>
+<button id="dangerRound">Rodada sem socorro sob perigo</button><button id="stabilize">Registrar socorro válido</button>
+<button id="safeRecover">Dez minutos em segurança</button><button id="longRest">Descanso longo seguro (1d6)</button>
+<div class="result" id="woundResult" role="status" aria-live="polite">Só marque Risco de Morte quando o perigo físico real continua. Ao estabilizar, o personagem não volta a agir imediatamente.</div></section>
+<section class="panel" id="invicta"><p class="eyebrow">08 · Realização técnica</p><h2>Invicta e as quatro formas de Ápice</h2>
+<p>Uma Invicta exige ambos os dados altos, um máximo natural, sucesso com margem natural de pelo menos 6 e perigo real anunciado antes da rolagem. Máximo de uma por personagem e uma nova por cena para o grupo.</p>
+<p>As rolagens do laboratório de testes podem gerar uma oportunidade técnica. O mestre confirma sua elegibilidade.</p>
+<button id="awardInvicta">Registrar Invicta da última rolagem elegível</button><button id="newScene">Iniciar nova cena significativa</button>
+<div class="grid"><label>Tipo de Ápice<select id="apexType"><option value="golpe">Golpe</option><option value="protecao">Proteção</option><option value="superacao">Superação</option><option value="tanger">Tanger</option></select></label>
+<label><input type="checkbox" id="apexSituation" style="width:auto"> Condições físicas e táticas confirmadas pelo mestre</label></div>
+<button id="spendInvicta">Experimentar gasto de Invicta</button><div class="result" id="invictaResult" role="status" aria-live="polite">Invicta guardada: 0</div></section>
+<section class="panel" id="tanger"><p class="eyebrow">09 · Regências sem classes</p><h2>Descobrir, estudar e Tanger</h2>
+<p>As sete Regências conhecidas são formas de influência, não listas automáticas de magias. O Despertar requer acesso narrativo validado; registrar uma cor ou símbolo não concede poder.</p>
+<div class="grid">
+<label>Regência<select id="regency"></select></label>
+<label>Dado da Regência<select id="regencyDie"></select></label>
+<label>Estado da Descoberta<select id="discoveryState"><option value="suspeita">Suspeita</option><option value="provisoria">Provisória</option><option value="estavel">Estável</option></select></label>
+<label>Escala<select id="discoveryScale"><option value="ajuste">Ajuste · DT5</option><option value="intervencao">Intervenção · DT7</option><option value="maior">Maior · DT9</option></select></label>
+</div>
+<div class="grid"><label>Fenômeno observado<input id="discoveryPhenomenon" placeholder="O que foi estudado?"></label>
+<label>Âncora real<input id="discoveryAnchor" placeholder="O que mantém o efeito?"></label>
+<label>Competência humana<select id="discoverySkill"></select></label>
+<label>Efeito aprendido<input id="discoveryEffect" placeholder="O que especificamente pode mudar?"></label>
+<label>Limites<input id="discoveryLimits" placeholder="Alvo, alcance, escala..."></label>
+<label>Duração<input id="discoveryDuration" placeholder="Quanto tempo?"></label>
+<label>Sinal perceptível<input id="discoverySignal" placeholder="Como se percebe?"></label>
+<label>Contrajogo<input id="discoveryCounterplay" placeholder="Como impedir ou interromper?"></label>
+<label>Risco anunciado<input id="discoveryRisk" placeholder="O que acontece na falha?"></label>
+<label>Assinatura visual individual<input id="visualSignature" placeholder="Fios, placas, marcas..."></label></div>
+<label><input id="awakenedConfirmed" type="checkbox" style="width:auto"> O mestre confirmou Despertar e acesso efetivo a esta Regência</label>
+<label><input id="anchorConfirmed" type="checkbox" style="width:auto"> A âncora existe e as condições materiais estão satisfeitas</label>
+<label><input id="preparedConfirmed" type="checkbox" style="width:auto"> Preparações e sustentação foram realizadas (escala Maior)</label>
+<label><input id="studyConfirmed" type="checkbox" style="width:auto"> A investigação/estudo foi demonstrada em jogo</label>
+<button id="tangerRoll">Manifestar ou ensaiar</button><button id="stabilizeDiscovery">Estabilizar Descoberta com PE</button>
+<div id="tangerResult" class="result" role="status" aria-live="polite">Preencha as condições para experimentar. Nenhuma descoberta é cânone automaticamente.</div></section>
 </main><footer>Site e Sistema criado por <strong>Vitor Monte</strong> · HÆMA — Candidato experimental de playtest</footer>
 </body></html>
