@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
  // Procedimentos médicos: testes exigem condição real, não curam ferimentos por magia.
  let deathState={integrity:character.integrity??h.integrity(character.attributes[2]),
-  deathRisks:character.deathRisks||0,stable:character.stable!==false,firstDeathCheckDone:!!character.firstDeathCheckDone};
+  deathRisks:character.deathRisks||0,stable:character.stable!==false,firstDeathCheckDone:!!character.firstDeathCheckDone,dead:(character.deathRisks||0)>=3};
  function syncInjury(){
   $('woundCurrent').value=String(deathState.integrity);
   $('woundMax').value=String(h.integrity(character.attributes[2]));
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  });
 
  // Invicta: oportunidades técnicas são limitadas pelo personagem e pela cena.
- let sceneAwarded=false;
+ let sceneAwarded=false,essayAttempts=new Set();
  function invictaMsg(text){$('invictaResult').textContent='Invicta armazenada: '+character.invicta+'. '+text;}
  $('awardInvicta').addEventListener('click',()=>{
   const eligible=!!lastRoll?.invictaEligible;
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  });
  $('newScene').addEventListener('click',()=>{
   if(!confirm('Começou uma nova cena significativa para o grupo?'))return;
-  sceneAwarded=false;usedRecovery=false;invictaMsg('Limite de cena reiniciado. Invicta já armazenada permanece.');
+  sceneAwarded=false;usedRecovery=false;essayAttempts.clear();invictaMsg('Limite de cena reiniciado. Invicta já armazenada permanece.');
  });
  $('spendInvicta').addEventListener('click',()=>{
   const type=$('apexType').value,conditions=$('apexSituation').checked;
@@ -230,6 +230,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   const d=getDiscovery(),check=h.validateDiscovery(d);if(!check.valid){$('tangerResult').textContent='Registro incompleto: '+check.errors.join('; ');return;}
   const awakened=regencyAccess(),regencyFace=Number($('regencyDie').value),
    skillFace=character.skills[Number($('discoverySkill').value)];
+  const essayKey=d.regency+'|'+d.phenomenon+'|'+d.scale;
+  if(d.state==='suspeita'&&essayAttempts.has(essayKey)){
+   $('tangerResult').textContent='Este Ensaio já foi tentado nesta cena. É preciso nova cena ou hipótese materialmente diferente.';return;
+  }
+  if(d.state==='suspeita')essayAttempts.add(essayKey);
   const ra=h.roll(regencyFace),sa=h.roll(skillFace),essay=d.state==='suspeita';
   const result=h.tanger({discovery:d,awakened,regencyFace,skillFace,regencyRoll:ra,skillRoll:sa,
    preparations:$('preparedConfirmed').checked?2:0,canSustain:$('preparedConfirmed').checked,
