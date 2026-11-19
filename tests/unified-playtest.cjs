@@ -178,3 +178,16 @@ test('Tanger exige descoberta, Despertar, âncora e preparação; ensaio tem DT+
  assert.equal(h.tanger({...base,discovery:major,preparations:1,canSustain:true}).allowed,false);
  assert.equal(h.tanger({...base,discovery:major,preparations:2,canSustain:true}).allowed,true);
 });
+
+test('evolução real: uma etapa, custo PE, vivência e sem mutação',()=>{
+ const c=h.createdCharacter();c.pe=40;
+ assert.equal(h.improveDie(c,{type:'competencia',index:0,experienced:true,masterApproved:true}).ok,true);
+ const skill=h.improveDie(c,{type:'competencia',index:0,experienced:true,masterApproved:true});
+ assert.equal(skill.cost,6);assert.equal(skill.to,6);assert.equal(skill.character.pe,34);
+ assert.equal(c.skills[0],4);assert.equal(c.pe,40);
+ assert.equal(h.improveDie(c,{type:'competencia',index:0,experienced:false,masterApproved:true}).ok,false);
+ assert.equal(h.improveDie({...c,pe:5},{type:'competencia',index:0,experienced:true,masterApproved:true}).ok,false);
+ const guard=h.improveDie(c,{type:'guarda',experienced:true,masterApproved:true});
+ assert.equal(guard.cost,12);assert.equal(guard.character.guard,8);
+ assert.equal(h.improveDie(c,{type:'atributo',index:6,experienced:true,masterApproved:true}).ok,false);
+});
