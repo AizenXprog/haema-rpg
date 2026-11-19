@@ -123,3 +123,27 @@ test('portal usa versão separada e não derruba verificação da 0.1',()=>{
  assert.match(schema,/unified-playtest-20261119/);
  assert.doesNotMatch(schema,/DROP TABLE|TRUNCATE|DELETE FROM/i);
 });
+
+test('técnicas: todos os requisitos mapeados, sem compra livre',()=>{
+ const engine=require('../techniques-unified-logic.js'),catalog=engine.catalog;
+ const all=h.createdCharacter();
+ for(const technique of catalog){
+  assert.equal(engine.requirement(technique,all).met,false,'Iniciante d4 não cumpre requisito de '+technique.name);
+ }
+ all.skills=Array(24).fill(12);all.pe=50;
+ for(const technique of catalog){
+  const eligible=engine.evaluate(all,technique.id);
+  assert.equal(eligible.allowed,false,'Exige validação do mestre');
+  const r=engine.acquire(all,technique.id,{masterApproved:true});
+  assert.equal(r.ok,true,technique.name);
+  assert.equal(r.character.pe,50-technique.cost);
+  assert.equal(r.character.techniques.includes(technique.name),true);
+  assert.equal(all.pe,50,'Não deve mutar a ficha de origem');
+  assert.equal(engine.acquire({...all,pe:0},technique.id,{masterApproved:true}).ok,false);
+ }
+ all.skills=Array(24).fill(4);all.pe=50;
+ all.skills[h.SKILLS.indexOf('Medicina')]=6;
+ assert.equal(engine.evaluate(all,7,{masterApproved:true}).allowed,false,'Socorro em Retirada exige também Atletismo');
+ all.skills[h.SKILLS.indexOf('Atletismo')]=6;
+ assert.equal(engine.evaluate(all,7,{masterApproved:true}).allowed,true);
+});
