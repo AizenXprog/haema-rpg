@@ -147,3 +147,13 @@ test('técnicas: todos os requisitos mapeados, sem compra livre',()=>{
  all.skills[h.SKILLS.indexOf('Atletismo')]=6;
  assert.equal(engine.evaluate(all,7,{masterApproved:true}).allowed,true);
 });
+
+test('modificadores afetam sucesso, nunca a margem natural do crítico',()=>{
+ const r=h.exceptional({aFace:6,bFace:6,aRoll:6,bRoll:5,dt:12,modifier:1});
+ assert.equal(r.success,true);
+ assert.equal(r.margin,-1);
+ assert.equal(r.critical,false);
+ const other=h.exceptional({aFace:6,bFace:6,aRoll:6,bRoll:5,dt:10,modifier:-2});
+ assert.equal(other.success,false);
+ assert.equal(other.critical,false);
+});
