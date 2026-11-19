@@ -194,12 +194,12 @@ const PORTAL=(()=>{
      const old=arr[i],wanted=Number(sel.value);
      if(initialOnly){
       arr[i]=wanted;
+      if(count()>budget){arr[i]=old;sel.value=String(old);message(form,'Limite de criação atingido: alteração desfeita.',true)}
       if(label==='Seis atributos'&&i===2){
-       p.integrity=core.integrity(wanted);
-       const integrityInput=typeof widgets!=='undefined'&&widgets.find(([key])=>key==='integrity')?.[1];
+       p.integrity=core.integrity(arr[i]);
+       const integrityInput=widgets.find(([key])=>key==='integrity')?.[1];
        if(integrityInput)integrityInput.value=String(p.integrity);
       }
-      if(count()>budget){arr[i]=old;sel.value=String(old);message(form,'Limite de criação atingido: alteração desfeita.',true)}
      }else{
       const kind=label==='Seis atributos'?'atributo':'competencia';
       if(wanted!==old+2){sel.value=String(old);message(form,'Evolução ocorre um grau por compra. Para corrigir uma ficha, consulte o mestre.',true);return}
