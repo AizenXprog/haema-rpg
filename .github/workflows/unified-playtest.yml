@@ -19,4 +19,5 @@ jobs:
         with:
           node-version: '22'
       - run: node --check rules-unified-playtest.js
+      - run: node --check laboratorio-unificado.js
       - run: node --test tests/unified-playtest.cjs
