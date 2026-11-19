@@ -34,6 +34,7 @@ jobs:
           python -m http.server 8791 --bind 127.0.0.1 >/tmp/haema-server.log 2>&1 &
           sleep 2
           python tests/unified-browser.py
+          python tests/unified-portal-browser.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
