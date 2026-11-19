@@ -13,19 +13,10 @@ article h2{margin:0 0 6px}article p{margin:.6rem 0}article small{color:#e9b983}
 .notice{padding:15px;border-left:4px solid #d3a169;background:#39231f}
 @media(max-width:640px){.controls{grid-template-columns:1fr}}
 </style></head><body><header><a href="manual-unificado.html">← Manual Unificado</a></header>
-<main><small>HÆMA · 19/11/2026 · CANDIDATO NÃO OFICIAL</small><h1>Técnicas humanas.<br>Aprenda, sem perder a liberdade.</h1>
+<main class="unified-techniques"><small>HÆMA · 19/11/2026 · CANDIDATO NÃO OFICIAL</small><h1>Técnicas humanas.<br>Aprenda, sem perder a liberdade.</h1>
 <p class="notice">As 22 técnicas são opcionais e não são classes. Não é necessário comprá-las para tentar desarmar, derrubar, improvisar, negociar ou realizar qualquer ação fisicamente plausível. Requisitos e custos devem ser validados ao evoluir a ficha.</p>
 <div class="controls"><label>Buscar por nome, efeito ou requisito<input id="search" type="search" autocomplete="off" placeholder="Ex.: Medicina d6"></label>
 <label>Filtrar por custo<select id="cost"><option value="">Todos</option><option value="4">4 PE</option><option value="8">8 PE</option><option value="12">12 PE</option></select></label></div>
 <p id="count" role="status"></p><div id="catalog" class="grid"></div>
 </main><footer>Site e Sistema criado por <strong>Vitor Monte</strong></footer>
-<script>document.addEventListener('DOMContentLoaded',()=>{
- const data=window.HAEMAUnifiedTechniques||[],list=document.getElementById('catalog'),count=document.getElementById('count');
- function draw(){const q=document.getElementById('search').value.toLocaleLowerCase('pt-BR').trim(),cost=document.getElementById('cost').value;
- const found=data.filter(t=>(!cost||t.cost===Number(cost))&&(!q||[t.name,t.requirement,t.effect].join(' ').toLocaleLowerCase('pt-BR').includes(q)));
- list.replaceChildren();count.textContent=found.length+' de '+data.length+' técnicas';
- for(const t of found){const card=document.createElement('article'),name=document.createElement('h2'),meta=document.createElement('small'),p=document.createElement('p');
- name.textContent=t.id+'. '+t.name;meta.textContent=t.cost+' PE · '+t.requirement;p.textContent=t.effect;card.append(name,meta,p);list.append(card);}
- }
- document.getElementById('search').addEventListener('input',draw);document.getElementById('cost').addEventListener('change',draw);draw();
-});</script></body></html>
+<script defer src="tecnicas-unificadas.js"></script></body></html>
