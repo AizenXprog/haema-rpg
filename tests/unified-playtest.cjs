@@ -157,3 +157,24 @@ test('modificadores afetam sucesso, nunca a margem natural do crítico',()=>{
  assert.equal(other.success,false);
  assert.equal(other.critical,false);
 });
+
+test('Tanger exige descoberta, Despertar, âncora e preparação; ensaio tem DT+1',()=>{
+ const d={regency:'Kórven',state:'provisoria',scale:'intervencao',
+  phenomenon:'tensão',anchor:'suporte',competence:'Engenharia',effect:'redistribuir tensão',
+  limits:'uma junta',duration:'rodada',signal:'marca visível',counterplay:'romper suporte',
+  risk:'desgaste anunciado'};
+ assert.equal(h.validateDiscovery(d).valid,true);
+ const base={discovery:d,awakened:['Kórven'],regencyFace:4,skillFace:6,
+  regencyRoll:4,skillRoll:4,anchored:true,possible:true};
+ const result=h.tanger(base);assert.equal(result.allowed,true);assert.equal(result.dt,7);
+ const essay=h.tanger({...base,essay:true});assert.equal(essay.dt,8);
+ assert.equal(h.tanger({...base,awakened:[]}).allowed,false);
+ assert.equal(h.tanger({...base,anchored:false}).allowed,false);
+ assert.equal(h.tanger({...base,discovery:{...d,state:'suspeita'}}).allowed,false);
+ assert.equal(h.stabilizeDiscovery({discovery:d,pe:8,studyConfirmed:true}).remainingPE,0);
+ assert.equal(h.stabilizeDiscovery({discovery:d,pe:7,studyConfirmed:true}).allowed,false);
+ assert.equal(h.stabilizeDiscovery({discovery:d,pe:8,studyConfirmed:false}).allowed,false);
+ const major={...d,scale:'maior',state:'estavel'};
+ assert.equal(h.tanger({...base,discovery:major,preparations:1,canSustain:true}).allowed,false);
+ assert.equal(h.tanger({...base,discovery:major,preparations:2,canSustain:true}).allowed,true);
+});
