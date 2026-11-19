@@ -56,3 +56,27 @@ test('ferimentos e custos de evolução',()=>{
  assert.equal(h.progressCost('guarda',6),12);
  assert.equal(h.progressCost('atributo',8),34);
 });
+
+test('catálogo completo de 22 técnicas: ids, custos e requisitos',()=>{
+ const catalog=require('../techniques-unified-playtest.js');
+ assert.equal(catalog.length,22);
+ assert.equal(new Set(catalog.map(t=>t.id)).size,22);
+ assert.equal(catalog[0].name,'Manobra Segura');
+ assert.equal(catalog[21].name,'Trajeto Preparado');
+ for(const t of catalog){
+  assert.ok(t.name&&t.requirement&&t.effect);
+  assert.ok([4,8,12].includes(t.cost));
+ }
+});
+test('páginas experimentais existem e não importam núcleo legado',()=>{
+ const fs=require('node:fs');
+ for(const name of ['manual-unificado.html','laboratorio-unificado.html','tecnicas-unificadas.html']){
+  const html=fs.readFileSync(require('node:path').join(__dirname,'..',name),'utf8');
+  assert.match(html,/CANDIDATO|candidato|playtest/i);
+  assert.match(html,/Site e Sistema criado por/);
+  assert.doesNotMatch(html,/#E6D5BB|#B53D56|#C98C50|#356E9A|#796985|#4AA69D|#D9C86E/);
+ }
+ const lab=fs.readFileSync(require('node:path').join(__dirname,'..','laboratorio-unificado.js'),'utf8');
+ assert.match(lab,/haema-character-unified-playtest-20261119/);
+ assert.doesNotMatch(lab,/localStorage\.removeItem/);
+});
