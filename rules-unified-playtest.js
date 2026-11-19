@@ -165,6 +165,29 @@
  }
 
 
+
+ function improveDie(character,{type,index,experienced=false,masterApproved=false}={}){
+  if(!character||character.version!=='unified-playtest-20261119')return {ok:false,reason:'Ficha de outra versão'};
+  if(!['atributo','competencia','guarda','regencia'].includes(type))return {ok:false,reason:'Tipo de avanço inválido'};
+  const array=type==='atributo'?'attributes':type==='competencia'?'skills':null;
+  const length=type==='atributo'?6:type==='competencia'?24:0;
+  const name=type==='guarda'?'guard':null;
+  const before=type==='guarda'?character.guard:(array&&Number.isInteger(index)&&index>=0&&index<length?character[array][index]:null);
+  if(before===null)return {ok:false,reason:'Campo de dado inválido'};
+  if(type==='regencia')return {ok:false,reason:'Regência requer Despertar e progressão específica'};
+  const dieIndex=DICE.indexOf(before);
+  if(dieIndex<0||dieIndex===DICE.length-1)return {ok:false,reason:'Dado já no máximo ou inválido'};
+  const cost=progressCost(type,before);
+  if(!experienced||!masterApproved)return {ok:false,reason:'Vivência e condições ainda não confirmadas',cost};
+  if(!Number.isInteger(character.pe)||character.pe<cost)return {ok:false,reason:'PE insuficiente',cost};
+  const after=DICE[dieIndex+1];
+  const next={...character,pe:character.pe-cost};
+  if(array)next[array]=character[array].map((v,i)=>i===index?after:v);
+  else next[name]=after;
+  if(array==='attributes'&&index===2)next.integrity=Math.min(integrity(after),character.integrity);
+  return {ok:true,cost,from:before,to:after,character:next};
+ }
+
  const DISCOVERY_STATES=Object.freeze(['suspeita','provisoria','estavel']);
  const SCALES=Object.freeze({ajuste:{dt:5,preparations:0,requireSustain:false},
   intervencao:{dt:7,preparations:0,requireSustain:false},
@@ -224,5 +247,5 @@
   DICE,ATTR,SKILL_GROUPS,SKILLS,HIGH,LATEBRA,COSTS,REGENCIES,grade,defense,integrity,
   createdCharacter,validateCreation,roll,test,exceptional,opposed,attack,damageState,metus,
   initialLatebra,searchLatebra,progressCost,apexStrike,invictaCanGain,probability,
-  deathRisk,aid,safeRecovery,longRest,apex,DISCOVERY_STATES,SCALES,validateDiscovery,tanger,stabilizeDiscovery});
+  deathRisk,aid,safeRecovery,longRest,apex,improveDie,DISCOVERY_STATES,SCALES,validateDiscovery,tanger,stabilizeDiscovery});
 });
