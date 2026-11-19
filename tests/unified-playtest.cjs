@@ -191,3 +191,12 @@ test('evolução real: uma etapa, custo PE, vivência e sem mutação',()=>{
  assert.equal(guard.cost,12);assert.equal(guard.character.guard,8);
  assert.equal(h.improveDie(c,{type:'atributo',index:6,experienced:true,masterApproved:true}).ok,false);
 });
+
+test('contrato dos controles de laboratório: todo ID usado existe no HTML',()=>{
+ const fs=require('node:fs'),path=require('node:path');
+ const html=fs.readFileSync(path.join(__dirname,'..','laboratorio-unificado.html'),'utf8');
+ const js=fs.readFileSync(path.join(__dirname,'..','laboratorio-unificado.js'),'utf8');
+ const ids=[...js.matchAll(/\$\('([\w-]+)'\)/g)].map(m=>m[1]);
+ const missing=[...new Set(ids)].filter(id=>!html.includes('id="'+id+'"'));
+ assert.deepEqual(missing,[]);
+});
