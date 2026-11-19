@@ -45,14 +45,14 @@ async def main():
    await page.locator('#filter').fill('Metus')
    assert 'capítulos encontrados' in await page.locator('#count').inner_text(),'Pesquisa do manual não iniciou'
    assert await page.locator('.chapter:visible').count()>0,'Busca do manual sem capítulos'
-   assert await page.evaluate('window.__haemaAudioCreated')==2,'Trilha não preservada da página Sistema ao Manual'
+   assert await page.evaluate('window.__haemaAudioCreated')==1,'Trilha não preservada da página Sistema ao Manual'
    await page.goto(BASE+'/sistema.html')
    await page.locator('a[href="tecnicas-unificadas.html"]').first.click()
    await page.wait_for_url('**/tecnicas-unificadas.html')
    assert await page.locator('#catalog article').count()==22,'Catálogo incompleto'
    await page.locator('#search').fill('Medicina')
    assert 0<await page.locator('#catalog article').count()<22,'Filtro de técnicas falhou'
-   assert await page.evaluate('window.__haemaAudioCreated')==2,'Trilha foi recriada ao entrar em Técnicas'
+   assert await page.evaluate('window.__haemaAudioCreated')==1,'Trilha foi recriada ao entrar em Técnicas'
    overflow=await page.evaluate('document.documentElement.scrollWidth-innerWidth')
    assert overflow<=3,f'Técnicas overflow {width}px: {overflow}'
    if errors:failures.extend([f'{width}px: {error}' for error in errors])
