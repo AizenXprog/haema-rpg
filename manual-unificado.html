@@ -25,7 +25,7 @@ code{background:#120c11;border-radius:4px;padding:2px 5px;color:#f1c7a2}strong{c
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style></head><body>
 <header><a href="sistema.html">← HÆMA Sistema</a> · <a href="laboratorio-unificado.html">Laboratório de testes</a></header>
-<main><p class="muted">HÆMA · HAEMATOMANTHÍA · 19/11/2026</p>
+<main class="unified-manual"><p class="muted">HÆMA · HAEMATOMANTHÍA · 19/11/2026</p>
 <h1>Manual Unificado<br><em>do Criador.</em></h1>
 <p class="warning"><strong>EDIÇÃO CANDIDATA PARA PLAYTEST · NÃO OFICIAL.</strong> Esta é uma reprodução didática do candidato integrado. As regras ainda precisam de validação do criador e de playtests humanos. Propostas de cores de Regências foram omitidas para não serem confundidas com cânone. Os registros de versões anteriores permanecem preservados.</p>
 <div class="layout"><nav aria-label="Sumário do Manual"><label for="filter">Pesquisar nos capítulos</label><input type="search" id="filter" placeholder="Ex.: Metus, Esquiva, Invicta" autocomplete="off"><p id="count" class="muted"></p><a href="#cap-0">HÆMA — MANUAL UNIFICADO DO CRIADOR</a>
@@ -440,9 +440,4 @@ code{background:#120c11;border-radius:4px;padding:2px 5px;color:#f1c7a2}strong{c
 <p><strong>FIM — Manual Unificado do Criador, edição candidata para mesa, ainda não oficial.</strong></p></div></details>
 <p class="warning"><strong>Fonte:</strong> Manual Unificado do Criador, edição candidata de 19/11/2026. Resultados narrativos e possibilidades físicas dependem do mestre. <a href="laboratorio-unificado.html">Abrir laboratório experimental</a>.</p></section></div></main>
 <footer>Site e Sistema criado por <strong>Vitor Monte</strong></footer>
-<script>
-const input=document.getElementById('filter'),items=[...document.querySelectorAll('.chapter')];
-function filter(){const q=input.value.toLocaleLowerCase('pt-BR').trim();let count=0;for(const d of items){const ok=!q||d.textContent.toLocaleLowerCase('pt-BR').includes(q);d.hidden=!ok;if(ok)count++;if(q&&ok)d.open=true;}document.getElementById('count').textContent=count+' capítulos encontrados';document.getElementById('empty').style.display=count?'none':'block';}
-input.addEventListener('input',filter);filter();
-document.querySelectorAll('nav a').forEach(link=>link.addEventListener('click',()=>{const d=document.querySelector(link.getAttribute('href'));if(d)d.open=true;}));
-</script></body></html>
+<script defer src="manual-unificado.js"></script></body></html>
