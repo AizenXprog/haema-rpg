@@ -1,0 +1,56 @@
+'use strict';
+const assert=require('node:assert/strict');
+const test=require('node:test');
+const h=require('../rules-unified-playtest.js');
+test('criação: limites e versão isolada',()=>{
+ const c=h.createdCharacter();
+ assert.equal(h.validateCreation(c).valid,true);
+ assert.equal(h.integrity(4),10);assert.equal(h.integrity(6),12);
+ assert.equal(h.defense(6),6);assert.equal(h.defense(8,{shield:true,partialCover:true}),9);
+ c.attributes=[6,6,6,6,6,4];assert.equal(h.validateCreation(c).valid,false);
+ c.attributes=[6,6,6,6,4,4];c.skills=Array(24).fill(4);
+ for(let i=0;i<6;i++)c.skills[i]=6;
+ assert.equal(h.validateCreation(c).valid,true);
+ c.skills[6]=8;assert.equal(h.validateCreation(c).valid,false);
+});
+test('resultados naturais, crítico e Invicta',()=>{
+ const r=h.exceptional({aFace:6,bFace:6,aRoll:6,bRoll:5,dt:6,realDanger:true});
+ assert.equal(r.critical,true);assert.equal(r.invictaEligible,false);
+ assert.equal(h.exceptional({aFace:6,bFace:8,aRoll:6,bRoll:7,dt:7,realDanger:true}).invictaEligible,true);
+ assert.equal(h.exceptional({aFace:6,bFace:8,aRoll:6,bRoll:7,dt:7,realDanger:false}).invictaEligible,false);
+ assert.equal(h.exceptional({aFace:4,bFace:4,aRoll:4,bRoll:4,dt:6}).critical,false);
+ assert.equal(h.test({aFace:6,bFace:4,aRoll:4,bRoll:3,dt:7}).success,true);
+ assert.equal(h.test({aFace:6,bFace:4,aRoll:4,bRoll:3,dt:7,possible:false}).success,false);
+ assert.throws(()=>h.test({aFace:6,bFace:4,aRoll:4,bRoll:3,dt:7,modifier:3}));
+});
+test('probabilidades exatas enumeradas do relatório',()=>{
+ const close=(x,y)=>assert.ok(Math.abs(x-y)<0.000001,x+' != '+y);
+ close(h.probability(6,6,7,'critical'),3/36);
+ close(h.probability(8,8,7,'critical'),3/64);
+ close(h.probability(6,6,6,'success'),26/36);
+ close(h.probability(6,8,7,'invicta'),3/48);
+});
+test('combate mantém escolha exclusiva Impacto/Virada',()=>{
+ const attack={aFace:6,bFace:6,aRoll:6,bRoll:5,defenseValue:6,weaponFace:6,weaponRoll:4,armor:1,parry:1};
+ assert.equal(h.attack({...attack,criticalChoice:'impact'}).damage,4);
+ assert.equal(h.attack({...attack,criticalChoice:'virada'}).damage,2);
+ assert.equal(h.attack({...attack,criticalChoice:'virada'}).virada,true);
+ assert.equal(h.attack({...attack,dodged:true}).damage,0);
+ assert.equal(h.apexStrike(6,{armor:1,parry:1}),6);
+});
+test('Metus anula estritamente menores, Latebra preserva marcas',()=>{
+ assert.deepEqual(h.metus(4,6,5).rolls,[0,6]);
+ assert.deepEqual(h.metus(5,6,5).rolls,[5,6]);
+ const rolls=[2,2,4],marks=h.initialLatebra(6,()=>rolls.shift());
+ assert.deepEqual(marks,[2,4]);
+ const search=h.searchLatebra([2,4,5],[4,1]);
+ assert.deepEqual(search.remaining,[2,5]);assert.equal(search.located,false);
+});
+test('ferimentos e custos de evolução',()=>{
+ assert.deepEqual(h.damageState({current:10,max:10,wounds:0,damage:6}),
+  {integrity:4,wounds:1,incapacitated:false,newWound:true});
+ assert.equal(h.progressCost('competencia',4),6);
+ assert.equal(h.progressCost('competencia',10),24);
+ assert.equal(h.progressCost('guarda',6),12);
+ assert.equal(h.progressCost('atributo',8),34);
+});
