@@ -102,6 +102,24 @@
   for(const n of rolls){if(hidden.delete(n))discovered.push(n);}
   return {remaining:[...hidden],discovered,located:hidden.size===0};
  }
+
+ function reinforceLatebra(marks,number){
+  if(!Array.isArray(marks)||!marks.every(x=>Number.isInteger(x)&&x>=1&&x<=6)||new Set(marks).size!==marks.length)
+   throw Error('Marcas inválidas');
+  if(!Number.isInteger(number)||number<1||number>6)throw Error('d6 inválido');
+  if(marks.length>=4||marks.includes(number))return {marks:[...marks],added:false,limitReached:marks.length>=4};
+  return {marks:[...marks,number].sort((a,b)=>a-b),added:true,limitReached:false};
+ }
+ function disturbLatebra(marks,{noise=false,exposed=false,mark=null}={}){
+  if(!Array.isArray(marks)||new Set(marks).size!==marks.length)throw Error('Marcas inválidas');
+  if(exposed)return {marks:[],located:true,removed:marks};
+  if(!noise)return {marks:[...marks],located:marks.length===0,removed:[]};
+  const target=mark==null?marks[0]:mark;
+  if(!marks.includes(target))throw Error('Marca não disponível para remover');
+  const result=marks.filter(x=>x!==target);
+  return {marks:result,located:result.length===0,removed:[target]};
+ }
+
  function progressCost(type,from){
   const costs=COSTS[type];if(!costs)throw Error('Evolução inválida');
   if(type==='descoberta'){if(!Number.isInteger(from)||from<0||from>2)throw Error('Escala inválida');return costs[from];}
@@ -246,6 +264,6 @@
  return Object.freeze({VERSION:'unified-playtest-20261119',STATUS:'experimental',
   DICE,ATTR,SKILL_GROUPS,SKILLS,HIGH,LATEBRA,COSTS,REGENCIES,grade,defense,integrity,
   createdCharacter,validateCreation,roll,test,exceptional,opposed,attack,damageState,metus,
-  initialLatebra,searchLatebra,progressCost,apexStrike,invictaCanGain,probability,
+  initialLatebra,searchLatebra,reinforceLatebra,disturbLatebra,progressCost,apexStrike,invictaCanGain,probability,
   deathRisk,aid,safeRecovery,longRest,apex,improveDie,DISCOVERY_STATES,SCALES,validateDiscovery,tanger,stabilizeDiscovery});
 });
