@@ -1,0 +1,22 @@
+name: Manual Unificado — núcleo experimental
+on:
+  push:
+    branches:
+      - feat/manual-unificado-playtest-20261119
+  pull_request:
+    paths:
+      - 'rules-unified-playtest.js'
+      - 'tests/unified-playtest.cjs'
+      - '.github/workflows/unified-playtest.yml'
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check rules-unified-playtest.js
+      - run: node --test tests/unified-playtest.cjs
