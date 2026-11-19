@@ -38,7 +38,18 @@ ALTER TABLE public.haema_characters ADD CONSTRAINT haema_characters_payload_chec
   AND (
     rules_version='0.1'
     OR (
-      jsonb_typeof(payload->'guard')='number'
+      -- Critérios de integridade dos dados do candidato.
+      NOT jsonb_path_exists(payload->'attributes',
+        '$[*] ? (@ != 4 && @ != 6 && @ != 8 && @ != 10 && @ != 12)')
+      AND NOT jsonb_path_exists(payload->'skills',
+        '$[*] ? (@ != 4 && @ != 6 && @ != 8 && @ != 10 && @ != 12)')
+      AND jsonb_path_exists(payload,'$.integrity ? (@ >= 0 && @ <= 18)')
+      AND jsonb_path_exists(payload,'$.metus ? (@ == 0 || @ == 4 || @ == 6 || @ == 8)')
+      AND jsonb_typeof(payload->'stable')='boolean'
+      AND jsonb_typeof(payload->'techniques')='array'
+      AND jsonb_typeof(payload->'awakened')='array'
+      AND jsonb_typeof(payload->'discoveries')='array'
+      AND jsonb_typeof(payload->'guard')='number'
       AND (payload->>'guard')::integer IN (6,8,10,12)
       AND jsonb_typeof(payload->'wounds')='number'
       AND (payload->>'wounds')::integer BETWEEN 0 AND 2
