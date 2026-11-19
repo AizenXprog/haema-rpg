@@ -1,5 +1,7 @@
 # E2E local: HÆMA Manual Unificado experimental, navegador real.
 import asyncio, os, json
+from pathlib import Path
+
 from playwright.async_api import async_playwright
 
 BASE = os.getenv('HAEMA_TEST_URL','http://127.0.0.1:8791').rstrip('/')
@@ -7,6 +9,7 @@ async def main():
  async with async_playwright() as playwright:
   browser=await playwright.chromium.launch(headless=True)
   failures=[]
+  screenshots=Path('artifacts/unified-browser');screenshots.mkdir(parents=True,exist_ok=True)
   for width,height in [(320,568),(390,844),(768,1024),(1440,900)]:
    ctx=await browser.new_context(viewport={'width':width,'height':height},reduced_motion='reduce')
    await ctx.add_init_script("""(()=>{
@@ -16,7 +19,7 @@ async def main():
    page=await ctx.new_page()
    errors=[]
    page.on('pageerror',lambda e:errors.append(str(e)))
-   page.on('console',lambda m:errors.append('console: '+m.text) if m.type=='error' else None)
+   page.on('response',lambda r:errors.append('HTTP '+str(r.status)+' '+r.url) if r.status>=400 and '/api/' not in r.url and not r.url.endswith('/favicon.ico') else None)
    await page.goto(BASE+'/sistema.html',wait_until='domcontentloaded')
    await page.locator('a[href="laboratorio-unificado.html"]').first.click()
    await page.wait_for_url('**/laboratorio-unificado.html')
@@ -39,6 +42,7 @@ async def main():
    assert await page.locator('header #haema-sound-toggle').count()==1,'Controle de som perdido'
    overflow=await page.evaluate('document.documentElement.scrollWidth-innerWidth')
    assert overflow<=3,f'Lab overflow {width}px: {overflow}'
+   await page.screenshot(path=str(screenshots/f'lab-{width}.png'))
    await page.goto(BASE+'/sistema.html')
    await page.locator('a[href="manual-unificado.html"]').first.click()
    await page.wait_for_url('**/manual-unificado.html')
@@ -46,6 +50,7 @@ async def main():
    assert 'capítulos encontrados' in await page.locator('#count').inner_text(),'Pesquisa do manual não iniciou'
    assert await page.locator('.chapter:visible').count()>0,'Busca do manual sem capítulos'
    assert await page.evaluate('window.__haemaAudioCreated')==1,'Trilha não preservada da página Sistema ao Manual'
+   await page.screenshot(path=str(screenshots/f'manual-{width}.png'))
    await page.goto(BASE+'/sistema.html')
    await page.locator('a[href="tecnicas-unificadas.html"]').first.click()
    await page.wait_for_url('**/tecnicas-unificadas.html')
@@ -55,6 +60,7 @@ async def main():
    assert await page.evaluate('window.__haemaAudioCreated')==1,'Trilha foi recriada ao entrar em Técnicas'
    overflow=await page.evaluate('document.documentElement.scrollWidth-innerWidth')
    assert overflow<=3,f'Técnicas overflow {width}px: {overflow}'
+   await page.screenshot(path=str(screenshots/f'tecnicas-{width}.png'))
    if errors:failures.extend([f'{width}px: {error}' for error in errors])
    await ctx.close()
   assert not failures,'\n'.join(failures)
