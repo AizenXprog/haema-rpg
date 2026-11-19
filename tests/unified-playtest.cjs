@@ -41,6 +41,8 @@ test('combate mantém escolha exclusiva Impacto/Virada',()=>{
 test('Metus anula estritamente menores, Latebra preserva marcas',()=>{
  assert.deepEqual(h.metus(4,6,6).rolls,[0,6]);
  assert.deepEqual(h.metus(6,6,6).rolls,[6,6]);
+ assert.deepEqual(h.metus(4,6,5).rolls,[0,6]);
+ assert.deepEqual(h.metus(5,6,5).rolls,[5,6]);
  const rolls=[2,2,4],marks=h.initialLatebra(6,()=>rolls.shift());
  assert.deepEqual(marks,[2,4]);
  const search=h.searchLatebra([2,4,5],[4,1]);
