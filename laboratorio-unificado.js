@@ -118,5 +118,144 @@ document.addEventListener('DOMContentLoaded',()=>{
   try{$('peResult').textContent='Custo de d'+die+' para d'+(die+2)+': '+h.progressCost(type,die)+' PE. Requer vivência e condição apropriada, não só pontos.';}
   catch{$('peResult').textContent='Nenhum aumento disponível nessa progressão. Guarda inicia em d6 e todos os dados param em d12.';}
  });
+
+ // Procedimentos médicos: testes exigem condição real, não curam ferimentos por magia.
+ let deathState={integrity:character.integrity??h.integrity(character.attributes[2]),
+  deathRisks:character.deathRisks||0,stable:character.stable!==false,firstDeathCheckDone:!!character.firstDeathCheckDone};
+ function syncInjury(){
+  $('woundCurrent').value=String(deathState.integrity);
+  $('woundMax').value=String(h.integrity(character.attributes[2]));
+  $('woundCount').value=String(character.wounds||0);
+  character.integrity=deathState.integrity;
+  character.deathRisks=deathState.deathRisks;
+  character.stable=deathState.stable;
+  character.firstDeathCheckDone=deathState.firstDeathCheckDone;
+  save();
+ }
+ function injuryMsg(text){$('woundResult').textContent=text+' · Integridade '+deathState.integrity+' · Ferimentos '+character.wounds+' · Riscos de Morte '+deathState.deathRisks;}
+ $('applyWound').addEventListener('click',()=>{
+  const current=Number($('woundCurrent').value),max=Number($('woundMax').value),
+   damage=Number($('woundDamage').value),wounds=Number($('woundCount').value);
+  if(!Number.isInteger(current)||!Number.isInteger(max)||!Number.isInteger(damage)||damage<0||
+    current<0||current>max||max!==h.integrity(character.attributes[2])||![0,1,2].includes(wounds)){
+   injuryMsg('Valores inválidos; Integridade máxima é calculada pelo Vigor da ficha');return;
+  }
+  const r=h.damageState({current,max,wounds,damage});
+  character.wounds=r.wounds;deathState.integrity=r.integrity;
+  if(r.incapacitated&&current>0){deathState.deathRisks=0;deathState.stable=false;deathState.firstDeathCheckDone=false;}
+  syncInjury();injuryMsg(r.newWound?'Ferimento registrado por esta fonte':'Dano registrado');
+ });
+ $('firstDeathCheck').addEventListener('click',()=>{
+  if(deathState.integrity>0){injuryMsg('Não está incapacitado');return;}
+  if(deathState.firstDeathCheckDone){injuryMsg('O teste inicial já ocorreu; não pode ser repetido');return;}
+  const vigor=character.attributes[2],skill=character.skills[h.SKILLS.indexOf('Sobrevivência')];
+  const a=h.roll(vigor),b=h.roll(skill),r=h.aid({withKit:true,attributeRoll:a,medicineRoll:b});
+  deathState=h.deathRisk(deathState,{kind:'turn',rollSuccess:r.success});
+  syncInjury();injuryMsg('Vigor d'+vigor+' ('+a+') + Sobrevivência d'+skill+' ('+b+') vs DT5: '+(r.success?'Estabilizou':'Falhou'));
+ });
+ $('dangerRound').addEventListener('click',()=>{
+  if(deathState.integrity>0||deathState.stable){injuryMsg('Nenhum risco gerado: condição estável ou consciente');return;}
+  if(!confirm('Há perigo físico efetivo e uma rodada completa se passou sem socorro?'))return;
+  deathState=h.deathRisk(deathState,{kind:'dangerRound',underThreat:true});
+  syncInjury();injuryMsg(deathState.dead?'Terceiro Risco: morte':'Mais um Risco de Morte');
+ });
+ $('stabilize').addEventListener('click',()=>{
+  if(deathState.integrity>0||deathState.dead){injuryMsg('Socorro de incapacitado inaplicável');return;}
+  const withKit=confirm('Há kit/materiais adequados? OK = kit DT5; Cancelar = improviso DT7 se plausível');
+  const a=h.roll(character.attributes[3]),b=h.roll(character.skills[h.SKILLS.indexOf('Medicina')]);
+  const result=h.aid({withKit,attributeRoll:a,medicineRoll:b});
+  if(result.success)deathState=h.deathRisk(deathState,{kind:'stabilize',careProvided:true});
+  syncInjury();injuryMsg('Socorro: '+a+'+'+b+' = '+result.total+' vs DT'+result.dt+' · '+(result.success?'estável':'sem estabilização'));
+ });
+ let usedRecovery=false;
+ $('safeRecover').addEventListener('click',()=>{
+  if(!confirm('Passaram 10 minutos de cuidados em segurança real?'))return;
+  const r=h.safeRecovery({current:deathState.integrity,max:h.integrity(character.attributes[2]),
+   safe:true,stable:deathState.stable,minutes:10,usedSceneReturn:usedRecovery});
+  if(r.recovered){deathState.integrity=r.integrity;usedRecovery=true;}
+  syncInjury();injuryMsg(r.recovered?'Voltou com 1 Integridade (limite da cena)':'Sem retorno automático: confira estabilidade, segurança e limite');
+ });
+ $('longRest').addEventListener('click',()=>{
+  if(!confirm('Ocorreu descanso longo de aproximadamente 8h em segurança?'))return;
+  const die=h.roll(6),r=h.longRest({current:deathState.integrity,max:h.integrity(character.attributes[2]),rollValue:die,safe:true});
+  deathState.integrity=r.integrity;syncInjury();injuryMsg('Descanso longo 1d6='+die+' (Ferimentos permanecem)');
+ });
+
+ // Invicta: oportunidades técnicas são limitadas pelo personagem e pela cena.
+ let sceneAwarded=false;
+ function invictaMsg(text){$('invictaResult').textContent='Invicta armazenada: '+character.invicta+'. '+text;}
+ $('awardInvicta').addEventListener('click',()=>{
+  const eligible=!!lastRoll?.invictaEligible;
+  if(!h.invictaCanGain({eligible,current:character.invicta,sceneAwarded})){
+   invictaMsg('Última rolagem não é elegível ou o limite da cena/personagem já foi alcançado.');return;
+  }
+  if(!confirm('O mestre confirmou risco real anunciado ANTES da rolagem e nenhuma outra Invicta recebida pelo grupo nesta cena?'))return;
+  character.invicta=1;sceneAwarded=true;save();invictaMsg('Invicta obtida pelo feito técnico (registrada localmente)');
+ });
+ $('newScene').addEventListener('click',()=>{
+  if(!confirm('Começou uma nova cena significativa para o grupo?'))return;
+  sceneAwarded=false;usedRecovery=false;invictaMsg('Limite de cena reiniciado. Invicta já armazenada permanece.');
+ });
+ $('spendInvicta').addEventListener('click',()=>{
+  const type=$('apexType').value,conditions=$('apexSituation').checked;
+  const r=h.apex(type,{stored:character.invicta,actionSucceeded:conditions,validAnchor:conditions,
+   adjacent:conditions,reactionAvailable:conditions,physicallyPossible:conditions,stableDiscovery:conditions,choiceOffered:conditions});
+  if(!r.allowed){invictaMsg('Gasto não autorizado: confirme Invicta armazenada e todas as condições reais exigidas.');return;}
+  if(!confirm('O mestre confirmou que esse Ápice ocorre após o sucesso pertinente e antes da resolução, e que as condições específicas são verdadeiras?'))return;
+  character.invicta=0;save();
+  invictaMsg('Ápice de '+type+' aplicado: '+r.explanation+(type==='golpe'?' · exemplo de dano bruto '+h.apexStrike(Number($('weapon').value)):''));
+ });
+
+ // Tanger requer a Descoberta completa, sem inventar um efeito padrão.
+ fill($('regency'),h.REGENCIES.map(x=>[x,x]));
+ fill($('regencyDie'),h.DICE.map(d=>[d,'d'+d]));
+ fill($('discoverySkill'),h.SKILLS.map((name,i)=>[i,name+' · d'+character.skills[i]]));
+ const getDiscovery=()=>({
+  regency:$('regency').value,state:$('discoveryState').value,scale:$('discoveryScale').value,
+  phenomenon:$('discoveryPhenomenon').value.trim(),anchor:$('discoveryAnchor').value.trim(),
+  competence:h.SKILLS[Number($('discoverySkill').value)],
+  effect:$('discoveryEffect').value.trim(),limits:$('discoveryLimits').value.trim(),
+  duration:$('discoveryDuration').value.trim(),signal:$('discoverySignal').value.trim(),
+  counterplay:$('discoveryCounterplay').value.trim(),risk:$('discoveryRisk').value.trim()
+ });
+ function regencyAccess(){
+  const name=$('regency').value;
+  if($('awakenedConfirmed').checked&&!character.awakened.includes(name)){
+   if(confirm('O mestre realmente confirmou o Despertar desta Regência?')){character.awakened.push(name);save();}
+   else return [];
+  }
+  return character.awakened;
+ }
+ $('tangerRoll').addEventListener('click',()=>{
+  const d=getDiscovery(),check=h.validateDiscovery(d);if(!check.valid){$('tangerResult').textContent='Registro incompleto: '+check.errors.join('; ');return;}
+  const awakened=regencyAccess(),regencyFace=Number($('regencyDie').value),
+   skillFace=character.skills[Number($('discoverySkill').value)];
+  const ra=h.roll(regencyFace),sa=h.roll(skillFace),essay=d.state==='suspeita';
+  const result=h.tanger({discovery:d,awakened,regencyFace,skillFace,regencyRoll:ra,skillRoll:sa,
+   preparations:$('preparedConfirmed').checked?2:0,canSustain:$('preparedConfirmed').checked,
+   anchored:$('anchorConfirmed').checked,possible:true,essay});
+  if(!result.allowed){$('tangerResult').textContent='Tanger não autorizado: '+result.reasons.join('; ');return;}
+  $('tangerResult').textContent='Regência d'+regencyFace+' ('+ra+') + '+d.competence+' d'+skillFace+' ('+sa+') = '+result.total+' vs DT'+result.dt+': '+
+   (result.success?'Sucesso matemático; mestre valida os efeitos já conhecidos.':'Falha: aplicar risco anteriormente anunciado.')+
+   (result.tentative?' Ensaio provisório válido apenas nesta circunstância.':'');
+  if(result.success){
+   character.visualSignatures[d.regency]=$('visualSignature').value.slice(0,240);
+   const exists=character.discoveries.some(x=>x.regency===d.regency&&x.phenomenon===d.phenomenon);
+   if(!exists)character.discoveries.push(d);
+   save();
+  }
+ });
+ $('stabilizeDiscovery').addEventListener('click',()=>{
+  const d=getDiscovery(),approved=$('studyConfirmed').checked;
+  const result=h.stabilizeDiscovery({discovery:d,pe:character.pe,studyConfirmed:approved});
+  if(!result.allowed){$('tangerResult').textContent='Não estabilizada: '+result.reason;return;}
+  if(!confirm('O mestre confirmou o estudo, a demonstração em jogo e o custo de '+result.cost+' PE?'))return;
+  character.pe=result.remainingPE;
+  character.discoveries=character.discoveries.filter(x=>!(x.regency===d.regency&&x.phenomenon===d.phenomenon));
+  character.discoveries.push(result.discovery);save();
+  $('tangerResult').textContent='Descoberta Estável registrada com custo '+result.cost+' PE (saldo '+character.pe+'). Continua limitada ao efeito descrito.';
+ });
+ syncInjury();invictaMsg('A elegibilidade do grupo precisa de confirmação do mestre.');
+
  render();
 });
