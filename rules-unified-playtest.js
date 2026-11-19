@@ -112,6 +112,58 @@
  }
  function apexStrike(weaponFace,{armor=0,parry=0}={}){return Math.max(0,assertDie(weaponFace)+2-armor-parry);}
  function invictaCanGain({eligible,current=0,sceneAwarded=false}){return eligible&&current===0&&!sceneAwarded;}
+
+ // Incapacitação: não inventa dano/risco ambiental sem ameaça efetiva anunciada.
+ function deathRisk(state,{kind='turn',rollSuccess=false,underThreat=false,careProvided=false}={}){
+  if(!state||!Number.isInteger(state.integrity)||!Number.isInteger(state.deathRisks)||state.deathRisks<0||state.deathRisks>3)
+   throw Error('Estado de risco inválido');
+  if(state.integrity>0)return {...state,incapacitated:false,dead:false};
+  let next={...state,incapacitated:true};
+  if(state.deathRisks===3)return {...next,dead:true};
+  if(kind==='turn'){
+   if(!state.firstDeathCheckDone){
+    next.firstDeathCheckDone=true;
+    if(rollSuccess)next.stable=true;
+    else{next.stable=false;next.deathRisks=Math.min(3,state.deathRisks+1);}
+   }
+  }else if(kind==='dangerRound'){
+   if(!state.stable&&underThreat&&!careProvided)next.deathRisks=Math.min(3,state.deathRisks+1);
+  }else if(kind==='effectiveDamage'){
+   if(!state.stable&&underThreat)next.deathRisks=Math.min(3,state.deathRisks+1);
+  }else if(kind==='stabilize'){
+   if(careProvided)next.stable=true;
+  }else throw Error('Evento de Risco desconhecido');
+  next.dead=next.deathRisks>=3;return next;
+ }
+ function aid({withKit=true,attributeRoll,medicineRoll}){
+  const dt=withKit?5:7;
+  if(!Number.isInteger(attributeRoll)||!Number.isInteger(medicineRoll)||attributeRoll<1||medicineRoll<1)
+   throw Error('Resultados de Medicina inválidos');
+  return {dt,total:attributeRoll+medicineRoll,success:attributeRoll+medicineRoll>=dt,masterValidatesImprovisation:!withKit};
+ }
+ function safeRecovery({current,max,stable=false,safe=false,minutes=0,usedSceneReturn=false}){
+  if(!Number.isInteger(current)||!Number.isInteger(max)||current<0||max<1)throw Error('Integridade inválida');
+  if(!safe||!stable||minutes<10||usedSceneReturn||current!==0)return {integrity:current,recovered:false};
+  return {integrity:1,recovered:true};
+ }
+ function longRest({current,max,rollValue,safe=false}){
+  if(!Number.isInteger(rollValue)||rollValue<1||rollValue>6)throw Error('1d6 inválido');
+  if(!Number.isInteger(current)||!Number.isInteger(max)||current<0||current>max)throw Error('Integridade inválida');
+  return {integrity:safe?Math.min(max,current+rollValue):current,recovered:safe?rollValue:0};
+ }
+ function apex(type,{stored=0,actionSucceeded=false,validAnchor=false,adjacent=false,reactionAvailable=false,physicallyPossible=false,stableDiscovery=false,choiceOffered=false}={}){
+  const eligible=stored===1&&actionSucceeded;
+  let allowed=false,explanation='';
+  switch(type){
+   case 'golpe':allowed=eligible&&physicallyPossible;explanation='Dano máximo da arma +2 e uma Virada física proporcional; Aparo e Abs continuam';break;
+   case 'protecao':allowed=stored===1&&adjacent&&reactionAvailable&&physicallyPossible;explanation='Intercepção de um único golpe alcançável ao aliado, gastando Reação e Invicta';break;
+   case 'superacao':allowed=eligible&&choiceOffered&&physicallyPossible;explanation='Uma consequência humana adicional dentre opções anunciadas antes do gasto';break;
+   case 'tanger':allowed=eligible&&validAnchor&&stableDiscovery;explanation='Uma rodada adicional sustentada ou âncora adjacente viável';break;
+   default:throw Error('Tipo de Ápice inválido');
+  }
+  return {allowed,spend:allowed?1:0,remaining:allowed?0:stored,explanation,requiresMasterValidation:true};
+ }
+
  function probability(aFace,bFace,dt,kind='success'){
   assertDie(aFace);assertDie(bFace);
   let wins=0;
@@ -124,5 +176,6 @@
  return Object.freeze({VERSION:'unified-playtest-20261119',STATUS:'experimental',
   DICE,ATTR,SKILL_GROUPS,SKILLS,HIGH,LATEBRA,COSTS,REGENCIES,grade,defense,integrity,
   createdCharacter,validateCreation,roll,test,exceptional,opposed,attack,damageState,metus,
-  initialLatebra,searchLatebra,progressCost,apexStrike,invictaCanGain,probability});
+  initialLatebra,searchLatebra,progressCost,apexStrike,invictaCanGain,probability,
+  deathRisk,aid,safeRecovery,longRest,apex});
 });
