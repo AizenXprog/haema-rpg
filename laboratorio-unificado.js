@@ -80,8 +80,8 @@ document.addEventListener('DOMContentLoaded',()=>{
  }
  $('rollTest').addEventListener('click',()=>{
   const d=choices(),a=h.roll(d.aFace),b=h.roll(d.bFace),dt=Number($('testDT').value),modifier=Number($('modifier').value);
-  const r=h.exceptional({aFace:d.aFace,bFace:d.bFace,aRoll:a,bRoll:b,dt,realDanger:$('danger').checked});
-  const total=r.natural+modifier,success=total>=dt;
+  const r=h.exceptional({aFace:d.aFace,bFace:d.bFace,aRoll:a,bRoll:b,dt,modifier,realDanger:$('danger').checked});
+  const total=r.total,success=r.success;
   lastRoll={...r,modifier,success};
   const chance=(100*h.probability(d.aFace,d.bFace,dt)).toFixed(1);
   $('rollResult').textContent=d.aName+' d'+d.aFace+' ('+a+') + '+d.bName+' d'+d.bFace+' ('+b+') '+(modifier>=0?'+':'')+modifier+' = '+total+' contra DT '+dt+'. '+(success?'Sucesso matemático.':'Falha matemática.')+
