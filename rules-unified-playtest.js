@@ -164,6 +164,53 @@
   return {allowed,spend:allowed?1:0,remaining:allowed?0:stored,explanation,requiresMasterValidation:true};
  }
 
+
+ const DISCOVERY_STATES=Object.freeze(['suspeita','provisoria','estavel']);
+ const SCALES=Object.freeze({ajuste:{dt:5,preparations:0,requireSustain:false},
+  intervencao:{dt:7,preparations:0,requireSustain:false},
+  maior:{dt:9,preparations:2,requireSustain:true}});
+ function validateDiscovery(discovery,{forManifestation=false}={}){
+  const errors=[];
+  if(!discovery||typeof discovery!=='object')return {valid:false,errors:['Descoberta ausente']};
+  if(!REGENCIES.includes(discovery.regency))errors.push('Regência desconhecida');
+  if(!DISCOVERY_STATES.includes(discovery.state))errors.push('Estado inválido');
+  if(!SCALES[discovery.scale])errors.push('Escala inválida');
+  for(const key of ['phenomenon','anchor','competence','effect','limits','duration','signal','counterplay','risk']){
+   if(typeof discovery[key]!=='string'||!discovery[key].trim())errors.push('Falta '+key);
+  }
+  if(forManifestation&&discovery.state==='suspeita')errors.push('Suspeita não é manifestação conhecida');
+  return {valid:errors.length===0,errors};
+ }
+ function tanger({discovery,awakened=[],regencyFace,skillFace,regencyRoll,skillRoll,
+  preparations=0,anchored=false,canSustain=false,possible=true,essay=false}){
+  const check=validateDiscovery(discovery,{forManifestation:!essay});
+  if(!check.valid)return {allowed:false,reasons:check.errors};
+  const errors=[];
+  if(!awakened.includes(discovery.regency))errors.push('Regência ainda não Desperta');
+  if(!anchored)errors.push('Âncora ausente');
+  if(!possible)errors.push('Fenômeno não é fisicamente viável');
+  const scale=SCALES[discovery.scale];
+  if(preparations<scale.preparations)errors.push('Preparações insuficientes');
+  if(scale.requireSustain&&!canSustain)errors.push('Sustentação indisponível');
+  if(!essay&&discovery.state!=='estavel'&&discovery.state!=='provisoria')errors.push('Descoberta não disponível');
+  if(errors.length)return {allowed:false,reasons:errors,dt:scale.dt+(essay?1:0)};
+  const dt=scale.dt+(essay?1:0);
+  const testResult=test({aFace:regencyFace,bFace:skillFace,aRoll:regencyRoll,bRoll:skillRoll,dt,possible});
+  return {allowed:true,dt,success:testResult.success,total:testResult.total,
+   tentative:essay&&testResult.success,requiresMasterValidation:true,
+   note:'O teste não cria efeito além do que foi previamente registrado para a Descoberta'};
+ }
+ function stabilizeDiscovery({discovery,pe,studyConfirmed=false,freeFirst=false}){
+  const check=validateDiscovery(discovery);
+  if(!check.valid)return {allowed:false,reason:check.errors.join('; ')};
+  if(discovery.state==='estavel')return {allowed:false,reason:'Já estável'};
+  if(discovery.state!=='provisoria')return {allowed:false,reason:'Exige descoberta provisória e estudo'};
+  if(!studyConfirmed)return {allowed:false,reason:'Estudo e demonstração precisam ser confirmados'};
+  const costs={ajuste:4,intervencao:8,maior:12},cost=freeFirst?0:costs[discovery.scale];
+  if(!Number.isInteger(pe)||pe<cost)return {allowed:false,reason:'PE insuficiente'};
+  return {allowed:true,cost,remainingPE:pe-cost,discovery:{...discovery,state:'estavel'}};
+ }
+
  function probability(aFace,bFace,dt,kind='success'){
   assertDie(aFace);assertDie(bFace);
   let wins=0;
@@ -177,5 +224,5 @@
   DICE,ATTR,SKILL_GROUPS,SKILLS,HIGH,LATEBRA,COSTS,REGENCIES,grade,defense,integrity,
   createdCharacter,validateCreation,roll,test,exceptional,opposed,attack,damageState,metus,
   initialLatebra,searchLatebra,progressCost,apexStrike,invictaCanGain,probability,
-  deathRisk,aid,safeRecovery,longRest,apex});
+  deathRisk,aid,safeRecovery,longRest,apex,DISCOVERY_STATES,SCALES,validateDiscovery,tanger,stabilizeDiscovery});
 });
