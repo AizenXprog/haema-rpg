@@ -4,9 +4,9 @@
  * Site e Sistema criado por Vitor Monte.
  */
 (function(root,factory){
- const api=factory(root?.HAEMAUnified,root?.HAEMAUnifiedTechniques);
- if(typeof module==='object'&&module.exports)module.exports=factory(require('./rules-unified-playtest.js'),require('./techniques-unified-playtest.js'));
- else if(root)root.HAEMATechniquesRules=api;
+ if(typeof module==='object'&&module.exports)
+  module.exports=factory(require('./rules-unified-playtest.js'),require('./techniques-unified-playtest.js'));
+ else if(root)root.HAEMATechniquesRules=factory(root.HAEMAUnified,root.HAEMAUnifiedTechniques);
 })(typeof window!=='undefined'?window:null,function(core,catalog){
  const KEYS=Object.freeze({
   1:[['Atletismo','Acrobacia','Luta','Pontaria','Armas Brancas','Furtividade']],
