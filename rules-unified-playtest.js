@@ -55,8 +55,8 @@
   const natural=aRoll+bRoll, total=natural+modifier,success=Boolean(possible)&&total>=dt;
   return {natural,total,dt,success,margin:natural-dt,possible:Boolean(possible),requiresMasterValidation:true};
  }
- function exceptional({aFace,bFace,aRoll,bRoll,dt,possible=true,realDanger=false,hasInvicta=false,sceneAwarded=false}){
-  const base=test({aFace,bFace,aRoll,bRoll,dt,possible});
+ function exceptional({aFace,bFace,aRoll,bRoll,dt,modifier=0,possible=true,realDanger=false,hasInvicta=false,sceneAwarded=false}){
+  const base=test({aFace,bFace,aRoll,bRoll,dt,modifier,possible});
   const high=aRoll>=HIGH[aFace]&&bRoll>=HIGH[bFace]&&(aRoll===aFace||bRoll===bFace);
   const critical=base.success&&base.margin>=3&&high;
   return {...base,high,critical,invictaEligible:critical&&base.margin>=6&&realDanger&&!hasInvicta&&!sceneAwarded};
