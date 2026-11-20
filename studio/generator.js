@@ -1,5 +1,5 @@
 // HÆMA 0.2 — geração procedural própria de cenas e cômodos (sem assets externos).
-import {starterScene,tileIndex} from './scene.js?v=6';
+import {starterScene,tileIndex} from './scene.js?v=7';
 import {planRoomFurniture} from './room-layout.js?v=1';
 import {planRoomTopology} from './room-topology.js?v=1';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));

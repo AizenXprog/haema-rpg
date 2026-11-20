@@ -60,7 +60,7 @@ fog.renderFog(proj,scene,{player:true,cell});
 ok(fogDoc.records[0].context.puts===1,'fog cache reused');
 scene.fog.fill(0);fog.invalidateFog(scene,1,1,2,2,48);
 fog.renderFog(proj,scene,{player:true,cell});
-ok(fogDoc.records[0].context.puts===2,'fog invalidated after reveal');
+ok(fogDoc.records[0].context.puts===1,'fully revealed fog skips expensive re-rasterization');
 ok(fog.sampleFogOpacity(scene,72,72,cell)===0,'newly revealed pixel becomes transparent');
 const sceneSource=fs.readFileSync('studio/scene.js','utf8');
 const editor=fs.readFileSync('studio/editor.js','utf8');
