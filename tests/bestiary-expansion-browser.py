@@ -70,6 +70,9 @@ async def main():
    assert await page.locator('.book-index-entry').count()==0,'Unverified legends are not in player reading catalogue'
    assert not errors,(w,errors)
    overflow=await page.evaluate('document.documentElement.scrollWidth-window.innerWidth')
+   if overflow>3:
+    offenders=await page.evaluate("""() => [...document.querySelectorAll('body *')].map(e=>({tag:e.tagName,cls:e.className?.baseVal||e.className,rect:e.getBoundingClientRect().right,scroll:e.scrollWidth})).filter(x=>x.rect>innerWidth+3).slice(0,15)""")
+    print('OVERFLOW DIAGNOSTIC',w,overflow,offenders,flush=True)
    assert overflow<=3,(w,overflow)
    await ctx.close()
   await browser.close()
