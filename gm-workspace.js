@@ -8,7 +8,8 @@ const KINDS=Object.freeze({
  criatura:'Criatura observada',local:'Local',pista:'Pista / revelação',
  encontro:'Encontro',cronologia:'Linha do tempo',recurso:'Recurso / preparação',nota:'Anotação'
 });
-const BOOK_STATES=Object.freeze({canon:'Consolidado',concept:'Conceito',historical:'Registro histórico',proposal:'Proposta'});
+const BOOK_STATES=Object.freeze({canon:'Consolidado',concept:'Conceito',historical:'Registro histórico',proposal:'Proposta',legend:'Relato sem comprovação física'});
+const FAUNA_THREAT=Object.freeze({hostile:'Fauna de risco',non_hostile:'Não hostil',undetermined:'Perigo não definido'});
 const SECTIONS=Object.freeze([
  ['overview','Visão geral','O que acompanhar'],
  ['journeys','Jornadas e sessões','Planejamento e andamento'],
@@ -58,7 +59,7 @@ export function renderMasterArchive({
   panel?.replaceChildren(el('p','portal-info','Arquivo restrito ao mestre responsável por esta campanha.'));
   return;
  }
- const state={items:[],fauna:[],faunaError:'',mode:'overview',query:'',worldFilter:'all',journeyFilter:'all',showArchived:false,form:null};
+ const state={items:[],fauna:[],faunaError:'',mode:'overview',query:'',worldFilter:'all',faunaClass:'all',faunaPage:0,journeyFilter:'all',showArchived:false,form:null};
  let request=0;
  const mount=el('div','master-workspace');
  panel.replaceChildren(mount);
@@ -113,7 +114,7 @@ export function renderMasterArchive({
  function searchBar(placeholder='Buscar neste arquivo…'){
   const c=el('div','master-search'),label=el('label','','Pesquisar'),input=el('input');
   input.type='search';input.placeholder=placeholder;input.value=state.query;label.append(input);
-  input.addEventListener('input',()=>{state.query=input.value.toLocaleLowerCase('pt-BR').trim();drawResults()});
+  input.addEventListener('input',()=>{state.query=input.value.toLocaleLowerCase('pt-BR').trim();state.faunaPage=0;drawResults()});
   c.append(label);return c;
  }
  function matches(obj){
@@ -166,7 +167,7 @@ export function renderMasterArchive({
   const counts=el('div','master-stats');
   counts.append(tile(active.filter(i=>i.kind==='jornada').length,'Jornadas','Arcos registrados'),
     tile(active.filter(i=>i.kind==='sessao').length,'Sessões','Memória das mesas'),
-    tile(state.fauna.length||'—','Criaturas','Bestiário referenciado'),
+    tile(state.fauna.length||'—','Entradas do Bestiário','Espécies e relatos separados'),
     tile(pending(),'Pendências','Rascunhos internos'));
   host.append(counts);
   const box=el('div','master-dashboard-grid');
@@ -198,8 +199,10 @@ export function renderMasterArchive({
   host.append(sectionHead('Mundo, encontros e criaturas','O Bestiário é a referência; as notas registram como cada espécie apareceu na sua campanha.','criatura'));
   const bar=el('div','master-toolbar');
   const filter=createFieldSelect('Organizar por',[['all','Tudo'],['bestiary','Bestiário'],['criatura','Observações de criaturas'],['npc','NPCs'],['local','Locais'],['pista','Pistas'],['encontro','Encontros']],state.worldFilter);
-  filter.input.addEventListener('change',()=>{state.worldFilter=filter.input.value;drawResults()});
-  bar.append(filter.root,searchBar('Buscar espécie, NPC, local, pista…'));
+  filter.input.addEventListener('change',()=>{state.worldFilter=filter.input.value;state.faunaPage=0;drawResults()});
+  const faunaClass=createFieldSelect('Fauna',[['all','Todas'],['hostile','Risco de exploração'],['non_hostile','Não hostil'],['undetermined','Perigo indefinido'],['legend','Relatos não comprovados']],state.faunaClass);
+  faunaClass.input.addEventListener('change',()=>{state.faunaClass=faunaClass.input.value;state.faunaPage=0;drawResults()});
+  bar.append(filter.root,faunaClass.root,searchBar('Buscar espécie, região, código, NPC…'));
   host.append(bar);
   const list=el('div','master-results');list.dataset.results='yes';host.append(list);
   drawListFor(host,'world');
@@ -231,7 +234,10 @@ export function renderMasterArchive({
   }
   body.append(el('p','master-dossier-state',BOOK_STATES[data.state]||'Registro'),
    el('h2','',data.title),el('p','master-dossier-subtitle',data.subtitle));
-  if(data.state!=='canon')body.append(el('p','master-dossier-warning','Texto em estudo. A publicação não significa aprovação de cânone.'));
+  if(data.state==='legend')body.append(el('p','master-dossier-warning','Relato canônico como tradição, mas a existência física não está comprovada. Este registro fica reservado ao mestre.'));
+  else if(data.state!=='canon')body.append(el('p','master-dossier-warning','Texto em estudo. A publicação não significa aprovação de cânone.'));
+  if(data.existence==='historical_survival_unknown')body.append(el('p','master-dossier-warning','Sua existência histórica é reconhecida; a sobrevivência atual permanece desconhecida.'));
+  if(data.threat)body.append(el('p','master-dossier-classification',(FAUNA_THREAT[data.threat]||'Perigo indefinido')+(data.region?' · '+data.region:'')));
   for(let i=0;i<data.paragraphs.length;i++){
    const para=el('p','master-dossier-paragraph',data.paragraphs[i]);
    body.append(para);
@@ -247,6 +253,9 @@ export function renderMasterArchive({
   const top=el('div','master-animal-head');
   top.append(el('strong','',animal.title),el('span','',BOOK_STATES[animal.state]||'Registro'));
   card.append(top,el('p','',animal.subtitle||''));
+  const facets=[FAUNA_THREAT[animal.threat],animal.region&&animal.region.length<54?animal.region:null].filter(Boolean);
+  if(facets.length)card.append(el('small','master-animal-facets',facets.join(' · ')));
+  if(animal.state==='legend')card.append(el('p','master-animal-uncertain','Relato preservado · não comprova a existência de uma espécie.'));
   const row=el('div','master-record-actions');
   row.append(btn('Ler ficha completa',()=>void readAnimal(animal),'master-button'));
   row.append(btn('+ Anotar na campanha',()=>edit(null,'criatura',animal.id)));
@@ -265,14 +274,33 @@ export function renderMasterArchive({
   ));
   if(group==='world'&&['all','bestiary'].includes(state.worldFilter)){
    const intro=el('div','master-archive-label');
-   intro.append(el('h4','','Bestiário · '+state.fauna.length+' espécies'),el('p','','Consultar não duplica textos. Anote apenas o que importa para esta mesa.'));
+   const legends=state.fauna.filter(a=>a.state==='legend').length;
+   intro.append(el('h4','','Bestiário · '+state.fauna.length+' registros'),
+    el('p','','Espécies documentadas e '+legends+' relatos sem comprovação física. Ameaça, descoberta e estado canônico são classificações independentes.'));
    results.append(intro);
    if(state.faunaError)results.append(el('p','master-empty',state.faunaError));
-   const matched=state.fauna.filter(a=>!state.query||[a.title,a.subtitle,a.state].join(' ').toLocaleLowerCase('pt-BR').includes(state.query));
+   const matched=state.fauna.filter(a=>{
+    if(state.faunaClass==='legend'&&a.state!=='legend')return false;
+    if(state.faunaClass!=='all'&&state.faunaClass!=='legend'&&a.threat!==state.faunaClass)return false;
+    return !state.query||[a.title,a.subtitle,a.state,a.region,a.source_code,FAUNA_THREAT[a.threat]].join(' ').toLocaleLowerCase('pt-BR').includes(state.query);
+   });
+   const perPage=18;
+   const maxPage=Math.max(0,Math.ceil(matched.length/perPage)-1);
+   state.faunaPage=Math.min(state.faunaPage,maxPage);
    const gallery=el('div','master-animal-grid');
-   matched.forEach(a=>gallery.append(animalCard(a)));
+   matched.slice(state.faunaPage*perPage,(state.faunaPage+1)*perPage).forEach(a=>gallery.append(animalCard(a)));
    if(!matched.length)gallery.append(el('p','master-empty','Nenhuma criatura corresponde à busca ou à sua permissão de acesso.'));
    results.append(gallery);
+   if(matched.length>perPage){
+    const pager=el('nav','master-fauna-pager');
+    pager.setAttribute('aria-label','Páginas do Bestiário do mestre');
+    const previous=btn('← Anteriores',()=>{state.faunaPage=Math.max(0,state.faunaPage-1);drawResults()});
+    const next=btn('Próximos →',()=>{state.faunaPage=Math.min(maxPage,state.faunaPage+1);drawResults()});
+    previous.disabled=state.faunaPage===0;
+    next.disabled=state.faunaPage===maxPage;
+    pager.append(previous,el('span','',String(state.faunaPage+1)+' / '+String(maxPage+1)+' · '+matched.length+' resultados'),next);
+    results.append(pager);
+   }
   }
   const h=el('div','master-archive-label');
   h.append(el('h4','',group==='world'?'Anotações da campanha':group==='journey'?'Diário de jornadas':'Anotações técnicas'));
