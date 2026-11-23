@@ -3,7 +3,7 @@ function initHAEMAUnifiedManual(){
  const root=document.querySelector('.unified-manual');if(!root||root.dataset.haemaInit==='yes')return;
  root.dataset.haemaInit='yes';
 
-const input=document.getElementById('filter'),items=[...document.querySelectorAll('.chapter')];
+const input=document.getElementById('filter'),items=[...document.querySelectorAll('.haema-unified-chapter')];
 function filter(){
  const q=input.value.toLocaleLowerCase('pt-BR').trim();let count=0;
  for(const d of items){
