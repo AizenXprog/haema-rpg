@@ -102,3 +102,14 @@
 .master-dossier-loading{font:500 14px/1.5 "DM Sans",sans-serif;color:#694647}
 @media(max-width:600px){.master-dialog{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}.master-dialog-head{padding:11px 14px}.master-dossier{padding:22px 20px}.master-dossier-paragraph{font-size:15px;line-height:1.78}}
 @media(prefers-reduced-motion:reduce){.master-dialog::backdrop{backdrop-filter:none}}
+
+
+/* Expanded fauna: status and pagination are not extra navigation tabs. */
+.master-animal-facets{display:block;margin:8px 0;color:#dfbd8b;font:600 10px/1.55 "DM Sans",sans-serif;letter-spacing:.025em}
+.master-animal-uncertain{border-left:3px solid #b28a64;margin:11px 0!important;padding:8px 11px;background:rgba(182,126,92,.1);color:#e2c7b2!important;font:500 11px/1.45 "DM Sans",sans-serif}
+.master-fauna-pager{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:12px;margin:20px 0 28px;padding:18px 12px;border:1px solid var(--master-edge);border-radius:10px}
+.master-fauna-pager span{font:600 12px/1.4 "DM Sans",sans-serif;color:var(--master-gold);min-width:112px;text-align:center}
+.master-fauna-pager button:disabled{opacity:.4;cursor:default;transform:none}
+.master-dossier-classification{font:600 12px/1.6 "DM Sans",system-ui,sans-serif;color:#65483b;letter-spacing:.025em;margin:15px 0}
+.master-toolbar>.master-field{max-width:280px}
+@media(max-width:600px){.master-fauna-pager{gap:8px;padding:12px 8px}.master-fauna-pager .master-button{font-size:11px;padding:9px 10px}}
