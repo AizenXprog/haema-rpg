@@ -52,6 +52,7 @@ async def main():
    assert await page.locator('.master-dossier-paragraph').count()==5,'Full five-paragraph dossier required'
    assert await page.locator('.master-dossier-warning').count()==1,'Proposal must not be shown as canon'
    await page.get_by_role('button',name='Fechar').first.click()
+   await page.locator('.master-dialog').wait_for(state='detached',timeout=5000)
    assert await page.locator('.master-dialog').count()==0,'No private DOM should remain after closing'
    await page.screenshot(path=str(ART/f'master-bestiary-{width}.png'))
    await page.get_by_role('button',name='Anotar na campanha').first.click()
