@@ -20,7 +20,7 @@ on:
       - 'tests/gm-archive-browser.py'
       - '.github/workflows/gm-archive.yml'
 concurrency:
-  group: haema-master-archive-${{ github.ref }}
+  group: haema-bestiary-expansion-v2-${{ github.ref }}
   cancel-in-progress: true
 permissions:
   contents: read
