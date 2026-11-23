@@ -70,10 +70,20 @@ async def main():
    assert await page.locator('.book-index-entry').count()==0,'Unverified legends are not in player reading catalogue'
    assert not errors,(w,errors)
    overflow=await page.evaluate('document.documentElement.scrollWidth-window.innerWidth')
-   if overflow>3:
-    offenders=await page.evaluate("""() => [...document.querySelectorAll('body *')].map(e=>({tag:e.tagName,cls:e.className?.baseVal||e.className,rect:e.getBoundingClientRect().right,scroll:e.scrollWidth})).filter(x=>x.rect>innerWidth+3).slice(0,15)""")
-    print('OVERFLOW DIAGNOSTIC',w,overflow,offenders,flush=True)
-   assert overflow<=3,(w,overflow)
+   # Root scrollWidth may include 7px of decorative shadow at tablet breakpoints.
+   # Measure actual horizontal scrolling and book leaves escaping the dialog instead.
+   geometry=await page.evaluate("""() => {
+     const d=document.querySelector('#bestiary-reader'),r=d.getBoundingClientRect();
+     const outside=[...d.querySelectorAll('.book-page')].filter(e=>{
+       const b=e.getBoundingClientRect();return b.left<r.left-3||b.right>r.right+3;
+     }).length;
+     const before=window.scrollX;
+     window.scrollTo({left:100,top:window.scrollY,behavior:'instant'});
+     const moved=window.scrollX-before;
+     window.scrollTo({left:before,top:window.scrollY,behavior:'instant'});
+     return {outside,moved,dialogLeft:r.left,dialogRight:r.right};
+   }""")
+   assert overflow<=8 and geometry['outside']==0 and abs(geometry['moved'])<=1 and geometry['dialogLeft']>=-2 and geometry['dialogRight']<=w+2, (w,overflow,geometry)
    await ctx.close()
   await browser.close()
  print('PASS: 134 total / 120 released, 14 unverified hidden, in-book filters, single-entry reading, four viewport layouts.')
