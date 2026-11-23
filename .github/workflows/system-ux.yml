@@ -18,7 +18,7 @@ on:
       - 'tests/system-ux-browser.py'
       - '.github/workflows/system-ux.yml'
 concurrency:
-  group: system-ux-\${{ github.ref }}
+  group: haema-system-ux
   cancel-in-progress: true
 permissions:
   contents: read
