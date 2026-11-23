@@ -14,7 +14,8 @@ async function init(){
    const a=node('a');a.href=href;const body=node('div');body.append(node('h3','',title),node('p','',description));a.append(body,node('b','','↗'));list.append(a);
   }
   if(info.admin)link('administracao.html','Central de Acessos','Visibilidade por pessoa e por livro, aprovação de contas, campanhas e histórico de alterações.');
-  if(info.areas.includes('portal'))link('campanha.html','Campanhas e registros','Materiais, recursos, fichas online, conversas e registros disponíveis para sua conta.');
+  if(info.areas.includes('portal'))link('campanha.html?secao=characters','Fichas e mesa','Seus personagens, materiais liberados e a conversa da campanha.');
+  if(info.admin)link('mestre.html','Arquivo Técnico do Mestre','Jornadas, sessões, NPCs, Bestiário, pistas e anotações privadas.');
   if(info.areas.includes('library'))link('biblioteca.html','Biblioteca','Abra o acervo liberado para você.');
   if(info.admin||info.areas.includes('studio'))link('estudio.html','HÆMA Estúdio · privado','Mapmaker e tela de projeção para mesas físicas. Acesso autorizado individualmente.');
   link('sistema.html','Sistema e ferramentas','Manual Vivo, simuladores, fichas e dados.');
