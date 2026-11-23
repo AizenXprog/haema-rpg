@@ -165,7 +165,8 @@ async function openBook(permissions) {
       preface.append(
         node('p','','Estas folhas não foram escritas para encerrar a história das criaturas, mas para impedir que aquilo que delas conheço se perca. Cada encontro, relato e vestígio me oferece somente uma parcela do mundo.'),
         node('p','','Anoto o que posso sustentar, separo o que vi do que ouvi e deixo em branco o que ainda não compreendo. Não há vergonha na dúvida; há, porém, grande perigo em tomar a imaginação por testemunho.'),
-        node('p','','Não contes os nomes aqui reunidos como se fossem todos os habitantes destas terras. A natureza há de guardar muito mais do que estas páginas conseguem alcançar. E eu ainda tenho muito a descobrir.')
+        node('p','','Não contes os nomes aqui reunidos como se fossem todos os habitantes destas terras. A natureza há de guardar muito mais do que estas páginas conseguem alcançar. E eu ainda tenho muito a descobrir.'),
+        node('p','book-editorial-note','Nota editorial: os registros classificados como históricos, conceitos ou propostas permanecem em estudo. Sua publicação para leitura não os transforma em cânone aprovado.')
       );
       const leaves=[node('span','folio-label','BESTIÁRIO · PRIMEIRAS FOLHAS'),
         node('h2','','A quem abrir este caderno'),preface];
@@ -189,6 +190,8 @@ async function openBook(permissions) {
           const li = node('li');
           const display = permissions.admin && !item.released ? item.title+' · NÃO PUBLICADO' : item.title;
           const pick = button(display,() => loadEntry(item.id),'book-index-entry');
+          const states={canon:'Consolidado',concept:'Conceito em estudo',historical:'Registro histórico',proposal:'Proposta em estudo'};
+          pick.append(node('span','book-index-state',' · '+(states[item.state]||'Registro')));
           li.append(pick);list.append(li);
         }
         return [node('span','folio-label','BESTIÁRIO · ÍNDICE'),node('h2','',i===0?'Criaturas que pude conhecer':'Outras folhas do caderno'),list];
@@ -221,6 +224,7 @@ async function openBook(permissions) {
         const parts = [node('span','folio-label',i===0?'DO CADERNO DE CRIATURAS':'DAS FOLHAS QUE SE SEGUEM')];
         if (i===0) {
           parts.push(node('h2','creature-title',item.title),node('p','creature-subtitle',item.subtitle));
+          if(item.state!=='canon')parts.push(node('p','book-editorial-note','Registro editorial em estudo · publicação não equivale a aprovação canônica.'));
         } else parts.push(node('h3','running-title',item.title));
         const content=node('div','book-copy');
         // Plain text from authorized source. No remote HTML or inferred lore.
