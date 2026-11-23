@@ -80,6 +80,17 @@ async def main():
    assert overflow<=3,f'{width}px horizontal overflow: {overflow}'
    assert not errors,f'{width}px JS errors: {errors}'
    await ctx.close()
+  # A campaign GM who is NOT a global administrator also gets this Portal entry.
+  ctx=await setup(browser,'gm',390,844)
+  page=await ctx.new_page()
+  await page.goto(BASE+'/portal.html',wait_until='domcontentloaded')
+  gm_link=page.locator('#haema-account-hub a[href="campanha.html"]')
+  await gm_link.wait_for(timeout=15000)
+  await gm_link.click()
+  await page.wait_for_url('**/campanha.html')
+  await page.get_by_role('heading',name='Seu mundo, documentado.').wait_for(timeout=15000)
+  assert await page.locator('.master-workspace').count()==1, 'Non-admin campaign master must have full GM archive'
+  await ctx.close()
   # Player cannot get into the GM view, even if the static route exists.
   ctx=await setup(browser,'player',390,844)
   page=await ctx.new_page()
