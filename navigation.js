@@ -3,13 +3,13 @@
  * main content changes; old pages remain directly accessible to browsers/crawlers.
  */
 (()=>{
- const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html','campanha.html','mestre.html','manual-unificado.html','laboratorio-unificado.html','tecnicas-unificadas.html']);
+ const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html','campanha.html','fichas.html','mestre.html','manual-unificado.html','laboratorio-unificado.html','tecnicas-unificadas.html']);
  const viewScripts=Object.freeze({
   'sistema.html':['rules-unified-playtest.js','sistema-didatico.js'],
   'manual-unificado.html':['manual-unificado.js'],
   'laboratorio-unificado.html':['rules-unified-playtest.js','laboratorio-unificado.js'],
   'tecnicas-unificadas.html':['techniques-unified-playtest.js','tecnicas-unificadas.js'],
-  'campanha.html':['rules-unified-playtest.js','techniques-unified-playtest.js','techniques-unified-logic.js']
+  'fichas.html':['rules-unified-playtest.js','techniques-unified-playtest.js','techniques-unified-logic.js']
  });
  const scriptPromises=new Map();
  async function ensureViewScripts(key){
@@ -61,7 +61,7 @@
    else link.removeAttribute('aria-current');
   });
   const account=document.querySelector('.top-action');
-  if(account){if(['portal.html','administracao.html','campanha.html','mestre.html'].includes(key))account.setAttribute('aria-current','page');else account.removeAttribute('aria-current');}
+  if(account){if(['portal.html','administracao.html','campanha.html','fichas.html','mestre.html'].includes(key))account.setAttribute('aria-current','page');else account.removeAttribute('aria-current');}
   const menu=document.getElementById('menu-toggle');
   const nav=document.getElementById('main-nav');
   if(menu)menu.setAttribute('aria-expanded','false');
