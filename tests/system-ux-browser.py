@@ -56,7 +56,11 @@ async def main():
    }""")
    assert formatted['strong']==2 and formatted['em']==1,formatted
    assert '**' not in formatted['text'],formatted
-   await page.locator('header .nav a[href="sistema.html"]').first.click()
+   system_link=page.locator('header .nav a[href="sistema.html"]').first
+   if not await system_link.is_visible():
+    await page.locator('#menu-toggle').click()
+    assert await system_link.is_visible(),'Mobile menu did not reveal Sistema'
+   await system_link.click()
    await page.wait_for_url('**/sistema.html')
    await page.locator('#haema-system-roll').click()
    assert 'DT' in await page.locator('#haema-system-result').inner_text(),'System was not reinitialized on SPA return'
