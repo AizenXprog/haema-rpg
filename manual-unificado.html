@@ -10,18 +10,18 @@ main{max-width:1200px;margin:auto;padding:32px 20px 80px}h1,h2,h3,h4{font-family
 main.unified-manual nav{position:sticky;top:15px;max-height:90vh;overflow:auto;border:1px solid #66433e;background:#1d1519;padding:16px;border-radius:12px}
 main.unified-manual nav a{display:block;padding:5px 9px;text-decoration:none;font-size:.85rem;border-bottom:1px solid #483039}
 main.unified-manual nav a:hover{text-decoration:underline}input{box-sizing:border-box;width:100%;padding:12px;background:#120e12;border:1px solid #936a5a;border-radius:6px;color:white;font:inherit}
-.chapter{margin:0 0 12px;border:1px solid #62413d;border-radius:13px;background:#21171c;overflow:hidden;scroll-margin-top:15px}
-.chapter summary{cursor:pointer;display:flex;align-items:baseline;gap:12px;padding:17px 20px;font-weight:700;font-size:1.13rem;font-family:Georgia,serif}
-.chapter summary span{color:#dfbd88;font:700 .78rem system-ui,sans-serif;min-width:2em}
-.chapter summary:hover{background:#35232a}.chapter-body{padding:6px 22px 26px;overflow-wrap:anywhere}
-.chapter-body p{margin:12px 0}.chapter-body h2,.chapter-body h3{margin-top:28px;color:#f1cfaf}
+.haema-unified-chapter{margin:0 0 12px;border:1px solid #62413d;border-radius:13px;background:#21171c;overflow:hidden;scroll-margin-top:15px}
+.haema-unified-chapter summary{cursor:pointer;display:flex;align-items:baseline;gap:12px;padding:17px 20px;font-weight:700;font-size:1.13rem;font-family:Georgia,serif}
+.haema-unified-chapter summary span{color:#dfbd88;font:700 .78rem system-ui,sans-serif;min-width:2em}
+.haema-unified-chapter summary:hover{background:#35232a}.haema-unified-chapter .chapter-body{padding:6px 22px 26px;overflow-wrap:anywhere}
+.haema-unified-chapter .chapter-body p{margin:12px 0}.haema-unified-chapter .chapter-body h2,.haema-unified-chapter .chapter-body h3{margin-top:28px;color:#f1cfaf}
 .warning{border-left:4px solid #dab178;padding:15px 20px;background:#33221e;margin:24px 0}
 blockquote{margin:18px 0;padding:8px 18px;background:#302028;border-left:3px solid #ba8058}
 .table-scroll{overflow-x:auto}table{border-collapse:collapse;font-size:.88rem;min-width:420px;width:100%}
 td{padding:8px 10px;border:1px solid #694743}tr:first-child{background:#3b292c;font-weight:700}
 code{background:#120c11;border-radius:4px;padding:2px 5px;color:#f1c7a2}strong{color:#ffe2c4}
 #empty{display:none}.muted{color:#bba59b}
-@media(max-width:850px){.layout{grid-template-columns:1fr}main.unified-manual .layout nav{position:static;max-height:none}main.unified-manual{padding:20px 12px}.chapter-body{padding:5px 14px 25px}}
+@media(max-width:850px){.layout{grid-template-columns:1fr}main.unified-manual .layout nav{position:static;max-height:none}main.unified-manual{padding:20px 12px}.haema-unified-chapter .chapter-body{padding:5px 14px 25px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 main.unified-manual .layout nav label{display:block;line-height:1.4;margin-bottom:12px;color:#e6c8b7}main.unified-manual .layout nav input{display:block;margin:0 0 12px}
@@ -35,11 +35,128 @@ main.unified-manual .layout nav label{display:block;line-height:1.4;margin-botto
 .manual-toc-group[open]>summary:before{content:"−"}
 .manual-toc-group>summary small{display:block;margin:6px 0 0 21px;color:#cbb0a3;font:400 .76rem system-ui,sans-serif}
 .manual-toc-links a{font-size:.79rem;line-height:1.5;overflow-wrap:anywhere;padding:8px 7px!important}
-main.unified-manual .chapter{scroll-margin-top:18px}
-main.unified-manual .chapter-body{line-height:1.76}
+main.unified-manual .haema-unified-chapter{scroll-margin-top:18px}
+main.unified-manual .haema-unified-chapter .chapter-body{line-height:1.76}
 @media(max-width:850px){main.unified-manual .manual-guide-nav{max-height:none!important}main.unified-manual .manual-guide-nav .manual-toc-group:not([open]){max-height:none}}
 
 main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-group[hidden]{display:none!important}
+
+/* Isolated Manual Unificado components: never inherit .chapter rules from style.css.
+   The site's landing-page .chapter is a grid with a light hover, incompatible with <details>. */
+main.unified-manual #chapters{min-width:0}
+main.unified-manual details.haema-unified-chapter{
+  display:block;
+  grid-template-columns:none;
+  min-height:0;
+  margin:0 0 14px;
+  padding:0;
+  border:1px solid #67454a;
+  border-radius:13px;
+  background:#23181f;
+  color:#e9ded5;
+  overflow:hidden;
+  transition:border-color .2s ease,box-shadow .2s ease;
+}
+main.unified-manual details.haema-unified-chapter:hover,
+main.unified-manual details.haema-unified-chapter:focus-within{
+  padding:0;
+  background:#23181f;
+  border-color:#a67869;
+  box-shadow:0 0 0 1px rgba(192,133,111,.08);
+}
+main.unified-manual details.haema-unified-chapter>summary{
+  display:flex;
+  align-items:flex-start;
+  gap:13px;
+  min-width:0;
+  min-height:0;
+  padding:18px 23px;
+  margin:0;
+  border:0;
+  border-radius:0;
+  color:#f3e6d8;
+  background:#2a1c24;
+  cursor:pointer;
+  list-style:none;
+  font:600 clamp(1.15rem,2vw,1.42rem)/1.38 Georgia,serif;
+  overflow-wrap:anywhere;
+  transition:background-color .22s ease,color .22s ease;
+}
+main.unified-manual details.haema-unified-chapter>summary::-webkit-details-marker{display:none}
+main.unified-manual details.haema-unified-chapter>summary::marker{content:""}
+main.unified-manual details.haema-unified-chapter>summary:hover,
+main.unified-manual details.haema-unified-chapter>summary:focus-visible{
+  background:#38252e;
+  color:#fff1e5;
+}
+main.unified-manual details.haema-unified-chapter[open]>summary{
+  border-bottom:1px solid #704c4b;
+}
+main.unified-manual details.haema-unified-chapter>summary span{
+  flex:0 0 auto;
+  min-width:2.2em;
+  padding-top:.35em;
+  color:#eac68f;
+  font:700 .78rem/1.25 system-ui,sans-serif;
+}
+main.unified-manual details.haema-unified-chapter>.chapter-body{
+  display:block;
+  width:auto;
+  min-width:0;
+  padding:23px clamp(17px,3vw,31px) 31px;
+  margin:0;
+  background:#23181f;
+  color:#e8dad0;
+  font:400 1rem/1.75 system-ui,sans-serif;
+  overflow-wrap:anywhere;
+}
+main.unified-manual details.haema-unified-chapter .chapter-body p,
+main.unified-manual details.haema-unified-chapter .chapter-body li,
+main.unified-manual details.haema-unified-chapter .chapter-body td{
+  color:#e8dad0;
+  font:inherit;
+}
+main.unified-manual details.haema-unified-chapter .chapter-body p{margin:12px 0 17px}
+main.unified-manual details.haema-unified-chapter .chapter-body h2,
+main.unified-manual details.haema-unified-chapter .chapter-body h3,
+main.unified-manual details.haema-unified-chapter .chapter-body h4{
+  color:#f5d4af;
+  font-family:Georgia,serif;
+  line-height:1.25;
+  letter-spacing:0;
+  overflow-wrap:anywhere;
+}
+main.unified-manual details.haema-unified-chapter .chapter-body h2{
+  font-size:clamp(1.45rem,2.4vw,2rem);
+  margin:6px 0 22px;
+}
+main.unified-manual details.haema-unified-chapter .chapter-body h3{
+  font-size:clamp(1.2rem,2vw,1.55rem);
+  margin:27px 0 13px;
+}
+main.unified-manual details.haema-unified-chapter .chapter-body strong{color:#f7e3ca}
+main.unified-manual details.haema-unified-chapter .chapter-body a{color:#f3ca97}
+main.unified-manual details.haema-unified-chapter .chapter-body code{
+  color:#f0c59f;background:#150e14;border-radius:4px;padding:2px 5px;
+}
+main.unified-manual details.haema-unified-chapter .chapter-body blockquote{
+  margin:22px 0;padding:16px 19px;background:#34232a;border-left:3px solid #cf9c70;
+  color:#f4e4d8;
+}
+main.unified-manual details.haema-unified-chapter .chapter-body blockquote p{color:inherit}
+main.unified-manual details.haema-unified-chapter .chapter-body table{display:table;max-width:100%}
+main.unified-manual details.haema-unified-chapter .chapter-body tr:hover{background:#3a2830}
+main.unified-manual details.haema-unified-chapter .chapter-body th,
+main.unified-manual details.haema-unified-chapter .chapter-body td{border-color:#715151}
+@media(max-width:650px){
+  main.unified-manual details.haema-unified-chapter>summary{padding:16px 15px;gap:9px}
+  main.unified-manual details.haema-unified-chapter>.chapter-body{padding:19px 15px 24px}
+}
+@media(prefers-reduced-motion:reduce){
+  main.unified-manual details.haema-unified-chapter,
+  main.unified-manual details.haema-unified-chapter>summary{transition:none}
+}
+
 </style><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="foundation.css?v=1"><link rel="stylesheet" href="cinema.css?v=1">
 <script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script>
 <script defer src="rules-0.1.js?v=0.1"></script><script defer src="haema01.js?v=0.4"></script>
@@ -82,7 +199,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <a href="#cap-21">20. Revisão final: o que está resolvido, o que precisa ser aprovado</a></div></details>
 <details class="manual-toc-group" ><summary>Sobre esta edição<small>Introdução e autoria</small></summary><div class="manual-toc-links"><a href="#cap-0">HÆMA — MANUAL UNIFICADO DO CRIADOR</a></div></details>
  </nav>
-<section id="chapters"><p id="empty">Nenhum capítulo corresponde à busca.</p><details class="chapter" id="cap-0" open><summary><span>00</span>HÆMA — MANUAL UNIFICADO DO CRIADOR</summary><div class="chapter-body"><h2>Edição integral para jogar, ensinar e aprovar • Base 0.9.1 revisada em 19/11/2026</h2>
+<section id="chapters"><p id="empty">Nenhum capítulo corresponde à busca.</p><details class="haema-unified-chapter" id="cap-0"><summary><span>00</span>Sobre esta edição e autoria</summary><div class="chapter-body"><h2>Edição integral para jogar, ensinar e aprovar • Base 0.9.1 revisada em 19/11/2026</h2>
 <p><strong>Data:</strong> 19/11/2026</p>
 <p><strong>Autoria e direção criativa:</strong> Vitor Monte</p>
 <p><strong>Estado:</strong> <strong>CANDIDATO INTEGRADO, OPERACIONAL PARA PLAYTEST — NÃO OFICIAL; NÃO PUBLICAR COMO REGRA APROVADA.</strong> Todas as decisões numéricas abaixo são uma <strong>proposta única escolhida para o teste</strong>, não múltiplas variantes concorrentes.</p>
@@ -90,7 +207,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <p><strong>Escopo:</strong> regras internas; não altera o cânone, o Sistema Mestre, dados existentes, site, fichas publicadas ou repositório. A paleta de Regências é exclusivamente uma proposta de direção de arte.</p>
 <p><strong>Fonte mecânica anterior:</strong> <code>HAEMA_MANUAL_INTEGRADO_0_9_RC.md</code>, preservado integralmente na Biblioteca. Esta edição é <strong>autossuficiente</strong> para jogar um playtest declarado “Manual Unificado”; não é um suplemento que exija o 0.9 aberto.</p>
 <blockquote><strong>Princípio central:</strong> um jogador pode tentar qualquer ação possível na ficção. As técnicas não concedem permissão para ter ideias; tornam a execução mais segura, flexível ou confiável. A dificuldade vem das condições, do domínio e das consequências, não da quantidade de recursos e exceções. O sistema quer sustentar campanhas muito longas, cinco jogadores e momentos narrativos e táticos memoráveis.</blockquote></div></details>
-<details class="chapter" id="cap-1" open><summary><span>01</span>PRIMEIRO, ENTENDA EM DOIS MINUTOS</summary><div class="chapter-body"><p>Imagine que você e seus amigos atravessam uma ponte velha. Há um guarda à frente e uma pessoa precisando de ajuda. <strong>Você decide o que tentar</strong>: conversar, correr, se esconder, distrair, construir uma escora ou combater. O mestre descreve o mundo e pede dados <strong>apenas se o resultado estiver em dúvida e houver algo em risco</strong>.</p>
+<details class="haema-unified-chapter" id="cap-1" open><summary><span>01</span>PRIMEIRO, ENTENDA EM DOIS MINUTOS</summary><div class="chapter-body"><p>Imagine que você e seus amigos atravessam uma ponte velha. Há um guarda à frente e uma pessoa precisando de ajuda. <strong>Você decide o que tentar</strong>: conversar, correr, se esconder, distrair, construir uma escora ou combater. O mestre descreve o mundo e pede dados <strong>apenas se o resultado estiver em dúvida e houver algo em risco</strong>.</p>
 <p><strong>Três perguntas para qualquer ação:</strong> (1) O que você quer conseguir? (2) Como vai tentar? (3) O que acontece se não der certo? A resposta normalmente cabe numa única rolagem.</p>
 <p><strong>O que você deve anotar na ficha:</strong> os seis atributos, as competências, Integridade, Guarda/Defesa, equipamento, Ferimentos, Pontos de Evolução e, quando aparecerem, Metus, Marcas de Latebra, Invicta ou uma Regência Desperta. <strong>Não</strong> existe barra geral de Fôlego, Sobrecarga ou Ímpeto tático neste candidato.</p>
 <p><strong>Índice de consulta:</strong> 1–3 criar e rolar; 4 combate e manobras; 5 ferimentos; 6 medo; 7 furtividade; 8 viagem e conversa; 9 evolução; 10 Tanger; 11 Invicta/Ápice; 12 aventura-modelo; 13 integração; 14–20 explicações de criança, tabelas, fichas, testes, auditoria e instruções para mestre.</p>
@@ -104,13 +221,13 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <p>Foi isso. A intenção veio primeiro; os dados apenas decidiram um ponto de dúvida.</p>
 <h2>0.2 Coisas que o mestre NÃO precisa fazer</h2>
 <p>Não precisa exigir teste para abrir porta comum; contar Fôlego para cada Esquiva; impedir jogador de derrubar alguém porque não comprou a técnica “Derrubar”; criar três barras de esforço; permitir uma rolagem máxima resolver tarefa fisicamente impossível; inventar um preço depois de ver falha; nem fazer todos os inimigos lutarem até a morte.</p></div></details>
-<details class="chapter" id="cap-2" open><summary><span>02</span>1. Comece a jogar em cinco minutos</summary><div class="chapter-body"><p>1. Diga o que quer fazer e por quê. O mestre pergunta como, esclarece o obstáculo, informa risco e estabelece <strong>DT 5/7/9/11</strong> quando a incerteza realmente importa.</p>
+<details class="haema-unified-chapter" id="cap-2" open><summary><span>02</span>1. Comece a jogar em cinco minutos</summary><div class="chapter-body"><p>1. Diga o que quer fazer e por quê. O mestre pergunta como, esclarece o obstáculo, informa risco e estabelece <strong>DT 5/7/9/11</strong> quando a incerteza realmente importa.</p>
 <p>2. Role <strong>um dado do atributo + um dado da competência</strong>. Resultado <strong>≥ DT</strong> vence. A combinação acompanha a abordagem, não o rótulo profissional.</p>
 <p>3. Uma consequência anunciada acontece na falha. Não repita o mesmo teste sem mudança material de abordagem, informação ou situação. Uma pista essencial não é apagada por um dado ruim.</p>
 <p>4. Em combate, você tem <strong>uma Ação Principal, movimento total até 6 m (divisível) e uma Reação por rodada</strong>. Ataque contra Defesa, escolha defesa ativa, resolva dano <strong>ou</strong> manobra.</p>
 <p>5. Não há contadores de <strong>Fôlego, Sobrecarga ou Ímpeto tático</strong> neste núcleo. Anote apenas Integridade, Ferimentos, PE e, quando acontecerem, Metus, Marcas de Latebra e Invicta.</p>
 <p>6. Um personagem começa humano comum, sem classes e sem Despertar automático. Pode aprender práticas humanas por toda a campanha; ter acesso a uma Regência não torna os demais irrelevantes.</p></div></details>
-<details class="chapter" id="cap-3" ><summary><span>03</span>2. Criação de personagens — frágeis, mas nunca incapazes de tentar</summary><div class="chapter-body"><p><strong>Seis atributos:</strong> Força, Destreza, Vigor, Intelecto, Percepção, Presença.</p>
+<details class="haema-unified-chapter" id="cap-3" ><summary><span>03</span>2. Criação de personagens — frágeis, mas nunca incapazes de tentar</summary><div class="chapter-body"><p><strong>Seis atributos:</strong> Força, Destreza, Vigor, Intelecto, Percepção, Presença.</p>
 <p><strong>Vinte e quatro competências:</strong></p>
 <ul>
 <li>Sociais: Enganação, Persuasão, Empatia, Intimidação, Diplomacia, Liderança, Atuação;</li>
@@ -122,12 +239,12 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <p>Personagem também define: uma história breve, profissão/ofício, duas relações, um desejo de desenvolvimento e uma dificuldade pessoal. O ofício pode justificar ferramentas, conhecimentos, contatos e acesso, <strong>não um bônus universal</strong>. Equipamento inicial plausível: instrumentos do ofício, arma pequena ou comum se fizer sentido, proteção leve quando justificada, pertences ordinários. Armas devastadoras não são equipamento inicial automático.</p>
 <p><strong>Integridade máxima = 6 + número de faces de Vigor</strong>: d4→10; d6→12; d8→14; d10→16; d12→18. <strong>Guarda</strong> d4→Defesa5; d6→6; d8→7; d10→8; d12→9, pela fórmula <code>Defesa = 4 + grau(Guarda)</code> (graus d4=1 a d12=5). Não há Fôlego.</p>
 <p><strong>Exemplo:</strong> uma pessoa que se prepara para luta tem Força d6 e Armas Brancas d6, mas outras competências permanecem d4. Ela é treinada num aspecto, ainda vulnerável em outros. Um médico pode ter Intelecto d6 e Medicina d6 e tentar lutar se necessário.</p></div></details>
-<details class="chapter" id="cap-4" ><summary><span>04</span>3. Regra universal — uma decisão, uma resolução</summary><div class="chapter-body"><p><strong>DT5:</strong> simples com risco real; <strong>DT7:</strong> obstáculo significativo; <strong>DT9:</strong> difícil, pede competência ou preparo; <strong>DT11:</strong> excepcional; <strong>DT13+:</strong> apenas quando condições sustentam possibilidade. Não role ações triviais e não autorize impossível sob pretexto de DT alta.</p>
+<details class="haema-unified-chapter" id="cap-4" ><summary><span>04</span>3. Regra universal — uma decisão, uma resolução</summary><div class="chapter-body"><p><strong>DT5:</strong> simples com risco real; <strong>DT7:</strong> obstáculo significativo; <strong>DT9:</strong> difícil, pede competência ou preparo; <strong>DT11:</strong> excepcional; <strong>DT13+:</strong> apenas quando condições sustentam possibilidade. Não role ações triviais e não autorize impossível sob pretexto de DT alta.</p>
 <p><strong>Ajuda:</strong> um aliado que muda materialmente a situação pode gastar a Ação Principal sob pressão e fornecer <strong>+1</strong> a um teste pertinente; apenas uma ajuda numérica comum por teste. Modificadores fixos somados têm teto <strong>+2</strong>. Ferramentas ou preparo podem tornar uma tentativa possível <strong>sem bônus</strong>. Nenhum bônus faz um teste deixar de exigir uma condição física necessária.</p>
 <p><strong>Testes opostos:</strong> ambos rolam atributo+competência pertinentes; maior total vence. Empate mantém a situação ou favorece quem já a sustentava, conforme anunciado antes. O mestre não cria segunda rolagem quando a primeira já respondeu à pergunta.</p>
 <p><strong>Êxito com custo:</strong> quando o objetivo for plausível mas o dado falhar, o mestre pode oferecer uma escolha previamente compatível: não conseguir <strong>ou</strong> conseguir pagando tempo, ruído, posição, recurso real ou consequência narrativa anunciável. Não oferecer isso para ultrapassar uma proibição cosmológica ou física.</p>
 <p><strong>Exemplo:</strong> Artífice (Intelecto d6 + Engenharia d6) tira 4+3=7 em DT7 e instala a escora; com 2+2=4, pode escolher entre abandonar o reparo ou gastar o único material adequado e atrasar a ruptura por pouco tempo, <strong>somente se esse custo for compatível com o que o mestre já tinha apresentado</strong>.</p></div></details>
-<details class="chapter" id="cap-5" ><summary><span>05</span>4. Combate fluido, sem uma lista fechada de golpes</summary><div class="chapter-body"><h3>Regras de oportunidade e posicionamento</h3>
+<details class="haema-unified-chapter" id="cap-5" ><summary><span>05</span>4. Combate fluido, sem uma lista fechada de golpes</summary><div class="chapter-body"><h3>Regras de oportunidade e posicionamento</h3>
 <p><strong>Cada ataque deve ter uma linha plausível.</strong> Se uma parede bloqueia completamente, não é possível acertar por aquele caminho. Personagens podem usar a ação para mudar posição, derrubar obstáculo ou abrir ângulo. Não existe uma lista obrigatória de “ataques de oportunidade”; a movimentação provoca consequências apenas quando a cena já possui risco declarado.</p>
 <p><strong>O que torna um inimigo perigoso:</strong> objetivos, alcance, terreno, habilidade de lutar e número de aliados. Um inimigo assustador não precisa ter 50 pontos de Integridade: pode manter refém, ter posição superior ou ameaçar uma rota.</p>
 <p><strong>Evite o combate parado.</strong> A cada rodada importante, o mestre atualiza o que mudou: rotas, objetivos, recursos reais, luz, cobertura, confiança e Ferimentos. Quando nenhuma decisão nova existe, o encontro precisa mudar de situação ou terminar.</p>
@@ -192,24 +309,24 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <li><strong>Improviso:</strong> Artífice usa Destreza d4 + Engenharia d6 para prender uma trava e bloquear uma passagem; o mestre estabelece DT7, efeito 'porta bloqueada por uma rodada enquanto a trava resistir' e falha 'a ferramenta se rompe'. Sai 4+3=7: funciona. Não comprou a técnica 'Bloqueio de Porta'.</li>
 <li><strong>Virada:</strong> Combatente d6+d6 tira 6+5=11 vs Defesa6; os dois dados estão na faixa alta, um é máximo e a margem é 5. Após o alvo falhar na Esquiva, escolhe dano normal e faz a arma adversária bater numa grade já ao alcance, abrindo espaço para uma passagem. Não desarma automaticamente arma bem presa nem causa dano crítico adicional.</li>
 </ul></div></details>
-<details class="chapter" id="cap-6" ><summary><span>06</span>5. Integridade, Ferimentos, socorro e descanso</summary><div class="chapter-body"><p><strong>Integridade máxima</strong> como na criação: 10/12/14/16/18 conforme Vigor d4/d6/d8/d10/d12. <strong>Um Ferimento</strong> ocorre quando uma única fonte causa <strong>≥6 dano final</strong> ou provoca queda a <strong>0 Integridade</strong>; máximo <strong>dois</strong>, e máximo um por golpe. Ferimento é lesão específica registrada: pode causar <strong>−1 num teste físico realmente prejudicado por ela</strong>, sem acumular penalidades de dois Ferimentos no mesmo teste. Não subtrai dados em tudo.</p>
+<details class="haema-unified-chapter" id="cap-6" ><summary><span>06</span>5. Integridade, Ferimentos, socorro e descanso</summary><div class="chapter-body"><p><strong>Integridade máxima</strong> como na criação: 10/12/14/16/18 conforme Vigor d4/d6/d8/d10/d12. <strong>Um Ferimento</strong> ocorre quando uma única fonte causa <strong>≥6 dano final</strong> ou provoca queda a <strong>0 Integridade</strong>; máximo <strong>dois</strong>, e máximo um por golpe. Ferimento é lesão específica registrada: pode causar <strong>−1 num teste físico realmente prejudicado por ela</strong>, sem acumular penalidades de dois Ferimentos no mesmo teste. Não subtrai dados em tudo.</p>
 <p><strong>Zero Integridade:</strong> incapacitado; se a queda foi de fonte evidentemente letal (ex.: precipício impossível de sobreviver), anuncie isso antes da ação e resolva a ameaça específica, não finja que a fórmula de Integridade cria imunidade. Na próxima ocasião em que agir após a queda, uma única tentativa de Vigor+Sobrevivência <strong>DT5</strong>. Sucesso estabiliza; falha marca <strong>1 Risco de Morte</strong>. Se continuar instável <strong>sob ameaça física efetiva</strong>, ganha +1 Risco por rodada completa sem socorro; novo dano final efetivo acrescenta +1 por fonte. <strong>3 riscos = morte</strong>. Se o perigo imediato termina e há cuidados básicos, <strong>o relógio de risco é pausado; 10 minutos de cuidados em segurança estabilizam mesmo sem kit se isso for fisicamente viável</strong>. Isso não devolve Integridade automaticamente até o tratamento de retorno descrito abaixo. Não continue marcando riscos arbitrários; estabilizar em segurança exige atenção e tempo plausíveis, não relógio punitivo. Risco é contado só enquanto incapacitado e instável, não é uma barra permanente. Quando estabilizado, não atua até recuperar condições.</p>
 <p><strong>Socorro:</strong> Ação Principal adjacente, Intelecto+Medicina <strong>DT5 com material</strong>, <strong>DT7 sem material com improviso plausível</strong>. Sucesso estabiliza imediatamente. Uma tentativa por pessoa caída por rodada; aliados podem usar a ação para deslocá-la até <strong>3 m</strong> em terreno possível ou oferecer proteção. Em segurança real e com cuidados, retornar com <strong>1 Integridade após 10 min</strong>, uma vez por cena de perigo; não elimina Ferimento. Descanso longo ~8h seguros recupera <strong>1d6 Integridade</strong>. Tratamento de Ferimento: Intelecto+Medicina <strong>DT7</strong> com material, uma tentativa por ferimento/descanso; sem assistência adequada, um Ferimento plausivelmente recuperável melhora após dois descansos longos seguros. Não existe cura instantânea genérica.</p>
 <p><strong>Sem regra de execução automática de caído:</strong> adversários respondem a seus objetivos. Morte ainda é possível por agressão contínua/risco anunciado. Conflitos de captura, retirada, resgate e negociação contam como resultados legítimos.</p></div></details>
-<details class="chapter" id="cap-7" ><summary><span>07</span>6. Metus, medo que interfere em dados</summary><div class="chapter-body"><p>Falhou ao resistir ao perigo? Nos testes sob pressão <strong>daquela fonte</strong>, role dado extra de <strong>Metus</strong> e anule <strong>cada dado normal estritamente menor</strong>; empate permanece. Inquietação <strong>d4</strong>, Pavor <strong>d6</strong>, Terror <strong>d8</strong>. Resistência candidata Presença+Empatia DT5/7/9. Só o nível maior se aplica; fora do perigo relacionado, os dados normais não são anulados. Não se pede resistência repetitiva sem mudança material da ameaça.</p>
+<details class="haema-unified-chapter" id="cap-7" ><summary><span>07</span>6. Metus, medo que interfere em dados</summary><div class="chapter-body"><p>Falhou ao resistir ao perigo? Nos testes sob pressão <strong>daquela fonte</strong>, role dado extra de <strong>Metus</strong> e anule <strong>cada dado normal estritamente menor</strong>; empate permanece. Inquietação <strong>d4</strong>, Pavor <strong>d6</strong>, Terror <strong>d8</strong>. Resistência candidata Presença+Empatia DT5/7/9. Só o nível maior se aplica; fora do perigo relacionado, os dados normais não são anulados. Não se pede resistência repetitiva sem mudança material da ameaça.</p>
 <p><strong>Recuperar-se:</strong> Ação Principal, Presença+Empatia DT5 <strong>sem o dado de Metus da própria fonte</strong>; sucesso reduz um grau. Uma rodada completa realmente protegida da fonte também reduz um grau. Segurança real encerra o medo contextual. Um medo excepcional não pode anular automaticamente a possibilidade de fugir ou buscar abrigo: jogador ainda possui escolhas de ação.</p>
 <p><strong>Exemplo:</strong> Destreza d6=4, Atletismo d6=6 e Metus Pavor d6=5: 4 é anulado, resta 6. Contra DT7 falha; pode tentar mudar rota, pedir ajuda ou se recompor.</p></div></details>
-<details class="chapter" id="cap-8" ><summary><span>08</span>7. Latebra, furtividade por Marcas secretas</summary><div class="chapter-body"><p>Se houver <strong>cobertura/oclusão plausível</strong>, gastar Ação Principal sob risco e criar Marcas conforme Furtividade: <strong>d4:2d4 sem rerrolagem; d6:2d6 com uma rerrolagem de duplicata; d8:3d6 com uma; d10:3d6 com duas; d12:4d6 com duas</strong>. Resultados repetidos são uma Marca só; máximo quatro Marcas. Esses números são identificadores, não bônus de rolagem.</p>
+<details class="haema-unified-chapter" id="cap-8" ><summary><span>08</span>7. Latebra, furtividade por Marcas secretas</summary><div class="chapter-body"><p>Se houver <strong>cobertura/oclusão plausível</strong>, gastar Ação Principal sob risco e criar Marcas conforme Furtividade: <strong>d4:2d4 sem rerrolagem; d6:2d6 com uma rerrolagem de duplicata; d8:3d6 com uma; d10:3d6 com duas; d12:4d6 com duas</strong>. Resultados repetidos são uma Marca só; máximo quatro Marcas. Esses números são identificadores, não bônus de rolagem.</p>
 <p>Procurador com <strong>indício concreto</strong> pode gastar Ação Principal numa <strong>Busca Rápida 1d6</strong>, ou Ação Principal+Movimento inteiro numa <strong>Busca Intensiva 2d6</strong>. Números iguais às Marcas ainda ocultas as revelam; quando não sobra nenhuma, esconderijo é localizado. Reforçar esconderijo custa ação e tenta gerar uma Marca nova d6 ausente (até limite). Ruído forte remove uma Marca ainda secreta; exposição direta revela localização mesmo que sobrem marcas. Armadura pesada só reduz em uma Marca disponível quando realmente impedir silêncio/ocultação; não subtrair valor numérico. Não há 'invisibilidade automática' nem buscas sem qualquer pista.</p>
 <p><strong>Exemplo:</strong> Marcas 2,4,5. Guarda em Busca Rápida tira4 e revela uma. Outra Busca Intensiva tira3 e5 e revela mais uma; a Marca2 permanece até ser descoberta ou o oculto ficar exposto.</p></div></details>
-<details class="chapter" id="cap-9" ><summary><span>09</span>8. Exploração, investigação, interação, perseguição e sobrevivência</summary><div class="chapter-body"><p><strong>Investigação:</strong> o mestre revela os fatos evidentes da cena sem rolagem. Testes obtêm detalhe, interpretação, tempo ou segurança, não apagam pista indispensável por falha. Preparação profissional e conhecimento humano continuam decisivos sem Tanger.</p>
+<details class="haema-unified-chapter" id="cap-9" ><summary><span>09</span>8. Exploração, investigação, interação, perseguição e sobrevivência</summary><div class="chapter-body"><p><strong>Investigação:</strong> o mestre revela os fatos evidentes da cena sem rolagem. Testes obtêm detalhe, interpretação, tempo ou segurança, não apagam pista indispensável por falha. Preparação profissional e conhecimento humano continuam decisivos sem Tanger.</p>
 <p><strong>Exploração:</strong> decidir intenção, risco, recurso e consequência; um teste por abordagem relevante, não cinco rolagens redundantes. Relógios de <strong>3,4 ou 6</strong> etapas são opcionais quando o tempo importa, não uma barra obrigatória da aventura. Em ambiente seguro, não contar cada minuto.</p>
 <p><strong>Negociação:</strong> definir interesse, limite, concessão real e preço para as partes. Presença+Diplomacia, Enganação, Persuasão, Empatia etc. conforme abordagem. Um NPC não perde vontade por alta rolagem. Repetir teste demanda oferta, informação ou condição nova. Personagem tímido pode declarar seu argumento em vez de encenar.</p>
 <p><strong>Perseguição opcional:</strong> quatro etapas, distância 0 alcançado/1 perto/2 médio/3 distante; um teste pertinente por lado/etapa. Quem vence e atinge DT5 muda uma faixa na direção de sua meta; empate ou ambos falham mantêm distância e podem avançar perigo anunciado. Fim das quatro etapas sem alcançar significa fuga, salvo bloqueio conhecido. Não aplicar numa corrida curta comum.</p>
 <p><strong>Sobrevivência:</strong> em viagens com abastecimento, não contar refeições. Em escassez, cerca de uma porção de água+alimento por pessoa/dia; calor/esforço altera necessidade com aviso. Dois dias completos com água insuficiente <strong>OU</strong> quatro dias com comida insuficiente geram uma condição leve de <strong>Escassez (−1 em resistência prolongada e marcha sob pressão, não em ataques por padrão)</strong>; não somar duas penalidades iguais. Após 48h sem descanso, −1 em atenção prolongada sob risco. Carga só importa quando transporte/peso alteram escolhas; sem slots universais ou barra de exaustão. Consequências graves exigem sinais, oportunidade de resposta e coerência.</p>
 <h3>8.1 O mundo reage às escolhas (sem nova barra de reputação)</h3>
 <p>Ao final de uma cena importante, registre <strong>somente três frases</strong>, se houver consequência que mereça continuar existindo: <strong>o que mudou</strong>, <strong>quem sabe</strong> e <strong>como isso pode voltar</strong>. Exemplo: “o portão foi reparado; os guardas sabem que a Artífice ajudou; a vila pode oferecer abrigo mais tarde”. Isso dá recompensa narrativa real para escolhas sociais e técnicas, sem pontuação arbitrária de fama.</p></div></details>
-<details class="chapter" id="cap-10" ><summary><span>10</span>9. Campanha longa: progresso lento, descobertas frequentes</summary><div class="chapter-body"><p><strong>Ritmo candidato:</strong> <strong>1 PE por sessão realmente jogada com consequências/progresso +2 PE coletivos ao fechar arco relevante</strong>. Nenhum bônus por falar mais, interpretar teatralmente ou matar. Grupos de cinco devem ter oportunidades equivalentes de evolução em Medicina, combate, investigação, negociação, ofício e exploração. <strong>Não</strong> misturar com os 2 PE/sessão do 0.9 RC.</p>
+<details class="haema-unified-chapter" id="cap-10" ><summary><span>10</span>9. Campanha longa: progresso lento, descobertas frequentes</summary><div class="chapter-body"><p><strong>Ritmo candidato:</strong> <strong>1 PE por sessão realmente jogada com consequências/progresso +2 PE coletivos ao fechar arco relevante</strong>. Nenhum bônus por falar mais, interpretar teatralmente ou matar. Grupos de cinco devem ter oportunidades equivalentes de evolução em Medicina, combate, investigação, negociação, ofício e exploração. <strong>Não</strong> misturar com os 2 PE/sessão do 0.9 RC.</p>
 <div class="table-scroll"><table><tbody>
 <tr><td>Aprendizado comprado</td><td>PE por avanço</td><td>Condição</td></tr>
 <tr><td>Competência d4→d6→d8→d10→d12</td><td><strong>6 / 10 / 16 / 24</strong></td><td>Vivência e estudo pertinentes</td></tr>
@@ -250,7 +367,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <p>21. <strong>Peça Preservada — 8 PE, Engenharia ou Tecnologia d8:</strong> uma vez por cena, após falhar num reparo com ferramentas, pode aceitar uma falha <strong>sem destruir a ferramenta principal</strong>, trocando a perda anunciada por gasto de tempo ou um consumível real, se essa alternativa já era materialmente possível.</p>
 <p>22. <strong>Trajeto Preparado — 8 PE, Condução d8:</strong> depois de examinar veículo/rota e gastar uma ação preparatória sob risco, uma vez por cena pode escolher <strong>uma manobra de passagem plausível</strong> que evita apenas um obstáculo pequeno conhecido; oposição ativa continua pedindo teste, e veículos não fazem impossíveis.</p>
 <p><strong>Avaliação de design:</strong> habilidades que só reproduzem bom senso podem acabar cortadas depois de playtest. Seu texto explicita limites para evitar vantagens universais e coloca a maior parte do valor em planejamento, cooperação e identidade de personagem.</p></div></details>
-<details class="chapter" id="cap-11" ><summary><span>11</span>10. Regências, Tanger e assinatura visual individual</summary><div class="chapter-body"><p><strong>Cânone conceitual preservado:</strong> sete Regências <strong>conhecidas</strong>, não necessariamente únicas: <strong>Kórven (Forma), Sælir (Pulso), Vraek (Ímpeto), Ithren (Vínculo), Ossyra (Vestígio), Nælth (Limiar), Eyris (Percepção)</strong>. <strong>Despertar</strong> = obter acesso; <strong>Tanger</strong> = influenciar; <strong>HÆM</strong> pode estudar sem Tanger. Não fundir Motus com Metus nem impor o antigo dualismo Ignis/Motus como base do universo. Despertar não é comprado automaticamente por PE; mecanismo canônico permanece com a Lore.</p>
+<details class="haema-unified-chapter" id="cap-11" ><summary><span>11</span>10. Regências, Tanger e assinatura visual individual</summary><div class="chapter-body"><p><strong>Cânone conceitual preservado:</strong> sete Regências <strong>conhecidas</strong>, não necessariamente únicas: <strong>Kórven (Forma), Sælir (Pulso), Vraek (Ímpeto), Ithren (Vínculo), Ossyra (Vestígio), Nælth (Limiar), Eyris (Percepção)</strong>. <strong>Despertar</strong> = obter acesso; <strong>Tanger</strong> = influenciar; <strong>HÆM</strong> pode estudar sem Tanger. Não fundir Motus com Metus nem impor o antigo dualismo Ignis/Motus como base do universo. Despertar não é comprado automaticamente por PE; mecanismo canônico permanece com a Lore.</p>
 <h2>10.1 Descobertas em vez de lista rígida de poderes</h2>
 <p>Quem Despertou pode estudar <strong>fenômenos</strong> e produzir <strong>Descobertas</strong>: Suspeita → Provisória → Estável. Toda Descoberta tem:</p>
 <p>1. Regência acessível e fenômeno real observado;</p>
@@ -267,7 +384,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <p><strong>As cores das Regências ainda aguardam aprovação da Lore. Nenhum código ou paleta provisória é exibido nesta consulta pública.</strong></p>
 <h2>10.3 Exemplo aplicável no laboratório, não acontecimento canônico</h2>
 <p>Artífice com Kórven d4 e Engenharia d6 conhece uma Descoberta Estável de <strong>Intervenção</strong> que redistribui por uma rodada a tensão de junta <strong>já estudada</strong>, mediante toque e segundo suporte capaz de receber carga. Jogador descreve filamentos luminosos da <strong>cor experimental</strong> de Kórven acompanhando ranhuras da madeira. O mestre informa que o suporte receptor ficará ameaçado se a tentativa falhar. Rola d4=4+d6=4=8 ≥ DT7: sucesso. Junta principal aguenta, receptor passa a ser risco; colegas ainda precisam agir. Outro personagem de Kórven poderia usar a <strong>mesma regra</strong> descrevendo placas/fragmentos, desde que preserve cor e condições, sem criar novo poder mecânico.</p></div></details>
-<details class="chapter" id="cap-12" ><summary><span>12</span>11. Invicta e Ápice — o instante que a mesa lembra</summary><div class="chapter-body"><p><strong>Invicta</strong> é um feito <strong>técnico de dados</strong>, e não uma medalha concedida por interpretação. Não é a mesma coisa que Crítico. Neste candidato, usa uma verificação que já está no lançamento, sem jogar 5d20 ou administrar outra barra.</p>
+<details class="haema-unified-chapter" id="cap-12" ><summary><span>12</span>11. Invicta e Ápice — o instante que a mesa lembra</summary><div class="chapter-body"><p><strong>Invicta</strong> é um feito <strong>técnico de dados</strong>, e não uma medalha concedida por interpretação. Não é a mesma coisa que Crítico. Neste candidato, usa uma verificação que já está no lançamento, sem jogar 5d20 ou administrar outra barra.</p>
 <h2>11.1 Como conquistar Invicta</h2>
 <p>Antes da ação, deve haver <strong>ameaça real e consequência importante caso falhe</strong>, estabelecidas pelo mestre. Pode ser combate, resgate, uma investigação sob risco ou uma Descoberta de Tanger válida. O mestre <strong>não pode elevar a DT depois de ver os dados</strong>. Uma tarefa trivial ou repetida para farm não é elegível.</p>
 <p>A ação só gera <strong>uma Invicta</strong> quando:</p>
@@ -285,13 +402,13 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <p><strong>C. Ápice de Superação</strong> — ampliar uma ação humana bem-sucedida com <strong>uma oportunidade adicional</strong> específica da situação, escolhida entre duas possibilidades que o mestre explicita <strong>antes do gasto</strong>; como ganhar tempo para duas pessoas fugirem juntas ou recuperar prova e preservar a ferramenta. Não cria informação inexistente nem controla a vontade alheia.</p>
 <p><strong>D. Ápice de Tanger</strong> — após sucesso numa Descoberta Estável, escolher <strong>um</strong> aprimoramento que a própria Descoberta possa suportar: <strong>mais uma rodada de sustentação com ação pertinente</strong> OU <strong>uma âncora adjacente fisicamente viável</strong>. Não salta de Ajuste para Maior nem inventa efeito não estudado.</p>
 <p><strong>Exemplo infantil:</strong> Invicta não é uma bomba que destrói tudo. É aquele momento raro em que você consegue fazer uma coisa que já sabia, mas de maneira excepcional, e todos percebem a diferença.</p></div></details>
-<details class="chapter" id="cap-13" ><summary><span>13</span>12. Teste de mesa integrado para cinco pessoas</summary><div class="chapter-body"><p><strong>Cena não canônica — 'Passarela em Ruptura'.</strong> Ameaça de colapso em 4 etapas, dois viajantes para retirar e dois guardas que querem impedir novos acidentes. Há caminho alternativo e possibilidade de diálogo. PCs são humanos comuns; dois podem ser mais aptos a lutar, três podem se destacar em Medicina, Engenharia, Investigação e interação.</p>
+<details class="haema-unified-chapter" id="cap-13" ><summary><span>13</span>12. Teste de mesa integrado para cinco pessoas</summary><div class="chapter-body"><p><strong>Cena não canônica — 'Passarela em Ruptura'.</strong> Ameaça de colapso em 4 etapas, dois viajantes para retirar e dois guardas que querem impedir novos acidentes. Há caminho alternativo e possibilidade de diálogo. PCs são humanos comuns; dois podem ser mais aptos a lutar, três podem se destacar em Medicina, Engenharia, Investigação e interação.</p>
 <p><strong>Ação 1, solução sem combate:</strong> Investigadora identifica apoio vulnerável com Percepção+Observação DT5 e Artífice coloca escora Intelecto+Engenharia DT7. Mediadora negocia passagem oferecendo retirada dos viajantes com Presença+Diplomacia DT7; guarda aceita com condição de não expor mais ninguém. Vanguarda sustenta corda; Médica atende ferido. Nenhum poder é obrigatório.</p>
 <p><strong>Ação 2, manobra livre:</strong> se o guarda obstrui passagem e possui uma arma empunhada de modo exposto, Vanguarda anuncia 'quero desviar a arma e empurrá-lo um passo para abrir corredor'. O mestre pede escolher um efeito: <strong>abrir corredor</strong> (não também desarmar), Força+Luta vs Defesa6. Tira 4(d6)+3(d6)=7, sucesso; corredor abre brevemente. Se tivesse falhado, risco anunciado era terminar de costas para a saída. Jogador iniciante pode tentar isso sem técnica.</p>
 <p><strong>Ação 3, crítico e Virada:</strong> Rastreadora ataca, tirando Destreza d6=6+Pontaria d6=5 vs Defesa6. Ambos estão na faixa alta e um está no máximo; é crítico. Escolhe dano d6=4 e Virada de acertar suporte frágil de cobertura <strong>já visível</strong>, deixando uma rota para colega; não ganha +2 dano. Se o alvo Esquivar com sucesso, não há Virada derivada do impacto.</p>
 <p><strong>Ação 4, Tanger opcional em ensaio separado:</strong> uma pessoa com Kórven d4 e descoberta válida prepara suporte e tange uma junta DT7 para segurar uma rodada. Outros salvam pessoas. Os efeitos visuais seguem a cor proposta até a Lore aprová-la.</p>
 <p><strong>Ação 5, consequência:</strong> um PC chega a 0 Integridade; médica adjacente gasta ação e testa Medicina DT5 com kit, ou grupo escolhe retirada. Guardas podem recuar ao perceber risco de colapso. Não precisam morrer para haver vitória do grupo.</p></div></details>
-<details class="chapter" id="cap-14" ><summary><span>14</span>13. Auditoria do candidato e contrato de publicação</summary><div class="chapter-body"><h2>13.1 O que ficou concretamente resolvido na 0.9.1</h2>
+<details class="haema-unified-chapter" id="cap-14" ><summary><span>14</span>13. Auditoria do candidato e contrato de publicação</summary><div class="chapter-body"><h2>13.1 O que ficou concretamente resolvido na 0.9.1</h2>
 <ul>
 <li>Não há gasto de Fôlego para ações humanas, e o jogador pode dividir os 6 m de Movimento livremente.</li>
 <li><strong>Toda manobra plausível pode ser tentada</strong> sem compra de habilidade; escolher dano ou efeito evita duplo benefício automático.</li>
@@ -335,7 +452,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <li><strong>Invicta/Ápice:</strong> ambos dados altos, um no máximo e margem original≥6 <strong>sob perigo real</strong>; guardar1, gastar por 4 efeitos situacionais.</li>
 </ul>
 <p><strong>HÆMA — Site e Sistema criado por Vitor Monte.</strong></p></div></details>
-<details class="chapter" id="cap-15" ><summary><span>15</span>14. Entenda o HÆMA como se tivesse 10 anos</summary><div class="chapter-body"><h2>14.1 O que é RPG?</h2>
+<details class="haema-unified-chapter" id="cap-15" ><summary><span>15</span>14. Entenda o HÆMA como se tivesse 10 anos</summary><div class="chapter-body"><h2>14.1 O que é RPG?</h2>
 <p>Você inventa um personagem e faz escolhas por ele. O mestre conta o que acontece no mundo. Quando a resposta não é óbvia, vocês jogam dados. <strong>O mestre não joga contra os jogadores</strong>; ele representa o mundo, suas pessoas, perigos e consequências.</p>
 <h2>14.2 Por que existem dois dados?</h2>
 <p>Um dado mostra <strong>como você é</strong> (atributo); o outro mostra <strong>o que sabe fazer</strong> (competência). Alguém forte, mas sem treino, é diferente de alguém mais fraco que treinou muito. Os dois conseguem tentar; os resultados médios são diferentes.</p>
@@ -352,7 +469,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <h2>14.8 O que é Invicta?</h2>
 <p>Um acontecimento de dados muito raro numa situação realmente perigosa. A pessoa guarda uma Invicta e pode usar depois para um <strong>Ápice</strong>, um efeito excepcional mas ainda limitado pelo que está acontecendo.</p>
 <hr></div></details>
-<details class="chapter" id="cap-16" ><summary><span>16</span>15. Simulações completas: a mesma cena por cinco caminhos</summary><div class="chapter-body"><p><strong>Cenário de laboratório, não canônico:</strong> uma passarela ameaça ceder; há dois viajantes e dois vigias. O grupo começa com humanos comuns.</p>
+<details class="haema-unified-chapter" id="cap-16" ><summary><span>16</span>15. Simulações completas: a mesma cena por cinco caminhos</summary><div class="chapter-body"><p><strong>Cenário de laboratório, não canônico:</strong> uma passarela ameaça ceder; há dois viajantes e dois vigias. O grupo começa com humanos comuns.</p>
 <h2>15.1 Resolver conversando</h2>
 <p>A Mediadora oferece retirar as pessoas antes de atravessar. O guarda quer segurança, não uma luta. O mestre fixa DT7 porque há desconfiança real. Ela rola Presença d6=5 + Diplomacia d6=3 → <strong>8, sucesso</strong>. Guarda abre a passagem por uma rodada, com a condição de ninguém carregar novas caixas. <strong>Nenhum dano, nenhuma luta e um objetivo alcançado.</strong></p>
 <h2>15.2 Resolver com conhecimento</h2>
@@ -371,7 +488,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <p><strong>Turno da Rastreadora:</strong> ataca o mesmo vigia, agora sem Reação. Destreza d6=6 + Pontaria d6=5 = <strong>11</strong> contra Defesa6: <strong>Crítico</strong> (ambos altos, um máximo, margem5). Escolhe <strong>Virada</strong> em vez de +2 dano: seu disparo rompe uma correia de cobertura já exposta, abrindo uma linha de travessia; o dano bruto normal d6=3, menos Abs1 → <strong>2</strong>.</p>
 <p><strong>Consequência:</strong> o vigia percebe que a passarela pode ceder e aceita negociar retirada. <strong>A luta termina porque o objetivo mudou, não porque todos morreram.</strong></p>
 <hr></div></details>
-<details class="chapter" id="cap-17" ><summary><span>17</span>16. As decisões do mestre em 15 segundos</summary><div class="chapter-body"><p><strong>Para qualquer ação:</strong></p>
+<details class="haema-unified-chapter" id="cap-17" ><summary><span>17</span>16. As decisões do mestre em 15 segundos</summary><div class="chapter-body"><p><strong>Para qualquer ação:</strong></p>
 <p>1. “O que você quer?” — O jogador fala o resultado, não a regra.</p>
 <p>2. “Como?” — O jogador explica meios, ferramentas ou posição.</p>
 <p>3. “É possível?” — Se impossível, diga o que falta; se óbvio, permita; se incerto, anuncie risco.</p>
@@ -394,7 +511,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <p><strong>Sintoma:</strong> inimigo cai em dois ataques e não teve chance de atuar. <strong>Faça:</strong> verificar excesso de adversários com d8, concentração de fogo, alcance e reação inicial; trocar o objetivo pode ser mais interessante do que mais vida.</p>
 <p><strong>Sintoma:</strong> jogador de apoio não tem o que fazer. <strong>Faça:</strong> colocar duas ou três oportunidades reais: destravar passagem, socorrer pessoa, atrair atenção, interpretar pista, estabilizar apoio, negociar rota. Não obrigue todas as decisões a causar dano.</p>
 <hr></div></details>
-<details class="chapter" id="cap-18" ><summary><span>18</span>17. Como criar personagens para testar em cinco minutos</summary><div class="chapter-body"><p>Todos começam com seis atributos e 24 competências em d4. Os quatro aumentos de atributos e seis aumentos de competências vão para <strong>campos diferentes</strong> no início, porque o teto inicial é d6. Abaixo, qualquer campo não citado continua d4. Todos: Guarda d6, Defesa6, nenhuma Regência, nenhum Ferimento. Os perfis são <strong>pessoas</strong>, não classes.</p>
+<details class="haema-unified-chapter" id="cap-18" ><summary><span>18</span>17. Como criar personagens para testar em cinco minutos</summary><div class="chapter-body"><p>Todos começam com seis atributos e 24 competências em d4. Os quatro aumentos de atributos e seis aumentos de competências vão para <strong>campos diferentes</strong> no início, porque o teto inicial é d6. Abaixo, qualquer campo não citado continua d4. Todos: Guarda d6, Defesa6, nenhuma Regência, nenhum Ferimento. Os perfis são <strong>pessoas</strong>, não classes.</p>
 <div class="table-scroll"><table><tbody>
 <tr><td>Exemplo</td><td>Quatro atributos d6</td><td>Seis competências d6</td><td>Integridade</td></tr>
 <tr><td>Vanguarda</td><td>Força, Destreza, Vigor, Percepção</td><td>Armas Brancas, Luta, Atletismo, Observação, Estratégia, Empatia</td><td>12</td></tr>
@@ -405,7 +522,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 </tbody></table></div>
 <p><strong>Exemplo de escolha:</strong> a Artífice pode trocar Ladinagem por Medicina d6 antes de iniciar. Isso não cria uma classe diferente; é apenas escolha de aprendizado.</p>
 <hr></div></details>
-<details class="chapter" id="cap-19" ><summary><span>19</span>18. Campanha longa: 12, 30, 60 e 100 sessões</summary><div class="chapter-body"><p>A progressão foi desenhada para que dados grandes sejam conquistas, e não algo alcançado em duas semanas. <strong>1 PE por sessão com progresso e 2 PE por arco concluído</strong>. O exemplo abaixo supõe arcos de quatro sessões; aventuras reais podem ter outra duração.</p>
+<details class="haema-unified-chapter" id="cap-19" ><summary><span>19</span>18. Campanha longa: 12, 30, 60 e 100 sessões</summary><div class="chapter-body"><p>A progressão foi desenhada para que dados grandes sejam conquistas, e não algo alcançado em duas semanas. <strong>1 PE por sessão com progresso e 2 PE por arco concluído</strong>. O exemplo abaixo supõe arcos de quatro sessões; aventuras reais podem ter outra duração.</p>
 <div class="table-scroll"><table><tbody>
 <tr><td>Sessões</td><td>Arcos completos no exemplo</td><td>PE recebidos se participar de todas</td><td>O que pode acontecer</td></tr>
 <tr><td>12</td><td>3</td><td>18</td><td>Uma técnica, um ou dois avanços de competência, algum PE guardado</td></tr>
@@ -416,7 +533,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <p><strong>Competência d4→d12 custa 56 PE</strong> (6+10+16+24); alguém que começa em d6 precisa de 50 PE para d12. Isso custa dezenas de sessões se o jogador também investir em outras áreas. Uma Regência só pode evoluir se estiver de fato Desperta; PE não força um Despertar.</p>
 <p><strong>Pequenas conquistas sem inflar números:</strong> experiência pode render um contato confiável, acesso a oficina, entendimento de uma técnica, reconhecimento por comunidade, passagem segura, linguagem de sinais compartilhada ou uma pista fundamental. Isso não aumenta dados de graça nem substitui PE, mas torna o personagem mais capaz de agir no mundo.</p>
 <hr></div></details>
-<details class="chapter" id="cap-20" ><summary><span>20</span>19. O Tanger que cada jogador imagina, sem perder identidade</summary><div class="chapter-body"><h2>19.1 Modelo de ficha para nova Descoberta</h2>
+<details class="haema-unified-chapter" id="cap-20" ><summary><span>20</span>19. O Tanger que cada jogador imagina, sem perder identidade</summary><div class="chapter-body"><h2>19.1 Modelo de ficha para nova Descoberta</h2>
 <p>```text</p>
 <p>NOME DA DESCOBERTA: _____________________</p>
 <p>REGÊNCIA DESPERTA: ______________________</p>
@@ -446,7 +563,7 @@ main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-
 <h2>19.3 Como escolher cores sem ferir a Lore</h2>
 <p>A regra criativa do projeto é <strong>cor fixa por Regência, forma visual livre por personagem</strong>. Até a equipe definir oficialmente as sete cores, esta edição apresenta apenas uma <strong>paleta interna de estudo</strong> na seção 10.2; <strong>não publique esses códigos no Site como cânone</strong>. Uma assinatura pode evoluir visualmente com a experiência, sem bônus escondido.</p>
 <hr></div></details>
-<details class="chapter" id="cap-21" ><summary><span>21</span>20. Revisão final: o que está resolvido, o que precisa ser aprovado</summary><div class="chapter-body"><div class="table-scroll"><table><tbody>
+<details class="haema-unified-chapter" id="cap-21" ><summary><span>21</span>20. Revisão final: o que está resolvido, o que precisa ser aprovado</summary><div class="chapter-body"><div class="table-scroll"><table><tbody>
 <tr><td>Verificação</td><td>Estado honesto</td></tr>
 <tr><td>Criação frágil 4/6, teto d6; 6 atributos, 24 competências</td><td>Procedimento completo para jogar — candidato</td></tr>
 <tr><td>Teste humano, oposição, Ajuda e falha com custo</td><td>Procedimento completo — candidato</td></tr>
