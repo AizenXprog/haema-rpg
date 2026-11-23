@@ -39,7 +39,15 @@ DO $$ BEGIN
    '88888888-8888-4888-8888-888888888888','nota','Tentativa indevida');
   RAISE EXCEPTION 'Jogador conseguiu criar segredo no arquivo do mestre';
  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
-END $$;
+ BEGIN
+  PERFORM public.haema_gm_bestiary_index('77777777-7777-4777-8777-777777777777');
+  RAISE EXCEPTION 'Jogador recebeu índice reservado integral';
+ EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ BEGIN
+  PERFORM public.haema_gm_bestiary_entry('77777777-7777-4777-8777-777777777777','registro-01');
+  RAISE EXCEPTION 'Jogador leu ficha integral do mestre';
+ EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+END $;
 RESET ROLE;
 SELECT set_config('request.jwt.claims',
  jsonb_build_object('sub',(SELECT user_id FROM public.haema_platform_admins LIMIT 1),'role','authenticated')::text,true);
@@ -47,6 +55,8 @@ SET LOCAL ROLE authenticated;
 DO $$ BEGIN
  ASSERT (SELECT count(*)=1 FROM public.haema_gm_archive WHERE campaign_id='77777777-7777-4777-8777-777777777777'), 'Mestre perdeu acesso ao Arquivo';
  ASSERT (SELECT count(*)=1 FROM public.haema_gm_records WHERE campaign_id='77777777-7777-4777-8777-777777777777'), 'Mestre perdeu registros legados';
-END $$;
+ ASSERT jsonb_array_length(public.haema_gm_bestiary_index('77777777-7777-4777-8777-777777777777'))=25,'Índice integral indisponível ao mestre';
+ ASSERT jsonb_array_length(public.haema_gm_bestiary_entry('77777777-7777-4777-8777-777777777777','registro-01')->'paragraphs')=5,'Ficha integral indisponível ao mestre';
+END $;
 RESET ROLE;
 ROLLBACK;
