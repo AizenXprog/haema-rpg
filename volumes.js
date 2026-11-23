@@ -1,3 +1,4 @@
+import {appendInlineFormatted} from './inline-format.js';
 import {access,authorizedFetch,node,button,accessGate,login} from './auth.js';
 import {createBookWeather} from './book-weather.js';
 const TITLES={frikten:['Frikten','Sob o Peso do Inverno'],jankinss:['Jankinss','Os Filhos de Infêrnus']};
@@ -72,7 +73,7 @@ async function openVolume(id,opener){
  }
  function selectChapter(i){chapter=i;const c=book.chapters[i];pages=[];let chunk=[],length=0;
   for(const p of c.paragraphs){if(chunk.length&&length+p.length>1400){pages.push(chunk);chunk=[];length=0}chunk.push(p);length+=p.length;}if(chunk.length)pages.push(chunk);page=0;paint(1);}
- function paragraph(text){const p=node('p');if(text.startsWith('**')&&text.endsWith('**'))p.append(node('strong','',text.slice(2,-2)));else if(text.startsWith('*')&&text.endsWith('*'))p.append(node('em','',text.slice(1,-1)));else p.textContent=text;return p;}
+ function paragraph(text){return appendInlineFormatted(node('p'),text);}
  function paint(direction){
   if(!book)return;index.disabled=false;prev.disabled=chapter===0&&page===0;next.disabled=chapter===3&&page===pages.length-1;
   content.replaceChildren(node('span','volume-kicker',TITLES[id][0]+' · '+String(chapter+1).padStart(2,'0')),node('h2','',book.chapters[chapter].title),...pages[page].map(paragraph));content.scrollTop=0;
