@@ -17,8 +17,8 @@ async def main():
   page=await context.new_page()
   errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
   await page.goto(BASE+'/sistema.html',wait_until='domcontentloaded')
-  await page.locator('a[href="campanha.html?secao=characters"]').first.click()
-  await page.wait_for_url('**/campanha.html?secao=characters')
+  await page.locator('a[href="fichas.html?secao=characters"]').first.click()
+  await page.wait_for_url('**/fichas.html?secao=characters')
   await page.get_by_role('button',name='Nova ficha Unificada · experimental').wait_for(timeout=12000)
   assert await page.evaluate("typeof window.HAEMAUnified")=='object','SPA did not load unified kernel'
   assert await page.evaluate("typeof window.HAEMATechniquesRules")=='object','SPA did not load optional techniques'
