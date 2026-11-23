@@ -1,4 +1,5 @@
 import {client as sharedClient, access as sharedAccess, accessGate} from './auth.js';
+import {renderMasterArchive} from './gm-workspace.js';
 'use strict';
 /** HÆMA — Portal privado. No private content is fetched before Supabase Auth.
  * The browser receives a publishable key only; PostgreSQL RLS is authoritative.
@@ -95,7 +96,16 @@ const PORTAL=(()=>{
    const select=node('select');for(const c of state.campaigns){const o=node('option','',c.name);o.value=c.id;select.append(o)}select.value=campaignId();select.addEventListener('change',()=>{state.current=state.campaigns.find(c=>c.id===select.value);state.tab='home';void renderDashboard(root)});choose.append(select);aside.append(choose)}
   const tabs=node('nav','portal-tabs');tabs.setAttribute('aria-label','Áreas do portal');
   const options=[['home','✧','Visão geral'],['characters','♧','Personagens'],['chat','◈','Conversa']];if(state.materials)options.push(['materials','✦','Materiais']);if(isGM())options.push(['gm','♜','Painel do Mestre']);
-  for(const[id,mark,label]of options){const tab=node('button','portal-tab'+(id===state.tab?' is-active':''));tab.type='button';tab.setAttribute('aria-current',id===state.tab?'page':'false');tab.append(node('span','portal-tab-mark',mark),node('span','',label));tab.addEventListener('click',()=>{state.tab=id;void renderDashboard(root)});tabs.append(tab)}
+  for(const[id,mark,label]of options){
+   if(id==='gm'){
+    const link=node('a','portal-tab');link.href='mestre.html';
+    link.append(node('span','portal-tab-mark',mark),node('span','','Arquivo do Mestre'));tabs.append(link);continue;
+   }
+   const tab=node('button','portal-tab'+(id===state.tab?' is-active':''));
+   tab.type='button';tab.setAttribute('aria-current',id===state.tab?'page':'false');
+   tab.append(node('span','portal-tab-mark',mark),node('span','',label));
+   tab.addEventListener('click',()=>{state.tab=id;void renderDashboard(root)});tabs.append(tab);
+  }
   aside.append(tabs);const end=node('div','portal-sidebar-end');end.append(b('Sair',async()=>{await state.client.auth.signOut();state.user=null;state.current=null;signin(root)}));aside.append(end);return aside;
  }
  async function loadCampaignData(){
@@ -104,7 +114,7 @@ const PORTAL=(()=>{
    s.from('haema_characters').select('id,campaign_id,user_id,title,rules_version,payload,updated_at').eq('campaign_id',id).order('updated_at',{ascending:false}),
    state.materials?s.from('haema_materials').select('id,title,kind,content,visibility,updated_at').eq('campaign_id',id).order('updated_at',{ascending:false}):Promise.resolve({data:[]}),
    s.from('haema_messages').select('id,author_id,content,created_at').eq('campaign_id',id).order('created_at',{ascending:false}).limit(100),
-   state.materials?s.from('haema_gm_records').select('id,category,title,content,status,visibility,updated_at').eq('campaign_id',id).order('updated_at',{ascending:false}):Promise.resolve({data:[]}),
+   gm?s.from('haema_gm_records').select('id,category,title,content,status,visibility,updated_at').eq('campaign_id',id).order('updated_at',{ascending:false}):Promise.resolve({data:[]}),
    gm?s.from('haema_members').select('user_id,role,joined_at').eq('campaign_id',id):Promise.resolve({data:[]}),
    gm?s.from('haema_audit').select('id,actor_id,entity_type,entity_id,action,occurred_at').eq('campaign_id',id).order('occurred_at',{ascending:false}).limit(60):Promise.resolve({data:[]}),
    s.from('haema_mesa_grants').select('user_id,granted_at').order('granted_at',{ascending:false})
@@ -124,17 +134,40 @@ const PORTAL=(()=>{
  }
  async function renderDashboard(root){
   if(!root||!state.current)return;
+  const masterPage=document.body.dataset.page==='mestre';
+  if(masterPage&&!isGM()){
+   root.replaceChildren();
+   const denied=node('section','portal-setup');
+   denied.append(node('h2','','Arquivo reservado ao mestre'),
+    node('p','','Este arquivo contém informações técnicas e segredos da campanha. Somente o mestre responsável pode consultá-lo.'));
+   const link=node('a','portal-action','Voltar às minhas fichas');link.href='campanha.html?secao=characters';
+   denied.append(link);root.append(denied);return;
+  }
   const epoch=++state.epoch;root.replaceChildren(node('div','portal-loading','Carregando os registros da campanha...'));
   try{const all=await loadCampaignData();if(epoch!==state.epoch||root!==currentRoot())return;
-   state.data=all;root.replaceChildren();const grid=node('div','portal-grid'),aside=sidebar(root),panel=node('section','portal-panel');
-   grid.append(aside,panel);root.append(grid);
-   if(state.tab==='characters')showCharacters(panel,root);
+   state.data=all;root.replaceChildren();
+   const grid=node('div',masterPage?'portal-master-shell':'portal-grid'),panel=node('section','portal-panel');
+   if(!masterPage)grid.append(sidebar(root));
+   grid.append(panel);root.append(grid);
+   if(masterPage){
+    const masterCampaign=state.current;
+    renderMasterArchive({
+     panel,client:state.client,user:state.user,campaign:masterCampaign,
+     campaigns:state.campaigns,oldRecords:all.records,members:all.members,audit:all.audit,names:all.names,
+     onCampaignChange:id=>{state.current=state.campaigns.find(c=>c.id===id)||state.current;state.tab='gm';void renderDashboard(root)},
+     onLegacyEdit:record=>recordForm(panel,root,record),
+     isCurrent:()=>document.body.dataset.page==='mestre'&&state.current?.id===masterCampaign.id&&root===currentRoot()
+    });
+   }else if(state.tab==='characters')showCharacters(panel,root);
    else if(state.tab==='materials')showMaterials(panel,root);
    else if(state.tab==='chat')showChat(panel,root);
-   else if(state.tab==='gm'&&isGM())showGM(panel,root);
+   else if(state.tab==='gm'&&isGM()){
+    panel.append(title('Arquivo técnico do mestre','Todos os registros do mestre foram reunidos numa página privada.'));
+    const link=node('a','portal-action','Abrir Arquivo do Mestre');link.href='mestre.html';panel.append(link);
+   }
    else showHome(panel,root);
-   // Subscribe once per campaign; suppress duplicate subscriptions across view updates.
-   if(!state.live||state.live.topic!=='realtime:haema-chat-'+campaignId())void subscribeChat();
+   // Do not subscribe to player chat from the private, technical workspace.
+   if(!masterPage&&(!state.live||state.live.topic!=='realtime:haema-chat-'+campaignId()))void subscribeChat();
   }catch(e){if(epoch!==state.epoch)return;root.replaceChildren();const box=node('div','portal-setup');box.append(node('h2','','Não foi possível carregar a campanha.'),node('p','',errorText(e)),b('Tentar novamente',()=>void renderDashboard(root),'portal-action'));root.append(box)}
  }
  function showHome(panel,root){
@@ -440,7 +473,11 @@ const PORTAL=(()=>{
    const r=await notify(op,form,'Registro salvo e auditado.');save.disabled=false;if(r)await renderDashboard(root);
   });panel.append(form);
  }
- async function reload(root){await fetchCampaigns();state.tab=new URLSearchParams(location.search).get('secao')==='characters'?'characters':'home';if(state.current)await renderDashboard(root);else noCampaign(root)}
+ async function reload(root){
+  await fetchCampaigns();
+  state.tab=document.body.dataset.page==='mestre'?'gm':new URLSearchParams(location.search).get('secao')==='characters'?'characters':'home';
+  if(state.current)await renderDashboard(root);else noCampaign(root);
+ }
  async function init(){
   const root=currentRoot();if(!root)return;const epoch=++state.epoch;root.replaceChildren(node('div','portal-loading','Preparando o seu acesso...'));
   try{
