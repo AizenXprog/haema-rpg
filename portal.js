@@ -115,7 +115,7 @@ const PORTAL=(()=>{
   for(const[id,mark,label]of options){
    if(id==='gm'){
     const link=node('a','portal-tab');link.href='campanha.html';
-    link.append(node('span','portal-tab-mark',mark),node('span','','Arquivo do Mestre'));tabs.append(link);continue;
+    link.append(node('span','portal-tab-mark',mark),node('span','','Campanhas e registros'));tabs.append(link);continue;
    }
    const tab=node('button','portal-tab'+(id===state.tab?' is-active':''));
    tab.type='button';tab.setAttribute('aria-current',id===state.tab?'page':'false');
