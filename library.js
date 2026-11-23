@@ -89,11 +89,17 @@ async function openBook(permissions) {
   let request = 0;
   let alive = true;
   let touchStart = null;
+  let indexQuery = '';
+  let indexCategory = 'all';
   const spread = dialog.querySelector('.book-spread');
   spread.tabIndex=-1;
   const readStatus = dialog.querySelector('.reader-status');
   const close = dialog.querySelector('[data-close]');
   const toc = dialog.querySelector('[data-index]');
+  const faunaSearch = dialog.querySelector('[data-fauna-search]');
+  const faunaFilter = dialog.querySelector('[data-fauna-filter]');
+  if(faunaSearch)faunaSearch.value='';
+  if(faunaFilter)faunaFilter.value='all';
   const previous = dialog.querySelector('[data-previous]');
   const next = dialog.querySelector('[data-next]');
   const mobile = matchMedia('(max-width: 720px)');
@@ -156,17 +162,26 @@ async function openBook(permissions) {
   }
   function showIndex() {
     spread.removeAttribute('aria-busy');
+    const query=indexQuery.trim().toLocaleLowerCase('pt-BR');
+    const visibleIndex=index.filter(item=>{
+      if(indexCategory!=='all'&&item.threat!==indexCategory)return false;
+      if(!query)return true;
+      return [item.title,item.subtitle,item.region,item.source_code].filter(Boolean)
+        .join(' ').toLocaleLowerCase('pt-BR').includes(query);
+    });
     request++;
     entryId = null;
     page = 0;
     entries=[];
-    entries.push(() => {
+    // An active search/filter opens directly on the matching creatures,
+    // especially important on mobile where the preface takes a whole page.
+    if(!query&&indexCategory==='all') entries.push(() => {
       const preface=node('div','book-copy');
       preface.append(
         node('p','','Estas folhas não foram escritas para encerrar a história das criaturas, mas para impedir que aquilo que delas conheço se perca. Cada encontro, relato e vestígio me oferece somente uma parcela do mundo.'),
         node('p','','Anoto o que posso sustentar, separo o que vi do que ouvi e deixo em branco o que ainda não compreendo. Não há vergonha na dúvida; há, porém, grande perigo em tomar a imaginação por testemunho.'),
         node('p','','Não contes os nomes aqui reunidos como se fossem todos os habitantes destas terras. A natureza há de guardar muito mais do que estas páginas conseguem alcançar. E eu ainda tenho muito a descobrir.'),
-        node('p','book-editorial-note','Nota editorial: os registros classificados como históricos, conceitos ou propostas permanecem em estudo. Sua publicação para leitura não os transforma em cânone aprovado.')
+        node('p','book-editorial-note','Estado canônico, ameaça ambiental e descoberta pela mesa são informações diferentes. "Risco" pode significar defesa de ninhos ou perigo da travessia, não necessariamente caça a pessoas. Relatos sem comprovação física permanecem reservados ao mestre.')
       );
       const leaves=[node('span','folio-label','BESTIÁRIO · PRIMEIRAS FOLHAS'),
         node('h2','','A quem abrir este caderno'),preface];
@@ -176,28 +191,29 @@ async function openBook(permissions) {
       }
       return leaves;
     });
-    if (!index.length) {
-      entries.push(() => [node('span','folio-label','BESTIÁRIO · ACERVO AINDA NÃO LIBERADO'),
-        node('h2','','Nenhuma criatura disponível para leitura.'),
-        node('p','','O acesso ao livro está funcionando. O mestre ainda não liberou nenhum registro do Bestiário para os jogadores.'),
-        node('p','','Assim que o mestre selecionar e publicar os trechos autorizados, os animais aparecerão neste índice.')]);
+    if (!visibleIndex.length) {
+      entries.push(() => [node('span','folio-label','BESTIÁRIO · ÍNDICE'),
+        node('h2','','Nenhuma criatura encontrada.'),
+        node('p','',index.length?'Tente outro nome, região ou classificação. A busca não mostra registros sem autorização.':'O mestre ainda não liberou registros do Bestiário para sua conta.')]);
     }
-    for (let i=0;i<index.length;i+=6) {
-      const items = index.slice(i,i+6);
+    for (let i=0;i<visibleIndex.length;i+=6) {
+      const items = visibleIndex.slice(i,i+6);
       entries.push(() => {
         const list = node('ol','book-index');
         for (const item of items) {
           const li = node('li');
           const display = permissions.admin && !item.released ? item.title+' · NÃO PUBLICADO' : item.title;
           const pick = button(display,() => loadEntry(item.id),'book-index-entry');
-          const states={canon:'Consolidado',concept:'Conceito em estudo',historical:'Registro histórico',proposal:'Proposta em estudo'};
-          pick.append(node('span','book-index-state',' · '+(states[item.state]||'Registro')));
+          const states={canon:'Consolidado',concept:'Conceito em estudo',historical:'Registro histórico',proposal:'Proposta em estudo',legend:'Relato não comprovado'};
+          const threat={hostile:'Risco de exploração',non_hostile:'Não hostil',undetermined:'Perigo indefinido'};
+          const fragments=[states[item.state]||'Registro',threat[item.threat],item.region&&item.region.length<=32?item.region:null].filter(Boolean);
+          pick.append(node('span','book-index-state',fragments.join(' · ')));
           li.append(pick);list.append(li);
         }
         return [node('span','folio-label','BESTIÁRIO · ÍNDICE'),node('h2','',i===0?'Criaturas que pude conhecer':'Outras folhas do caderno'),list];
       });
     }
-    if (index.length) {
+    if (visibleIndex.length&&!query&&indexCategory==='all') {
       entries.push(() => {
         const note=node('div','book-copy');
         note.append(
@@ -224,7 +240,10 @@ async function openBook(permissions) {
         const parts = [node('span','folio-label',i===0?'DO CADERNO DE CRIATURAS':'DAS FOLHAS QUE SE SEGUEM')];
         if (i===0) {
           parts.push(node('h2','creature-title',item.title),node('p','creature-subtitle',item.subtitle));
-          if(item.state!=='canon')parts.push(node('p','book-editorial-note','Registro editorial em estudo · publicação não equivale a aprovação canônica.'));
+          if(item.state==='legend')parts.push(node('p','book-editorial-note','Relato preservado, mas existência física não comprovada. Não confundir tradição com espécie demonstrada.'));
+          else if(item.state!=='canon')parts.push(node('p','book-editorial-note','Registro editorial em estudo · publicação não equivale a aprovação canônica.'));
+          if(item.existence==='historical_survival_unknown')parts.push(node('p','book-editorial-note','Existência histórica reconhecida; sobrevivência atual não comprovada.'));
+          if(item.threat==='hostile')parts.push(node('p','book-creature-metadata','Risco de exploração · ataques a pessoas não são necessariamente habituais.'));
         } else parts.push(node('h3','running-title',item.title));
         const content=node('div','book-copy');
         // Plain text from authorized source. No remote HTML or inferred lore.
@@ -250,6 +269,12 @@ async function openBook(permissions) {
     if(target<0 || target>=entries.length || spread.getAttribute('aria-busy')==='true')return;
     page=target;paint(delta>0?'next':'previous');
   }
+  faunaSearch?.addEventListener('input',()=>{
+    indexQuery=faunaSearch.value;showIndex();
+  },options);
+  faunaFilter?.addEventListener('change',()=>{
+    indexCategory=faunaFilter.value;showIndex();
+  },options);
   previous.addEventListener('click',()=>turn(-1),options);
   next.addEventListener('click',()=>turn(1),options);
   toc.addEventListener('click',showIndex,options);

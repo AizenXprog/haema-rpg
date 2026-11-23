@@ -1,8 +1,8 @@
 import './reserved-books.js?v=2';
 import './volumes.js?v=2';
-import './portal.js?v=5';
+import './portal.js?v=6';
 import './portal-hub.js?v=3';
-import './library.js?v=4';
+import './library.js?v=5';
 import './admin.js?v=6';
 import './activity-client.js?v=1';
 import './mesa-gate.js';

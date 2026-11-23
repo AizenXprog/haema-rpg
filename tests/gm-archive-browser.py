@@ -1,6 +1,6 @@
 # Browser E2E of the GM archive. Uses synthetic auth + in-memory Supabase.
 # NO production data or writes. HTML and JavaScript are served locally.
-import asyncio,json,os,ast
+import asyncio,json,os,ast,shutil
 from pathlib import Path
 from playwright.async_api import async_playwright
 BASE=os.getenv('HAEMA_TEST_URL','http://127.0.0.1:8791').rstrip('/')
@@ -8,8 +8,8 @@ ART=Path('artifacts/gm-archive');ART.mkdir(parents=True,exist_ok=True)
 root=ast.parse(Path('tests/browser.py').read_text(encoding='utf8'))
 sdk=next(ast.literal_eval(node.value) for node in root.body
  if isinstance(node,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='mock_sdk' for t in node.targets))
-sdk=sdk.replace("if(name==='haema_is_admin')", """if(name==='haema_gm_bestiary_entry')return{data:{id:args.entry_id,title:'Animal de teste',subtitle:'Espécie sintética',state:'proposal',paragraphs:Array.from({length:5},(_,i)=>'Parágrafo completo de teste '+(i+1)+' sem HTML malicioso.')}};
-  if(name==='haema_gm_bestiary_index')return{data:Array.from({length:25},(_,i)=>({id:'registro-'+String(i+1).padStart(2,'0'),title:'Animal de teste '+(i+1),subtitle:'Espécie sintética',state:i<3?'canon':'proposal',released:true}))};
+sdk=sdk.replace("if(name==='haema_is_admin')", """if(name==='haema_gm_bestiary_entry')return{data:{id:args.entry_id,title:args.entry_id==='u01'?'Relato de teste':'Animal de teste',subtitle:'Documento sintético',state:args.entry_id==='u01'?'legend':'canon',threat:args.entry_id==='u01'?'undetermined':'hostile',existence:args.entry_id==='u01'?'unconfirmed_legend':'established',paragraphs:Array.from({length:5},(_,i)=>'Parágrafo completo de teste '+(i+1)+' sem HTML malicioso.')}};
+  if(name==='haema_gm_bestiary_index')return{data:Array.from({length:134},(_,i)=>({id:i<25?'registro-'+String(i+1).padStart(2,'0'):i<53?'h01-'+String(i-24).padStart(2,'0'):i<88?'h02-'+String(i-52).padStart(2,'0'):i<120?'bio-'+String(i-87).padStart(3,'0'):'u'+String(i-119).padStart(2,'0'),title:i>=120?'Relato lendário '+(i-119):'Animal de teste '+(i+1),subtitle:'Documento sintético',state:i>=120?'legend':'canon',threat:i>=120?'undetermined':i>=88?'non_hostile':'hostile',region:i<60?'Eshvar':'Gonghorran',released:i<120}))};
   if(name==='haema_is_admin')""")
 sdk=sdk.replace("upsert(){return q},single(){single=true;return q}", """
   upsert(){return q},
@@ -34,7 +34,7 @@ async def setup(browser,role,width,height):
  return context
 async def main():
  async with async_playwright() as pw:
-  browser=await pw.chromium.launch(headless=True)
+  browser=await pw.chromium.launch(headless=True,channel='chrome' if shutil.which('google-chrome') else None)
   for width,height in [(320,700),(390,844),(768,1024),(1440,900)]:
    ctx=await setup(browser,'admin',width,height)
    page=await ctx.new_page()
@@ -53,14 +53,19 @@ async def main():
    assert await page.locator('.master-stat').count()==4
    await page.get_by_role('button',name='Mundo e Bestiário').first.click()
    await page.locator('.master-animal').first.wait_for()
-   assert await page.locator('.master-animal').count()==25,'All 25 animals should be indexed'
+   assert await page.locator('.master-animal').count()==18,'Catalogue is paginated for readability'
+   assert await page.get_by_text('Bestiário · 134 registros').count()==1
+   await page.get_by_label('Fauna').select_option('legend')
+   assert await page.locator('.master-animal').count()==14,'Only 14 legendary reports'
+   assert await page.locator('.master-animal-uncertain').count()==14,'Every legend must be visibly unverified'
    await page.get_by_role('button',name='Ler ficha completa').first.click()
    await page.locator('.master-dossier-paragraph').first.wait_for()
-   assert await page.locator('.master-dossier-paragraph').count()==5,'Full five-paragraph dossier required'
-   assert await page.locator('.master-dossier-warning').count()==1,'Proposal must not be shown as canon'
+   assert await page.locator('.master-dossier-paragraph').count()==5,'Five-paragraph dossier required'
+   assert await page.get_by_text('Este registro fica reservado ao mestre.').count()>0
    await page.get_by_role('button',name='Fechar').first.click()
    await page.locator('.master-dialog').wait_for(state='detached',timeout=5000)
-   assert await page.locator('.master-dialog').count()==0,'No private DOM should remain after closing'
+   await page.get_by_label('Fauna').select_option('all')
+   assert await page.locator('.master-animal').count()==18
    await page.screenshot(path=str(ART/f'master-bestiary-{width}.png'))
    await page.get_by_role('button',name='Anotar na campanha').first.click()
    assert await page.locator('.master-form').count()==1
@@ -111,5 +116,5 @@ async def main():
   assert await page.locator('.master-workspace').count()==0
   await ctx.close()
   await browser.close()
-  print('PASS: GM private archive CRUD, 25 fauna, linked notes, 4 viewports, player/guest denial, no production writes.')
+  print('PASS: GM archive CRUD, 134 catalog entries (14 unverified), 18-item pagination, 4 viewports, player/guest denial.')
 asyncio.run(main())

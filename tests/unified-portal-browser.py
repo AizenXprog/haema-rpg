@@ -1,5 +1,5 @@
 # Browser E2E with mock auth/storage. NEVER writes to actual Supabase.
-import asyncio, json, os, ast
+import asyncio, json, os, ast, shutil
 from pathlib import Path
 from playwright.async_api import async_playwright
 BASE=os.environ.get('HAEMA_TEST_URL','http://127.0.0.1:8791').rstrip('/')
@@ -9,7 +9,7 @@ mock_sdk=mock_sdk.replace("upsert(){return q},single(){single=true;return q}","u
 assert "qaWrites" in mock_sdk
 async def main():
  async with async_playwright() as p:
-  browser=await p.chromium.launch(headless=True)
+  browser=await p.chromium.launch(headless=True,channel='chrome' if shutil.which('google-chrome') else None)
   context=await browser.new_context(viewport={'width':1280,'height':860})
   await context.add_init_script("window.qaRole='admin';window.qaWrites=[];")
   await context.route('**/npm/@supabase/supabase-js@2.119.0/+esm',lambda r:r.fulfill(status=200,content_type='text/javascript',body=mock_sdk))
