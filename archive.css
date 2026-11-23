@@ -220,3 +220,8 @@
  .reader-catalog-tools{grid-template-columns:1fr}
  .book-page{height:calc(100dvh - 270px);min-height:140px}
 }
+
+/* Keep animated parchment and decorative shadows within viewport at tablet widths. */
+body[data-page="biblioteca"]:has(.book-reader[open]){overflow-x:clip}
+.book-reader .book-spread,.book-reader .book-page{min-width:0}
+.book-reader .book-page{max-width:100%;box-sizing:border-box}
