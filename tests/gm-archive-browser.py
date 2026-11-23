@@ -39,7 +39,14 @@ async def main():
    ctx=await setup(browser,'admin',width,height)
    page=await ctx.new_page()
    errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-   await page.goto(BASE+'/mestre.html',wait_until='domcontentloaded')
+   # Enter from the *original Portal tile*, not by a hidden/direct URL.
+   await page.goto(BASE+'/portal.html',wait_until='domcontentloaded')
+   entry=page.locator('#haema-account-hub a[href="campanha.html"]')
+   await entry.wait_for(timeout=15000)
+   assert 'Campanhas e registros' in await entry.inner_text()
+   await entry.click()
+   await page.wait_for_url('**/campanha.html')
+   assert await page.evaluate("document.body.dataset.page")=='mestre', 'Portal kept old campaign page instead of GM archive'
    await page.get_by_role('heading',name='Seu mundo, documentado.').wait_for(timeout=15000)
    assert await page.locator('.master-tab').count()==4,'Only four archive sections expected'
    assert await page.locator('.master-workspace').count()==1
@@ -76,10 +83,14 @@ async def main():
   # Player cannot get into the GM view, even if the static route exists.
   ctx=await setup(browser,'player',390,844)
   page=await ctx.new_page()
-  await page.goto(BASE+'/mestre.html',wait_until='domcontentloaded')
+  await page.goto(BASE+'/campanha.html',wait_until='domcontentloaded')
   await page.get_by_role('heading',name='Arquivo reservado ao mestre').wait_for(timeout=15000)
   assert await page.locator('.master-workspace').count()==0,'Player must never see master workspace'
   assert await page.evaluate('window.qaWrites.length')==0,'Unauthorized write'
+  # Player sheets were moved, not destroyed.
+  await page.goto(BASE+'/fichas.html?secao=characters',wait_until='domcontentloaded')
+  await page.get_by_role('button',name='Nova ficha Unificada · experimental').wait_for(timeout=15000)
+  assert await page.locator('.master-workspace').count()==0
   await ctx.close()
   # Guest has Google sign-in only.
   ctx=await setup(browser,'guest',390,844)
