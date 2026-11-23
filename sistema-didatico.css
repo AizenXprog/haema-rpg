@@ -1,0 +1,60 @@
+/* HÆMA | one coherent learning journey, not a dashboard of pages. */
+main.haema-learning{--blood:#a6494d;--wine:#421d28;--aged:#dab98b;--paper:#f1e5d6;--muted:#c6b2ae;--edge:rgba(211,163,119,.25);--panel:rgba(23,15,19,.86);background:radial-gradient(ellipse 95% 28% at 52% 3%,rgba(124,38,48,.28),transparent 80%),radial-gradient(ellipse 65% 25% at 10% 73%,rgba(130,93,48,.13),transparent 80%),#110d11;color:var(--paper);min-height:100vh;padding:0 0 105px}
+main.haema-learning *{box-sizing:border-box}
+main.haema-learning .learning-shell{width:min(1160px,calc(100% - 40px));margin-inline:auto}
+main.haema-learning .learning-hero{padding:clamp(54px,9vw,122px) 0 clamp(38px,6vw,70px);position:relative;overflow:hidden}
+main.haema-learning .learning-hero:before{content:"Æ";position:absolute;top:-.34em;right:-.12em;font:500 clamp(17rem,48vw,43rem)/1 Georgia,serif;color:rgba(167,62,69,.075);pointer-events:none}
+main.haema-learning .learning-eyebrow{font:.73rem/1.5 system-ui,sans-serif;letter-spacing:.24em;color:var(--aged);text-transform:uppercase;margin:0 0 15px}
+main.haema-learning h1,main.haema-learning h2,main.haema-learning h3{font-family:"Cormorant Garamond",Georgia,serif;line-height:1.09;letter-spacing:-.018em}
+main.haema-learning h1{font-size:clamp(3rem,8vw,6.4rem);max-width:900px;margin:0 0 24px;font-weight:600}
+main.haema-learning h1 em,main.haema-learning h2 em{color:var(--aged);font-weight:500}
+main.haema-learning .learning-lead{font-size:clamp(1.05rem,2vw,1.25rem);color:var(--muted);max-width:650px;line-height:1.7}
+main.haema-learning .learning-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+main.haema-learning a.learning-button,main.haema-learning button.learning-button{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:13px 21px;border:1px solid var(--aged);border-radius:7px;background:linear-gradient(135deg,#704045,#47222e);font:650 .94rem/1.25 system-ui,sans-serif;text-decoration:none;color:#fff0e3;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+main.haema-learning a.learning-button:hover,main.haema-learning button.learning-button:hover{transform:translateY(-2px);box-shadow:0 9px 25px rgba(138,49,50,.17)}
+main.haema-learning .learning-button.secondary{background:transparent;border-color:var(--edge);color:var(--paper)}
+main.haema-learning .learning-route{border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);background:rgba(19,13,17,.83)}
+main.haema-learning .learning-route .learning-shell{display:flex;align-items:center;flex-wrap:wrap;gap:clamp(9px,3vw,38px);min-height:60px}
+main.haema-learning .learning-route a{padding:17px 4px;color:var(--muted);text-decoration:none;font:600 .9rem system-ui,sans-serif;transition:color .2s ease}
+main.haema-learning .learning-route a:hover,main.haema-learning .learning-route a:focus-visible{color:var(--aged)}
+main.haema-learning .learning-section{padding:clamp(55px,8vw,104px) 0 0;scroll-margin-top:20px}
+main.haema-learning .learning-section-title{margin:0 0 16px;font-size:clamp(2.3rem,5vw,4.2rem)}
+main.haema-learning .learning-section-lead{max-width:720px;color:var(--muted);line-height:1.7;margin:0 0 26px}
+main.haema-learning .learning-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;list-style:none;padding:0;margin:28px 0}
+main.haema-learning .learning-step{border:1px solid var(--edge);border-radius:12px;min-height:206px;padding:25px 22px;background:linear-gradient(155deg,rgba(72,31,43,.43),var(--panel));position:relative}
+main.haema-learning .learning-step-number{display:block;color:var(--aged);font:600 .84rem system-ui,sans-serif;letter-spacing:.12em;margin-bottom:18px}
+main.haema-learning .learning-step h3{margin:0 0 10px;font-size:1.65rem}
+main.haema-learning .learning-step p{margin:0;color:var(--muted);line-height:1.58;font-size:.91rem}
+main.haema-learning .learning-simulator{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:center;border:1px solid rgba(215,172,117,.41);border-radius:18px;padding:clamp(22px,4vw,44px);background:linear-gradient(105deg,rgba(96,38,49,.4),rgba(21,14,17,.94));margin-top:25px}
+main.haema-learning .learning-simulator h3{margin:0 0 12px;font-size:2rem}
+main.haema-learning .learning-simulator p{line-height:1.65;color:var(--muted)}
+main.haema-learning .learning-play{padding:20px;background:rgba(8,7,9,.47);border:1px solid var(--edge);border-radius:13px}
+main.haema-learning label.learning-label{display:block;color:var(--paper);font:600 .89rem system-ui,sans-serif;margin-bottom:8px}
+main.haema-learning select.learning-select{width:100%;min-height:43px;background:#24191f;color:var(--paper);border:1px solid #946c62;border-radius:6px;padding:9px;font:inherit;margin-bottom:13px}
+main.haema-learning .learning-outcome{min-height:66px;margin:15px 0 0;border-left:2px solid var(--aged);padding:10px 13px;background:rgba(18,12,16,.65);color:var(--paper);font-size:.94rem;line-height:1.6}
+main.haema-learning .learning-topics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+main.haema-learning .learning-topic{border:1px solid var(--edge);border-radius:10px;background:var(--panel);overflow:hidden}
+main.haema-learning .learning-topic summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:22px 22px 17px;min-height:94px}
+main.haema-learning .learning-topic summary::-webkit-details-marker{display:none}
+main.haema-learning .learning-topic summary:after{content:"+";color:var(--aged);font:300 1.9rem Georgia,serif;line-height:1}
+main.haema-learning .learning-topic[open] summary:after{content:"−"}
+main.haema-learning .learning-topic summary span{display:block;color:var(--aged);font:.7rem/1.4 system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+main.haema-learning .learning-topic summary strong{display:block;font:600 1.55rem/1.18 "Cormorant Garamond",Georgia,serif;color:var(--paper)}
+main.haema-learning .learning-topic-body{padding:0 22px 23px;color:var(--muted);font:.95rem/1.7 system-ui,sans-serif}
+main.haema-learning .learning-topic-body p{margin:5px 0 12px}
+main.haema-learning .learning-topic-body b{color:var(--paper)}
+main.haema-learning .learning-topic:hover{border-color:rgba(218,185,139,.62)}
+main.haema-learning .learning-next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+main.haema-learning .learning-next-card{display:flex;flex-direction:column;align-items:flex-start;border:1px solid var(--edge);border-radius:14px;padding:30px;background:linear-gradient(145deg,rgba(93,40,51,.43),rgba(20,15,18,.96))}
+main.haema-learning .learning-next-card h3{font-size:2rem;margin:0 0 10px}
+main.haema-learning .learning-next-card p{color:var(--muted);line-height:1.65;margin:0 0 21px;flex:1}
+main.haema-learning .learning-archive{margin-top:54px;padding:20px 25px;border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)}
+main.haema-learning .learning-archive summary{cursor:pointer;color:var(--aged);font:600 .95rem system-ui,sans-serif}
+main.haema-learning .learning-archive p{color:var(--muted);line-height:1.7}
+main.haema-learning .learning-archive-links{display:flex;gap:20px;flex-wrap:wrap}
+main.haema-learning .learning-archive-links a{color:var(--aged)}
+main.haema-learning .learning-footnote{margin-top:22px;color:var(--muted);font-size:.85rem;line-height:1.6}
+main.haema-learning :focus-visible{outline:2px solid #f2cf97;outline-offset:3px}
+@media(max-width:900px){main.haema-learning .learning-steps{grid-template-columns:repeat(2,minmax(0,1fr))}main.haema-learning .learning-simulator{grid-template-columns:1fr}}
+@media(max-width:580px){main.haema-learning .learning-shell{width:min(100% - 28px,1160px)}main.haema-learning .learning-hero{padding:58px 0 42px}main.haema-learning .learning-route .learning-shell{justify-content:space-between;gap:5px}main.haema-learning .learning-route a{font-size:.81rem;padding:17px 1px}main.haema-learning .learning-steps,main.haema-learning .learning-topics,main.haema-learning .learning-next{grid-template-columns:1fr}main.haema-learning .learning-step{min-height:0}main.haema-learning .learning-next-card{padding:24px}main.haema-learning .learning-topic summary{min-height:70px}}
+@media(prefers-reduced-motion:reduce){main.haema-learning a.learning-button,main.haema-learning .learning-route a{transition:none!important}main.haema-learning a.learning-button:hover{transform:none}main.haema-learning{scroll-behavior:auto}}

@@ -21,10 +21,25 @@ blockquote{margin:18px 0;padding:8px 18px;background:#302028;border-left:3px sol
 td{padding:8px 10px;border:1px solid #694743}tr:first-child{background:#3b292c;font-weight:700}
 code{background:#120c11;border-radius:4px;padding:2px 5px;color:#f1c7a2}strong{color:#ffe2c4}
 #empty{display:none}.muted{color:#bba59b}
-@media(max-width:850px){.layout{grid-template-columns:1fr}nav{position:static;max-height:260px}main{padding:20px 12px}.chapter-body{padding:5px 14px 25px}}
+@media(max-width:850px){.layout{grid-template-columns:1fr}main.unified-manual .layout nav{position:static;max-height:none}main.unified-manual{padding:20px 12px}.chapter-body{padding:5px 14px 25px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 main.unified-manual .layout nav label{display:block;line-height:1.4;margin-bottom:12px;color:#e6c8b7}main.unified-manual .layout nav input{display:block;margin:0 0 12px}
+
+.manual-guide-caption{font:650 .72rem/1.4 system-ui,sans-serif;letter-spacing:.16em;color:#e0b783;margin:0 0 12px}
+.manual-guide-intro{line-height:1.7;color:#dbbfb1;margin:10px 0 24px;max-width:700px}
+.manual-toc-group{border-top:1px solid #62413d;margin-top:12px}
+.manual-toc-group>summary{cursor:pointer;list-style:none;font:600 .96rem system-ui,sans-serif;color:#edd9ca;padding:14px 2px;display:block}
+.manual-toc-group>summary::-webkit-details-marker{display:none}
+.manual-toc-group>summary:before{content:"+";color:#e2b97d;padding-right:8px}
+.manual-toc-group[open]>summary:before{content:"−"}
+.manual-toc-group>summary small{display:block;margin:6px 0 0 21px;color:#cbb0a3;font:400 .76rem system-ui,sans-serif}
+.manual-toc-links a{font-size:.79rem;line-height:1.5;overflow-wrap:anywhere;padding:8px 7px!important}
+main.unified-manual .chapter{scroll-margin-top:18px}
+main.unified-manual .chapter-body{line-height:1.76}
+@media(max-width:850px){main.unified-manual .manual-guide-nav{max-height:none!important}main.unified-manual .manual-guide-nav .manual-toc-group:not([open]){max-height:none}}
+
+main.unified-manual .manual-toc-links a[hidden],main.unified-manual .manual-toc-group[hidden]{display:none!important}
 </style><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="foundation.css?v=1"><link rel="stylesheet" href="cinema.css?v=1">
 <script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script>
 <script defer src="rules-0.1.js?v=0.1"></script><script defer src="haema01.js?v=0.4"></script>
@@ -37,29 +52,36 @@ main.unified-manual .layout nav label{display:block;line-height:1.4;margin-botto
 </div></header>
 <main id="conteudo" class="unified-manual"><p class="muted">HÆMA · HAEMATOMANTHÍA · 19/11/2026</p>
 <h1>Manual Unificado<br><em>do Criador.</em></h1>
-<p class="warning"><strong>EDIÇÃO CANDIDATA PARA PLAYTEST · NÃO OFICIAL.</strong> Esta é uma reprodução didática do candidato integrado. As regras ainda precisam de validação do criador e de playtests humanos. Propostas de cores de Regências foram omitidas para não serem confundidas com cânone. Os registros de versões anteriores permanecem preservados.</p>
-<div class="layout"><nav aria-label="Sumário do Manual"><label for="filter">Pesquisar nos capítulos</label><input type="search" id="filter" placeholder="Ex.: Metus, Esquiva, Invicta" autocomplete="off"><p id="count" class="muted"></p><a href="#cap-0">HÆMA — MANUAL UNIFICADO DO CRIADOR</a>
-<a href="#cap-1">PRIMEIRO, ENTENDA EM DOIS MINUTOS</a>
+<p class="manual-guide-intro">É sua primeira vez no HÆMA? <a href="sistema.html#aprender">Comece pelo guia simples</a>. Este é o documento completo para consulta: abra um assunto por vez ou use a pesquisa.</p>
+<p class="warning"><strong>Playtest experimental, não oficial.</strong> Regras em validação; nenhum elemento de Lore provisório se torna cânone. O documento original e as versões anteriores permanecem preservados.</p>
+<div class="layout"><nav aria-label="Sumário do Manual" class="manual-guide-nav">
+ <p class="manual-guide-caption">ENCONTRE UMA REGRA</p>
+ <label for="filter">Buscar no manual</label>
+ <input type="search" id="filter" placeholder="Ex.: medo, Defesa, técnica" autocomplete="off">
+ <p id="count" class="muted" role="status"></p>
+ <details class="manual-toc-group" open><summary>Comece por aqui<small>Quatro capítulos para jogar</small></summary><div class="manual-toc-links"><a href="#cap-1">PRIMEIRO, ENTENDA EM DOIS MINUTOS</a>
 <a href="#cap-2">1. Comece a jogar em cinco minutos</a>
 <a href="#cap-3">2. Criação de personagens — frágeis, mas nunca incapazes de tentar</a>
-<a href="#cap-4">3. Regra universal — uma decisão, uma resolução</a>
-<a href="#cap-5">4. Combate fluido, sem uma lista fechada de golpes</a>
+<a href="#cap-4">3. Regra universal — uma decisão, uma resolução</a></div></details>
+<details class="manual-toc-group" ><summary>Regras em jogo<small>Confronto, medo, evolução e poder</small></summary><div class="manual-toc-links"><a href="#cap-5">4. Combate fluido, sem uma lista fechada de golpes</a>
 <a href="#cap-6">5. Integridade, Ferimentos, socorro e descanso</a>
 <a href="#cap-7">6. Metus, medo que interfere em dados</a>
 <a href="#cap-8">7. Latebra, furtividade por Marcas secretas</a>
 <a href="#cap-9">8. Exploração, investigação, interação, perseguição e sobrevivência</a>
 <a href="#cap-10">9. Campanha longa: progresso lento, descobertas frequentes</a>
 <a href="#cap-11">10. Regências, Tanger e assinatura visual individual</a>
-<a href="#cap-12">11. Invicta e Ápice — o instante que a mesa lembra</a>
-<a href="#cap-13">12. Teste de mesa integrado para cinco pessoas</a>
+<a href="#cap-12">11. Invicta e Ápice — o instante que a mesa lembra</a></div></details>
+<details class="manual-toc-group" ><summary>Para quem vai mestrar<small>Exemplos, auditoria e decisões</small></summary><div class="manual-toc-links"><a href="#cap-13">12. Teste de mesa integrado para cinco pessoas</a>
 <a href="#cap-14">13. Auditoria do candidato e contrato de publicação</a>
 <a href="#cap-15">14. Entenda o HÆMA como se tivesse 10 anos</a>
-<a href="#cap-16">15. Simulações completas: a mesma cena por cinco caminhos</a>
-<a href="#cap-17">16. As decisões do mestre em 15 segundos</a>
+<a href="#cap-16">15. Simulações completas: a mesma cena por cinco caminhos</a></div></details>
+<details class="manual-toc-group" ><summary>Campanhas e aprofundamento<small>Métodos e caminhos de longa duração</small></summary><div class="manual-toc-links"><a href="#cap-17">16. As decisões do mestre em 15 segundos</a>
 <a href="#cap-18">17. Como criar personagens para testar em cinco minutos</a>
 <a href="#cap-19">18. Campanha longa: 12, 30, 60 e 100 sessões</a>
 <a href="#cap-20">19. O Tanger que cada jogador imagina, sem perder identidade</a>
-<a href="#cap-21">20. Revisão final: o que está resolvido, o que precisa ser aprovado</a></nav>
+<a href="#cap-21">20. Revisão final: o que está resolvido, o que precisa ser aprovado</a></div></details>
+<details class="manual-toc-group" ><summary>Sobre esta edição<small>Introdução e autoria</small></summary><div class="manual-toc-links"><a href="#cap-0">HÆMA — MANUAL UNIFICADO DO CRIADOR</a></div></details>
+ </nav>
 <section id="chapters"><p id="empty">Nenhum capítulo corresponde à busca.</p><details class="chapter" id="cap-0" open><summary><span>00</span>HÆMA — MANUAL UNIFICADO DO CRIADOR</summary><div class="chapter-body"><h2>Edição integral para jogar, ensinar e aprovar • Base 0.9.1 revisada em 19/11/2026</h2>
 <p><strong>Data:</strong> 19/11/2026</p>
 <p><strong>Autoria e direção criativa:</strong> Vitor Monte</p>

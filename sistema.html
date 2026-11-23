@@ -2,14 +2,14 @@
 <html lang="pt-BR" data-soundtrack="assets/media-vita-ambient.mp3">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0B0A07">
-<meta name="description" content="Sistema — HÆMA."><meta name="author" content="Vitor Monte">
-<title>Sistema — HÆMA</title>
+<meta name="description" content="Aprenda HÆMA em passos simples: dois dados, personagem, combate, Metus, Latebra e Tanger. Manual completo e laboratório no mesmo caminho."><meta name="author" content="Vitor Monte">
+<title>Sistema — Aprender e jogar HÆMA</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=0.1">
+<link rel="stylesheet" href="style.css?v=0.1"><link rel="stylesheet" href="sistema-didatico.css?v=20261123">
 <script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script>
-<script defer src="rules-0.1.js?v=0.1"></script>
+<script defer src="rules-0.1.js?v=0.1"></script><script defer src="rules-unified-playtest.js?v=20261119"></script><script defer src="sistema-didatico.js?v=20261123"></script>
 
 <script defer src="haema01.js?v=0.4"></script><script defer src="experience.js?v=0.4"></script><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="archive.css?v=1"><script defer src="navigation.js?v=4"></script><script type="module" src="app.js?v=9"></script><script defer src="trailer-gallery.js?v=2"></script><link rel="stylesheet" href="foundation.css?v=1"><link rel="stylesheet" href="cinema.css?v=1"><script defer src="cinema.js?v=1"></script></head>
 <body data-page="sistema">
@@ -20,16 +20,77 @@
 <button class="sound-toggle" type="button" id="haema-sound-toggle" aria-label="Ativar música ambiente" aria-pressed="false" title="Controle de música ambiente"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span id="haema-sound-label">SOM DESLIGADO</span></button>
 <button class="menu-toggle" id="menu-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span></button><a class="top-action" href="portal.html">CONTA <span aria-hidden="true">↗</span></a>
 </div></header>
-<main id="conteudo" class="archive-world"><nav class="section-nav" aria-label="Seções do Sistema"><a href="sistema.html">Sistema</a><a href="manual.html">Manual Vivo</a><a href="manual.html#comecar">Aprender</a><a href="manual.html#lab-test">Simuladores</a><a href="mesa.html">Ficha & dados</a><a href="campanha.html?secao=characters">Fichas online</a><a href="atualizacoes.html">Atualizações</a></nav>
-<section class="archive-container" style="padding-top:25px">
-<div class="system-feature" style="border:1px solid #87504b;padding:22px;border-radius:14px">
-<p class="archive-kicker">NOVO · MANUAL UNIFICADO CANDIDATO / 19.11.2026</p>
-<h2>Uma edição para <em>experimentar.</em></h2>
-<p>Os 20 capítulos do candidato em consulta pesquisável e um laboratório independente para treinar criação, dados, combate, Metus, Latebra e evolução. <strong>Playtest não oficial.</strong> As ferramentas 0.1 abaixo continuam como arquivo histórico; suas fichas não são convertidas automaticamente.</p>
-<div style="display:flex;gap:12px;flex-wrap:wrap"><a class="archive-button" href="manual-unificado.html">Consultar Manual Unificado</a><a class="archive-button" href="laboratorio-unificado.html">Abrir laboratório experimental</a><a class="archive-button" href="tecnicas-unificadas.html">Consultar 22 técnicas</a></div>
-</div></section><section class="archive-heading"><div class="archive-container"><p class="archive-kicker">SISTEMA · NÚCLEO EXPERIMENTAL 0.1</p><h1>Conhecer. Experimentar.<br><em>Dar vida.</em></h1><p>Da primeira leitura à ficha do personagem, encontre cada instrumento no seu lugar.</p></div></section>
-<section class="archive-container system-editorial" aria-labelledby="system-manual"><div class="system-feature"><span class="archive-kicker">01 / MANUAL VIVO</span><h2 id="system-manual">A regra ao alcance<br>da <em>história.</em></h2><p>Consulte os capítulos do Manual 0.1, acompanhe exemplos e volte ao ponto que precisa.</p><a class="archive-button" href="manual.html">Abrir Manual Vivo ↗</a></div><div class="system-index"><a href="manual.html#conhecendo-haema"><span>COMECE AQUI</span><h3>Conheça sua ficha</h3><p>Atributos, competências e recursos.</p></a><a href="manual.html#comecar"><span>PASSO A PASSO</span><h3>Aprenda na prática</h3><p>Uma introdução guiada ao núcleo jogável.</p></a><a href="manual.html#lab-test"><span>EXPERIMENTE</span><h3>Laboratórios de regras</h3><p>Testes, combate e recursos com os simuladores existentes.</p></a></div></section>
-<section class="archive-container system-instruments" aria-labelledby="instruments-title"><div><p class="archive-kicker">02 / INSTRUMENTOS</p><h2 id="instruments-title">Do papel à <em>decisão.</em></h2></div><div class="instrument-list"><a href="mesa.html"><span>01</span><div><h3>Ficha local & dados</h3><p>Personagens neste dispositivo e rolador graduado. Acesso autorizado.</p></div><b aria-hidden="true">↗</b></a><a href="campanha.html?secao=characters"><span>02</span><div><h3>Fichas online</h3><p>Consulte e edite suas fichas vinculadas à campanha.</p></div><b aria-hidden="true">↗</b></a><a href="atualizacoes.html"><span>03</span><div><h3>Histórico de atualizações</h3><p>Acompanhe o desenvolvimento e o estado de cada etapa.</p></div><b aria-hidden="true">↗</b></a></div></section>
-<p class="archive-container foundation-note">As ferramentas seguem o Manual 0.1 experimental. Esta reorganização não modifica regras, cálculos ou fichas.</p></main>
-<footer class="footer"><div class="footer-mark"><img src="assets/favicon.svg" width="40" height="40" alt=""><span class="display">HÆMA</span><span>HAEMATOMANTHÍA · SISTEMA AUTORAL</span></div><div class="footer-authorship"><span>CRIAÇÃO E DESENVOLVIMENTO</span><p>Site e Sistema criado por <strong>Vitor Monte</strong></p></div><div class="footer-inner"><span>PLAYTEST · 0.1 / 2026</span><nav aria-label="Links do rodapé"><a href="index.html">Início</a><a href="manual.html">Manual</a><a href="portal.html">Portal</a></nav><span>ACESSO PRIVADO POR CAMPANHA</span></div></footer>
+<main id="conteudo" class="haema-learning" data-page-section="aprender">
+ <section class="learning-hero">
+  <div class="learning-shell">
+   <p class="learning-eyebrow">HÆMA · SISTEMA DE JOGO · MANUAL UNIFICADO EXPERIMENTAL</p>
+   <h1>Uma história.<br><em>Dois dados.</em><br>Mil possibilidades.</h1>
+   <p class="learning-lead">Você não precisa conhecer 20 capítulos para começar a jogar. Aprenda o essencial aqui, experimente uma jogada e consulte as regras completas somente quando precisar.</p>
+   <div class="learning-actions"><a class="learning-button" href="#aprender">Começar a aprender <span aria-hidden="true">↓</span></a><a class="learning-button secondary" href="#consulta">Encontrar uma regra</a></div>
+  </div>
+ </section>
+ <nav class="learning-route" aria-label="Seu caminho pelo Sistema">
+  <div class="learning-shell"><a href="#aprender">01 · Aprender</a><a href="#consulta">02 · Consultar</a><a href="#praticar">03 · Praticar</a></div>
+ </nav>
+ <section class="learning-section" id="aprender" aria-labelledby="learning-start">
+  <div class="learning-shell">
+   <p class="learning-eyebrow">PASSO A PASSO · PARA QUEM NUNCA JOGOU</p>
+   <h2 id="learning-start" class="learning-section-title">É só começar <em>pela história.</em></h2>
+   <p class="learning-section-lead">HÆMA é um RPG: cada jogador interpreta uma pessoa, o mestre apresenta o mundo e os dados resolvem situações incertas. Nenhuma classe limita o que você pode tentar.</p>
+   <ol class="learning-steps">
+    <li class="learning-step"><span class="learning-step-number">01 / IMAGINE</span><h3>Diga a intenção</h3><p>“Quero atravessar a ponte antes que ela caia.” Você conta o que pretende fazer, não precisa escolher um golpe da lista.</p></li>
+    <li class="learning-step"><span class="learning-step-number">02 / ESCOLHA</span><h3>Use dois dados</h3><p>O mestre combina um atributo com uma competência. Exemplo: Destreza + Acrobacia.</p></li>
+    <li class="learning-step"><span class="learning-step-number">03 / ROLE</span><h3>Some os resultados</h3><p>Dois dados são lançados. Se a soma alcançar a DT (dificuldade), a ação funciona, desde que seja possível.</p></li>
+    <li class="learning-step"><span class="learning-step-number">04 / DESCUBRA</span><h3>Veja o que muda</h3><p>O mestre descreve o resultado, os riscos e as consequências. A história continua, mesmo quando você falha.</p></li>
+   </ol>
+   <div class="learning-simulator" aria-labelledby="learning-example-title">
+    <div>
+     <p class="learning-eyebrow">EXEMPLO VIVO · SEM MODIFICAR FICHAS</p>
+     <h3 id="learning-example-title">A ponte está cedendo.</h3>
+     <p>Você tenta saltar para o outro lado. O mestre decide se há espaço, anuncia uma dificuldade e escolhe os dados da sua personagem. Faça uma rolagem e veja como interpretar a soma.</p>
+     <p>Não é um teste de sorte que torna o impossível possível. A ficção vem antes dos dados.</p>
+    </div>
+    <div class="learning-play" id="haema-system-play">
+     <label class="learning-label" for="haema-system-example">Como está sua personagem?</label>
+     <select class="learning-select" id="haema-system-example">
+      <option value="ordinary">Iniciante · d4 + d4 · DT 5</option>
+      <option value="trained">Preparada · d6 + d6 · DT 7</option>
+     </select>
+     <button type="button" class="learning-button" id="haema-system-roll">Rolar dois dados <span aria-hidden="true">✦</span></button>
+     <p class="learning-outcome" id="haema-system-result" role="status" aria-live="polite">Escolha a situação e role. O resultado aparece aqui, sem precisar abrir outra página.</p>
+    </div>
+   </div>
+  </div>
+ </section>
+ <section class="learning-section" id="consulta" aria-labelledby="learning-reference">
+  <div class="learning-shell">
+   <p class="learning-eyebrow">CONSULTA RÁPIDA · UM ASSUNTO POR VEZ</p>
+   <h2 id="learning-reference" class="learning-section-title">O que você precisa <em>entender?</em></h2>
+   <p class="learning-section-lead">Estas são as seis ideias principais. Abra somente o assunto que estiver usando agora. O texto completo do Manual está reunido em uma única referência, sem misturar cálculos da antiga versão 0.1.</p>
+   <div class="learning-topics">
+    <details class="learning-topic"><summary><div><span>PERSONAGEM</span><strong>Quem você é e o que sabe</strong></div></summary><div class="learning-topic-body"><p>Todos começam humanos comuns. Existem <b>6 atributos</b> e <b>24 competências</b> divididas em quatro famílias. Cada campo começa em d4; na criação você distribui até <b>4 aumentos em atributos</b> e <b>6 em competências</b>, alcançando no máximo d6.</p><p>A profissão cria oportunidades na história, mas não dá bônus automático nem limita ações.</p></div></details>
+    <details class="learning-topic"><summary><div><span>REGRA UNIVERSAL</span><strong>Dois dados e uma dificuldade</strong></div></summary><div class="learning-topic-body"><p>Role um dado do atributo e um da competência. Some os valores e compare à <b>DT</b> anunciada: 5, 7, 9, 11 ou 13+ são referências do candidato.</p><p>Bônus e penalidades fixos combinados ficam entre −2 e +2. O mestre decide antes se a ação é fisicamente possível. Um resultado extraordinário pode permitir um crítico em situações elegíveis; não é automático.</p></div></details>
+    <details class="learning-topic"><summary><div><span>CONFRONTO</span><strong>Combate, Defesa e Ferimentos</strong></div></summary><div class="learning-topic-body"><p>Em cada rodada: <b>1 Ação Principal, até 6 metros de movimento divisível e 1 Reação</b>. Ataques tentam alcançar a Defesa; a Guarda inicial é d6, dando Defesa 6.</p><p>Você pode atacar, ajudar, manobrar ou reagir conforme a cena. Dano reduz Integridade; golpes graves e cair a zero podem causar Ferimentos. Um personagem a zero fica incapacitado e exige atenção.</p></div></details>
+    <details class="learning-topic"><summary><div><span>MEDO E FURTIVIDADE</span><strong>Metus e Latebra</strong></div></summary><div class="learning-topic-body"><p><b>Metus</b> representa o medo afetando os dados: quando a condição se aplica, resultados regulares menores que o dado de Metus são anulados; empates permanecem.</p><p><b>Latebra</b> são Marcas secretas de esconderijo. Quem procura usa buscas para revelar essas Marcas até localizar o personagem. Cobertura, barulho e exposição importam mais que o número por si só.</p></div></details>
+    <details class="learning-topic"><summary><div><span>EVOLUÇÃO</span><strong>PE, vivências e técnicas</strong></div></summary><div class="learning-topic-body"><p>O candidato propõe <b>1 PE por sessão relevante</b> e mais <b>2 PE por arco concluído</b>. Aumentar dados custa PE e requer estudo ou experiência comprovada.</p><p>As <b>22 técnicas humanas</b> são opcionais: melhoram o domínio sobre ações possíveis, mas ninguém precisa comprá-las para ter ideias ou tentar uma manobra plausível.</p></div></details>
+    <details class="learning-topic"><summary><div><span>DESCOBERTAS</span><strong>Tanger, Invicta e Ápice</strong></div></summary><div class="learning-topic-body"><p><b>Tanger</b> envolve a influência das Regências, condicionada a Despertar, descoberta e âncoras narrativas. Não é uma lista automática de feitiços.</p><p><b>Invicta</b> é um feito técnico raríssimo conquistado sob perigo real. Pode ser usada para um <b>Ápice</b> extraordinário em circunstâncias específicas. Essas regras ainda estão em playtest.</p></div></details>
+   </div>
+   <div class="learning-actions"><a class="learning-button" href="manual-unificado.html">Abrir o Manual completo <span aria-hidden="true">↗</span></a><a class="learning-button secondary" href="tecnicas-unificadas.html">Consultar técnicas opcionais</a></div>
+  </div>
+ </section>
+ <section class="learning-section" id="praticar" aria-labelledby="learning-tools">
+  <div class="learning-shell">
+   <p class="learning-eyebrow">QUANDO QUISER JOGAR</p>
+   <h2 id="learning-tools" class="learning-section-title">Agora é sua <em>vez.</em></h2>
+   <p class="learning-section-lead">Aprender e jogar não são caminhos separados. Use o laboratório para experimentar com segurança ou abra suas fichas online para acompanhar a campanha.</p>
+   <div class="learning-next">
+    <article class="learning-next-card"><p class="learning-eyebrow">SEM CONTA · TREINO LOCAL</p><h3>Laboratório de regras</h3><p>Crie uma ficha experimental, lance dados e teste combate, Metus, Latebra, Ferimentos e Tanger com explicações. Os testes locais não modificam personagens antigos.</p><a class="learning-button" href="laboratorio-unificado.html">Ir para o laboratório <span aria-hidden="true">↗</span></a></article>
+    <article class="learning-next-card"><p class="learning-eyebrow">COM CONTA · CAMPANHA</p><h3>Minhas fichas</h3><p>Consulte personagens e registros da campanha em uma área protegida por autenticação e permissões. A antiga 0.1 continua preservada.</p><a class="learning-button secondary" href="campanha.html?secao=characters">Abrir fichas online <span aria-hidden="true">↗</span></a></article>
+   </div>
+   <details class="learning-archive"><summary>Precisa de materiais antigos ou registros técnicos?</summary><p>O Manual Vivo 0.1, a Mesa legada e o histórico de atualizações continuam acessíveis por compatibilidade. Eles usam regras anteriores: não misture os cálculos com os do Manual Unificado experimental.</p><div class="learning-archive-links"><a href="manual.html">Manual Vivo 0.1</a><a href="mesa.html">Mesa e ficha antiga</a><a href="atualizacoes.html">Histórico de atualizações</a></div></details>
+   <p class="learning-footnote">Manual Unificado de 19/11/2026 · Edição candidata para playtest, não cânone definitivo. <span>Site e Sistema criado por Vitor Monte.</span></p>
+  </div>
+ </section>
+</main>
+<footer class="footer"><div class="footer-mark"><img src="assets/favicon.svg" width="40" height="40" alt=""><span class="display">HÆMA</span><span>HAEMATOMANTHÍA · SISTEMA AUTORAL</span></div><div class="footer-authorship"><span>CRIAÇÃO E DESENVOLVIMENTO</span><p>Site e Sistema criado por <strong>Vitor Monte</strong></p></div><div class="footer-inner"><span>MANUAL UNIFICADO · PLAYTEST / 2026</span><nav aria-label="Links do rodapé"><a href="index.html">Início</a><a href="manual-unificado.html">Manual</a><a href="portal.html">Portal</a></nav><span>ACESSO PRIVADO POR CAMPANHA</span></div></footer>
 </body></html>

@@ -30,6 +30,18 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 small,.muted{color:#c4aca2}
 footer{border-top:1px solid #744d49;border-bottom:0}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+main.unified-lab .lab-quick-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:30px 0 45px}
+main.unified-lab .lab-quick-nav a{display:flex;flex-direction:column;gap:4px;text-decoration:none;padding:19px 21px;border:1px solid rgba(211,162,116,.35);border-radius:12px;background:linear-gradient(140deg,rgba(96,37,50,.38),rgba(22,14,19,.95));transition:transform .22s ease,border-color .22s ease}
+main.unified-lab .lab-quick-nav a:hover{transform:translateY(-2px);border-color:#d5a35c}
+main.unified-lab .lab-quick-nav a small{font-size:.69rem;letter-spacing:.12em;color:#d5a35c}
+main.unified-lab .lab-quick-nav a strong{font:600 1.5rem/1.15 Georgia,serif;color:#f6e4d6}
+main.unified-lab .lab-quick-nav a span{font-size:.82rem;color:#cdb8ac}
+main.unified-lab .lab-course-intro{margin:48px 0 18px;padding:24px 0 10px;border-top:1px solid rgba(211,162,116,.35);scroll-margin-top:18px}
+main.unified-lab .lab-course-intro h2{font-size:clamp(1.7rem,4vw,2.6rem);margin:10px 0}
+main.unified-lab .lab-course-intro p:not(.eyebrow){max-width:710px;color:#cdb8ac;line-height:1.65}
+@media(max-width:650px){main.unified-lab .lab-quick-nav{grid-template-columns:1fr;gap:9px}main.unified-lab .lab-quick-nav a{padding:16px 18px}main.unified-lab .lab-course-intro{margin-top:30px}}
+@media(prefers-reduced-motion:reduce){main.unified-lab .lab-quick-nav a{transition:none}main.unified-lab .lab-quick-nav a:hover{transform:none}}
 </style>
 <link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="foundation.css?v=1"><link rel="stylesheet" href="cinema.css?v=1">
 <script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script>
@@ -45,8 +57,12 @@ footer{border-top:1px solid #744d49;border-bottom:0}
 <main id="conteudo" class="unified-lab">
 <p class="eyebrow">HÆMA · Haematomanthía / Laboratório isolado</p>
 <h1>Manual Unificado<br><em>em experiência.</em></h1>
-<p class="warning"><strong>Playtest experimental, NÃO oficial.</strong> Esta ferramenta usa o núcleo candidato de 19/11/2026 e não substitui o Manual Vivo 0.1 nem converte fichas antigas. Resultados narrativos, acesso a Regências, oportunidade real, linha de ataque e efeitos de manobras continuam sob validação do mestre.</p>
-<nav class="panel" aria-label="Navegação do laboratório"><a href="#criacao">Criação</a> · <a href="#teste">Testes e críticos</a> · <a href="#combate">Combate</a> · <a href="#metus">Metus</a> · <a href="#latebra">Latebra</a> · <a href="#evolucao">Evolução</a> · <a href="#ferimentos">Ferimentos</a> · <a href="#invicta">Invicta</a> · <a href="#tanger">Tanger</a></nav>
+<p class="warning"><strong>Laboratório experimental, não oficial.</strong> Os testes ajudam a aprender; o mestre valida possibilidades e consequências. Fichas antigas 0.1 permanecem intactas.</p>
+<nav class="lab-quick-nav" aria-label="Percurso do laboratório">
+<a href="#criacao"><small>01 · PREPARE</small><strong>Minha ficha</strong><span>Criação e evolução</span></a>
+<a href="#lab-resolver"><small>02 · EXPERIMENTE</small><strong>Jogadas</strong><span>Dados, combate, medo e furtividade</span></a>
+<a href="#lab-consequencias"><small>03 · APROFUNDE</small><strong>Consequências</strong><span>Ferimentos, Invicta e Tanger</span></a>
+</nav>
 <section class="panel" id="criacao"><p class="eyebrow">01 · Criação humana</p><h2>Construa uma pessoa, não uma classe</h2>
 <p>Todo mundo começa com d4 em cada campo. Distribua até <strong>4 aumentos de atributos</strong> e <strong>6 de competências</strong>; o máximo inicial é d6. Uma profissão descreve oportunidades, não concede bônus automático.</p>
 <div class="grid"><label>Nome<input id="name" maxlength="80" placeholder="Nome do personagem"></label><label>Ofício<input id="job" maxlength="100" placeholder="Ofício ou profissão"></label></div>
@@ -55,6 +71,12 @@ footer{border-top:1px solid #744d49;border-bottom:0}
 <p id="derived" class="warning" aria-live="polite"></p>
 <div class="controls"><button id="save">Salvar ficha experimental</button><button id="export">Exportar JSON</button><button id="reset">Nova ficha</button></div>
 <p class="muted" id="sheetStatus" role="status"></p></section>
+<section class="panel" id="evolucao"><p class="eyebrow">06 · Campanhas longas</p><h2>Evoluir leva tempo e vivência</h2>
+<p>O candidato concede 1 PE por sessão relevante e mais 2 PE coletivos ao fim de arco importante. Ter PE não substitui estudo, experiências ou condições adequadas.</p>
+<div class="grid"><label>Tipo<select id="progressType"><option value="competencia">Competência</option><option value="atributo">Atributo</option><option value="guarda">Guarda</option><option value="regencia">Regência Desperta</option></select></label><label>Dado atual<select id="progressDie"></select></label></div>
+<button id="calcPE">Consultar custo do próximo dado</button><div class="result" id="peResult" role="status"></div></section>
+<section class="lab-course-intro" id="lab-resolver"><p class="eyebrow">02 · JOGADAS</p><h2>O que acontece quando você age?</h2>
+<p>Experimente uma rolagem, depois avance para confronto, Metus e Latebra. Cada ferramenta resolve uma situação específica; você não precisa usar todas ao mesmo tempo.</p></section>
 <section class="panel" id="teste"><p class="eyebrow">02 · Atributo + Competência</p><h2>Uma dúvida. Dois dados.</h2>
 <p>O mestre declara o risco e uma DT antes da rolagem. DT5 simples sob risco, DT7 significativa, DT9 difícil, DT11 excepcional. Uma impossibilidade física não se torna possível por tirar um número alto.</p>
 <div class="grid"><label>Atributo<select id="testAttr"></select></label><label>Competência<select id="testSkill"></select></label><label>Dificuldade<select id="testDT"><option>5</option><option selected>7</option><option>9</option><option>11</option><option>13</option></select></label>
@@ -78,12 +100,11 @@ footer{border-top:1px solid #744d49;border-bottom:0}
 <p>Crie Marcas apenas com cobertura plausível. Os números são identificadores, não bônus. O painel abaixo revela as Marcas: <strong>uso exclusivo do mestre, não compartilhe a tela com jogadores.</strong></p>
 <label>Furtividade<select id="latebraDie"></select></label><button id="createMarks">Criar Marcas</button><button id="quickSearch">Busca rápida 1d6</button><button id="intensiveSearch">Busca intensiva 2d6</button><button id="reinforceMarks">Reforçar esconderijo (Ação)</button><button id="noiseMarks">Ruído forte (−1 Marca)</button><button id="exposeMarks">Exposição direta</button>
 <div class="result" id="latebraResult" role="status"></div></section>
-<section class="panel" id="evolucao"><p class="eyebrow">06 · Campanhas longas</p><h2>Evoluir leva tempo e vivência</h2>
-<p>O candidato concede 1 PE por sessão relevante e mais 2 PE coletivos ao fim de arco importante. Ter PE não substitui estudo, experiências ou condições adequadas.</p>
-<div class="grid"><label>Tipo<select id="progressType"><option value="competencia">Competência</option><option value="atributo">Atributo</option><option value="guarda">Guarda</option><option value="regencia">Regência Desperta</option></select></label><label>Dado atual<select id="progressDie"></select></label></div>
-<button id="calcPE">Consultar custo do próximo dado</button><div class="result" id="peResult" role="status"></div></section>
+
 <p class="warning">Esta é uma ferramenta de verificação parcial. Para decisões oficiais do jogo, consulte o Manual Unificado integral do criador. Não publica cores provisórias de Regências nem informações internas de Lore.</p>
 
+<section class="lab-course-intro" id="lab-consequencias"><p class="eyebrow">03 · CONSEQUÊNCIAS E DESCOBERTAS</p><h2>O que deixa marcas na história?</h2>
+<p>Estas ferramentas são avançadas e contextuais. Comece por Ferimentos e recuperação; Invicta e Tanger só entram quando as condições da narrativa permitirem.</p></section>
 <section class="panel" id="ferimentos"><p class="eyebrow">07 · Integridade e socorro</p><h2>Feridas têm consequência</h2>
 <p>Uma fonte com dano final de pelo menos 6 causa um Ferimento. Cair a zero também causa um. São, no máximo, dois Ferimentos e um por fonte. Dano não descreve por si só a lesão: o mestre registra o que foi atingido.</p>
 <div class="grid"><label>Integridade atual<input type="number" id="woundCurrent" min="0" max="18" value="10"></label>

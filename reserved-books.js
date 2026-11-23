@@ -1,3 +1,4 @@
+import {appendInlineFormatted} from './inline-format.js';
 import {access,authorizedFetch,node,button,login} from './auth.js';
 import {createReservedAtmosphere} from './reserved-atmosphere.js';
 
@@ -26,12 +27,7 @@ function parseManuscript(raw){
  push();
  return sections;
 }
-function rich(parent,text){
- const pattern=/(\*\*[^*]+\*\*|\*[^*]+\*)/g;let last=0,m;
- while((m=pattern.exec(text))){if(m.index>last)parent.append(document.createTextNode(text.slice(last,m.index)));
-  const strong=m[0].startsWith('**');parent.append(el(strong?'strong':'em','',m[0].slice(strong?2:1,strong?-2:-1)));last=m.index+m[0].length;}
- if(last<text.length)parent.append(document.createTextNode(text.slice(last)));
-}
+function rich(parent,text){appendInlineFormatted(parent,text);}
 function manuscriptBlock(block){
  if(block.type==='rule')return el('hr','reserved-rule');
  const p=el('p','reserved-paragraph');rich(p,block.text);return p;

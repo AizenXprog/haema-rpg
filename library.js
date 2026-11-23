@@ -1,3 +1,4 @@
+import {appendInlineFormatted} from './inline-format.js';
 import {access, authorizedFetch, accessGate, node, button} from './auth.js';
 
 // The server is authoritative for player visibility: its index includes only
@@ -224,7 +225,7 @@ async function openBook(permissions) {
         const content=node('div','book-copy');
         // Plain text from authorized source. No remote HTML or inferred lore.
         for (const line of text.split('\n').filter(Boolean)) {
-          const p=node('p','',line.replace(/\*\*/g,''));
+          const p=appendInlineFormatted(node('p'),line);
           content.append(p);
         }
         parts.push(content,node('div','book-source',i===paragraphs.length-1?'Esta página não é a última descoberta.':'De um caderno de observações'));
