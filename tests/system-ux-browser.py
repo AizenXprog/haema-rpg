@@ -1,5 +1,5 @@
 # HÆMA UX / accessible teaching path — no real accounts or Supabase writes.
-import asyncio, os
+import asyncio, os, shutil
 from pathlib import Path
 from playwright.async_api import async_playwright
 BASE=os.getenv('HAEMA_TEST_URL','http://127.0.0.1:8791').rstrip('/')
@@ -8,7 +8,7 @@ ART.mkdir(parents=True,exist_ok=True)
 
 async def main():
  async with async_playwright() as p:
-  browser=await p.chromium.launch(headless=True)
+  browser=await p.chromium.launch(headless=True,channel='chrome' if shutil.which('google-chrome') else None)
   for width,height in [(320,568),(390,844),(768,1024),(1440,900)]:
    ctx=await browser.new_context(viewport={'width':width,'height':height},reduced_motion='reduce')
    await ctx.add_init_script("""(()=>{
