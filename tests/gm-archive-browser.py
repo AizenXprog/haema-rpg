@@ -8,7 +8,8 @@ ART=Path('artifacts/gm-archive');ART.mkdir(parents=True,exist_ok=True)
 root=ast.parse(Path('tests/browser.py').read_text(encoding='utf8'))
 sdk=next(ast.literal_eval(node.value) for node in root.body
  if isinstance(node,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='mock_sdk' for t in node.targets))
-sdk=sdk.replace("if(name==='haema_is_admin')", """if(name==='haema_book_index')return{data:Array.from({length:25},(_,i)=>({id:'registro-'+String(i+1).padStart(2,'0'),title:'Animal de teste '+(i+1),subtitle:'Espécie sintética',state:i<3?'canon':'proposal',released:true}))};
+sdk=sdk.replace("if(name==='haema_is_admin')", """if(name==='haema_gm_bestiary_entry')return{data:{id:args.entry_id,title:'Animal de teste',subtitle:'Espécie sintética',state:'proposal',paragraphs:Array.from({length:5},(_,i)=>'Parágrafo completo de teste '+(i+1)+' sem HTML malicioso.')}};
+  if(name==='haema_gm_bestiary_index')return{data:Array.from({length:25},(_,i)=>({id:'registro-'+String(i+1).padStart(2,'0'),title:'Animal de teste '+(i+1),subtitle:'Espécie sintética',state:i<3?'canon':'proposal',released:true}))};
   if(name==='haema_is_admin')""")
 sdk=sdk.replace("upsert(){return q},single(){single=true;return q}", """
   upsert(){return q},
@@ -46,6 +47,12 @@ async def main():
    await page.get_by_role('button',name='Mundo e Bestiário').first.click()
    await page.locator('.master-animal').first.wait_for()
    assert await page.locator('.master-animal').count()==25,'All 25 animals should be indexed'
+   await page.get_by_role('button',name='Ler ficha completa').first.click()
+   await page.locator('.master-dossier-paragraph').first.wait_for()
+   assert await page.locator('.master-dossier-paragraph').count()==5,'Full five-paragraph dossier required'
+   assert await page.locator('.master-dossier-warning').count()==1,'Proposal must not be shown as canon'
+   await page.get_by_role('button',name='Fechar').first.click()
+   assert await page.locator('.master-dialog').count()==0,'No private DOM should remain after closing'
    await page.screenshot(path=str(ART/f'master-bestiary-{width}.png'))
    await page.get_by_role('button',name='Anotar na campanha').first.click()
    assert await page.locator('.master-form').count()==1
