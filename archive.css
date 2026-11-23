@@ -186,3 +186,37 @@
  background:rgba(148,106,64,.10);color:#644538;
  font:500 12px/1.6 var(--sans),system-ui,sans-serif;
 }
+
+
+/* Bestiário ampliado: filtros no próprio caderno, sem novas abas. */
+.reader-catalog-tools{
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,265px);
+ align-items:end;gap:12px;padding:12px 18px 15px;
+ border-top:1px solid #a77d5344;border-bottom:1px solid #a77d5344;
+ background:#251a1a;color:#e5cfae;
+}
+.reader-catalog-tools label{display:block;min-width:0;font:600 11px/1.5 var(--sans),system-ui,sans-serif;letter-spacing:.025em}
+.reader-catalog-tools :is(input,select){
+ display:block;width:100%;height:42px;min-width:0;margin-top:5px;padding:9px 12px;
+ color:#f3e2cd;background:#170f13;border:1px solid #85624e;
+ border-radius:7px;font:400 14px/1.3 var(--sans),system-ui,sans-serif;
+}
+.reader-catalog-tools input::placeholder{color:#c0a9a2}
+.reader-catalog-tools :is(input,select):focus-visible{outline:2px solid #d5a36a;outline-offset:2px}
+.book-index-entry .book-index-state{
+ color:#76554b;line-height:1.35;font-size:10px;letter-spacing:.03em;text-transform:none;
+}
+.book-creature-metadata{
+ margin:10px 0;padding:9px 12px;border-left:2px solid #a07864;
+ color:#745249;font:600 11px/1.55 var(--sans),system-ui,sans-serif;
+}
+@media(max-width:720px){
+ .reader-catalog-tools{grid-template-columns:minmax(0,1fr) minmax(120px,42%);gap:8px;padding:9px 10px}
+ .reader-catalog-tools label{font-size:10px}
+ .reader-catalog-tools :is(input,select){height:38px;padding:7px 9px;font-size:12px}
+ .book-page{height:calc(100dvh - 210px);min-height:170px}
+}
+@media(max-width:350px){
+ .reader-catalog-tools{grid-template-columns:1fr}
+ .book-page{height:calc(100dvh - 270px);min-height:140px}
+}
