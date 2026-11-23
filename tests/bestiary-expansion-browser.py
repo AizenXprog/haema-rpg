@@ -54,7 +54,7 @@ async def main():
    assert await page.locator('.book-index-entry').count()==1
    await page.locator('[data-fauna-search]').fill('')
    await page.locator('[data-fauna-filter]').select_option('hostile')
-   assert await page.locator('.book-index-entry').count()==6,'First page must list only 6 entries'
+   assert await page.locator('.book-index-entry').count()==(6 if w<=720 else 12),'6 entries per leaf, 1 leaf on mobile and 2 on desktop'
    await page.locator('[data-fauna-search]').fill('Raskel')
    await page.get_by_role('button',name='Raskel').click()
    await page.get_by_role('heading',name='Raskel').wait_for()
