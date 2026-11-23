@@ -76,7 +76,7 @@ export function renderMasterArchive({
    .select('id,campaign_id,owner_id,parent_id,kind,title,content,status,tags,bestiary_id,metadata,archived,created_at,updated_at')
    .eq('campaign_id',campaign.id).order('updated_at',{ascending:false}).limit(500);
   if(archive.error)throw archive.error;
-  const fauna=await client.rpc('haema_book_index');
+  const fauna=await client.rpc('haema_gm_bestiary_index',{cid:campaign.id});
   if(!isAlive()||token!==request)return false;
   state.items=Array.isArray(archive.data)?archive.data:[];
   state.fauna=Array.isArray(fauna.data)?fauna.data:[];
@@ -210,12 +210,45 @@ export function renderMasterArchive({
   const list=el('div','master-results');list.dataset.results='yes';host.append(list);
   drawListFor(host,'history');
  }
+ async function readAnimal(animal){
+  if(!isAlive())return;
+  const dialog=el('dialog','master-dialog');
+  const head=el('div','master-dialog-head');
+  const close=btn('Fechar ✕',()=>dialog.close(),'master-dialog-close');
+  head.append(el('p','master-eyebrow','HÆMA · DOSSIÊ DO BESTIÁRIO'),close);
+  const body=el('div','master-dossier');
+  body.append(el('p','master-dossier-loading','Consultando registro integral…'));
+  dialog.append(head,body);
+  dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
+  dialog.addEventListener('close',()=>dialog.remove(),{once:true});
+  mount.append(dialog);dialog.showModal();
+  const {data,error}=await client.rpc('haema_gm_bestiary_entry',{cid:campaign.id,entry_id:animal.id});
+  if(!dialog.open||!isAlive())return;
+  body.replaceChildren();
+  if(error||!data||!Array.isArray(data.paragraphs)){
+   body.append(el('p','master-feedback is-error',error?.message||'Registro indisponível. Confira o acesso do mestre.'));
+   return;
+  }
+  body.append(el('p','master-dossier-state',BOOK_STATES[data.state]||'Registro'),
+   el('h2','',data.title),el('p','master-dossier-subtitle',data.subtitle));
+  if(data.state!=='canon')body.append(el('p','master-dossier-warning','Texto em estudo. A publicação não significa aprovação de cânone.'));
+  for(let i=0;i<data.paragraphs.length;i++){
+   const para=el('p','master-dossier-paragraph',data.paragraphs[i]);
+   body.append(para);
+  }
+  const actions=el('div','master-record-actions');
+  actions.append(btn('Registrar encontro com '+data.title,()=>{dialog.close();edit(null,'criatura',data.id)},'master-button'));
+  actions.append(btn('Voltar ao arquivo',()=>dialog.close()));
+  body.append(actions);
+ }
+
  function animalCard(animal){
   const card=el('article','master-animal');
   const top=el('div','master-animal-head');
   top.append(el('strong','',animal.title),el('span','',BOOK_STATES[animal.state]||'Registro'));
   card.append(top,el('p','',animal.subtitle||''));
   const row=el('div','master-record-actions');
+  row.append(btn('Ler ficha completa',()=>void readAnimal(animal),'master-button'));
   row.append(btn('+ Anotar na campanha',()=>edit(null,'criatura',animal.id)));
   const count=state.items.filter(x=>x.bestiary_id===animal.id&&!x.archived).length;
   row.append(el('span','master-animal-count',count+' anotação(ões)'));
