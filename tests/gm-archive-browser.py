@@ -1,6 +1,6 @@
 # Browser E2E of the GM archive. Uses synthetic auth + in-memory Supabase.
 # NO production data or writes. HTML and JavaScript are served locally.
-import asyncio,json,os,ast
+import asyncio,json,os,ast,shutil
 from pathlib import Path
 from playwright.async_api import async_playwright
 BASE=os.getenv('HAEMA_TEST_URL','http://127.0.0.1:8791').rstrip('/')
@@ -34,7 +34,7 @@ async def setup(browser,role,width,height):
  return context
 async def main():
  async with async_playwright() as pw:
-  browser=await pw.chromium.launch(headless=True)
+  browser=await pw.chromium.launch(headless=True,channel='chrome' if shutil.which('google-chrome') else None)
   for width,height in [(320,700),(390,844),(768,1024),(1440,900)]:
    ctx=await setup(browser,'admin',width,height)
    page=await ctx.new_page()
