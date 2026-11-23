@@ -1,5 +1,5 @@
 # HÆMA: expanded Bestiary reader browser test — synthetic data, no production writes.
-import asyncio,ast,json,os
+import asyncio,ast,json,os,shutil
 from pathlib import Path
 from urllib.parse import urlsplit,parse_qs
 from playwright.async_api import async_playwright
@@ -22,7 +22,7 @@ for i in range(1,15):
 assert len(dataset)==134 and sum(v['released'] for v in dataset)==120
 async def main():
  async with async_playwright() as pw:
-  browser=await pw.chromium.launch(headless=True)
+  browser=await pw.chromium.launch(headless=True,channel='chrome' if shutil.which('google-chrome') else None)
   for w,h in [(320,700),(390,844),(768,1024),(1440,900)]:
    ctx=await browser.new_context(viewport={'width':w,'height':h},reduced_motion='reduce')
    await ctx.add_init_script("window.qaRole='admin'")
