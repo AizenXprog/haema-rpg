@@ -1,5 +1,5 @@
 import {client as sharedClient, access as sharedAccess, accessGate} from './auth.js';
-import {renderMasterArchive} from './gm-workspace.js';
+import {renderMasterArchive} from './gm-workspace.js?v=2';
 'use strict';
 /** HÆMA — Portal privado. No private content is fetched before Supabase Auth.
  * The browser receives a publishable key only; PostgreSQL RLS is authoritative.
