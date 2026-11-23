@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feat/sistema-unificado-didatico-20261123
+      - fix/manual-unificado-layout-hover-20261123
   pull_request:
     paths:
       - 'sistema.html'
@@ -16,9 +17,10 @@ on:
       - 'reserved-books.js'
       - 'library.js'
       - 'tests/system-ux-browser.py'
+      - 'tests/manual-layout-browser.py'
       - '.github/workflows/system-ux.yml'
 concurrency:
-  group: haema-system-ux
+  group: haema-system-ux-${{ github.ref }}
   cancel-in-progress: true
 permissions:
   contents: read
@@ -48,10 +50,13 @@ jobs:
           python -m http.server 8791 --bind 127.0.0.1 >/tmp/haema-system.log 2>&1 &
           sleep 2
           python tests/system-ux-browser.py
+          python tests/manual-layout-browser.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: haema-system-ux-screenshots
-          path: artifacts/system-ux/*.png
+          path: |
+            artifacts/system-ux/*.png
+            artifacts/manual-layout/*.png
           retention-days: 7
           if-no-files-found: ignore
