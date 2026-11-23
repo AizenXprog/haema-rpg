@@ -67,9 +67,13 @@ const PORTAL=(()=>{
  }
  async function fetchCampaigns(){
   const rows=await query(state.client.from('haema_members').select('campaign_id,role').eq('user_id',state.user.id));
-  if(!rows.length){state.campaigns=[];state.current=null;return;}
-  const campaigns=await query(state.client.from('haema_campaigns').select('id,name,description,gm_id').in('id',rows.map(r=>r.campaign_id)));
-  state.campaigns=campaigns.map(c=>({...c,role:rows.find(r=>r.campaign_id===c.id)?.role||'player'}));
+  const owned=await query(state.client.from('haema_campaigns').select('id,name,description,gm_id').eq('gm_id',state.user.id));
+  const ids=[...new Set([...rows.map(r=>r.campaign_id),...owned.map(c=>c.id)])];
+  if(!ids.length){state.campaigns=[];state.current=null;return;}
+  const campaigns=await query(state.client.from('haema_campaigns').select('id,name,description,gm_id').in('id',ids));
+  state.campaigns=campaigns.map(c=>({
+   ...c,role:c.gm_id===state.user.id?'gm':rows.find(r=>r.campaign_id===c.id)?.role||'player'
+  }));
   state.current=state.campaigns.find(c=>c.id===state.current?.id)||state.campaigns[0]||null;
  }
  function noCampaign(root){
@@ -78,7 +82,19 @@ const PORTAL=(()=>{
   if(state.admin){const gm=node('form','portal-form');gm.append(node('h3','','Criar campanha como mestre'));
    const name=field('Nome da campanha','text','',100),desc=field('Descrição inicial','textarea','',1200);name.input.required=true;gm.append(name.wrap,desc.wrap);
    const submit=b('Criar campanha',()=>{},'portal-action');submit.type='submit';gm.append(submit);
-   gm.addEventListener('submit',async e=>{e.preventDefault();submit.disabled=true;const r=await notify(state.client.from('haema_campaigns').insert({gm_id:state.user.id,name:name.input.value.trim(),description:desc.input.value.trim()}),gm,'Campanha criada.');submit.disabled=false;if(r)await reload(root)});
+   gm.addEventListener('submit',async e=>{
+    e.preventDefault();submit.disabled=true;
+    const r=await notify(state.client.from('haema_campaigns')
+     .insert({gm_id:state.user.id,name:name.input.value.trim(),description:desc.input.value.trim()})
+     .select('id').single(),gm,'Campanha criada.');
+    if(r?.data?.id){
+     const membership=await state.client.from('haema_members')
+      .insert({campaign_id:r.data.id,user_id:state.user.id,role:'gm'});
+     if(membership.error&&membership.error.code!=='23505')
+      message(gm,'A campanha foi criada. A associação de mestre pode ser revisada na Central de Acessos.',true);
+    }
+    submit.disabled=false;if(r)await reload(root);
+   });
    card.append(gm);
   }
   card.append(b('Sair da conta',async()=>{await state.client.auth.signOut();state.user=null;signin(root)}));
