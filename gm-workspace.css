@@ -83,3 +83,22 @@
 @media(max-width:580px){.master-workspace{padding:0 13px 60px}.master-hero{padding:25px 20px;margin:13px 0}.master-nav{grid-template-columns:1fr 1fr;gap:8px}.master-tab{padding:13px 11px;min-height:74px}.master-tab strong{font-size:15px}.master-tab small{font-size:10px}.master-animal-grid,.master-form-grid,.master-shortcuts{grid-template-columns:1fr}.master-record,.master-animal{padding:18px}.master-toolbar,.master-section-heading{align-items:stretch;flex-direction:column}.master-toolbar>.master-field{max-width:none;min-width:0}.master-toolbar .master-search{min-width:0}}
 @media(max-width:350px){.master-nav{grid-template-columns:1fr}.master-stats{grid-template-columns:1fr 1fr}.master-stat{padding:17px 11px}}
 @media(prefers-reduced-motion:reduce){.master-tab,.master-button,.master-quick{transition:none!important}.master-tab:hover,.master-button:hover,.master-quick:hover{transform:none!important}}
+
+
+/* The entire five-paragraph bestiary dossier stays inside the master workspace. */
+.master-dialog{position:fixed;inset:0;box-sizing:border-box;width:min(900px,calc(100vw - 28px));max-width:900px;max-height:calc(100dvh - 30px);padding:0;overflow:auto;color:#4e302c;border:1px solid #c4a178;border-radius:16px;background:#e8d8c2;box-shadow:0 20px 90px rgba(0,0,0,.75)}
+.master-dialog::backdrop{background:rgba(8,5,9,.82);backdrop-filter:blur(6px)}
+.master-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:13px 24px;border-bottom:1px solid rgba(115,73,51,.28);background:#2b1c25}
+.master-dialog-head .master-eyebrow{margin:0;color:#e3bc86}
+.master-dialog-close{border:1px solid rgba(229,191,148,.5);padding:8px 14px;background:transparent;border-radius:6px;color:#f8e5d4;cursor:pointer}
+.master-dossier{padding:clamp(25px,6vw,68px);font:400 16px/1.85 Georgia,serif}
+.master-dossier h2{margin:5px 0 8px;font:600 clamp(38px,6vw,68px)/1.03 "Cormorant Garamond",Georgia,serif;color:#49252d}
+.master-dossier-state{font:700 11px/1.5 "DM Sans",sans-serif;color:#8d5450;letter-spacing:.16em;text-transform:uppercase}
+.master-dossier-subtitle{font:italic 22px/1.25 "Cormorant Garamond",Georgia,serif;color:#74564e;margin:0 0 28px}
+.master-dossier-warning{padding:13px 16px;border-left:3px solid #a66b60;background:rgba(148,107,76,.10);color:#67423e;font:600 12px/1.55 "DM Sans",system-ui,sans-serif}
+.master-dossier-paragraph{margin:19px 0 22px;color:#46312e;max-width:760px}
+.master-dossier .master-record-actions{margin-top:34px;border-top:1px solid #bda38c;padding-top:22px}
+.master-dossier .master-record-actions .master-button.secondary{color:#6b3740;border-color:#a57e6b}
+.master-dossier-loading{font:500 14px/1.5 "DM Sans",sans-serif;color:#694647}
+@media(max-width:600px){.master-dialog{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}.master-dialog-head{padding:11px 14px}.master-dossier{padding:22px 20px}.master-dossier-paragraph{font-size:15px;line-height:1.78}}
+@media(prefers-reduced-motion:reduce){.master-dialog::backdrop{backdrop-filter:none}}
