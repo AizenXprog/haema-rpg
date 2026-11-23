@@ -44,8 +44,8 @@ async def main():
    await page.goto(BASE+'/biblioteca.html',wait_until='domcontentloaded')
    await page.locator('.open-volume').wait_for(timeout=15000)
    await page.locator('.open-volume').click()
-   await page.locator('.book-index-entry').first.wait_for(timeout=12000)
    assert await page.locator('[data-fauna-search]').count()==1,'Search must be on the same book reader'
+   # On a small phone, the book opens on a preface page; search must jump straight to results.
    await page.locator('[data-fauna-search]').fill('Gunpiva')
    await page.get_by_role('button',name='Gunpiva').wait_for()
    assert await page.locator('.book-index-entry').count()==1,'Search should find exactly one species'
