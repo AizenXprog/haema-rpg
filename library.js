@@ -173,7 +173,9 @@ async function openBook(permissions) {
     entryId = null;
     page = 0;
     entries=[];
-    entries.push(() => {
+    // An active search/filter opens directly on the matching creatures,
+    // especially important on mobile where the preface takes a whole page.
+    if(!query&&indexCategory==='all') entries.push(() => {
       const preface=node('div','book-copy');
       preface.append(
         node('p','','Estas folhas não foram escritas para encerrar a história das criaturas, mas para impedir que aquilo que delas conheço se perca. Cada encontro, relato e vestígio me oferece somente uma parcela do mundo.'),
@@ -211,7 +213,7 @@ async function openBook(permissions) {
         return [node('span','folio-label','BESTIÁRIO · ÍNDICE'),node('h2','',i===0?'Criaturas que pude conhecer':'Outras folhas do caderno'),list];
       });
     }
-    if (visibleIndex.length) {
+    if (visibleIndex.length&&!query&&indexCategory==='all') {
       entries.push(() => {
         const note=node('div','book-copy');
         note.append(
