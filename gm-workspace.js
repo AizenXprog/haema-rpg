@@ -95,7 +95,7 @@ export function renderMasterArchive({
    row.append(sel.root);
   }else row.append(el('span','master-campaign-name',campaign.name));
   const back=el('a','master-text-link','Voltar às fichas');
-  back.href='campanha.html?secao=characters';
+  back.href='fichas.html?secao=characters';
   row.append(back);hero.append(left,row);return hero;
  }
  function tabs(){

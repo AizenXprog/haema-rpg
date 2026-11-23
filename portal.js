@@ -54,7 +54,7 @@ const PORTAL=(()=>{
   for(const [name,desc] of [['PERSONAGENS','Fichas 0.1 salvas online, com versões preservadas.'],['ACERVO & CONVERSA','O que o mestre liberou e o chat da sua mesa.']]){const c=node('div');c.append(node('strong','',name),node('span','',desc));features.append(c)}
   card.append(features);
   const btn=b('Entrar com Google',async()=>{
-   btn.disabled=true;const{error}=await state.client.auth.signInWithOAuth({provider:'google',options:{redirectTo:new URL('campanha.html',location.origin+'/').href}});
+   btn.disabled=true;const{error}=await state.client.auth.signInWithOAuth({provider:'google',options:{redirectTo:new URL(document.body.dataset.page==='mestre'?'campanha.html':'fichas.html?secao=characters',location.origin+'/').href}});
    if(error){btn.disabled=false;message(card,errorText(error),true)}
   },'portal-action');
   card.append(btn,node('p','portal-note','O Google autentica sua conta; o mestre vê seus personagens e atividades na campanha, não sua senha nem informações privadas da conta Google.'));
@@ -114,8 +114,8 @@ const PORTAL=(()=>{
   const options=[['home','✧','Visão geral'],['characters','♧','Personagens'],['chat','◈','Conversa']];if(state.materials)options.push(['materials','✦','Materiais']);if(isGM())options.push(['gm','♜','Painel do Mestre']);
   for(const[id,mark,label]of options){
    if(id==='gm'){
-    const link=node('a','portal-tab');link.href='mestre.html';
-    link.append(node('span','portal-tab-mark',mark),node('span','','Arquivo do Mestre'));tabs.append(link);continue;
+    const link=node('a','portal-tab');link.href='campanha.html';
+    link.append(node('span','portal-tab-mark',mark),node('span','','Campanhas e registros'));tabs.append(link);continue;
    }
    const tab=node('button','portal-tab'+(id===state.tab?' is-active':''));
    tab.type='button';tab.setAttribute('aria-current',id===state.tab?'page':'false');
@@ -156,7 +156,7 @@ const PORTAL=(()=>{
    const denied=node('section','portal-setup');
    denied.append(node('h2','','Arquivo reservado ao mestre'),
     node('p','','Este arquivo contém informações técnicas e segredos da campanha. Somente o mestre responsável pode consultá-lo.'));
-   const link=node('a','portal-action','Voltar às minhas fichas');link.href='campanha.html?secao=characters';
+   const link=node('a','portal-action','Voltar às minhas fichas');link.href='fichas.html?secao=characters';
    denied.append(link);root.append(denied);return;
   }
   const epoch=++state.epoch;root.replaceChildren(node('div','portal-loading','Carregando os registros da campanha...'));
@@ -178,8 +178,9 @@ const PORTAL=(()=>{
    else if(state.tab==='materials')showMaterials(panel,root);
    else if(state.tab==='chat')showChat(panel,root);
    else if(state.tab==='gm'&&isGM()){
-    panel.append(title('Arquivo técnico do mestre','Todos os registros do mestre foram reunidos numa página privada.'));
-    const link=node('a','portal-action','Abrir Arquivo do Mestre');link.href='mestre.html';panel.append(link);
+    panel.append(title('Campanhas e registros','O trabalho técnico do mestre agora ocupa integralmente a área de campanhas.'));
+    const link=node('a','portal-action','Abrir área técnica do mestre');
+    link.href='campanha.html';panel.append(link);
    }
    else showHome(panel,root);
    // Do not subscribe to player chat from the private, technical workspace.
@@ -194,7 +195,10 @@ const PORTAL=(()=>{
   panel.append(node('hr','portal-divider-line'));
   panel.append(node('p','portal-overline',isGM()?'ESCUDO DO MESTRE':'SEU ESPAÇO NA MESA'));
   panel.append(brief(isGM()?'Acompanhe as fichas dos jogadores, publique materiais e mantenha seu arquivo de lore e sistema com histórico de alterações.':'Seu personagem e o que foi compartilhado com ele ficam juntos. Acesse o acervo ou entre na conversa da campanha.'));
-  const actions=node('div','portal-flex');actions.append(b('Ver personagens',()=>{state.tab='characters';void renderDashboard(root)},'portal-action'));if(state.materials)actions.append(b('Abrir acervo',()=>{state.tab='materials';void renderDashboard(root)}));if(isGM())actions.append(b('Painel do Mestre',()=>{state.tab='gm';void renderDashboard(root)}));if(state.data.mesaGrants.some(g=>g.user_id===state.user.id)||state.admin)actions.append(b('Abrir ficha local e dados',()=>{document.querySelector('a[href="mesa.html"]')?.click()},'portal-action'));panel.append(actions);
+  const actions=node('div','portal-flex');actions.append(b('Ver personagens',()=>{state.tab='characters';void renderDashboard(root)},'portal-action'));if(state.materials)actions.append(b('Abrir acervo',()=>{state.tab='materials';void renderDashboard(root)}));if(isGM()){
+   const gmLink=node('a','portal-action','Campanhas e registros · Área do Mestre');
+   gmLink.href='campanha.html';actions.append(gmLink);
+  }if(state.data.mesaGrants.some(g=>g.user_id===state.user.id)||state.admin)actions.append(b('Abrir ficha local e dados',()=>{document.querySelector('a[href="mesa.html"]')?.click()},'portal-action'));panel.append(actions);
  }
  function characterCard(character,panel,root){
   const card=node('article','portal-item'),top=node('div','portal-item-top'),head=node('div');head.append(node('h3','',character.title),node('span','portal-meta',(state.data.names[character.user_id]||'Jogador')+' · HÆMA '+character.rules_version));
