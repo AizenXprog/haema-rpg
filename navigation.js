@@ -5,6 +5,7 @@
 (()=>{
  const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html','campanha.html','manual-unificado.html','laboratorio-unificado.html','tecnicas-unificadas.html']);
  const viewScripts=Object.freeze({
+  'sistema.html':['rules-unified-playtest.js','sistema-didatico.js'],
   'manual-unificado.html':['manual-unificado.js'],
   'laboratorio-unificado.html':['rules-unified-playtest.js','laboratorio-unificado.js'],
   'tecnicas-unificadas.html':['techniques-unified-playtest.js','tecnicas-unificadas.js'],
