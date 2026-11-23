@@ -57,7 +57,7 @@ async def main():
    assert await page.locator('.book-index-entry').count()==(6 if w<=720 else 12),'6 entries per leaf, 1 leaf on mobile and 2 on desktop'
    await page.locator('[data-fauna-search]').fill('Raskel')
    await page.get_by_role('button',name='Raskel').click()
-   await page.get_by_role('heading',name='Raskel').wait_for()
+   await page.locator('h2.creature-title').get_by_text('Raskel',exact=True).wait_for()
    assert await page.locator('.book-creature-metadata').count()==1,'Risk contextual warning required'
    assert await page.locator('.book-copy p').count()>=1
    await page.screenshot(path=str(ART/f'reader-{w}.png'))
