@@ -14,6 +14,9 @@ on:
       - 'portal-hub.js'
       - 'navigation.js'
       - 'library.js'
+      - 'biblioteca.html'
+      - 'archive.css'
+      - 'tests/bestiary-expansion-browser.py'
       - 'tests/gm-archive-browser.py'
       - '.github/workflows/gm-archive.yml'
 concurrency:
@@ -45,12 +48,15 @@ jobs:
           python -m http.server 8791 --bind 127.0.0.1 >/tmp/haema-master.log 2>&1 &
           sleep 2
           python tests/gm-archive-browser.py
+          python tests/bestiary-expansion-browser.py
           python tests/unified-portal-browser.py
           python tests/system-ux-browser.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: haema-master-archive-screenshots
-          path: artifacts/gm-archive/*.png
+          name: haema-bestiary-expansion-screenshots
+          path: |
+            artifacts/gm-archive/*.png
+            artifacts/bestiary-expansion/*.png
           retention-days: 7
           if-no-files-found: ignore
