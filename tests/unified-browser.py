@@ -48,7 +48,7 @@ async def main():
    await page.wait_for_url('**/manual-unificado.html')
    await page.locator('#filter').fill('Metus')
    assert 'capítulos encontrados' in await page.locator('#count').inner_text(),'Pesquisa do manual não iniciou'
-   assert await page.locator('.chapter:visible').count()>0,'Busca do manual sem capítulos'
+   assert await page.locator('.haema-unified-chapter:visible').count()>0,'Busca do manual sem capítulos'
    assert await page.evaluate('window.__haemaAudioCreated')==1,'Trilha não preservada da página Sistema ao Manual'
    await page.screenshot(path=str(screenshots/f'manual-{width}.png'))
    await page.goto(BASE+'/sistema.html')
