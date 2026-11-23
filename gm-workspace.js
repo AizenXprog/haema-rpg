@@ -243,7 +243,7 @@ export function renderMasterArchive({
    body.append(para);
   }
   const actions=el('div','master-record-actions');
-  actions.append(btn('Registrar encontro com '+data.title,()=>{dialog.close();edit(null,'criatura',data.id)},'master-button'));
+  actions.append(btn(data.state==='legend'?'Anotar relato: '+data.title:'Registrar observação: '+data.title,()=>{dialog.close();edit(null,data.state==='legend'?'nota':'criatura',data.id)},'master-button'));
   actions.append(btn('Voltar ao arquivo',()=>dialog.close()));
   body.append(actions);
  }
@@ -258,7 +258,7 @@ export function renderMasterArchive({
   if(animal.state==='legend')card.append(el('p','master-animal-uncertain','Relato preservado · não comprova a existência de uma espécie.'));
   const row=el('div','master-record-actions');
   row.append(btn('Ler ficha completa',()=>void readAnimal(animal),'master-button'));
-  row.append(btn('+ Anotar na campanha',()=>edit(null,'criatura',animal.id)));
+  row.append(btn(animal.state==='legend'?'+ Registrar relato':'+ Anotar na campanha',()=>edit(null,animal.state==='legend'?'nota':'criatura',animal.id)));
   const count=state.items.filter(x=>x.bestiary_id===animal.id&&!x.archived).length;
   row.append(el('span','master-animal-count',count+' anotação(ões)'));
   card.append(row);return card;
