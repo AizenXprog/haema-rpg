@@ -36,6 +36,7 @@
    if(earned)return 'Já conquistada. Sua decisão foi registrada permanentemente no personagem.';
    if(n.status!=='ready')return 'Em construção. O mestre pode editar este espaço e publicá-lo quando estiver pronto.';
    if(!state.character)return 'Selecione um personagem antes de registrar uma escolha.';
+   if(!available&&state.plan.includes(n.id))return 'Habilidade planejada. Compre primeiro as etapas anteriores, uma por vez, para chegar até aqui.';
    if(!available)return 'Caminho não conectado à última conquista deste personagem.';
    if(n.lockedByAwakening&&!state.progress?.awakened)return 'O Despertar precisa estar registrado pelo mestre.';
    if((state.progress?.pe_available||0)<n.cost)return `São necessários ${n.cost} PE; este personagem tem ${state.progress?.pe_available||0}.`;
@@ -95,7 +96,7 @@
     const classes=['tree-node',n.type];if(acquired.has(id)||id==='origem')classes.push('unlocked');else if(planned.has(id))classes.push('planned');else if(next.has(id))classes.push('available');
     if(n.status!=='ready')classes.push('draft');if(id===state.selected)classes.push('current');el.setAttribute('class',classes.join(' '));
     el.setAttribute('aria-label',`${n.name}: ${acquired.has(id)?'adquirida':n.status!=='ready'?'em construção':next.has(id)?'próxima escolha':'rota não conectada'}. ${n.effect}`);
-    const title=el.querySelector('title');if(title)title.textContent=`${n.name} · ${n.cost} PE · ${n.status==='ready'?'Escrita':'Em criação'}\n${n.effect}`;
+
    }
    $('tree-pe').textContent=state.character?String(state.progress?.pe_available??0):'—';$('tree-count').textContent=String(acquired.size);
    $('tree-draft-total').textContent=String(data.nodes.filter(n=>n.status==='draft').length);
@@ -116,7 +117,7 @@
     grp.append(svg('circle',{class:'node-aura',r:n.type==='origin'?78:n.type==='apex'?43:32}),svg('circle',{class:'core',r:n.type==='origin'?53:n.type==='apex'?29:n.type==='keystone'?24:n.type==='notable'?18:13}));
     if(n.type!=='minor'){const sym=svg('text',{class:'node-symbol',x:0,y:2});sym.textContent=n.status==='draft'?'⋯':n.type==='origin'?'Æ':data.sectors[n.sectorIndex]?.symbol||'✧';grp.append(sym)}
     grp.append(svg('circle',{class:'node-touch',r:n.type==='origin'?72:36}));
-    const title=svg('title');grp.append(title);
+    grp.setAttribute('aria-describedby','tree-hover-card');
     grp.addEventListener('pointerenter',e=>showTooltip(n,e));
     grp.addEventListener('pointermove',e=>{if(state.hoverNode===n.id)positionTooltip(e)});
     grp.addEventListener('pointerleave',()=>hideTooltip(n.id));
@@ -184,8 +185,15 @@
   async function confirmPurchase(){const selection=state.confirming;if(!selection||state.busy||!state.character||state.character.id!==selection.character)return;
    const n=data.map.get(selection.id);if(!canBuy(n)){closePurchase();notice('A compra deixou de estar disponível. Confira o saldo e as condições.',true);return;}
    state.busy=true;$('tree-confirm-accept').disabled=true;$('tree-confirm-status').textContent='Registrando conquista…';
+   const plannedBefore=state.plan.slice(),acquiredCount=selectedPath().length;
    try{const {error}=await state.db.rpc('haema_tree_unlock',{p_character:selection.character,p_node:selection.id});if(error)throw error;
-    closePurchase();await refreshProgress();choose(selection.id,true);notice(`Conquistada: ${n.name}. O progresso do personagem foi salvo.`);
+    closePurchase();await refreshProgress();
+    if(plannedBefore.length>acquiredCount&&plannedBefore[acquiredCount]!==selection.id){
+     const revised=selectedPath().slice();
+     const {error:planError}=await state.db.rpc('haema_tree_save_plan',{p_character:selection.character,p_path:revised});
+     if(!planError)state.plan=revised;
+    }
+    choose(selection.id,true);notice(`Conquistada: ${n.name}. O progresso do personagem foi salvo.`);
     const pulse=points.querySelector(`[data-id="${selection.id}"]`);pulse?.classList.add('tree-celebrate');setTimeout(()=>pulse?.classList.remove('tree-celebrate'),1700);
    }catch(e){$('tree-confirm-status').textContent='Não foi possível registrar: '+safe(e.message);notice(safe(e.message),true)}
    finally{state.busy=false;$('tree-confirm-accept').disabled=false;paint()}
@@ -286,7 +294,7 @@
    state.hoverNode=n.id;
    const card=$('tree-hover-card');card.hidden=false;
    $('tree-hover-title').textContent=n.name;
-   $('tree-hover-status').textContent=selectedPath().includes(n.id)?'CONQUISTADA':state.plan.includes(n.id)?'PLANEJADA':n.status==='ready'?'DISPONÍVEL EM SUA ROTA':'EM CONSTRUÇÃO';
+   $('tree-hover-status').textContent=selectedPath().includes(n.id)?'CONQUISTADA':state.plan.includes(n.id)?'PLANEJADA':n.status!=='ready'?'EM CONSTRUÇÃO':frontier().has(n.id)?'PRÓXIMA COMPRA':'AINDA NÃO CONECTADA';
    $('tree-hover-effect').textContent=n.effect||'Esta habilidade ainda está sendo escrita pelo mestre.';
    $('tree-hover-trigger').textContent=n.trigger||'Requer condições a definir.';
    $('tree-hover-limit').textContent=n.limit||'A definir pelo mestre.';
