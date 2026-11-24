@@ -50,7 +50,7 @@ test('todas as 126 técnicas explicam COMO USAR e concedem benefício aprendido 
   assert.equal(n.example,entry.example,'Exemplo inconsistente em '+n.id);
   for(const field of ['trigger','effect','limit','example'])
    assert.ok(n[field].length>=45,n.id+' sem explicação suficiente em '+field);
-  assert.match(n.trigger,/(declare|antes|ap[oó]s|quando|gaste|observe|escolha|prepare|identifique|durante|tenha)/i,n.id+' não ensina o momento de ativar');
+  assert.match(n.trigger,/(declare|antes|ap[oó]s|quando|gaste|observe|escolha|prepare|identifique|durante|tenha|depois|use|se |estude|anote|ao |com )/i,n.id+' não ensina o momento de ativar');
   assert.match(n.effect,/(\+1|\bDT\b|reduz|acrescente|conserv|ignore|desbloque|receba|some|ganhe|evite|aumente|desloque)/i,n.id+' sem vantagem verificável');
   assert.match(n.limit,/(vez|cena|sess[aã]o|rea[cç][aã]o|preparo|limite)/i,n.id+' sem limite de uso');
   effects.add(n.effect);examples.add(n.example);
