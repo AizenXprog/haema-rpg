@@ -25,7 +25,9 @@
   <p class="tree-status" id="tree-account-status" role="status">Conectando à campanha…</p>
   <div class="tree-metrics"><div><small>PE disponíveis</small><strong id="tree-pe">—</strong></div><div><small>PE gastos</small><strong id="tree-pe-spent">0</strong></div><div><small>Conquistas</small><strong id="tree-count">0</strong></div></div>
   <div class="tree-search-area"><label class="tree-label" for="tree-search">Buscar habilidade ou caminho</label><input id="tree-search" type="search" autocomplete="off" placeholder="Ex.: Parry, Âncora, Execução" aria-controls="tree-search-results"><div id="tree-search-results" class="tree-search-results" aria-live="polite"></div></div>
+  <label class="tree-label" for="tree-view-filter">Mostrar nós</label><select id="tree-view-filter" class="tree-select" aria-label="Filtrar visualização de habilidades"><option value="all">Constelação completa</option><option value="available">Próximas escolhas</option><option value="owned">Meu caminho</option><option value="draft">Em construção</option></select>
   <div class="tree-shortcuts"><button type="button" id="tree-focus-frontier">◇ Próximas escolhas</button><button type="button" id="tree-focus-last">⌖ Minha última conquista</button></div>
+  <details id="tree-advanced-drawer" class="tree-advanced-drawer" open><summary>Rotas e ferramentas do Mestre</summary>
   <div class="tree-route-controls"><span class="tree-label">TRAJETO DO PERSONAGEM</span>
    <p id="tree-plan-status" class="tree-plan-status">Selecione um personagem e depois um nó para traçar uma rota.</p>
    <button type="button" id="tree-plan-route" class="tree-route-primary" disabled>◇ Marcar caminho até este nó</button>
@@ -43,6 +45,7 @@
   </div>
   <div class="tree-editor-summary"><span>CAMINHOS EM CRIAÇÃO</span><strong id="tree-draft-total">504</strong><p>Escolha um espaço incompleto no mapa e use <em>Editar habilidade</em> para escrever, revisar ou publicar uma nova técnica.</p><button type="button" id="tree-find-draft">Encontrar espaço livre ↗</button></div>
   <div class="tree-legend"><p>SETORES</p><div id="tree-legend-items"></div></div>
+  </details>
   <a class="tree-back" href="painel-mestre.html">← Voltar ao Painel do Mestre</a>
  </aside>
  <div class="tree-viewport" id="tree-viewport">
