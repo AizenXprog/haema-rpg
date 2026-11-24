@@ -474,6 +474,122 @@
    "Você retorna pelo assoalho cujo rangido aprendeu a evitar e testa com +1."
   ]
  ]
+},
+  sobrevivencia:{
+ "0": [
+  [
+   "Com material adequado, declare a técnica de compressão ou imobilização antes de rolar Medicina.",
+   "Some +1 ao teste de Medicina para estabilizar o ferimento físico daquele paciente.",
+   "Uma vez por cena; sem cura de Integridade e sem dispensar a Ação Principal.",
+   "Você aplica pressão sobre o corte e testa Intelecto + Medicina com +1."
+  ],
+  [
+   "Avalie pulso e respiração durante uma Ação Principal e anuncie o sinal que acompanhará.",
+   "Some +1 ao próximo teste de estabilização do mesmo paciente até seu turno seguinte.",
+   "Uma vez por cena; requer reavaliar a vítima; não converte falha anterior em sucesso.",
+   "O pulso acelera; você muda a compressão e recebe +1 no teste seguinte."
+  ],
+  [
+   "Com material apropriado, declare o protocolo de estabilização antes do teste de Medicina.",
+   "Reduza em 1 a DT da tentativa de estabilização (mínimo DT 5).",
+   "Uma vez por cena; gasta Ação Principal e não soma com outra redução de DT da árvore.",
+   "A estabilização externa exige DT 7; seu protocolo a reduz para DT 6."
+  ],
+  [
+   "Antes de deslocar uma vítima com aliado, indique quem sustenta cabeça e pernas e declare o levantamento.",
+   "Um participante recebe +1 no teste de transporte realizado pela equipe.",
+   "Uma vez por cena; ambos precisam conseguir agir e carregar peso plausível.",
+   "Vocês erguem o ferido da escada; o teste de transporte recebe +1."
+  ],
+  [
+   "Depois de uma rodada de vigília, identifique uma deterioração observável antes do próximo atendimento.",
+   "Some +1 ao primeiro teste de Medicina para reagir à complicação até seu turno seguinte.",
+   "Uma vez por cena; não previne deterioração sem teste e não inventa sintomas.",
+   "Você nota a respiração enfraquecer e ajusta o curativo com +1."
+  ],
+  [
+   "Com duas vítimas, gaste uma Ação Principal organizando instrumentos apropriados para ambas.",
+   "O próximo teste de Medicina na segunda vítima recebe +1 se o mesmo procedimento servir.",
+   "Uma vez por cena; não dá dois atendimentos na mesma ação; requer material suficiente.",
+   "Você organiza as talas e ganha +1 quando atende o segundo acidentado."
+  ]
+ ],
+ "1": [
+  [
+   "Quando um Ferimento limitar uma ação, declare uma alternativa que usa uma região ilesa antes de rolar.",
+   "Receba +1 no teste físico da alternativa plausível que evita a área lesionada.",
+   "Uma vez por cena; não remove Ferimento ou penalidade que também se aplique à alternativa.",
+   "Com o braço ferido, você apoia com o ombro bom e soma +1 na travessia."
+  ],
+  [
+   "Gaste uma Ação Principal preparando um abrigo real para atendimento: ventilação, piso e acesso.",
+   "O próximo teste de Medicina dentro do abrigo recebe +1 se o preparo persistir.",
+   "Uma vez por cena; proteção material deve existir; repouso não cura automaticamente.",
+   "Você afasta o paciente do piso úmido e o estabiliza na tenda com +1."
+  ],
+  [
+   "Depois de estudar uma rota, declare os apoios que usará apesar da dor antes da travessia.",
+   "Some +1 no teste físico para completar a travessia pela rota estudada.",
+   "Uma vez por cena; Ferimentos continuam ativos e Movimento não aumenta.",
+   "Você escolhe apoios para a perna machucada e soma +1 para cruzar a ponte."
+  ],
+  [
+   "Observe coberturas reais durante uma Ação Principal e escolha um refúgio alcançável.",
+   "Some +1 ao teste de deslocamento para chegar a esse refúgio até seu próximo turno.",
+   "Uma vez por cena; não revela esconderijo secreto nem protege de ameaças que atravessem a cobertura.",
+   "Você encontra uma vala seca e corre para lá com +1 no teste."
+  ],
+  [
+   "Identifique medo num aliado que consiga ouvi-lo e indique antes da reação uma rota de abrigo visível.",
+   "O aliado recebe +1 no próximo teste físico de retirada do perigo, nunca no teste de Metus.",
+   "Uma vez por cena; não elimina pavor ou dá imunidade; rota precisa existir.",
+   "O companheiro hesita diante do rugido; você o guia à porta e ele rola fuga com +1."
+  ],
+  [
+   "Depois de sobreviver a ameaça concreta, anote no descanso qual preparo técnico evitaria uma repetição.",
+   "Receba +1 no primeiro teste de Sobrevivência para preparar proteção contra esse tipo de ameaça numa cena futura.",
+   "Uma vez por sessão; exige aprendizado registrado; não concede Vivência ou dado maior automaticamente.",
+   "Após a nevasca, você registra como montou abrigo e soma +1 na proteção contra outra."
+  ]
+ ],
+ "x": [
+  [
+   "Examine sinais físicos de uma vítima ou ambiente durante uma Ação Principal; declare o risco concreto antes do próximo atendimento.",
+   "Receba +1 no primeiro teste de Medicina ou Sobrevivência diretamente ligado ao risco observado.",
+   "Uma vez por cena; não revela diagnóstico invisível nem substitui material apropriado.",
+   "Você examina a respiração do ferido e soma +1 ao teste de estabilização."
+  ],
+  [
+   "Antes do teste de Medicina, anuncie o substituto de ferramenta que preparou e apresente material plausível.",
+   "Reduza em 1 a DT do teste com essa ferramenta improvisada (mínimo DT 5).",
+   "Uma vez por cena; não substitui material indispensável nem cura automaticamente.",
+   "Faltou uma tala; você adapta madeira limpa e a DT da imobilização cai de 8 para 7."
+  ],
+  [
+   "Identifique a lesão e ensine uma cadência de respiração antes da movimentação física da vítima.",
+   "Conceda +1 ao teste físico da vítima para um movimento curto sem agravar o esforço.",
+   "Uma vez por cena; requer vítima consciente e capaz de seguir instruções; não elimina Ferimentos.",
+   "Você ensina o ferido a expirar ao levantar; ele rola o movimento com +1."
+  ],
+  [
+   "Antes de transportar um aliado caído, escolha o apoio real e declare o levantamento antes do teste.",
+   "Some +1 no primeiro teste físico para arrastar ou carregar a pessoa até cobertura próxima.",
+   "Uma vez por cena; não recupera o paciente nem concede Movimento extra.",
+   "Você segura o ferido pelos ombros e o arrasta atrás do balcão com +1."
+  ],
+  [
+   "Antes de um aliado auxiliar seu atendimento, divida duas tarefas e indique as ferramentas de cada um.",
+   "O teste principal de Medicina recebe +1 pelo auxílio coordenado.",
+   "Uma vez por cena; requer aliado presente e material real; não soma com outro bônus de auxílio.",
+   "Você pede que segurem a compressa enquanto aplica a tala, somando +1."
+  ],
+  [
+   "Observe uma ameaça ambiental próxima de uma vítima e declare a proteção antes do socorro.",
+   "O próximo teste físico para retirar a vítima do perigo recebe +1, se você coordenar a retirada.",
+   "Uma vez por cena; não atrasa a ameaça de graça e precisa existir passagem acessível.",
+   "Você percebe a fumaça e orienta a retirada do ferido com +1 no teste."
+  ]
+ ]
 }
  };
  function get(node){
