@@ -101,7 +101,7 @@ async def run_case(browser,width,height):
  await far.click()
  await page.wait_for_function("window.__treeSmoke.plan.length===3",timeout=5000)
  assert await page.locator("#tree-pe").inner_text()=="26","Planejamento não pode descontar PE"
- assert "etapas planejadas" in await page.locator("#tree-plan-status").inner_text(),"Planejamento invisível"
+ await page.wait_for_function("document.querySelector('#tree-plan-status').textContent.includes('etapas planejadas')",timeout=5000)
  if width<600:
   overflow=await page.evaluate("document.documentElement.scrollWidth-window.innerWidth")
   assert overflow<=3,f"Transbordamento horizontal no celular: {overflow}"
