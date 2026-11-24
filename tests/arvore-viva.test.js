@@ -24,3 +24,14 @@ test('conserva o caminho ramificado e os 180 PE',()=>{
  assert.equal(tree.formatCost(path),180);
  assert.ok(!tree.canUnlock(path,'s2:x:1'));
 });
+test('Parry só é conquistado dentro da rota de Defesa, não é ação universal',()=>{
+ const parry=tree.map.get('s1:1:4');
+ assert.equal(parry.name,'Parry · Defesa Perfeita');
+ assert.equal(parry.rank,10);
+ assert.equal(parry.status,'ready');
+ assert.equal(parry.parent,'s1:1:3');
+ assert.match(parry.effect,/Sem este nó, o personagem não tem acesso ao Parry/);
+ const start=[];
+ assert.equal(tree.canUnlock(start,parry.id),false);
+ assert.equal(tree.canUnlock(start,'s1:x:1'),true);
+});
