@@ -358,6 +358,122 @@
    "Você prende a correia do inimigo na madeira; a manobra ganha +1, sem dano no alvo."
   ]
  ]
+},
+  mobilidade:{
+ "0": [
+  [
+   "Com ao menos uma Marca de Latebra e cobertura contínua, declare o movimento discreto antes de mudar de posição.",
+   "Conserve uma Marca que o deslocamento curto normalmente comprometeria, após um teste de Furtividade bem-sucedido.",
+   "Uma vez por cena; nunca preserva marcas diante de visibilidade direta ou ruído forte.",
+   "Você troca de esconderijo entre cortinas e mantém uma das Marcas que perderia."
+  ],
+  [
+   "Quando gastar uma Ação Principal para reforçar seu esconderijo, anuncie o ajuste de respiração ou sombra escolhido.",
+   "Some +1 à rolagem usada para reforçar uma Marca de Latebra.",
+   "Uma vez por cena; só funciona em esconderijo possível; não cria Marca sem teste válido.",
+   "Você recua da fresta de luz e faz o reforço de Latebra com +1."
+  ],
+  [
+   "Confirme um ponto cego de um observador e declare a travessia antes de usar seu Movimento normal.",
+   "Some +1 ao teste de Furtividade feito para atravessar aquele ponto cego.",
+   "Uma vez por cena; a área precisa realmente estar fora do campo visual e não pode haver ruído denunciador.",
+   "Você passa pelas costas do sentinela durante a virada e soma +1 no teste."
+  ],
+  [
+   "Antes de percorrer uma superfície que faria um ruído fraco, declare o apoio especial que aprendeu a usar.",
+   "Evite a perda de uma Marca de Latebra causada apenas por esse ruído fraco, se vencer um teste de Furtividade.",
+   "Uma vez por cena; não elimina ruído forte, fala, ataque ou barulho de queda.",
+   "Você pisa sobre a viga em vez da tábua frouxa; vence o teste e conserva a Marca."
+  ],
+  [
+   "Quando interromper uma perseguição e entrar em cobertura válida, marque previamente uma posição de retorno no mesmo local.",
+   "Seu primeiro teste para reforçar Latebra ao voltar à posição marcada recebe +1.",
+   "Uma vez por cena; sem esconderijo real, não há teste nem benefício; não restaura Marcas automaticamente.",
+   "Você volta ao nicho escuro já preparado e reforça a ocultação com +1."
+  ],
+  [
+   "Depois de alcançar cobertura completa, gaste Ação Principal para criar uma Marca conforme Latebra e anuncie a técnica.",
+   "Some +1 ao teste de Furtividade necessário para conquistar a nova Marca.",
+   "Uma vez por cena; continua limitado ao número máximo de Marcas e às regras de busca.",
+   "Você se esconde atrás da tapeçaria e tenta formar a Marca com +1."
+  ]
+ ],
+ "1": [
+  [
+   "Ao trocar um ataque corpo a corpo por uma manobra de desvio permitida, declare a direção da esquiva de corpo antes do teste.",
+   "Some +1 ao teste da manobra de desvio que o deslocará para uma posição adjacente alcançável.",
+   "Uma vez por cena; não ataca e se desloca gratuitamente no mesmo lance; usa sua ação normal.",
+   "Você evita a linha da alabarda com uma manobra de desvio rolada com +1."
+  ],
+  [
+   "Depois de identificar um apoio instável, declare como distribuirá o peso antes de testar equilíbrio nesse apoio.",
+   "Some +1 ao teste de Destreza ou Atletismo pertinente à travessia.",
+   "Uma vez por cena; só vale para o apoio observado; não substitui cordas ou ferramentas necessárias.",
+   "Você usa a borda de pedra como apoio e soma +1 ao teste de equilíbrio."
+  ],
+  [
+   "Sob perseguição por uma rota aberta, escolha uma curva real antes de gastar seu Movimento.",
+   "Receba +1 na primeira oposição de posicionamento feita para despistar o perseguidor naquela curva.",
+   "Uma vez por cena; requer curva existente e espaço; não cancela perseguição automaticamente.",
+   "Você dobra o beco e testa com +1 para escapar da linha de avanço do guarda."
+  ],
+  [
+   "Ao carregar objeto pesado ou aliado, declare a técnica de distribuição de peso antes do primeiro teste de deslocamento.",
+   "Reduza em 1 a DT desse teste de deslocamento sob carga (mínimo DT 5).",
+   "Uma vez por cena; não elimina o peso, penalidades graves ou exigências de força plausíveis.",
+   "Você equilibra o ferido nos ombros; a DT da travessia cai de 9 para 8."
+  ],
+  [
+   "Escolha um ponto de apoio que você ocupa e explique ao aliado como usá-lo na próxima manobra de travessia.",
+   "O aliado recebe +1 no teste de saltar ou atravessar utilizando o apoio que você manteve.",
+   "Uma vez por cena; exige contato possível e você não pode abandonar o apoio antes da tentativa.",
+   "Você firma o braço no muro; o companheiro usa seu ombro e soma +1 no salto."
+  ],
+  [
+   "Após perceber que a saída original foi bloqueada, identifique uma rota alternativa visível e declare o desvio antes da corrida.",
+   "Some +1 ao primeiro teste de deslocamento para escapar por essa segunda rota.",
+   "Uma vez por cena; não revela saídas secretas nem cria passagens.",
+   "Você vê uma janela livre ao lado da porta trancada e testa a fuga por ela com +1."
+  ]
+ ],
+ "x": [
+  [
+   "Antes de cruzar até 2 m entre duas coberturas reais, declare a travessia silenciosa e gaste o Movimento normal.",
+   "Some +1 ao teste de Furtividade que sustenta as Marcas de Latebra nessa travessia.",
+   "Uma vez por cena; não oculta movimento em campo aberto ou sob observação direta.",
+   "Você cruza os dois metros entre caixas; seu teste para manter as Marcas recebe +1."
+  ],
+  [
+   "Estude os apoios de um trecho de terreno difícil por uma Ação Principal. No Movimento seguinte, declare o trajeto que memorizou.",
+   "Reduza em 1 a DT de um único teste de travessia desse trecho (DT mínima 5).",
+   "Uma vez por cena; apenas para o trecho observado e com terreno ainda nas mesmas condições.",
+   "Você estuda os degraus molhados; a DT de sua travessia cai de 8 para 7."
+  ],
+  [
+   "Observe por uma ação a aproximação a um alvo ou cobertura; antes do próximo teste de movimentação, escolha uma curva de até 2 m.",
+   "Some +1 à manobra de deslocamento por essa curva quando houver oposição.",
+   "Uma vez por cena; usa Movimento disponível e não atravessa um inimigo ou parede.",
+   "Você escolhe contornar a coluna e testa o movimento de aproximação com +1."
+  ],
+  [
+   "Ao deixar uma cobertura, declare que apagará um único indício físico de sua passagem e faça o teste de Furtividade apropriado.",
+   "Some +1 ao teste para ocultar pegadas, marcas de barro ou outro vestígio pequeno.",
+   "Uma vez por cena; requer tempo e material plausíveis; não apaga uma trilha inteira nem som alto.",
+   "Você arrasta um pano sobre uma pegada; soma +1 para disfarçar o vestígio."
+  ],
+  [
+   "Depois de avaliar uma parede e seus apoios por uma Ação Principal, declare a sequência de pegadas antes da escalada.",
+   "Receba +1 no primeiro teste de escalada pela rota estudada.",
+   "Uma vez por cena; se os apoios mudarem, você perde a preparação; não aumenta o alcance sem subir.",
+   "Você avalia três saliências e escala usando +1 no teste."
+  ],
+  [
+   "Após passar silenciosamente por um corredor, indique um ruído mínimo que amortecerá ao voltar pelo mesmo trecho.",
+   "Some +1 à próxima rolagem de Furtividade para refazer a passagem com os mesmos apoios.",
+   "Uma vez por cena; o percurso não pode estar alterado nem vigiado diretamente.",
+   "Você retorna pelo assoalho cujo rangido aprendeu a evitar e testa com +1."
+  ]
+ ]
 }
  };
  function get(node){
