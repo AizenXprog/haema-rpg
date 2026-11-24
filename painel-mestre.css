@@ -14,3 +14,72 @@
 @media(max-width:1050px){.command-workspace{grid-template-columns:205px 1fr}.command-sidebar{padding:15px 8px}.command-nav button{padding:13px 9px}.command-main{padding:22px 18px}.command-two-column{grid-template-columns:1fr}.command-overview-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:740px){.command-workspace{display:block}.command-sidebar{height:auto;min-height:0;position:relative;padding:16px;border-right:0;border-bottom:1px solid var(--cmd-line);gap:9px}.command-sidebar-brand{padding:0 5px 10px}.command-sidebar-brand strong{font-size:1.6rem}.command-label{padding:0}.command-nav{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;scroll-snap-type:x mandatory}.command-nav button{min-width:max-content;scroll-snap-align:start;padding:11px 13px}.command-sidebar-bottom{display:none}.command-toolbar{align-items:flex-start;flex-wrap:wrap}.command-toolbar-actions{justify-content:start}.command-overview-grid{grid-template-columns:1fr}.command-card-wide{grid-column:1}.command-main{padding:22px 14px}.command-tree-host iframe{height:75vh;min-height:560px}.command-roll-controls{grid-template-columns:1fr 1fr 1fr}}
 @media(prefers-reduced-motion:reduce){.command-panel{animation:none}.command-btn,.command-nav button{transition:none}.command-btn:hover{transform:none}}
+
+/* HÆMA · Mesa ao Vivo / primeiro lote de condução da campanha */
+.command-nav-more{border-top:1px solid var(--cmd-line);margin-top:9px;padding-top:8px}
+.command-nav-more summary{list-style:none;cursor:pointer;font:600 .78rem 'DM Sans',sans-serif;color:#c9b29d;padding:13px;display:flex;justify-content:space-between}
+.command-nav-more summary::after{content:'＋';font-size:1.05rem}.command-nav-more[open] summary::after{content:'−'}
+.command-nav-more summary::-webkit-details-marker{display:none}
+.command-nav-more button{width:100%;font-size:.78rem!important;padding:11px 16px!important}
+.command-live-intro{display:flex;justify-content:space-between;align-items:center;gap:22px;margin:0 0 14px}
+.command-live-intro h2{font:600 clamp(2.1rem,4vw,3.25rem)/1 'Cormorant Garamond',serif;letter-spacing:.015em;margin:4px 0 8px}
+.command-live-intro p{max-width:64ch;margin:0;font-size:.8rem;line-height:1.55;color:#bea9a6}
+.command-live-intro p strong{color:#e7ceaa}
+.live-sync{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+#live-save-status{font-size:.75rem;color:#d7b78d;line-height:1.4}
+#live-save-status[data-error=true]{color:#f4a69d}
+.command-live-root{display:grid;gap:15px}
+.live-topline{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:16px 20px;border:1px solid rgba(194,145,114,.37);border-radius:12px;background:linear-gradient(108deg,#371e2d,#1e151d);box-shadow:inset 0 1px 0 rgba(244,200,147,.08)}
+.live-focus{display:grid;gap:3px}
+.live-focus>small{font-size:.68rem;letter-spacing:.13em;color:#cba77a;font-weight:700}
+.live-focus>small strong{font-size:1rem;color:#f1d49f}
+.live-focus>strong{font:600 clamp(1.4rem,3vw,2.25rem)/1.05 'Cormorant Garamond',serif;color:#ffecd3}
+.live-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.live-layout{display:grid;grid-template-columns:minmax(245px,300px) minmax(0,1fr);align-items:start;gap:13px}
+.live-order-panel,.live-roster-panel{background:linear-gradient(160deg,rgba(31,20,29,.98),rgba(17,12,18,.98));border:1px solid rgba(199,159,113,.22);border-radius:12px;padding:16px;min-width:0}
+.live-section-head{display:grid;gap:5px;margin:0 0 15px}
+.live-section-head h3{font:600 1.55rem 'Cormorant Garamond',serif;margin:0;color:#f2dac0}
+.live-section-head small{font-size:.71rem;line-height:1.5;color:#bda9a3}
+.live-order-list{display:grid;gap:6px}
+.live-turn{display:flex;align-items:center;gap:4px;border:1px solid rgba(191,145,112,.19);border-radius:9px;background:#221821;min-height:42px;padding:4px;transition:background .18s,border-color .18s}
+.live-turn.active{border-color:#ddaa77;background:linear-gradient(90deg,#572b39,#2d1e27);box-shadow:inset 3px 0 0 #e5b783}
+.live-turn-name{border:0;background:transparent;color:#e7d8d2;text-align:left;min-width:0;flex:1;cursor:pointer;padding:8px 6px;font:500 .83rem 'DM Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.live-turn-name:disabled{cursor:default;color:#afa09b}
+.live-mini{flex:0 0 auto;min-width:31px;min-height:31px;background:#30232b;border:1px solid rgba(204,160,119,.22);border-radius:7px;color:#dfc7b7;cursor:pointer}
+.live-mini:hover:not(:disabled),.live-step:hover{background:#673a45}
+.live-mini:disabled{opacity:.3;cursor:default}
+.live-tag{font-size:.54rem;letter-spacing:.08em;color:#d8bd94;border:1px solid rgba(203,155,95,.28);border-radius:5px;padding:4px}
+.live-enemy-form{margin-top:18px;padding-top:16px;border-top:1px solid var(--cmd-line);display:grid;gap:8px}
+.live-enemy-form label{font-size:.71rem;font-weight:700;letter-spacing:.1em;color:#d1b386;text-transform:uppercase}
+.live-enemy-form>div{display:flex;gap:6px}
+.live-enemy-form input,.live-condition input,.live-counter input{font-family:'DM Sans',sans-serif;background:#130e15;color:#f6e5d6;border:1px solid rgba(212,160,125,.32);border-radius:7px}
+.live-enemy-form input{min-width:0;flex:1;padding:9px;font-size:.77rem}
+.live-roster{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:11px;align-items:start}
+.live-fighter{border:1px solid rgba(194,151,111,.26);border-radius:10px;background:linear-gradient(135deg,#30202a,#19131b);padding:14px;min-width:0;transition:border-color .2s,box-shadow .2s}
+.live-fighter.active{border-color:#efbe7e;box-shadow:0 0 0 1px rgba(241,180,100,.17),0 0 26px rgba(172,72,72,.12)}
+.live-fighter-head{display:flex;justify-content:space-between;align-items:start;gap:5px;margin-bottom:14px}
+.live-fighter-name{display:grid;gap:3px}
+.live-fighter-name strong{font:600 1.43rem/1.1 'Cormorant Garamond',serif;color:#ffecd9}
+.live-fighter-name small{font-size:.7rem;color:#bda4a0}
+.live-resource-primary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.live-counter label{display:grid;gap:6px;font-size:.66rem;color:#d3b99c;text-transform:uppercase;letter-spacing:.07em}
+.live-counter-controls{display:flex;gap:3px;align-items:center}
+.live-counter input{width:100%;height:38px;min-width:0;box-sizing:border-box;text-align:center;font-size:1.05rem;font-weight:700;appearance:textfield}
+.live-counter input::-webkit-inner-spin-button,.live-counter input::-webkit-outer-spin-button{appearance:none;margin:0}
+.live-step{display:grid;place-items:center;width:33px;min-width:33px;height:38px;background:#402734;border:1px solid rgba(224,179,128,.28);border-radius:7px;color:#f4d5aa;cursor:pointer;font-size:1.3rem}
+.live-more{margin-top:12px;border-top:1px solid rgba(185,144,115,.23);padding-top:10px}
+.live-more summary{cursor:pointer;color:#d7b894;font-size:.74rem;font-weight:600;padding:4px 0}
+.live-more summary:focus-visible,.command-nav-more summary:focus-visible{outline:2px solid #ffdfae;outline-offset:2px}
+.live-resource-secondary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:13px 0}
+.live-counter.secondary input{height:33px;font-size:.86rem}
+.live-counter.secondary label{font-size:.57rem}
+.live-reaction{display:flex;align-items:center;gap:8px;font-size:.73rem;color:#e4ceb3;line-height:1.4}
+.live-reaction input{accent-color:#b77668;width:16px;height:16px}
+.live-condition{display:grid;gap:7px;margin-top:12px;font-size:.71rem;color:#d1ad93}
+.live-condition input{padding:10px;font-size:.74rem}
+.live-empty{font-size:.81rem;color:#c8b2af;line-height:1.5;padding:9px}
+.live-disclaimer{color:#9f8c89;font-size:.71rem;line-height:1.5;margin:0}
+@media(max-width:1220px){.live-layout{grid-template-columns:minmax(205px,250px) minmax(0,1fr)}.live-roster{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))}}
+@media(max-width:980px){.live-layout{grid-template-columns:minmax(0,1fr)}.live-order-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.live-enemy-form>div{max-width:520px}.command-live-intro{align-items:start}}
+@media(max-width:720px){.command-live-intro{display:grid;gap:11px}.live-sync{justify-content:space-between}.live-topline{display:grid;gap:14px;padding:14px}.live-actions{justify-content:start}.live-actions .command-btn{flex:1;min-width:0}.live-order-panel,.live-roster-panel{padding:13px}.live-roster{grid-template-columns:minmax(0,1fr)}.live-resource-secondary{gap:5px}.live-turn-name{font-size:.8rem}}
+@media(prefers-reduced-motion:reduce){.live-fighter,.live-turn{transition:none}}
