@@ -42,7 +42,7 @@ DECLARE balance integer; previous integer;
 BEGIN
  IF auth.uid() IS NULL OR NOT public.haema_is_admin() THEN RAISE EXCEPTION 'Somente o mestre pode corrigir PE'; END IF;
  IF p_delta IS NULL OR p_delta=0 OR p_delta < -50 OR p_delta > 50 THEN RAISE EXCEPTION 'A correção exige entre -50 e +50 PE'; END IF;
- IF pg_catalog.length(pg_catalog.btrim(pg_catalog.coalesce(p_reason,'')))<5 THEN RAISE EXCEPTION 'Informe o motivo da correção'; END IF;
+ IF pg_catalog.length(pg_catalog.btrim(coalesce(p_reason,'')))<5 THEN RAISE EXCEPTION 'Informe o motivo da correção'; END IF;
  IF NOT EXISTS (SELECT 1 FROM public.haema_characters c JOIN public.haema_campaigns g ON g.id=c.campaign_id WHERE c.id=p_character AND g.gm_id=auth.uid())
  THEN RAISE EXCEPTION 'Perfil fora da campanha do mestre'; END IF;
  INSERT INTO public.haema_tree_progress(character_id) VALUES(p_character) ON CONFLICT DO NOTHING;
@@ -113,7 +113,7 @@ RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
 DECLARE old record;
 BEGIN
  IF auth.uid() IS NULL OR NOT public.haema_is_admin() THEN RAISE EXCEPTION 'Somente o mestre reinicia árvores'; END IF;
- IF pg_catalog.length(pg_catalog.btrim(pg_catalog.coalesce(p_reason,'')))<5 THEN RAISE EXCEPTION 'Informe um motivo para o reinício'; END IF;
+ IF pg_catalog.length(pg_catalog.btrim(coalesce(p_reason,'')))<5 THEN RAISE EXCEPTION 'Informe um motivo para o reinício'; END IF;
  IF NOT EXISTS(SELECT 1 FROM public.haema_characters c JOIN public.haema_campaigns g ON g.id=c.campaign_id WHERE c.id=p_character AND g.gm_id=auth.uid())
  THEN RAISE EXCEPTION 'Perfil indisponível'; END IF;
  INSERT INTO public.haema_tree_progress(character_id) VALUES(p_character) ON CONFLICT DO NOTHING;
