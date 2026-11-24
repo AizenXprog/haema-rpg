@@ -383,10 +383,31 @@
    const resize=()=>view();const hidden=()=>document.body.classList.toggle('tree-sleep',document.hidden);
    const fullscreen=()=>{if(state.fullscreenUsed&&!document.fullscreenElement){state.fullscreenUsed=false;setProjection(false)}};
    document.addEventListener('keydown',key);window.addEventListener('resize',resize);document.addEventListener('visibilitychange',hidden);document.addEventListener('fullscreenchange',fullscreen);
-   const wheel=e=>{e.preventDefault();zoom(e.deltaY<0?1.11:1/1.11)};map.addEventListener('wheel',wheel,{passive:false});
-   const down=e=>{hideTooltip();if(e.button!==0&&e.pointerType==='mouse')return;state.drag={x:e.clientX,y:e.clientY,cx:state.cx,cy:state.cy,moved:false};map.setPointerCapture(e.pointerId)};
-   const move=e=>{if(!state.drag)return;const dx=e.clientX-state.drag.x,dy=e.clientY-state.drag.y;if(Math.abs(dx)+Math.abs(dy)>5)state.drag.moved=true;state.cx=state.drag.cx-dx/state.zoom;state.cy=state.drag.cy-dy/state.zoom;view()};
-   const up=e=>{if(!state.drag)return;const moved=state.drag.moved;state.drag=null;if(moved){state.suppressClick=true;setTimeout(()=>state.suppressClick=false,0)}};
+   const wheel=e=>{e.preventDefault();zoomAt(e.deltaY<0?1.11:1/1.11,e.clientX,e.clientY)};map.addEventListener('wheel',wheel,{passive:false});
+   const fingers=new Map();let pinched=false;
+   const down=e=>{hideTooltip();if(e.button!==0&&e.pointerType==='mouse')return;cancelAnimationFrame(cameraFrame);
+    fingers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(fingers.size===1){pinched=false;state.drag={x:e.clientX,y:e.clientY,cx:state.cx,cy:state.cy,moved:false}}
+    if(fingers.size>=2){pinched=true;state.drag=null;state.suppressClick=true}
+    map.setPointerCapture(e.pointerId)
+   };
+   const move=e=>{if(!fingers.has(e.pointerId))return;const old=[...fingers.values()];fingers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(fingers.size>=2){const now=[...fingers.values()],a=old[0],b=old[1],c=now[0],d=now[1];
+     const prevDistance=Math.hypot(a.x-b.x,a.y-b.y)||1,dist=Math.hypot(c.x-d.x,c.y-d.y)||1;
+     const midBefore={x:(a.x+b.x)/2,y:(a.y+b.y)/2},midAfter={x:(c.x+d.x)/2,y:(c.y+d.y)/2};
+     const rect=map.getBoundingClientRect(),{w,h}=size(),oldZoom=state.zoom,newZoom=Math.max(.16,Math.min(2.8,oldZoom*dist/prevDistance));
+     const worldX=state.cx+(midBefore.x-rect.left-w/2)/oldZoom,worldY=state.cy+(midBefore.y-rect.top-h/2)/oldZoom;
+     state.cx=worldX-(midAfter.x-rect.left-w/2)/newZoom;state.cy=worldY-(midAfter.y-rect.top-h/2)/newZoom;state.zoom=newZoom;view();return;
+    }
+    if(!state.drag||pinched)return;const dx=e.clientX-state.drag.x,dy=e.clientY-state.drag.y;
+    if(Math.abs(dx)+Math.abs(dy)>5)state.drag.moved=true;
+    state.cx=state.drag.cx-dx/state.zoom;state.cy=state.drag.cy-dy/state.zoom;view();
+   };
+   const up=e=>{if(!fingers.has(e.pointerId))return;fingers.delete(e.pointerId);
+    const moved=state.drag?.moved||pinched;state.drag=null;
+    if(moved){state.suppressClick=true;setTimeout(()=>{if(!fingers.size)state.suppressClick=false},70)}
+    if(!fingers.size)pinched=false;
+   };
    map.addEventListener('pointerdown',down);map.addEventListener('pointermove',move);map.addEventListener('pointerup',up);map.addEventListener('pointercancel',up);
    dispose=()=>{cancelAnimationFrame(cameraFrame);clearTimeout(pulseTimer);document.removeEventListener('keydown',key);window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',hidden);document.removeEventListener('fullscreenchange',fullscreen);if(state.projection)void exitProjection();lifecycle++};
   }
