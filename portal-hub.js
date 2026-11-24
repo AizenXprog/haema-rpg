@@ -24,7 +24,8 @@ async function init(){
   if(version!==generation||!root.isConnected)return;
   // This replaces the old "Campanhas e registros" destination in the Portal.
   if(isCampaignMaster)link('campanha.html','Campanhas e registros · Área do Mestre','Arquivo técnico privado: jornadas, sessões, NPCs, Bestiário, encontros, pistas e anotações.');
-  if(info.areas.includes('portal'))link('fichas.html?secao=characters','Fichas e mesa','Personagens, materiais liberados e conversa da campanha, separados do arquivo técnico.');
+  if(info.areas.includes('portal')){link('fichas.html?secao=characters','Fichas e mesa','Personagens, materiais liberados e conversa da campanha, separados do arquivo técnico.');
+   link('arvore.html','Árvore de Habilidades · Experimental','Uma trilha conectada e permanente por personagem. Explore o mapa e acompanhe suas conquistas.');}
   if(info.admin)link('administracao.html','Central de Acessos','Visibilidade por pessoa e por livro, aprovação de contas e histórico de alterações.');
   if(info.areas.includes('library'))link('biblioteca.html','Biblioteca','Abra o acervo liberado para você.');
   if(info.admin||info.areas.includes('studio'))link('estudio.html','HÆMA Estúdio · privado','Mapmaker e tela de projeção para mesas físicas. Acesso autorizado individualmente.');
