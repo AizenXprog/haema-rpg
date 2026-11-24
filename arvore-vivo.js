@@ -17,6 +17,7 @@
   const map=$('tree-map'),edges=$('tree-edges'),points=$('tree-nodes'),gate=$('tree-private-gate');
   const state={db:null,user:null,admin:false,owned:new Set(),characters:[],character:null,progress:null,plan:[],archived:new Map(),showArchived:false,hoverNode:null,overrides:new Map(),selected:'origem',projection:false,fullscreenUsed:false,zoom:.56,cx:0,cy:0,drag:null,suppressClick:false,busy:false,editing:null,confirming:null,request:0};
   const defaults=new Map(data.nodes.map(n=>[n.id,{name:n.name,effect:n.effect,trigger:n.trigger||'',limit:n.limit||'',example:n.example||'',status:n.status||'draft',kind:n.kind||''}]));
+  let cameraFrame=0,pulseTimer=0;const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||false;
   const svg=(tag,attrs={})=>{const e=document.createElementNS(SVG,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,String(v));return e};
   const safe=(v,max=280)=>String(v??'').slice(0,max);
   const selectedPath=()=>Array.isArray(state.progress?.path)?state.progress.path:[];
@@ -114,8 +115,18 @@
   }
   function size(){const r=map.getBoundingClientRect();return{w:Math.max(320,r.width),h:Math.max(350,r.height)}}
   function view(){const {w,h}=size();map.setAttribute('viewBox',`${state.cx-w/state.zoom/2} ${state.cy-h/state.zoom/2} ${w/state.zoom} ${h/state.zoom}`)}
-  function focus(n,level){if(!n)return;state.cx=n.x;state.cy=n.y;if(level)state.zoom=level;view()}
-  function zoom(f){state.zoom=Math.max(.16,Math.min(2.8,state.zoom*f));view()}
+  function focus(n,level){if(!n)return;cancelAnimationFrame(cameraFrame);
+   const from={cx:state.cx,cy:state.cy,zoom:state.zoom},target=level||state.zoom;
+   if(reduceMotion){state.cx=n.x;state.cy=n.y;state.zoom=target;view();return}
+   const start=performance.now(),duration=350;
+   const animate=now=>{const t=Math.min(1,(now-start)/duration),ease=1-Math.pow(1-t,3);state.cx=from.cx+(n.x-from.cx)*ease;state.cy=from.cy+(n.y-from.cy)*ease;state.zoom=from.zoom+(target-from.zoom)*ease;view();if(t<1)cameraFrame=requestAnimationFrame(animate)};
+   cameraFrame=requestAnimationFrame(animate);
+  }
+  function zoomAt(f,x,y){cancelAnimationFrame(cameraFrame);const {w,h}=size(),rect=map.getBoundingClientRect();
+   const rx=x==null?0:x-rect.left-w/2,ry=y==null?0:y-rect.top-h/2,old=state.zoom,next=Math.max(.16,Math.min(2.8,old*f));
+   state.cx+=rx*(1/old-1/next);state.cy+=ry*(1/old-1/next);state.zoom=next;view();
+  }
+  function zoom(f){zoomAt(f)}
   function choose(id,focusMap=false){const n=data.map.get(id);if(!n)return;state.selected=id;paint();if(focusMap)focus(n,Math.max(state.zoom,.76))}
   function draw(){
    const fragment=document.createDocumentFragment();
@@ -203,8 +214,8 @@
      const {error:planError}=await state.db.rpc('haema_tree_save_plan',{p_character:selection.character,p_path:revised});
      if(!planError)state.plan=revised;
     }
-    choose(selection.id,true);notice(`Conquistada: ${n.name}. O progresso do personagem foi salvo.`);
-    const pulse=points.querySelector(`[data-id="${selection.id}"]`);pulse?.classList.add('tree-celebrate');setTimeout(()=>pulse?.classList.remove('tree-celebrate'),1700);
+    state.celebrating=selection.id;choose(selection.id,true);notice(`Conquistada: ${n.name}. ${n.cost} PE descontados e progresso salvo.`);
+     clearTimeout(pulseTimer);pulseTimer=setTimeout(()=>{state.celebrating=null;paint()},1600);
    }catch(e){$('tree-confirm-status').textContent='Não foi possível registrar: '+safe(e.message);notice(safe(e.message),true)}
    finally{state.busy=false;$('tree-confirm-accept').disabled=false;paint()}
   }
@@ -377,7 +388,7 @@
    const move=e=>{if(!state.drag)return;const dx=e.clientX-state.drag.x,dy=e.clientY-state.drag.y;if(Math.abs(dx)+Math.abs(dy)>5)state.drag.moved=true;state.cx=state.drag.cx-dx/state.zoom;state.cy=state.drag.cy-dy/state.zoom;view()};
    const up=e=>{if(!state.drag)return;const moved=state.drag.moved;state.drag=null;if(moved){state.suppressClick=true;setTimeout(()=>state.suppressClick=false,0)}};
    map.addEventListener('pointerdown',down);map.addEventListener('pointermove',move);map.addEventListener('pointerup',up);map.addEventListener('pointercancel',up);
-   dispose=()=>{document.removeEventListener('keydown',key);window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',hidden);document.removeEventListener('fullscreenchange',fullscreen);if(state.projection)void exitProjection();lifecycle++};
+   dispose=()=>{cancelAnimationFrame(cameraFrame);clearTimeout(pulseTimer);document.removeEventListener('keydown',key);window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',hidden);document.removeEventListener('fullscreenchange',fullscreen);if(state.projection)void exitProjection();lifecycle++};
   }
   authorize();
  }
