@@ -101,11 +101,12 @@
    quick.textContent=mode==='buy'?'CONQUISTAR · '+n.cost+' PE':mode==='next'?'IR AO PRÓXIMO PASSO':mode==='plan'?'TRAÇAR ROTA · '+routeCost+' PE':(state.character&&available&&n.status==='ready'&&balance<n.cost?'PE INSUFICIENTES':n.status!=='ready'?'EM CONSTRUÇÃO':'SELECIONE UM CAMINHO');
   }
   function paint(){
-   const acquired=new Set(selectedPath()),next=frontier(),planned=new Set(state.plan);
-   for(const el of edges.children){const id=el.dataset.id;el.setAttribute('class','tree-edge'+(acquired.has(id)?' unlocked':planned.has(id)?' planned':next.has(id)?' available':'')+(state.celebrating===id?' tree-celebrate':''));}
+   const acquired=new Set(selectedPath()),next=frontier(),planned=new Set(state.plan),filter=$('tree-view-filter').value;
+   const shows=id=>{const n=data.map.get(id);return id==='origem'||id===state.selected||filter==='all'||(filter==='available'&&(next.has(id)||acquired.has(id)))||(filter==='owned'&&acquired.has(id))||(filter==='draft'&&n?.status==='draft')};
+   for(const el of edges.children){const id=el.dataset.id;el.setAttribute('class','tree-edge'+(acquired.has(id)?' unlocked':planned.has(id)?' planned':next.has(id)?' available':'')+(state.celebrating===id?' tree-celebrate':'')+(!shows(id)?' muted':''));}
    for(const el of points.children){const id=el.dataset.id,n=data.map.get(id);if(!n)continue;
     const classes=['tree-node',n.type];if(acquired.has(id)||id==='origem')classes.push('unlocked');else if(planned.has(id))classes.push('planned');else if(next.has(id))classes.push('available');
-    if(n.status!=='ready')classes.push('draft');if(next.has(id)&&n.status==='ready'&&state.character&&state.progress?.pe_available<n.cost)classes.push('no-pe');if(next.has(id)&&n.lockedByAwakening&&!state.progress?.awakened)classes.push('unawakened');if(id===state.selected)classes.push('current');if(state.celebrating===id)classes.push('tree-celebrate');el.setAttribute('class',classes.join(' '));
+    if(n.status!=='ready')classes.push('draft');if(next.has(id)&&n.status==='ready'&&state.character&&state.progress?.pe_available<n.cost)classes.push('no-pe');if(next.has(id)&&n.lockedByAwakening&&!state.progress?.awakened)classes.push('unawakened');if(id===state.selected)classes.push('current');if(state.celebrating===id)classes.push('tree-celebrate');if(!shows(id))classes.push('muted');el.setAttribute('class',classes.join(' '));
     el.setAttribute('aria-label',`${n.name}: ${acquired.has(id)?'adquirida':n.status!=='ready'?'em construção':next.has(id)?'próxima escolha':'rota não conectada'}. ${n.effect}`);
 
    }
@@ -354,7 +355,7 @@
     if(!info.user){$('tree-private-message').textContent='Entre com sua conta administrativa para acessar as habilidades.';const btn=$('tree-private-login');btn.hidden=false;btn.onclick=()=>auth.login();return}
     if(!info.admin){$('tree-private-message').textContent='Apenas a conta administradora do HÆMA pode acessar a constelação.';return}
     state.user=info.user;state.admin=true;state.db=await auth.client();await getEdits();await getCharacters();if(epoch!==lifecycle||!root.isConnected)return;
-    gate.hidden=true;root.hidden=false;draw();bind();paint();view();
+    gate.hidden=true;root.hidden=false;draw();bind();$('tree-advanced-drawer').open=!window.matchMedia('(max-width:720px)').matches;paint();view();
     const fromUrl=new URLSearchParams(location.search).get('character');if(fromUrl&&state.characters.some(x=>x.id===fromUrl))await pickCharacter(fromUrl);
    }catch(e){if(epoch!==lifecycle)return;$('tree-private-message').textContent='Não foi possível liberar o acesso. '+safe(e.message)}
   }
@@ -372,7 +373,7 @@
    $('tree-plan-clear').addEventListener('click',clearPlan);
    $('tree-edit').addEventListener('click',openEditor);$('tree-editor-close').addEventListener('click',closeEditor);
    $('tree-editor-form').addEventListener('submit',e=>{e.preventDefault();void saveEditorial('ready')});$('tree-edit-save-draft').addEventListener('click',()=>void saveEditorial('draft'));
-   $('tree-search').addEventListener('input',search);$('tree-find-draft').addEventListener('click',findDraft);
+   $('tree-search').addEventListener('input',search);$('tree-find-draft').addEventListener('click',findDraft);$('tree-view-filter').addEventListener('change',paint);
    $('tree-focus-frontier').addEventListener('click',()=>{const arr=data.nextNodes(selectedPath());if(arr.length){choose(arr[0].id,true)}});
    $('tree-focus-last').addEventListener('click',()=>{const id=selectedPath().at(-1)||'origem';choose(id,true)});
    $('tree-zoom-in').addEventListener('click',()=>zoom(1.3));$('tree-zoom-out').addEventListener('click',()=>zoom(1/1.3));
