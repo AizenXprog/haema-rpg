@@ -7,9 +7,9 @@
 <title>Constelação Viva — HÆMA</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=0.1"><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="arvore.css?v=20261124"><link rel="stylesheet" href="arvore-viva.css?v=20261124b">
+<link rel="stylesheet" href="style.css?v=0.1"><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="arvore.css?v=20261124"><link rel="stylesheet" href="arvore-viva.css?v=20261124cb">
 <script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('tree-embedded');else{const audio=document.createElement('script');audio.defer=true;audio.src='audio.js?v=0.5';document.head.append(audio)}</script>
-<script defer src="script.js?v=0.2"></script><script defer src="navigation.js?v=7"></script><script defer src="arvore-catalogo-vivo.js?v=20261124b"></script><script defer src="arvore-data.js?v=20261124b"></script><script defer src="arvore-vivo.js?v=20261124b"></script>
+<script defer src="script.js?v=0.2"></script><script defer src="navigation.js?v=7"></script><script defer src="arvore-catalogo-vivo.js?v=20261124b"></script><script defer src="arvore-data.js?v=20261124b"></script><script defer src="arvore-vivo.js?v=20261124c"></script>
 </head>
 <body data-page="arvore">
 <a class="skip-link" href="#conteudo">Pular para a árvore</a><div aria-hidden="true" class="grain"></div>
@@ -25,7 +25,21 @@
   <div class="tree-metrics"><div><small>PE disponíveis</small><strong id="tree-pe">—</strong></div><div><small>Conquistas</small><strong id="tree-count">0</strong></div></div>
   <div class="tree-search-area"><label class="tree-label" for="tree-search">Buscar habilidade ou caminho</label><input id="tree-search" type="search" autocomplete="off" placeholder="Ex.: Parry, Âncora, Execução" aria-controls="tree-search-results"><div id="tree-search-results" class="tree-search-results" aria-live="polite"></div></div>
   <div class="tree-shortcuts"><button type="button" id="tree-focus-frontier">◇ Próximas escolhas</button><button type="button" id="tree-focus-last">⌖ Minha última conquista</button></div>
-  <div class="tree-role-tools" id="tree-gm-tools" hidden><p>Controle administrativo</p><label class="tree-label" for="tree-grant-pe">Conceder PE</label><div class="tree-inline"><input id="tree-grant-pe" type="number" inputmode="numeric" min="1" max="50" value="4"><button type="button" id="tree-grant-button">Conceder</button></div><button type="button" id="tree-regency-button" class="tree-secondary">Liberar Regências</button></div>
+  <div class="tree-route-controls"><span class="tree-label">TRAJETO DO PERSONAGEM</span>
+   <p id="tree-plan-status" class="tree-plan-status">Selecione um personagem e depois um nó para traçar uma rota.</p>
+   <button type="button" id="tree-plan-route" class="tree-route-primary" disabled>◇ Marcar caminho até este nó</button>
+   <div class="tree-route-inline"><button type="button" id="tree-plan-next" disabled>Próxima habilidade</button><button type="button" id="tree-plan-clear" disabled>Limpar planejamento</button></div>
+   <p class="tree-route-note">A linha marcada é apenas planejamento; nenhum PE será gasto antes de confirmar uma conquista.</p>
+  </div>
+  <div class="tree-role-tools" id="tree-gm-tools" hidden><p>Controle administrativo</p><label class="tree-label" for="tree-grant-pe">Conceder PE</label><div class="tree-inline"><input id="tree-grant-pe" type="number" inputmode="numeric" min="1" max="50" value="4"><button type="button" id="tree-grant-button">Conceder</button><button type="button" id="tree-remove-pe">Retirar</button></div>
+   <label class="tree-label" for="tree-pe-reason">Motivo da correção de PE</label><input id="tree-pe-reason" maxlength="250" value="Correção de PE concedidos por engano">
+   <button type="button" id="tree-regency-button" class="tree-secondary">Liberar Regências</button>
+   <div class="tree-profile-admin"><label><input type="checkbox" id="tree-show-archived"> Mostrar perfis removidos</label>
+    <button type="button" id="tree-archive-profile">Remover perfil da árvore</button>
+    <button type="button" id="tree-reset-profile" class="tree-danger">Reiniciar progressão</button>
+    <p>Remover da lista é reversível e não apaga a ficha. Reiniciar zera conquistas e saldo, mas preserva auditoria.</p>
+   </div>
+  </div>
   <div class="tree-editor-summary"><span>CAMINHOS EM CRIAÇÃO</span><strong id="tree-draft-total">504</strong><p>Escolha um espaço incompleto no mapa e use <em>Editar habilidade</em> para escrever, revisar ou publicar uma nova técnica.</p><button type="button" id="tree-find-draft">Encontrar espaço livre ↗</button></div>
   <div class="tree-legend"><p>SETORES</p><div id="tree-legend-items"></div></div>
   <a class="tree-back" href="painel-mestre.html">← Voltar ao Painel do Mestre</a>
@@ -35,7 +49,15 @@
   <div class="tree-canvas-label"><span>HÆMATOMANTHÍA · ARQUIVO DAS ESCOLHAS</span><b>ESCOLHA O QUE SE TORNARÁ</b></div>
   <svg id="tree-map" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Árvore de habilidades: arraste para navegar, clique ou pressione Enter num nó" tabindex="0"><defs><filter id="tree-halo" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="7"/></filter><radialGradient id="tree-core"><stop offset="0%" stop-color="#f9e1aa"/><stop offset="44%" stop-color="#672c42"/><stop offset="100%" stop-color="#180f19"/></radialGradient></defs><g id="tree-universe"><g id="tree-edges"></g><g id="tree-nodes"></g></g></svg>
   <div class="tree-viewport-controls"><button type="button" id="tree-zoom-in" aria-label="Aproximar" title="Aproximar">+</button><button type="button" id="tree-zoom-out" aria-label="Afastar" title="Afastar">−</button><button type="button" id="tree-center" aria-label="Centralizar mapa" title="Centralizar">⌖</button><button type="button" id="tree-projection" class="tree-projection-button">⛶ PROJEÇÃO</button></div>
-  <p class="tree-hint">Arraste para explorar · Use a roda para ampliar · Clique em qualquer símbolo para entender seu poder</p>
+  <p class="tree-hint">Arraste para explorar · Passe o mouse para entender o poder · Clique para selecionar · Marque um caminho sem gastar PE</p>
+  <div class="tree-hover-card" id="tree-hover-card" role="tooltip" hidden>
+   <div class="tree-hover-top"><strong id="tree-hover-title"></strong><span id="tree-hover-status"></span></div>
+   <p id="tree-hover-effect"></p>
+   <dl><div><dt>COMO ATIVAR</dt><dd id="tree-hover-trigger"></dd></div>
+   <div><dt>LIMITES</dt><dd id="tree-hover-limit"></dd></div>
+   <div><dt>EXEMPLO</dt><dd id="tree-hover-example"></dd></div></dl>
+   <small id="tree-hover-cost"></small>
+  </div>
   <div class="tree-projector-hud" id="tree-projector-hud" hidden>
    <div class="tree-projector-head"><div><span>MODO MESA</span><strong>Conquistas do personagem</strong></div><button type="button" id="tree-projector-exit" aria-label="Sair da projeção">✕</button></div>
    <label for="tree-projector-character">PERSONAGEM</label><select id="tree-projector-character" class="tree-select"><option value="">Explorar sem personagem</option></select>
@@ -44,6 +66,8 @@
    <p id="tree-projector-effect">Toque numa habilidade para ver o que ela concede e o que ainda precisa ser aprendido.</p>
    <div class="tree-projector-rules"><div><b>QUANDO</b><span id="tree-projector-trigger">—</span></div><div><b>LIMITE</b><span id="tree-projector-limit">—</span></div></div>
    <p class="tree-projector-state" id="tree-projector-state">O mestre confirma todas as compras.</p>
+   <p class="tree-projector-plan" id="tree-projector-plan">Nenhum trajeto planejado.</p>
+   <div class="tree-projector-actions"><button type="button" id="tree-projector-plan-route" disabled>◇ MARCAR CAMINHO</button><button type="button" id="tree-projector-next-plan" disabled>PRÓXIMA ESCOLHA</button></div>
    <button type="button" id="tree-projector-unlock" class="tree-unlock" disabled>Escolha uma habilidade</button>
    <p class="tree-projector-foot">A escolha será salva permanentemente no perfil. Antes disso, o mestre confirma a compra.</p>
   </div>
@@ -56,6 +80,7 @@
   <div class="tree-rule-grid"><div><b>QUANDO PODE USAR</b><p id="tree-detail-trigger">Escolha o próximo caminho.</p></div><div><b>LIMITE E CUSTO DE USO</b><p id="tree-detail-limit">Uma única trilha contínua.</p></div><div><b>EXEMPLO EM MESA</b><p id="tree-detail-example">Selecione um nó para aprender seu funcionamento.</p></div></div>
   <div class="tree-detail-meta"><div><span>PE PARA COMPRAR</span><strong id="tree-detail-cost">—</strong></div><div><span>ESTÁGIO</span><strong id="tree-detail-rank">0 / 24</strong></div></div>
   <p class="tree-detail-state" id="tree-detail-state" role="status">Selecione uma habilidade.</p>
+  <p class="tree-route-note">A seleção destaca o nó. Para marcar a linha até ele, use <strong>Marcar caminho</strong>. Comprar é uma ação separada.</p>
   <button type="button" class="tree-unlock" id="tree-unlock" disabled>Selecione um caminho</button>
   <button type="button" class="tree-edit-button" id="tree-edit">✎ Editar habilidade / Criar caminho</button>
   <p class="tree-detail-warning">As técnicas e a economia de PE continuam em playtest. Nada é concedido automaticamente à ficha antiga.</p>
