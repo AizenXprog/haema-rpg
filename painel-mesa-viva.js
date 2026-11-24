@@ -42,7 +42,7 @@
  function create(host,notify=()=>{}){
   if(!host)throw Error('Mesa ao Vivo: área indisponível');
   let ctx=null,snapshot=empty(),characters=[],tree=[],timer=0,serial=0,savedSerial=0,working=false,destroyed=false,lastError='';
-  const $=id=>host.querySelector('#'+id);
+  const $=id=>host.closest('[data-panel="live"]').querySelector('#'+id);
   const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n};
   const lookup=id=>characters.find(c=>c.id===id)||snapshot.enemies.find(e=>e.id===id)||null;
   const statsFor=id=>snapshot.characters[id]||snapshot.enemies.find(e=>e.id===id)?.stats;
@@ -119,7 +119,7 @@
    return !lastError;
   }
   async function load({db,campaignId,userId,roster=[],progress=[]}){
-   if(ctx&&ctx.campaignId!==campaignId&&serial!==savedSerial){const ok=await flush();if(!ok)throw Error('Salve as alterações da mesa antes de trocar de campanha.');}
+   if(ctx&&serial!==savedSerial){const ok=await flush();if(!ok)throw Error('Salve as alterações da mesa antes de atualizar ou trocar de campanha.');}
    const token=Symbol();load.token=token;ctx={db,campaignId,userId};characters=roster.slice();tree=progress.slice();
    setStatus('Consultando a sessão…');
    try{
