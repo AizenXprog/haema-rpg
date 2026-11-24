@@ -301,3 +301,14 @@
 @media(prefers-reduced-motion:reduce){.tree-viva .tree-detail-open .tree-details{animation:none}}
 
 .tree-viva .tree-advanced-drawer:not([open])>.tree-advanced-content{display:none!important}
+
+/* Didática das técnicas adquiridas: o procedimento fica visível antes de abrir regras. */
+.tree-viva .tree-education-note{font:400 11px/1.5 'DM Sans',sans-serif;color:#c9af96;margin:9px 0 14px;border-left:2px solid rgba(220,173,105,.58);padding:8px 10px;background:rgba(203,142,85,.06)}
+.tree-viva .tree-usage-steps{background:linear-gradient(135deg,rgba(74,44,48,.58),rgba(39,24,32,.34));border:1px solid rgba(215,173,112,.38);border-left:3px solid #d6a46e;border-radius:7px;padding:14px 13px;margin-top:12px}
+.tree-viva .tree-usage-steps h3{font:700 10px/1.4 'DM Sans',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#ebc792;margin:0 0 7px}
+.tree-viva .tree-usage-steps p{font:400 12px/1.6 'DM Sans',sans-serif;color:#f3e1d2;margin:0;white-space:pre-wrap}
+.tree-viva .tree-usage-steps + .tree-rules-fold{margin-top:9px}
+.tree-viva .tree-description{margin-top:9px}
+.tree-viva .tree-details .tree-education-note{max-width:unset}
+.tree-viva .tree-editor-card textarea::placeholder{color:#a58c8e;opacity:1;font-size:11px}
+@media(max-width:720px){.tree-viva .tree-usage-steps{padding:10px 11px;margin-top:10px}.tree-viva .tree-education-note{font-size:10px;padding:6px 8px;margin:7px 0 10px}.tree-viva .tree-details{max-height:56dvh}}
