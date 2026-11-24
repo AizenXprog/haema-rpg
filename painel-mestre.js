@@ -3,8 +3,8 @@
  * Site e Sistema criado por Vitor Monte.
  */
 (()=>{'use strict';
- const tabs={overview:'Visão da sessão',tree:'Árvore de habilidades',characters:'Personagens',notes:'Notas e arquivo',tools:'Ferramentas',reference:'Regras rápidas'};
- let currentEpoch=0;
+ const tabs={live:'Mesa ao Vivo',overview:'Visão da sessão',tree:'Evolução',characters:'Personagens',notes:'Campanha',tools:'Ferramentas',reference:'Regras rápidas'};
+ let currentEpoch=0,currentLive=null;
  const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n};
  const limited=(v,n=2000)=>String(v??'').slice(0,n);
  const fmt=s=>{const d=new Date(s);return Number.isFinite(d.valueOf())?d.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):''};
@@ -14,7 +14,7 @@
   if(!gate||!app||app.dataset.ready==='yes')return;
   app.dataset.ready='yes';const thisEpoch=++currentEpoch;
   const $=id=>document.getElementById(id);
-  const state={db:null,user:null,campaigns:[],campaign:null,members:[],names:new Map(),characters:[],notes:[],tree:[],archivedTree:new Set(),tab:'overview',busy:false};
+  const state={db:null,user:null,campaigns:[],campaign:null,members:[],names:new Map(),characters:[],notes:[],tree:[],archivedTree:new Set(),tab:'live',busy:false};
   const alive=()=>thisEpoch===currentEpoch&&gate.isConnected&&app.isConnected;
   const alert=(message,error=false)=>{if(!alive())return;const n=$('command-feedback');n.textContent=message||'';n.dataset.error=error?'true':'false'};
   const query=async promise=>{const {data,error}=await promise;if(error)throw error;return data||[]};
@@ -53,7 +53,9 @@
     const removed=charIds.length?await query(state.db.from('haema_tree_profile_settings').select('character_id,archived').in('character_id',charIds)):[];
     state.archivedTree=new Set(removed.filter(x=>x.archived).map(x=>x.character_id));
     if(!alive()||state.campaign?.id!==campaign)return;
-    renderAll();alert('Campanha sincronizada. Alterações são gravadas no banco.');
+    renderAll();
+    if(currentLive)await currentLive.load({db:state.db,campaignId:campaign,userId:state.user.id,roster:state.characters,progress:state.tree});
+    alert('Campanha sincronizada. A Mesa ao Vivo possui salvamento próprio.');
    }catch(e){alert('Erro ao carregar a campanha: '+limited(e.message,250),true)}
   }
   function openTab(tab){if(!tabs[tab])return;state.tab=tab;
@@ -126,6 +128,8 @@
    renderOverview();renderCharacters();renderNotes();
   }
   function attach(){
+   if(window.HaemaMesaViva){currentLive=window.HaemaMesaViva.create($('command-live-root'),alert);}
+   else alert('Módulo Mesa ao Vivo indisponível; as outras áreas continuam acessíveis.',true);
    app.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>openTab(button.dataset.view)));
    app.querySelectorAll('[data-switch]').forEach(button=>button.addEventListener('click',()=>openTab(button.dataset.switch)));
    $('command-campaign').addEventListener('change',()=>{state.campaign=state.campaigns.find(c=>c.id===$('command-campaign').value)||null;
@@ -159,6 +163,6 @@
   attach();authorize();
  }
  document.addEventListener('haema:navigated',init);
- document.addEventListener('haema:leaving',()=>{currentEpoch++});
+ document.addEventListener('haema:leaving',()=>{currentEpoch++;if(currentLive){void currentLive.flush().finally(()=>currentLive?.destroy());currentLive=null}});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
