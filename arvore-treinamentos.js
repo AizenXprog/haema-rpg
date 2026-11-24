@@ -633,7 +633,7 @@
  "1": [
   [
    "Escolha instrumento técnico adequado e declare a calibração específica antes do teste de Engenharia ou ofício.",
-   "Some +1 no teste de execução daquele ajuste.",
+   "Some +1 no teste de execução daquele ajuste técnico, usando a ferramenta que você calibrou.",
    "Uma vez por cena; exige ferramenta material; não resolve por magia um dispositivo desconhecido.",
    "Você calibra a chave antes de soltar o pino e testa Engenharia com +1."
   ],
