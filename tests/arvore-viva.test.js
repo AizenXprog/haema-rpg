@@ -35,3 +35,33 @@ test('Parry só é conquistado dentro da rota de Defesa, não é ação universa
  assert.equal(tree.canUnlock(start,parry.id),false);
  assert.equal(tree.canUnlock(start,'s1:x:1'),true);
 });
+
+const guides=require('../arvore-treinamentos.js');
+test('todas as 126 técnicas explicam COMO USAR e concedem benefício aprendido mensurável',()=>{
+ const learned=tree.nodes.filter(n=>n.status==='ready'&&n.id!=='origem');
+ assert.equal(learned.length,126);
+ const effects=new Set(),examples=new Set();
+ for(const n of learned){
+  const entry=guides.get(n);
+  assert.ok(entry,'Guia ausente para '+n.id);
+  assert.equal(n.trigger,entry.trigger,'Uso inconsistente em '+n.id);
+  assert.equal(n.effect,entry.effect,'Vantagem inconsistente em '+n.id);
+  assert.equal(n.limit,entry.limit,'Limite inconsistente em '+n.id);
+  assert.equal(n.example,entry.example,'Exemplo inconsistente em '+n.id);
+  for(const field of ['trigger','effect','limit','example'])
+   assert.ok(n[field].length>=45,n.id+' sem explicação suficiente em '+field);
+  assert.match(n.trigger,/(declare|antes|ap[oó]s|quando|gaste|observe|escolha|prepare|identifique|durante|tenha)/i,n.id+' não ensina o momento de ativar');
+  assert.match(n.effect,/(\+1|\bDT\b|reduz|acrescente|conserv|ignore|desbloque|receba|some|ganhe|evite|aumente|desloque)/i,n.id+' sem vantagem verificável');
+  assert.match(n.limit,/(vez|cena|sess[aã]o|rea[cç][aã]o|preparo|limite)/i,n.id+' sem limite de uso');
+  effects.add(n.effect);examples.add(n.example);
+ }
+ assert.equal(effects.size,126,'Vantagens copiadas/duplicadas');
+ assert.equal(examples.size,126,'Exemplos sem individualidade');
+});
+test('Parry continua adquirido apenas no ramo de Defesa e sob protocolo experimental',()=>{
+ const n=tree.map.get('s1:1:4');
+ assert.match(n.effect,/Sem este nó, o personagem não tem acesso ao Parry/);
+ assert.match(n.trigger,/depois|antes|declare|Despertar|Reação/i);
+ assert.match(n.limit,/ainda precisam de aprovação/);
+ assert.equal(guides.get(tree.map.get('s0:x:1')).effect,tree.map.get('s0:x:1').effect);
+});
