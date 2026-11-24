@@ -14,7 +14,7 @@
   if(!gate||!app||app.dataset.ready==='yes')return;
   app.dataset.ready='yes';const thisEpoch=++currentEpoch;
   const $=id=>document.getElementById(id);
-  const state={db:null,user:null,campaigns:[],campaign:null,members:[],names:new Map(),characters:[],notes:[],tree:[],tab:'overview',busy:false};
+  const state={db:null,user:null,campaigns:[],campaign:null,members:[],names:new Map(),characters:[],notes:[],tree:[],archivedTree:new Set(),tab:'overview',busy:false};
   const alive=()=>thisEpoch===currentEpoch&&gate.isConnected&&app.isConnected;
   const alert=(message,error=false)=>{if(!alive())return;const n=$('command-feedback');n.textContent=message||'';n.dataset.error=error?'true':'false'};
   const query=async promise=>{const {data,error}=await promise;if(error)throw error;return data||[]};
@@ -50,6 +50,8 @@
     if(ids.length){const profiles=await query(state.db.from('haema_profiles').select('id,display_name').in('id',ids));for(const p of profiles)state.names.set(p.id,p.display_name)}
     const charIds=characters.map(c=>c.id);
     state.tree=charIds.length?await query(state.db.from('haema_tree_progress').select('character_id,path,pe_available,pe_spent,awakened').in('character_id',charIds)):[];
+    const removed=charIds.length?await query(state.db.from('haema_tree_profile_settings').select('character_id,archived').in('character_id',charIds)):[];
+    state.archivedTree=new Set(removed.filter(x=>x.archived).map(x=>x.character_id));
     if(!alive()||state.campaign?.id!==campaign)return;
     renderAll();alert('Campanha sincronizada. Alterações são gravadas no banco.');
    }catch(e){alert('Erro ao carregar a campanha: '+limited(e.message,250),true)}
@@ -67,7 +69,7 @@
   }
   function characterCard(c){const item=el('div','command-character-tile');const tree=state.tree.find(t=>t.character_id===c.id);const owner=state.names.get(c.user_id)|| (c.user_id===state.user.id?'Mestre':'Jogador');
    appendText(item,'h3',c.title);appendText(item,'p',owner);
-   item.append(el('strong','',`${tree?.path?.length||0} nós conquistados · ${tree?.pe_available||0} PE da árvore`));
+   item.append(el('strong','',state.archivedTree.has(c.id)?'Perfil removido da árvore · Pode ser restaurado':`${tree?.path?.length||0} nós conquistados · ${tree?.pe_available||0} PE da árvore`));
    const btn=el('button','command-text-button','Abrir sua árvore');btn.type='button';btn.addEventListener('click',()=>{openTab('tree');mountTree(c.id)});item.append(btn);return item
   }
   function renderOverview(){
@@ -92,8 +94,18 @@
    for(const c of state.characters){
     const div=el('article','command-list-item');appendText(div,'strong',c.title);
     appendText(div,'p',`Responsável: ${state.names.get(c.user_id)||(c.user_id===state.user.id?'Mestre':'Integrante')} · ${c.rules_version}`);
-    const t=state.tree.find(x=>x.character_id===c.id);appendText(div,'small',`${t?.path?.length||0} escolhas · ${t?.pe_available||0} PE para a árvore`);
+    const t=state.tree.find(x=>x.character_id===c.id);appendText(div,'small',state.archivedTree.has(c.id)?'Perfil removido da árvore (ficha preservada)':`${t?.path?.length||0} escolhas · ${t?.pe_available||0} PE para a árvore`);
     const footer=el('footer');const open=el('button','','Abrir árvore');open.type='button';open.addEventListener('click',()=>{openTab('tree');mountTree(c.id)});footer.append(open);
+    const archived=state.archivedTree.has(c.id),archive=el('button','',archived?'Restaurar na árvore':'Remover da árvore');archive.type='button';
+    archive.addEventListener('click',async()=>{
+     if(!confirm((archived?'Restaurar':'Remover')+' o perfil '+c.title+' '+(archived?'na árvore?':'da lista da árvore? A ficha e todas as conquistas permanecerão guardadas.')))return;
+     archive.disabled=true;
+     try{await query(state.db.rpc('haema_tree_archive_profile',{p_character:c.id,p_archived:!archived}));
+      const iframe=$('command-tree-host').querySelector('iframe');iframe?.remove();
+      await loadCampaign();alert(archived?'Perfil restaurado.':'Perfil removido da árvore; ficha preservada.');
+     }catch(e){alert('Falha ao atualizar perfil: '+limited(e.message,240),true)}
+     finally{archive.disabled=false}
+    });footer.append(archive);
     if(state.members.length>1){const select=el('select');select.setAttribute('aria-label','Responsável pelo personagem '+c.title);ownerOptions(select,c.user_id);
      select.addEventListener('change',async()=>{if(select.value===c.user_id)return;if(!confirm('Alterar o responsável por este personagem? As escolhas da árvore serão preservadas.')){select.value=c.user_id;return}
       try{await query(state.db.rpc('haema_master_assign_character',{p_character:c.id,p_user:select.value}));await loadCampaign()}catch(e){alert('Não foi possível alterar: '+limited(e.message,230),true);select.value=c.user_id}});
