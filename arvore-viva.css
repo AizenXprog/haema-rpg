@@ -1,0 +1,124 @@
+/* HÆMA — CONSTELAÇÃO VIVA: aprimoramento autoral da árvore, tela de mesa e oficina.
+ * Sombras, ouro envelhecido e vermelho sangue, com movimentos leves em CSS.
+ * Site e Sistema criado por Vitor Monte.
+ */
+.tree-viva{--viva-gold:#dcc090;--viva-gold-dim:#a48a70;--viva-red:#a95862;--viva-cream:#f2e3d4;background:radial-gradient(ellipse 60% 35% at 50% 3%,rgba(124,42,66,.18),transparent 75%),#0e0a11}
+.tree-viva [hidden],.tree-editor-backdrop[hidden],.tree-confirm-backdrop[hidden],.tree-projector-hud[hidden]{display:none!important}
+.tree-viva .tree-heading{max-width:2000px;padding-top:42px}
+.tree-viva .tree-heading h1{text-shadow:0 6px 42px rgba(140,48,68,.18)}
+.tree-viva .tree-app{max-width:2000px;grid-template-columns:clamp(245px,18.3vw,315px) minmax(0,1fr) clamp(270px,21vw,350px);gap:9px;min-height:780px}
+.tree-viva .tree-sidebar{background:linear-gradient(155deg,#24171f,#160f16 75%);border:1px solid rgba(199,144,125,.25);border-radius:9px;box-shadow:inset 0 0 0 1px rgba(248,191,137,.035),0 18px 45px rgba(0,0,0,.35);min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:#68474b #1c141b;max-height:830px}
+.tree-viva .tree-panel-header{margin-bottom:18px;font-size:9px;letter-spacing:.13em}
+.tree-viva .tree-indicator{font-size:8px;letter-spacing:.08em;border:1px solid rgba(171,126,91,.4);padding:4px 5px;border-radius:3px}
+.tree-viva .tree-viewport{border-radius:7px;border:1px solid rgba(206,158,116,.34);min-height:780px;background:radial-gradient(ellipse 85% 67% at center,rgba(74,29,51,.39),transparent 62%),radial-gradient(ellipse 80% 72% at center,#251822,#0e0b11 80%);box-shadow:inset 0 0 110px #07050a,0 20px 60px #08050a}
+.tree-viva .tree-viewport::before{background:repeating-radial-gradient(circle at center,transparent 0px,transparent 157px,rgba(210,156,100,.092) 158px,rgba(210,156,100,.09) 159px,transparent 160px,transparent 315px),repeating-linear-gradient(45deg,transparent,transparent 83px,rgba(196,140,102,.05) 84px,transparent 85px);opacity:.95}
+.tree-viva .tree-viewport::after{box-shadow:inset 0 0 110px 45px #0a070e;z-index:3;pointer-events:none}
+.tree-viva .tree-canvas-label{top:21px;left:23px;font-size:9px;letter-spacing:.24em}
+.tree-viva .tree-canvas-label b{font-size:23px;color:var(--viva-gold)}
+.tree-viva .tree-viewport-controls{z-index:7;right:19px;bottom:19px}
+.tree-viva .tree-viewport-controls button{min-width:40px;min-height:40px;border-radius:5px;background:rgba(21,13,22,.89);color:#e8ca94;border:1px solid rgba(208,170,119,.44);backdrop-filter:blur(12px);transition:background .2s,transform .2s}
+.tree-viva .tree-viewport-controls button:hover{transform:translateY(-2px);background:#4c263c}
+.tree-viva .tree-viewport-controls button.tree-projection-button{background:rgba(85,34,55,.9);padding:0 14px;min-width:110px;font-size:11px;font-weight:700;letter-spacing:.09em}
+.tree-viva .tree-hint{left:18px;bottom:19px;max-width:50%;color:#c5aeb0;font-size:10px}
+.tree-viva .tree-mote{position:absolute;display:block;z-index:0;width:2px;height:2px;left:var(--mx);top:var(--my);border-radius:50%;background:var(--viva-gold);box-shadow:0 0 8px 2px rgba(219,172,109,.4);animation:viva-mote var(--duration) linear infinite;animation-delay:var(--delay);opacity:.1;pointer-events:none}
+.tree-viva .tree-ambient{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+@keyframes viva-mote{0%{transform:translate3d(0,16px,0) scale(.65);opacity:0}24%{opacity:.52}60%{opacity:.12}100%{transform:translate3d(-12px,-64px,0) scale(1.1);opacity:0}}
+.tree-viva .tree-node.draft circle.core{fill:#211922!important;stroke:#6f5963!important;stroke-dasharray:3 6;filter:none!important;opacity:.65}
+.tree-viva .tree-node.draft .node-symbol{fill:#98858e;opacity:.75}
+.tree-viva .tree-node.draft .node-aura{opacity:.1}
+.tree-viva .tree-node.draft.available circle.core{stroke:#91717d!important;opacity:.84}
+.tree-viva .tree-node.unlocked:not(.draft) .node-aura{fill:#dfb476;opacity:.15;animation:viva-aura 4.5s ease-in-out infinite}
+.tree-viva .tree-node.available:not(.draft) .node-aura{fill:#d9b07a;opacity:.2;animation:viva-aura 3.5s ease-in-out infinite}
+.tree-viva .tree-node.current .node-aura{fill:#f4deac;opacity:.38;animation:viva-aura 2.7s ease-in-out infinite}
+.tree-viva .tree-node.current circle.core{filter:drop-shadow(0 0 16px rgba(235,195,125,.85))}
+.tree-viva .tree-edge.unlocked{stroke:#d6a56e;stroke-width:5;stroke-dasharray:17 6;animation:viva-flow 21s linear infinite}
+.tree-viva .tree-edge.available{stroke:#bd966e;stroke-width:4;stroke-dasharray:3 13;animation:viva-flow 11s linear infinite}
+.tree-viva .tree-edge:not(.available):not(.unlocked){stroke:#4e3a4b;stroke-width:3.7;opacity:.36}
+@keyframes viva-flow{to{stroke-dashoffset:-200}}
+@keyframes viva-aura{0%,100%{opacity:.14}50%{opacity:.39}}
+.tree-viva .tree-node.tree-celebrate .node-aura{animation:viva-celebrate 1.6s ease-out!important;fill:#ffe2a1}
+@keyframes viva-celebrate{0%{transform:scale(.55);opacity:1}80%{transform:scale(1.7);opacity:.1}100%{transform:scale(1.7);opacity:0}}
+.tree-viva .tree-node{transition:opacity .25s}
+.tree-viva .tree-node:hover{opacity:1}
+.tree-viva .tree-search-area{margin-top:17px;border-top:1px solid rgba(198,154,106,.17);padding-top:16px}
+.tree-viva .tree-search-area input{width:100%;padding:12px;color:#f1dfd0;border:1px solid rgba(199,159,127,.4);border-radius:6px;background:#100c14;font:12px 'DM Sans',sans-serif;outline-offset:3px}
+.tree-viva .tree-search-area input:focus{outline:2px solid rgba(218,181,130,.55)}
+.tree-viva .tree-search-results{max-height:202px;overflow:auto;scrollbar-width:thin}
+.tree-viva .tree-search-results button{width:100%;padding:10px 8px;border:0;border-bottom:1px solid rgba(194,152,114,.15);background:#211722;color:#d8c7b9;text-align:left;font:11px 'DM Sans';cursor:pointer}
+.tree-viva .tree-search-results button:hover{background:#4d2f3d;color:#fff}
+.tree-viva .tree-search-results p{font-size:11px;color:#b7a09f}
+.tree-viva .tree-shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px}
+.tree-viva .tree-shortcuts button{border:1px solid rgba(179,135,109,.28);background:#261a23;color:#d6c1aa;padding:9px 6px;line-height:1.4;font-size:10px;cursor:pointer}
+.tree-viva .tree-shortcuts button:hover{background:#54303d}
+.tree-viva .tree-role-tools{border-color:rgba(212,164,116,.35);border-radius:7px}
+.tree-viva .tree-editor-summary{margin-top:22px;border:1px dashed rgba(182,147,105,.45);background:linear-gradient(160deg,rgba(111,59,73,.15),rgba(22,16,23,.6));padding:17px 15px;border-radius:8px}
+.tree-viva .tree-editor-summary span{display:block;color:#d3b28a;letter-spacing:.11em;font-size:10px}
+.tree-viva .tree-editor-summary strong{font:500 33px 'Cormorant Garamond';color:#f0d3a9;display:block;margin:7px 0}
+.tree-viva .tree-editor-summary p{font-size:11px;line-height:1.7;color:#bca8a4}
+.tree-viva .tree-editor-summary button{border:0;background:none;color:#e9c38e;cursor:pointer;padding:5px 0;text-align:left;font-size:11px}
+.tree-viva .tree-editor-summary button:hover{text-decoration:underline}
+.tree-viva .tree-description{margin-top:13px;padding:15px;border:1px solid rgba(210,169,122,.24);border-left:2px solid #b78b68;background:rgba(20,12,19,.6)}
+.tree-viva .tree-description h3{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#d7ba95;margin:0 0 8px}
+.tree-viva .tree-detail-body{min-height:0;margin:0;font-size:13px;line-height:1.7;color:#f0ddc9}
+.tree-viva .tree-rule-grid{display:grid;gap:10px;margin-top:14px}
+.tree-viva .tree-rule-grid>div{border-bottom:1px solid rgba(208,174,128,.16);padding:0 1px 10px}
+.tree-viva .tree-rule-grid b{font-size:9px;letter-spacing:.13em;color:#c6a87e}
+.tree-viva .tree-rule-grid p{font-size:11px;line-height:1.65;color:#bfb0a9;margin:5px 0 0}
+.tree-viva .tree-editorial-state{display:inline-flex;border:1px solid rgba(196,155,125,.37);border-radius:30px;padding:4px 10px;letter-spacing:.1em;color:#d3b796;font-size:9px;margin-top:2px}
+.tree-viva .tree-editorial-state[data-status=draft]{border-color:rgba(188,109,128,.36);color:#b9a0aa}
+.tree-viva .tree-editorial-state[data-status=earned]{border-color:rgba(216,176,99,.75);color:#ead19b}
+.tree-viva .tree-edit-button{display:block;width:100%;margin-top:11px;padding:12px;border:1px dashed rgba(198,157,120,.5);border-radius:5px;color:#ead1ab;background:#24161e;cursor:pointer;font-size:11px;letter-spacing:.03em}
+.tree-viva .tree-edit-button:hover{background:#492a39}
+.tree-viva .tree-edit-button:disabled{opacity:.4;cursor:not-allowed}
+.tree-viva .tree-detail-state{min-height:0;color:#d0ae94}
+.tree-viva .tree-detail-warning{margin-top:13px}
+.tree-viva .tree-projector-hud{z-index:12;position:absolute;right:17px;top:18px;bottom:17px;width:min(375px,36vw);overflow:auto;scrollbar-width:thin;backdrop-filter:blur(22px);background:linear-gradient(160deg,rgba(28,15,26,.94),rgba(15,10,18,.97));border:1px solid rgba(223,168,114,.54);border-radius:11px;box-shadow:0 0 0 1px #0a0710,0 20px 75px rgba(0,0,0,.65),inset 0 0 40px rgba(130,51,71,.12);padding:22px;color:#eee0d1}
+.tree-viva .tree-projector-head{display:flex;justify-content:space-between;gap:12px;align-items:start;border-bottom:1px solid rgba(221,177,135,.22);padding-bottom:13px;margin-bottom:16px}
+.tree-viva .tree-projector-head span{display:block;color:#c8a780;font-size:9px;letter-spacing:.15em;margin-bottom:5px}
+.tree-viva .tree-projector-head strong{font:500 25px/1.05 'Cormorant Garamond',serif}
+.tree-viva .tree-projector-head button{background:none;border:1px solid #86655f;color:#fff1d9;cursor:pointer;padding:7px 11px;border-radius:4px}
+.tree-viva .tree-projector-hud label{display:block;color:#cdb18d;letter-spacing:.14em;font-size:10px;margin-bottom:8px}
+.tree-viva .tree-projector-stat{display:flex;justify-content:space-between;gap:8px;margin:13px 0;color:#b7a9a0;font-size:10px;letter-spacing:.09em}
+.tree-viva .tree-projector-stat b{font-size:17px;color:#e8c78f;padding-left:7px}
+.tree-viva .tree-projector-glyph{width:76px;height:76px;border-radius:50%;border:1px solid rgba(225,175,111,.35);background:radial-gradient(circle,rgba(112,59,69,.48),transparent);display:grid;place-items:center;margin:12px auto 15px;font:500 52px 'Cormorant Garamond';text-shadow:0 0 25px currentColor;animation:viva-glyph 6s ease-in-out infinite}
+@keyframes viva-glyph{0%,100%{filter:brightness(1)}50%{filter:brightness(1.28)}}
+.tree-viva .tree-projector-type{display:block;text-align:center;letter-spacing:.15em;font-size:9px;color:#c8a67d}
+.tree-viva .tree-projector-hud h2{text-align:center;font:500 clamp(28px,2.6vw,40px)/1.08 'Cormorant Garamond';margin:11px 0;color:#f8e3c4}
+.tree-viva #tree-projector-effect{color:#e6d1c2;font-size:13px;line-height:1.65;padding:13px 0;border-bottom:1px solid rgba(208,155,121,.24)}
+.tree-viva .tree-projector-rules{display:grid;gap:13px;margin-top:14px}
+.tree-viva .tree-projector-rules b{display:block;color:#c6a87c;font-size:9px;letter-spacing:.15em}
+.tree-viva .tree-projector-rules span{display:block;color:#c8b6ab;font-size:12px;line-height:1.6;margin-top:4px}
+.tree-viva .tree-projector-state{font-size:11px;line-height:1.6;color:#c7ad96;margin:16px 0}
+.tree-viva .tree-projector-foot{color:#9f8988;font-size:10px;line-height:1.7}
+.tree-projection .tree-heading,.tree-projection .tree-sidebar,.tree-projection .tree-footer-note,.tree-projection .tree-hint{display:none!important}
+.tree-projection .tree-app{max-width:none!important;padding:0!important;margin:0!important;height:100dvh!important;display:block!important;min-height:0!important}
+.tree-projection .tree-viewport{height:100%;min-height:0;border:none;border-radius:0}
+.tree-projection .topbar,.tree-projection .footer{display:none!important}
+.tree-projection .tree-viewport-controls{right:min(400px,39vw);bottom:20px}
+.tree-projection .tree-canvas-label b{font-size:28px}
+.tree-embedded .tree-app{height:calc(100dvh - 2px);min-height:630px}
+.tree-embedded .tree-viewport{min-height:630px}
+.tree-embedded body{background:#0c0a10}
+.tree-editor-backdrop,.tree-confirm-backdrop{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:16px;background:rgba(4,3,6,.83);backdrop-filter:blur(14px);overflow:auto}
+.tree-editor-card,.tree-confirm-card{width:min(660px,100%);max-height:90dvh;overflow:auto;background:linear-gradient(156deg,#2e1b29,#160e18 88%);border:1px solid rgba(234,187,128,.5);box-shadow:0 25px 110px rgba(0,0,0,.74),inset 0 0 0 1px rgba(226,180,115,.1);padding:27px;border-radius:10px;color:#eee0d1;scrollbar-width:thin}
+.tree-editor-heading{display:flex;justify-content:space-between;gap:18px;border-bottom:1px solid rgba(221,173,122,.25);padding-bottom:15px;margin-bottom:18px}
+.tree-editor-heading small{font-size:10px;color:#d4b48c;letter-spacing:.18em}
+.tree-editor-heading h2,.tree-confirm-card h2{font:500 36px 'Cormorant Garamond';margin:5px 0 7px}
+.tree-editor-heading p{color:#bea9a1;font-size:12px;line-height:1.6;max-width:52ch;margin:0}
+.tree-editor-heading button{height:36px;background:transparent;color:#edceb8;border:1px solid rgba(218,174,123,.5);padding:7px 12px;border-radius:3px;cursor:pointer}
+.tree-editor-card label{display:grid;gap:7px;margin:12px 0;color:#d0b28d;font-size:10px;letter-spacing:.1em}
+.tree-editor-card input,.tree-editor-card textarea{font:12px/1.6 'DM Sans',sans-serif;letter-spacing:normal;background:#100c14;border:1px solid #715052;color:#f5e3d1;padding:11px;border-radius:5px;width:100%;min-width:0;box-sizing:border-box}
+.tree-editor-card textarea{resize:vertical}
+.tree-editor-actions,.tree-confirm-actions{display:flex;gap:10px;margin-top:19px}
+.tree-editor-actions button,.tree-confirm-actions button{flex:1;min-height:43px;padding:10px;border-radius:5px;border:1px solid rgba(204,159,106,.5);background:#281924;color:#f7e3c5;cursor:pointer;font:600 11px 'DM Sans',sans-serif;letter-spacing:.04em}
+.tree-editor-actions .primary,.tree-confirm-actions #tree-confirm-accept{background:linear-gradient(120deg,#9a4e50,#6a3445);border-color:#c29178}
+.tree-editor-actions button:hover,.tree-confirm-actions button:hover{filter:brightness(1.18)}
+#tree-editor-feedback,#tree-confirm-status{font-size:11px;color:#f3c999;line-height:1.6}
+.tree-confirm-card{max-width:500px;text-align:center}
+.tree-confirm-sigil{display:grid;place-items:center;border:1px solid #bc9872;width:69px;height:69px;border-radius:50%;margin:auto;color:#ebd5a2;font:52px 'Cormorant Garamond';box-shadow:0 0 40px rgba(129,48,74,.3)}
+#tree-confirm-message{color:#d9bfb1;white-space:pre-wrap;text-align:left;line-height:1.6;font-size:12px;max-height:260px;overflow:auto}
+.tree-sleep .tree-mote,.tree-sleep .tree-node .node-aura,.tree-sleep .tree-edge{animation-play-state:paused!important}
+@media(max-width:1250px){.tree-viva .tree-app{grid-template-columns:230px minmax(0,1fr) 270px}.tree-viva .tree-sidebar{padding:17px 14px}.tree-viva .tree-viewport{min-height:760px}}
+@media(max-width:990px){.tree-viva .tree-app{grid-template-columns:220px minmax(0,1fr);grid-template-areas:'profile canvas' 'details canvas';min-height:740px}.tree-viva .tree-details{grid-area:details;max-height:unset}.tree-viva .tree-profile{grid-area:profile}.tree-viva .tree-viewport{grid-area:canvas}.tree-viva .tree-hint{display:none}}
+@media(max-width:720px){.tree-viva .tree-app{display:flex;flex-direction:column;min-height:0;gap:9px}.tree-viva .tree-sidebar{max-height:unset}.tree-viva .tree-viewport{height:65dvh;min-height:440px}.tree-viva .tree-profile{order:1}.tree-viva .tree-details{order:3}.tree-viva .tree-viewport{order:2}.tree-viva .tree-heading{padding:27px 17px}.tree-viva .tree-projector-hud{width:min(90vw,360px);right:8px;top:8px;bottom:8px;padding:13px}.tree-projection .tree-viewport-controls{right:12px;bottom:10px;gap:4px}.tree-projection .tree-viewport-controls button{min-width:29px;min-height:31px;font-size:14px}.tree-projection .tree-viewport-controls .tree-projection-button{display:none}.tree-viva .tree-editor-card{padding:16px}.tree-viva .tree-editor-actions,.tree-viva .tree-confirm-actions{flex-direction:column}.tree-projection .tree-viewport{height:100dvh;min-height:0}}
+@media(prefers-reduced-motion:reduce){.tree-viva .tree-mote,.tree-viva .tree-node .node-aura,.tree-viva .tree-edge,.tree-viva .tree-projector-glyph,.tree-viva .tree-node.tree-celebrate .node-aura{animation:none!important}.tree-viva *, .tree-viva *::before,.tree-viva *::after{scroll-behavior:auto!important;transition:none!important}}

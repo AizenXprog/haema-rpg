@@ -2,53 +2,76 @@
 <html lang="pt-BR" data-soundtrack="assets/media-vita-ambient.mp3">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#100b0e"><meta name="description" content="Árvore experimental de habilidades de HÆMA. Uma trilha, centenas de possibilidades."><meta name="author" content="Vitor Monte">
-<title>Constelação das Escolhas — HÆMA</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#110d14"><meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="description" content="Constelação das Escolhas: o arquivo privado de progressão e habilidades do Mestre HÆMA."><meta name="author" content="Vitor Monte">
+<title>Constelação Viva — HÆMA</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=0.1"><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="arvore.css?v=20261124">
-<script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('tree-embedded');else{const audio=document.createElement('script');audio.defer=true;audio.src='audio.js?v=0.5';document.head.append(audio)}</script><script defer src="script.js?v=0.2"></script><script defer src="navigation.js?v=5"></script><script defer src="arvore-data.js?v=20261124"></script><script defer src="arvore.js?v=20261124"></script>
+<link rel="stylesheet" href="style.css?v=0.1"><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="arvore.css?v=20261124"><link rel="stylesheet" href="arvore-viva.css?v=20261124b">
+<script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('tree-embedded');else{const audio=document.createElement('script');audio.defer=true;audio.src='audio.js?v=0.5';document.head.append(audio)}</script>
+<script defer src="script.js?v=0.2"></script><script defer src="navigation.js?v=7"></script><script defer src="arvore-catalogo-vivo.js?v=20261124b"></script><script defer src="arvore-data.js?v=20261124b"></script><script defer src="arvore-vivo.js?v=20261124b"></script>
 </head>
 <body data-page="arvore">
 <a class="skip-link" href="#conteudo">Pular para a árvore</a><div aria-hidden="true" class="grain"></div>
-<header class="topbar"><div class="header-inner">
-<a aria-label="HÆMA, página inicial" class="brand" href="index.html"><img src="assets/favicon.svg" width="35" height="35" alt=""><span>H<span class="accent">Æ</span>MA</span></a>
-<nav class="nav" id="main-nav" aria-label="Navegação principal"><a href="index.html">Início</a><a href="sistema.html">Sistema</a><a href="biblioteca.html">Biblioteca</a></nav>
-<button class="sound-toggle" type="button" id="haema-sound-toggle" aria-label="Ativar música ambiente" aria-pressed="false" title="Controle de música ambiente"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span id="haema-sound-label">SOM DESLIGADO</span></button>
-<button class="menu-toggle" id="menu-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span></button><a class="top-action" href="portal.html">CONTA <span aria-hidden="true">↗</span></a>
-</div></header>
-<main id="conteudo" class="haema-tree-page">
-<section class="tree-heading"><div><p class="tree-eyebrow">HÆMA · SISTEMA · PRÉVIA EXPERIMENTAL</p><h1>Constelação <em>das Escolhas</em></h1><p>Uma trilha por personagem. Cada passo transforma sua história; nenhum desvio é gratuito.</p></div><div class="tree-heading-meta"><strong id="tree-total">631</strong><span>pontos de destino<br>numa única constelação</span></div></section>
-<div class="tree-private-gate" id="tree-private-gate" role="status" aria-live="polite"><span aria-hidden="true">Æ</span><h2>Árvore reservada ao Mestre</h2><p id="tree-private-message">Confirmando sua autorização administrativa…</p><button id="tree-private-login" type="button" hidden>Entrar com Google</button></div><section class="tree-app" id="haema-tree-app" hidden aria-label="Árvore interativa de habilidades">
-  <aside class="tree-sidebar tree-profile" aria-label="Personagens e progressão">
-    <div class="tree-panel-header"><span>ARQUIVO DO VIAJANTE</span><span class="tree-indicator">● EXPERIMENTAL</span></div>
-    <label class="tree-label" for="tree-character">Perfil do personagem</label><select id="tree-character" class="tree-select"><option value="">Visualização da constelação</option></select>
-    <p class="tree-status" id="tree-account-status" role="status">Conectando ao Portal para consultar seus personagens…</p>
-    <div class="tree-metrics"><div><small>PE disponíveis</small><strong id="tree-pe">—</strong></div><div><small>Nós conquistados</small><strong id="tree-count">0</strong></div></div>
-    <p class="tree-notice">As escolhas são permanentes para a campanha. Cada próximo nó precisa estar ligado ao último conquistado.</p>
-    <div class="tree-role-tools" id="tree-gm-tools" hidden><p>Controle do mestre</p><label class="tree-label" for="tree-grant-pe">Conceder PE ao personagem</label><div class="tree-inline"><input id="tree-grant-pe" type="number" inputmode="numeric" min="1" max="50" value="4"><button type="button" id="tree-grant-button">Conceder</button></div><button type="button" id="tree-regency-button" class="tree-secondary">Liberar acesso ao ramo de Regências</button></div>
-    <div class="tree-legend"><p>CAMINHOS</p><div id="tree-legend-items"></div></div>
-    <a class="tree-back" href="painel-mestre.html">← Voltar ao Painel do Mestre</a>
-  </aside>
-  <div class="tree-viewport" id="tree-viewport">
-    <div class="tree-canvas-label"><span>HÆMATOMANTHÍA</span><b>AS ROTAS QUE NOS DEFINEM</b></div>
-    <svg id="tree-map" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Mapa da árvore de habilidades" tabindex="0"><defs><filter id="tree-halo" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="7"/></filter><radialGradient id="tree-core"><stop offset="0%" stop-color="#cbb184"/><stop offset="45%" stop-color="#682b36"/><stop offset="100%" stop-color="#160d14"/></radialGradient></defs><g id="tree-universe"><g id="tree-edges"></g><g id="tree-nodes"></g></g></svg>
-    <div class="tree-viewport-controls"><button type="button" id="tree-zoom-in" aria-label="Aproximar" title="Aproximar">+</button><button type="button" id="tree-zoom-out" aria-label="Afastar" title="Afastar">−</button><button type="button" id="tree-center" title="Centralizar">⌖</button><button type="button" id="tree-projection" title="Alternar projeção para a mesa">Projeção</button></div>
-    <p class="tree-hint">Arraste para navegar · Roda do mouse para aproximar · Selecione um nó para conhecer seu efeito</p>
+<header class="topbar"><div class="header-inner"><a aria-label="HÆMA, início" class="brand" href="index.html"><img src="assets/favicon.svg" width="35" height="35" alt=""><span>H<span class="accent">Æ</span>MA</span></a><nav class="nav" id="main-nav" aria-label="Navegação principal"><a href="index.html">Início</a><a href="sistema.html">Sistema</a><a href="biblioteca.html">Biblioteca</a></nav><button class="sound-toggle" type="button" id="haema-sound-toggle" aria-label="Ativar música ambiente" aria-pressed="false"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span id="haema-sound-label">SOM DESLIGADO</span></button><button class="menu-toggle" id="menu-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span></button><a class="top-action" href="portal.html">CONTA <span aria-hidden="true">↗</span></a></div></header>
+<main id="conteudo" class="haema-tree-page tree-viva">
+<section class="tree-heading"><div><p class="tree-eyebrow">HÆMA · ARQUIVO PRIVADO · CONSTELAÇÃO VIVA</p><h1>A geometria <em>das escolhas</em></h1><p>Sete direções. Uma jornada por personagem. Cada conquista tem um significado; cada caminho ainda não escrito é uma possibilidade.</p></div><div class="tree-heading-meta"><strong id="tree-total">631</strong><span>nós interligados<br>numa única constelação</span></div></section>
+<div class="tree-private-gate" id="tree-private-gate" role="status" aria-live="polite"><span aria-hidden="true">Æ</span><h2>Acesso reservado ao Mestre</h2><p id="tree-private-message">Verificando sua autorização administrativa…</p><button id="tree-private-login" type="button" hidden>Entrar com Google</button></div>
+<section class="tree-app" id="haema-tree-app" hidden aria-label="Constelação interativa de habilidades">
+ <aside class="tree-sidebar tree-profile" aria-label="Personagens e caminhos">
+  <div class="tree-panel-header"><span>ARQUIVO DA JORNADA</span><span class="tree-indicator">SISTEMA EXPERIMENTAL</span></div>
+  <label class="tree-label" for="tree-character">Personagem em foco</label><select id="tree-character" class="tree-select"><option value="">Explorar sem selecionar personagem</option></select>
+  <p class="tree-status" id="tree-account-status" role="status">Conectando à campanha…</p>
+  <div class="tree-metrics"><div><small>PE disponíveis</small><strong id="tree-pe">—</strong></div><div><small>Conquistas</small><strong id="tree-count">0</strong></div></div>
+  <div class="tree-search-area"><label class="tree-label" for="tree-search">Buscar habilidade ou caminho</label><input id="tree-search" type="search" autocomplete="off" placeholder="Ex.: Parry, Âncora, Execução" aria-controls="tree-search-results"><div id="tree-search-results" class="tree-search-results" aria-live="polite"></div></div>
+  <div class="tree-shortcuts"><button type="button" id="tree-focus-frontier">◇ Próximas escolhas</button><button type="button" id="tree-focus-last">⌖ Minha última conquista</button></div>
+  <div class="tree-role-tools" id="tree-gm-tools" hidden><p>Controle administrativo</p><label class="tree-label" for="tree-grant-pe">Conceder PE</label><div class="tree-inline"><input id="tree-grant-pe" type="number" inputmode="numeric" min="1" max="50" value="4"><button type="button" id="tree-grant-button">Conceder</button></div><button type="button" id="tree-regency-button" class="tree-secondary">Liberar Regências</button></div>
+  <div class="tree-editor-summary"><span>CAMINHOS EM CRIAÇÃO</span><strong id="tree-draft-total">504</strong><p>Escolha um espaço incompleto no mapa e use <em>Editar habilidade</em> para escrever, revisar ou publicar uma nova técnica.</p><button type="button" id="tree-find-draft">Encontrar espaço livre ↗</button></div>
+  <div class="tree-legend"><p>SETORES</p><div id="tree-legend-items"></div></div>
+  <a class="tree-back" href="painel-mestre.html">← Voltar ao Painel do Mestre</a>
+ </aside>
+ <div class="tree-viewport" id="tree-viewport">
+  <div id="tree-ambient" class="tree-ambient" aria-hidden="true"></div>
+  <div class="tree-canvas-label"><span>HÆMATOMANTHÍA · ARQUIVO DAS ESCOLHAS</span><b>ESCOLHA O QUE SE TORNARÁ</b></div>
+  <svg id="tree-map" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Árvore de habilidades: arraste para navegar, clique ou pressione Enter num nó" tabindex="0"><defs><filter id="tree-halo" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="7"/></filter><radialGradient id="tree-core"><stop offset="0%" stop-color="#f9e1aa"/><stop offset="44%" stop-color="#672c42"/><stop offset="100%" stop-color="#180f19"/></radialGradient></defs><g id="tree-universe"><g id="tree-edges"></g><g id="tree-nodes"></g></g></svg>
+  <div class="tree-viewport-controls"><button type="button" id="tree-zoom-in" aria-label="Aproximar" title="Aproximar">+</button><button type="button" id="tree-zoom-out" aria-label="Afastar" title="Afastar">−</button><button type="button" id="tree-center" aria-label="Centralizar mapa" title="Centralizar">⌖</button><button type="button" id="tree-projection" class="tree-projection-button">⛶ PROJEÇÃO</button></div>
+  <p class="tree-hint">Arraste para explorar · Use a roda para ampliar · Clique em qualquer símbolo para entender seu poder</p>
+  <div class="tree-projector-hud" id="tree-projector-hud" hidden>
+   <div class="tree-projector-head"><div><span>MODO MESA</span><strong>Conquistas do personagem</strong></div><button type="button" id="tree-projector-exit" aria-label="Sair da projeção">✕</button></div>
+   <label for="tree-projector-character">PERSONAGEM</label><select id="tree-projector-character" class="tree-select"><option value="">Explorar sem personagem</option></select>
+   <div class="tree-projector-stat"><span>PE <b id="tree-projector-pe">—</b></span><span>CONQUISTAS <b id="tree-projector-count">0</b></span></div>
+   <div class="tree-projector-glyph" id="tree-projector-glyph">Æ</div><span class="tree-projector-type" id="tree-projector-type">ORIGEM</span><h2 id="tree-projector-title">Selecione um nó</h2>
+   <p id="tree-projector-effect">Toque numa habilidade para ver o que ela concede e o que ainda precisa ser aprendido.</p>
+   <div class="tree-projector-rules"><div><b>QUANDO</b><span id="tree-projector-trigger">—</span></div><div><b>LIMITE</b><span id="tree-projector-limit">—</span></div></div>
+   <p class="tree-projector-state" id="tree-projector-state">O mestre confirma todas as compras.</p>
+   <button type="button" id="tree-projector-unlock" class="tree-unlock" disabled>Escolha uma habilidade</button>
+   <p class="tree-projector-foot">A escolha será salva permanentemente no perfil. Antes disso, o mestre confirma a compra.</p>
   </div>
-  <aside class="tree-sidebar tree-details" aria-label="Detalhes da habilidade selecionada">
-    <div class="tree-panel-header"><span>REGISTRO DO NÓ</span><span id="tree-detail-type">ORIGEM</span></div>
-    <div class="tree-detail-glyph" id="tree-detail-glyph" aria-hidden="true">Æ</div>
-    <p class="tree-detail-path" id="tree-detail-path">NÚCLEO</p>
-    <h2 id="tree-detail-name">O Primeiro Passo</h2>
-    <p class="tree-detail-body" id="tree-detail-body">Toda jornada começa numa escolha. A árvore oferece diferentes caminhos; cada personagem percorre somente uma trilha.</p>
-    <div class="tree-detail-meta"><div><span>CUSTO</span><strong id="tree-detail-cost">—</strong></div><div><span>PROGRESSO</span><strong id="tree-detail-rank">0 / 24</strong></div></div>
-    <p class="tree-detail-state" id="tree-detail-state" role="status">Selecione um nó para examinar sua habilidade.</p>
-    <button type="button" class="tree-unlock" id="tree-unlock" disabled>Selecione um caminho</button>
-    <p class="tree-detail-warning">Habilidades, custos e efeitos ainda estão em teste. A árvore não altera automaticamente cálculos da ficha.</p>
-  </aside>
+ </div>
+ <aside class="tree-sidebar tree-details" aria-label="Significado da habilidade selecionada">
+  <div class="tree-panel-header"><span>CÓDICE DA HABILIDADE</span><span id="tree-detail-type">ORIGEM</span></div>
+  <div class="tree-detail-glyph" id="tree-detail-glyph" aria-hidden="true">Æ</div><p class="tree-detail-path" id="tree-detail-path">NÚCLEO</p><h2 id="tree-detail-name">O Primeiro Passo</h2>
+  <span id="tree-editorial-state" class="tree-editorial-state">DISPONÍVEL</span>
+  <div class="tree-description"><h3>O que você desbloqueia</h3><p id="tree-detail-body">Cada personagem começa no mesmo ponto, mas escolhe uma direção diferente.</p></div>
+  <div class="tree-rule-grid"><div><b>QUANDO PODE USAR</b><p id="tree-detail-trigger">Escolha o próximo caminho.</p></div><div><b>LIMITE E CUSTO DE USO</b><p id="tree-detail-limit">Uma única trilha contínua.</p></div><div><b>EXEMPLO EM MESA</b><p id="tree-detail-example">Selecione um nó para aprender seu funcionamento.</p></div></div>
+  <div class="tree-detail-meta"><div><span>PE PARA COMPRAR</span><strong id="tree-detail-cost">—</strong></div><div><span>ESTÁGIO</span><strong id="tree-detail-rank">0 / 24</strong></div></div>
+  <p class="tree-detail-state" id="tree-detail-state" role="status">Selecione uma habilidade.</p>
+  <button type="button" class="tree-unlock" id="tree-unlock" disabled>Selecione um caminho</button>
+  <button type="button" class="tree-edit-button" id="tree-edit">✎ Editar habilidade / Criar caminho</button>
+  <p class="tree-detail-warning">As técnicas e a economia de PE continuam em playtest. Nada é concedido automaticamente à ficha antiga.</p>
+ </aside>
 </section>
-<section class="tree-footer-note"><strong>Registro separado e não destrutivo.</strong> A árvore consulta perfis de personagens da campanha e não modifica fichas antigas. Para salvar conquistas, é necessário que a migração experimental do Supabase esteja instalada e que o mestre conceda PE.</section>
-</main>
-<footer class="footer"><div class="footer-authorship"><span>CRIAÇÃO E DESENVOLVIMENTO</span><p>Site e Sistema criado por <strong>Vitor Monte</strong></p></div></footer>
+<div class="tree-editor-backdrop" id="tree-editor-modal" hidden role="dialog" aria-modal="true" aria-labelledby="tree-editor-title">
+ <form class="tree-editor-card" id="tree-editor-form"><div class="tree-editor-heading"><div><small>OFICINA DO MESTRE</small><h2 id="tree-editor-title">Escrever habilidade</h2><p>Você pode manter em rascunho por várias sessões. Apenas habilidades publicadas podem ser adquiridas.</p></div><button type="button" id="tree-editor-close" aria-label="Fechar editor">✕</button></div>
+ <label>NOME DA HABILIDADE<input id="tree-edit-title" maxlength="100" required></label>
+ <label>QUANDO E COMO USAR<textarea id="tree-edit-trigger" rows="2" maxlength="500"></textarea></label>
+ <label>O QUE DESBLOQUEIA<textarea id="tree-edit-effect" rows="3" maxlength="1800"></textarea></label>
+ <label>RESTRIÇÕES, CUSTO DE USO E CONTRAJOGO<textarea id="tree-edit-limit" rows="2" maxlength="850"></textarea></label>
+ <label>EXEMPLO DURANTE A SESSÃO<textarea id="tree-edit-example" rows="2" maxlength="1000"></textarea></label>
+ <div class="tree-editor-actions"><button type="button" id="tree-edit-save-draft">Salvar como em construção</button><button type="submit" class="primary">Publicar habilidade</button></div><p id="tree-editor-feedback" role="status"></p>
+ </form>
+</div>
+<div class="tree-confirm-backdrop" id="tree-confirm-modal" hidden role="dialog" aria-modal="true" aria-labelledby="tree-confirm-title"><div class="tree-confirm-card"><span class="tree-confirm-sigil">Æ</span><p class="tree-eyebrow">CONQUISTA IRREVERSÍVEL</p><h2 id="tree-confirm-title">Confirmar habilidade</h2><p id="tree-confirm-message">Esta escolha ficará registrada na campanha.</p><div class="tree-confirm-actions"><button type="button" id="tree-confirm-cancel">Voltar à árvore</button><button type="button" id="tree-confirm-accept">Conquistar habilidade</button></div><p id="tree-confirm-status" role="status"></p></div></div>
+<section class="tree-footer-note"><strong>Arquivo do mestre.</strong> A constelação guarda a trilha do personagem no Supabase. Espaços em construção não são compráveis até você publicar a descrição e os limites. Dados e regras anteriores são preservados.</section>
+</main><footer class="footer"><div class="footer-authorship"><span>CRIAÇÃO E DESENVOLVIMENTO</span><p>Site e Sistema criado por <strong>Vitor Monte</strong></p></div></footer>
 </body></html>

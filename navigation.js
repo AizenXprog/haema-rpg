@@ -9,7 +9,7 @@
   'manual-unificado.html':['manual-unificado.js'],
   'laboratorio-unificado.html':['rules-unified-playtest.js','laboratorio-unificado.js'],
   'tecnicas-unificadas.html':['techniques-unified-playtest.js','tecnicas-unificadas.js'],
-  'arvore.html':['arvore-data.js','arvore.js'],
+  'arvore.html':['arvore-catalogo-vivo.js','arvore-data.js','arvore-vivo.js'],
   'painel-mestre.html':['painel-mestre.js'],
   'fichas.html':['rules-unified-playtest.js','techniques-unified-playtest.js','techniques-unified-logic.js']
  });
