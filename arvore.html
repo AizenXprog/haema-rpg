@@ -7,9 +7,9 @@
 <title>Constelação Viva — HÆMA</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=0.1"><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="arvore.css?v=20261124"><link rel="stylesheet" href="arvore-viva.css?v=20261124clickfix2">
+<link rel="stylesheet" href="style.css?v=0.1"><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="arvore.css?v=20261124"><link rel="stylesheet" href="arvore-viva.css?v=20261124uso126">
 <script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('tree-embedded');else{const audio=document.createElement('script');audio.defer=true;audio.src='audio.js?v=0.5';document.head.append(audio)}</script>
-<script defer src="script.js?v=0.2"></script><script defer src="navigation.js?v=7"></script><script defer src="arvore-catalogo-vivo.js?v=20261124parry1"></script><script defer src="arvore-data.js?v=20261124b"></script><script defer src="arvore-vivo.js?v=20261124clickfix2"></script>
+<script defer src="script.js?v=0.2"></script><script defer src="navigation.js?v=7"></script><script defer src="arvore-treinamentos.js?v=20261124uso126"></script><script defer src="arvore-catalogo-vivo.js?v=20261124uso126"></script><script defer src="arvore-data.js?v=20261124b"></script><script defer src="arvore-vivo.js?v=20261124uso126"></script>
 </head>
 <body data-page="arvore">
 <a class="skip-link" href="#conteudo">Pular para a árvore</a><div aria-hidden="true" class="grain"></div>
@@ -85,9 +85,9 @@
  <aside class="tree-sidebar tree-details" id="tree-details" aria-label="Habilidade selecionada"><button type="button" id="tree-detail-close" aria-label="Fechar detalhes da habilidade">✕</button>
   <div class="tree-panel-header"><span>CÓDICE DA HABILIDADE</span><span id="tree-detail-type">ORIGEM</span></div>
   <div class="tree-detail-glyph" id="tree-detail-glyph" aria-hidden="true">Æ</div><p class="tree-detail-path" id="tree-detail-path">NÚCLEO</p><h2 id="tree-detail-name">O Primeiro Passo</h2>
-  <span id="tree-editorial-state" class="tree-editorial-state">DISPONÍVEL</span>
-  <div class="tree-description"><h3>O que você desbloqueia</h3><p id="tree-detail-body">Cada personagem começa no mesmo ponto, mas escolhe uma direção diferente.</p></div>
-  <details class="tree-rules-fold"><summary>Regras e exemplo</summary><div class="tree-rule-grid"><div><b>QUANDO PODE USAR</b><p id="tree-detail-trigger">Escolha o próximo caminho.</p></div><div><b>LIMITE E CUSTO DE USO</b><p id="tree-detail-limit">Uma única trilha contínua.</p></div><div><b>EXEMPLO EM MESA</b><p id="tree-detail-example">Selecione um nó para aprender seu funcionamento.</p></div></div></details>
+  <span id="tree-editorial-state" class="tree-editorial-state">DISPONÍVEL</span><p class="tree-education-note">Você pode improvisar ações normalmente. Esta habilidade concede a vantagem técnica descrita, somente após aprendê-la. PE são gastos para adquirir, não para usar.</p>
+  <div class="tree-description"><h3>Vantagem que você aprende</h3><p id="tree-detail-body">Cada personagem começa no mesmo ponto, mas escolhe uma direção diferente.</p></div>
+  <section class="tree-usage-steps" aria-label="Instruções de uso"><h3>Como usar na mesa</h3><p id="tree-detail-trigger">Selecione uma habilidade para ver como ativá-la.</p></section><details class="tree-rules-fold"><summary>Custos, limites e exemplo</summary><div class="tree-rule-grid"><div><b>LIMITE E CUSTO DE USO</b><p id="tree-detail-limit">Uma única trilha contínua.</p></div><div><b>EXEMPLO EM MESA</b><p id="tree-detail-example">Selecione um nó para aprender seu funcionamento.</p></div></div></details>
   <div class="tree-detail-meta"><div><span>PE PARA COMPRAR</span><strong id="tree-detail-cost">—</strong></div><div><span>ESTÁGIO</span><strong id="tree-detail-rank">0 / 24</strong></div></div>
   <p class="tree-detail-state" id="tree-detail-state" role="status">Selecione uma habilidade.</p>
   <p class="tree-route-note">Clique em uma habilidade disponível para confirmar a compra. Em habilidades distantes, o clique desenha o percurso sem gastar PE.</p>
@@ -97,12 +97,12 @@
  </aside>
 </section>
 <div class="tree-editor-backdrop" id="tree-editor-modal" hidden role="dialog" aria-modal="true" aria-labelledby="tree-editor-title">
- <form class="tree-editor-card" id="tree-editor-form"><div class="tree-editor-heading"><div><small>OFICINA DO MESTRE</small><h2 id="tree-editor-title">Escrever habilidade</h2><p>Você pode manter em rascunho por várias sessões. Apenas habilidades publicadas podem ser adquiridas.</p></div><button type="button" id="tree-editor-close" aria-label="Fechar editor">✕</button></div>
+ <form class="tree-editor-card" id="tree-editor-form"><div class="tree-editor-heading"><div><small>OFICINA DO MESTRE</small><h2 id="tree-editor-title">Escrever habilidade</h2><p>Uma habilidade deve ensinar uma técnica nova: gatilho, declaração, teste ou custo, pequena vantagem exclusiva, limite e exemplo. Ações improvisadas continuam livres. Apenas técnicas completas podem ser publicadas.</p></div><button type="button" id="tree-editor-close" aria-label="Fechar editor">✕</button></div>
  <label>NOME DA HABILIDADE<input id="tree-edit-title" maxlength="100" required></label>
- <label>QUANDO E COMO USAR<textarea id="tree-edit-trigger" rows="2" maxlength="500"></textarea></label>
- <label>O QUE DESBLOQUEIA<textarea id="tree-edit-effect" rows="3" maxlength="1800"></textarea></label>
+ <label>COMO USAR: GATILHO, DECLARAÇÃO, AÇÃO OU REAÇÃO<textarea id="tree-edit-trigger" rows="3" maxlength="500" placeholder="Quando usar? O que declarar? Qual ação, reação ou teste é necessário?"></textarea></label>
+ <label>VANTAGEM APRENDIDA (EFEITO MENSURÁVEL)<textarea id="tree-edit-effect" rows="3" maxlength="1800" placeholder="Ex.: +1 em teste específico, reduzir DT em 1 ou outro benefício único. Improviso comum não é habilidade."></textarea></label>
  <label>RESTRIÇÕES, CUSTO DE USO E CONTRAJOGO<textarea id="tree-edit-limit" rows="2" maxlength="850"></textarea></label>
- <label>EXEMPLO DURANTE A SESSÃO<textarea id="tree-edit-example" rows="2" maxlength="1000"></textarea></label>
+ <label>EXEMPLO: AÇÃO + DADOS OU RESULTADO<textarea id="tree-edit-example" rows="2" maxlength="1000" placeholder="Mostre a situação, como foi ativada e qual diferença mecânica ela produziu."></textarea></label>
  <div class="tree-editor-actions"><button type="button" id="tree-edit-save-draft">Salvar como em construção</button><button type="submit" class="primary">Publicar habilidade</button></div><p id="tree-editor-feedback" role="status"></p>
  </form>
 </div>
