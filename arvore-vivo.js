@@ -17,6 +17,7 @@
   const map=$('tree-map'),edges=$('tree-edges'),points=$('tree-nodes'),gate=$('tree-private-gate');
   const state={db:null,user:null,admin:false,owned:new Set(),characters:[],character:null,progress:null,plan:[],archived:new Map(),showArchived:false,hoverNode:null,overrides:new Map(),selected:'origem',projection:false,fullscreenUsed:false,zoom:.56,cx:0,cy:0,drag:null,suppressClick:false,busy:false,editing:null,confirming:null,request:0};
   const defaults=new Map(data.nodes.map(n=>[n.id,{name:n.name,effect:n.effect,trigger:n.trigger||'',limit:n.limit||'',example:n.example||'',status:n.status||'draft',kind:n.kind||''}]));
+  let cameraFrame=0,pulseTimer=0;const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||false;
   const svg=(tag,attrs={})=>{const e=document.createElementNS(SVG,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,String(v));return e};
   const safe=(v,max=280)=>String(v??'').slice(0,max);
   const selectedPath=()=>Array.isArray(state.progress?.path)?state.progress.path:[];
@@ -78,7 +79,8 @@
    $('tree-projector-pe').textContent=state.character?String(state.progress?.pe_available??0):'—';
    $('tree-projector-count').textContent=String(selectedPath().length);
    const routeLength=Math.max(0,state.plan.length-selectedPath().length);
-   const planText=!state.character?'Selecione um personagem para marcar uma rota.':isArchived()?'Perfil removido. Restaure antes de continuar.':routeLength?('Rota marcada: '+routeLength+' próximas habilidades; zero PE gastos no planejamento.'):'Nenhum caminho futuro marcado. Escolha um nó para desenhar a rota.';
+   const future=state.plan.slice(selectedPath().length),futureCost=data.formatCost(future);
+   const planText=!state.character?'Escolha um personagem para começar.':isArchived()?'Perfil arquivado. Restaure para continuar.':routeLength?`${routeLength} etapas planejadas · ${futureCost} PE previstos · nenhum PE gasto ainda.`:'Toque num nó distante da sua trilha para marcar a rota automaticamente.';
    $('tree-plan-status').textContent=planText;$('tree-projector-plan').textContent=planText;
    const planOk=n.id!=='origem'&&routeValid(n)&&!state.busy;
    $('tree-plan-route').disabled=!planOk;$('tree-projector-plan-route').disabled=!planOk;
@@ -88,24 +90,44 @@
    $('tree-archive-profile').textContent=isArchived()?'Restaurar perfil da árvore':'Remover perfil da árvore';
    $('tree-reset-profile').disabled=!hasOwner()||state.busy||isArchived();
    $('tree-remove-pe').disabled=!hasOwner()||state.busy||isArchived();
+   const quick=$('tree-quick-action'),balance=state.progress?.pe_available??0,route=ancestors(n),remaining=route?.slice(selectedPath().length)||[];
+   const routeCost=data.formatCost(remaining),isPlanned=state.plan.at(-1)===n.id&&state.plan.length>selectedPath().length;
+   $('tree-quick-pe').textContent=state.character?String(balance):'—';
+   $('tree-quick-title').textContent=n.id==='origem'?'O Primeiro Passo':n.name;
+   $('tree-quick-status').textContent=earned?'CONQUISTADA':possible?'PRONTA PARA CONQUISTAR':planned?'ROTA PLANEJADA':n.status!=='ready'?'EM CRIAÇÃO':available?'PRÓXIMA ETAPA':'EXPLORAR A CONSTELAÇÃO';
+   $('tree-quick-hint').textContent=n.id==='origem'?'Escolha uma direção para começar.':possible?n.cost+' PE · saldo após a compra: '+(balance-n.cost):earned?'Habilidade registrada na trilha.':isPlanned?remaining.length+' etapas · '+routeCost+' PE apenas no plano.':routeValid(n)?remaining.length+' etapas até aqui · previsão '+routeCost+' PE.':nodeState(n,earned,available);
+   const mode=possible?'buy':(isPlanned||(earned&&!!nextPlanned()))&&!state.busy?'next':routeValid(n)&&!state.busy?'plan':'none';
+   quick.dataset.action=mode;$('tree-quickbar').dataset.action=mode;quick.disabled=mode==='none';
+   quick.textContent=mode==='buy'?'CONQUISTAR · '+n.cost+' PE':mode==='next'?'IR AO PRÓXIMO PASSO':mode==='plan'?'TRAÇAR ROTA · '+routeCost+' PE':(state.character&&available&&n.status==='ready'&&balance<n.cost?'PE INSUFICIENTES':n.status!=='ready'?'EM CONSTRUÇÃO':'SELECIONE UM CAMINHO');
   }
   function paint(){
-   const acquired=new Set(selectedPath()),next=frontier(),planned=new Set(state.plan);
-   for(const el of edges.children){const id=el.dataset.id;el.setAttribute('class','tree-edge'+(acquired.has(id)?' unlocked':planned.has(id)?' planned':next.has(id)?' available':''));}
+   const acquired=new Set(selectedPath()),next=frontier(),planned=new Set(state.plan),filter=$('tree-view-filter').value;
+   const shows=id=>{const n=data.map.get(id);return id==='origem'||id===state.selected||filter==='all'||(filter==='available'&&(next.has(id)||acquired.has(id)))||(filter==='owned'&&acquired.has(id))||(filter==='draft'&&n?.status==='draft')};
+   for(const el of edges.children){const id=el.dataset.id;el.setAttribute('class','tree-edge'+(acquired.has(id)?' unlocked':planned.has(id)?' planned':next.has(id)?' available':'')+(state.celebrating===id?' tree-celebrate':'')+(!shows(id)?' muted':''));}
    for(const el of points.children){const id=el.dataset.id,n=data.map.get(id);if(!n)continue;
     const classes=['tree-node',n.type];if(acquired.has(id)||id==='origem')classes.push('unlocked');else if(planned.has(id))classes.push('planned');else if(next.has(id))classes.push('available');
-    if(n.status!=='ready')classes.push('draft');if(id===state.selected)classes.push('current');el.setAttribute('class',classes.join(' '));
+    if(n.status!=='ready')classes.push('draft');if(next.has(id)&&n.status==='ready'&&state.character&&state.progress?.pe_available<n.cost)classes.push('no-pe');if(next.has(id)&&n.lockedByAwakening&&!state.progress?.awakened)classes.push('unawakened');if(id===state.selected)classes.push('current');if(state.celebrating===id)classes.push('tree-celebrate');if(!shows(id))classes.push('muted');el.setAttribute('class',classes.join(' '));
     el.setAttribute('aria-label',`${n.name}: ${acquired.has(id)?'adquirida':n.status!=='ready'?'em construção':next.has(id)?'próxima escolha':'rota não conectada'}. ${n.effect}`);
 
    }
-   $('tree-pe').textContent=state.character?String(state.progress?.pe_available??0):'—';$('tree-count').textContent=String(acquired.size);
+   $('tree-pe').textContent=state.character?String(state.progress?.pe_available??0):'—';$('tree-pe-spent').textContent=String(state.progress?.pe_spent??0);$('tree-count').textContent=String(acquired.size);
    $('tree-draft-total').textContent=String(data.nodes.filter(n=>n.status==='draft').length);
    display();
   }
   function size(){const r=map.getBoundingClientRect();return{w:Math.max(320,r.width),h:Math.max(350,r.height)}}
   function view(){const {w,h}=size();map.setAttribute('viewBox',`${state.cx-w/state.zoom/2} ${state.cy-h/state.zoom/2} ${w/state.zoom} ${h/state.zoom}`)}
-  function focus(n,level){if(!n)return;state.cx=n.x;state.cy=n.y;if(level)state.zoom=level;view()}
-  function zoom(f){state.zoom=Math.max(.16,Math.min(2.8,state.zoom*f));view()}
+  function focus(n,level){if(!n)return;cancelAnimationFrame(cameraFrame);
+   const from={cx:state.cx,cy:state.cy,zoom:state.zoom},target=level||state.zoom;
+   if(reduceMotion){state.cx=n.x;state.cy=n.y;state.zoom=target;view();return}
+   const start=performance.now(),duration=350;
+   const animate=now=>{const t=Math.min(1,(now-start)/duration),ease=1-Math.pow(1-t,3);state.cx=from.cx+(n.x-from.cx)*ease;state.cy=from.cy+(n.y-from.cy)*ease;state.zoom=from.zoom+(target-from.zoom)*ease;view();if(t<1)cameraFrame=requestAnimationFrame(animate)};
+   cameraFrame=requestAnimationFrame(animate);
+  }
+  function zoomAt(f,x,y){cancelAnimationFrame(cameraFrame);const {w,h}=size(),rect=map.getBoundingClientRect();
+   const rx=x==null?0:x-rect.left-w/2,ry=y==null?0:y-rect.top-h/2,old=state.zoom,next=Math.max(.16,Math.min(2.8,old*f));
+   state.cx+=rx*(1/old-1/next);state.cy+=ry*(1/old-1/next);state.zoom=next;view();
+  }
+  function zoom(f){zoomAt(f)}
   function choose(id,focusMap=false){const n=data.map.get(id);if(!n)return;state.selected=id;paint();if(focusMap)focus(n,Math.max(state.zoom,.76))}
   function draw(){
    const fragment=document.createDocumentFragment();
@@ -123,8 +145,8 @@
     grp.addEventListener('pointerleave',()=>hideTooltip(n.id));
     grp.addEventListener('focus',()=>showTooltip(n,null));
     grp.addEventListener('blur',()=>hideTooltip(n.id));
-    grp.addEventListener('click',()=>{if(!state.suppressClick)choose(n.id)});
-    grp.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();choose(n.id)}});
+    grp.addEventListener('click',()=>{if(state.suppressClick)return;choose(n.id);if(canBuy(n))openPurchase();else if(routeValid(n)&&!frontier().has(n.id)&&state.plan.at(-1)!==n.id)markRoute()});
+    grp.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();choose(n.id);if(canBuy(n))openPurchase();else if(routeValid(n)&&!frontier().has(n.id)&&state.plan.at(-1)!==n.id)markRoute()}});
     content.append(grp);
    }points.replaceChildren(content);
    $('tree-total').textContent=String(data.nodes.length);
@@ -193,8 +215,8 @@
      const {error:planError}=await state.db.rpc('haema_tree_save_plan',{p_character:selection.character,p_path:revised});
      if(!planError)state.plan=revised;
     }
-    choose(selection.id,true);notice(`Conquistada: ${n.name}. O progresso do personagem foi salvo.`);
-    const pulse=points.querySelector(`[data-id="${selection.id}"]`);pulse?.classList.add('tree-celebrate');setTimeout(()=>pulse?.classList.remove('tree-celebrate'),1700);
+    state.celebrating=selection.id;choose(selection.id,true);notice(`Conquistada: ${n.name}. ${n.cost} PE descontados e progresso salvo.`);
+     clearTimeout(pulseTimer);pulseTimer=setTimeout(()=>{state.celebrating=null;paint()},1600);
    }catch(e){$('tree-confirm-status').textContent='Não foi possível registrar: '+safe(e.message);notice(safe(e.message),true)}
    finally{state.busy=false;$('tree-confirm-accept').disabled=false;paint()}
   }
@@ -333,7 +355,7 @@
     if(!info.user){$('tree-private-message').textContent='Entre com sua conta administrativa para acessar as habilidades.';const btn=$('tree-private-login');btn.hidden=false;btn.onclick=()=>auth.login();return}
     if(!info.admin){$('tree-private-message').textContent='Apenas a conta administradora do HÆMA pode acessar a constelação.';return}
     state.user=info.user;state.admin=true;state.db=await auth.client();await getEdits();await getCharacters();if(epoch!==lifecycle||!root.isConnected)return;
-    gate.hidden=true;root.hidden=false;draw();bind();paint();view();
+    gate.hidden=true;root.hidden=false;draw();bind();$('tree-advanced-drawer').open=!window.matchMedia('(max-width:720px)').matches;paint();view();
     const fromUrl=new URLSearchParams(location.search).get('character');if(fromUrl&&state.characters.some(x=>x.id===fromUrl))await pickCharacter(fromUrl);
    }catch(e){if(epoch!==lifecycle)return;$('tree-private-message').textContent='Não foi possível liberar o acesso. '+safe(e.message)}
   }
@@ -341,6 +363,7 @@
    $('tree-character').addEventListener('change',e=>void pickCharacter(e.target.value));
    $('tree-projector-character').addEventListener('change',e=>void pickCharacter(e.target.value));
    $('tree-unlock').addEventListener('click',openPurchase);$('tree-projector-unlock').addEventListener('click',openPurchase);
+   $('tree-quick-action').addEventListener('click',()=>{const mode=$('tree-quick-action').dataset.action;if(mode==='buy')openPurchase();else if(mode==='plan')markRoute();else if(mode==='next')focusNextPlanned()});
    $('tree-confirm-cancel').addEventListener('click',closePurchase);$('tree-confirm-accept').addEventListener('click',()=>void confirmPurchase());
    $('tree-grant-button').addEventListener('click',()=>void grantPE());$('tree-remove-pe').addEventListener('click',()=>void correctPE());$('tree-regency-button').addEventListener('click',()=>void toggleAwakening());
    $('tree-archive-profile').addEventListener('click',()=>void archiveProfile());$('tree-reset-profile').addEventListener('click',()=>void resetProfile());
@@ -350,7 +373,7 @@
    $('tree-plan-clear').addEventListener('click',clearPlan);
    $('tree-edit').addEventListener('click',openEditor);$('tree-editor-close').addEventListener('click',closeEditor);
    $('tree-editor-form').addEventListener('submit',e=>{e.preventDefault();void saveEditorial('ready')});$('tree-edit-save-draft').addEventListener('click',()=>void saveEditorial('draft'));
-   $('tree-search').addEventListener('input',search);$('tree-find-draft').addEventListener('click',findDraft);
+   $('tree-search').addEventListener('input',search);$('tree-find-draft').addEventListener('click',findDraft);$('tree-view-filter').addEventListener('change',paint);
    $('tree-focus-frontier').addEventListener('click',()=>{const arr=data.nextNodes(selectedPath());if(arr.length){choose(arr[0].id,true)}});
    $('tree-focus-last').addEventListener('click',()=>{const id=selectedPath().at(-1)||'origem';choose(id,true)});
    $('tree-zoom-in').addEventListener('click',()=>zoom(1.3));$('tree-zoom-out').addEventListener('click',()=>zoom(1/1.3));
@@ -361,12 +384,33 @@
    const resize=()=>view();const hidden=()=>document.body.classList.toggle('tree-sleep',document.hidden);
    const fullscreen=()=>{if(state.fullscreenUsed&&!document.fullscreenElement){state.fullscreenUsed=false;setProjection(false)}};
    document.addEventListener('keydown',key);window.addEventListener('resize',resize);document.addEventListener('visibilitychange',hidden);document.addEventListener('fullscreenchange',fullscreen);
-   const wheel=e=>{e.preventDefault();zoom(e.deltaY<0?1.11:1/1.11)};map.addEventListener('wheel',wheel,{passive:false});
-   const down=e=>{hideTooltip();if(e.button!==0&&e.pointerType==='mouse')return;state.drag={x:e.clientX,y:e.clientY,cx:state.cx,cy:state.cy,moved:false};map.setPointerCapture(e.pointerId)};
-   const move=e=>{if(!state.drag)return;const dx=e.clientX-state.drag.x,dy=e.clientY-state.drag.y;if(Math.abs(dx)+Math.abs(dy)>5)state.drag.moved=true;state.cx=state.drag.cx-dx/state.zoom;state.cy=state.drag.cy-dy/state.zoom;view()};
-   const up=e=>{if(!state.drag)return;const moved=state.drag.moved;state.drag=null;if(moved){state.suppressClick=true;setTimeout(()=>state.suppressClick=false,0)}};
+   const wheel=e=>{e.preventDefault();zoomAt(e.deltaY<0?1.11:1/1.11,e.clientX,e.clientY)};map.addEventListener('wheel',wheel,{passive:false});
+   const fingers=new Map();let pinched=false;
+   const down=e=>{hideTooltip();if(e.button!==0&&e.pointerType==='mouse')return;cancelAnimationFrame(cameraFrame);
+    fingers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(fingers.size===1){pinched=false;state.drag={x:e.clientX,y:e.clientY,cx:state.cx,cy:state.cy,moved:false}}
+    if(fingers.size>=2){pinched=true;state.drag=null;state.suppressClick=true}
+    map.setPointerCapture(e.pointerId)
+   };
+   const move=e=>{if(!fingers.has(e.pointerId))return;const old=[...fingers.values()];fingers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(fingers.size>=2){const now=[...fingers.values()],a=old[0],b=old[1],c=now[0],d=now[1];
+     const prevDistance=Math.hypot(a.x-b.x,a.y-b.y)||1,dist=Math.hypot(c.x-d.x,c.y-d.y)||1;
+     const midBefore={x:(a.x+b.x)/2,y:(a.y+b.y)/2},midAfter={x:(c.x+d.x)/2,y:(c.y+d.y)/2};
+     const rect=map.getBoundingClientRect(),{w,h}=size(),oldZoom=state.zoom,newZoom=Math.max(.16,Math.min(2.8,oldZoom*dist/prevDistance));
+     const worldX=state.cx+(midBefore.x-rect.left-w/2)/oldZoom,worldY=state.cy+(midBefore.y-rect.top-h/2)/oldZoom;
+     state.cx=worldX-(midAfter.x-rect.left-w/2)/newZoom;state.cy=worldY-(midAfter.y-rect.top-h/2)/newZoom;state.zoom=newZoom;view();return;
+    }
+    if(!state.drag||pinched)return;const dx=e.clientX-state.drag.x,dy=e.clientY-state.drag.y;
+    if(Math.abs(dx)+Math.abs(dy)>5)state.drag.moved=true;
+    state.cx=state.drag.cx-dx/state.zoom;state.cy=state.drag.cy-dy/state.zoom;view();
+   };
+   const up=e=>{if(!fingers.has(e.pointerId))return;fingers.delete(e.pointerId);
+    const moved=state.drag?.moved||pinched;state.drag=null;
+    if(moved){state.suppressClick=true;setTimeout(()=>{if(!fingers.size)state.suppressClick=false},70)}
+    if(!fingers.size)pinched=false;
+   };
    map.addEventListener('pointerdown',down);map.addEventListener('pointermove',move);map.addEventListener('pointerup',up);map.addEventListener('pointercancel',up);
-   dispose=()=>{document.removeEventListener('keydown',key);window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',hidden);document.removeEventListener('fullscreenchange',fullscreen);if(state.projection)void exitProjection();lifecycle++};
+   dispose=()=>{cancelAnimationFrame(cameraFrame);clearTimeout(pulseTimer);document.removeEventListener('keydown',key);window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',hidden);document.removeEventListener('fullscreenchange',fullscreen);if(state.projection)void exitProjection();lifecycle++};
   }
   authorize();
  }

@@ -16,7 +16,7 @@
 ## 2. Sete direções
 
 1. Combate — finalizações, pressão, ataques encadeados e manobras.
-2. Defesa — guarda, Aparo, interposição, proteção; Parry ainda é proposta separada.
+2. Defesa — guarda, Aparo, interposição, proteção; Parry é adquirido exclusivamente como habilidade do ramo de Defesa (nó s1:1:4, após suas etapas anteriores), não é uma Reação universal inicial. O efeito detalhado de Defesa Perfeita permanece experimental e depende de regra de mesa aprovada.
 3. Precisão — oportunidades, linhas de tiro, pontos vulneráveis.
 4. Mobilidade — posicionamento, Esquiva, travessia, Latebra.
 5. Sobrevivência — socorro, retirada, Ferimentos, preparação.
@@ -64,3 +64,11 @@
 ## 7. Estado real desta entrega
 
 Arquivos de prévia: `arvore.html`, `arvore.css`, `arvore-data.js`, `arvore.js`, testes. O código de gravação requer migração nova no Supabase. Nenhuma compra está garantida como persistente sem a instalação e verificação da migração. A publicação na branch principal exige revisão separada. Nenhum arquivo privado da Lore é copiado ao repositório público.
+## Revisão de interface — 24/11/2026
+
+- Ao clicar em uma habilidade imediatamente comprável, o mestre recebe confirmação de compra; o desconto e a validação continuam exclusivamente na RPC do Supabase.
+- Ao clicar em um descendente ainda distante, a constelação registra apenas o planejamento da trilha por meio da RPC dedicada, sem consumir PE.
+- O painel rápido informa saldo, custo, estado e próxima ação. Há destaques de PE insuficiente, conquistas, planejamento e espaços em construção.
+- Zoom ancorado no cursor, arraste com mouse, pinça com dois dedos, foco animado e tratamento de movimento reduzido.
+- Nenhuma compra é automaticamente desfeita ou estornada: decisões são permanentes e auditadas.
+- Esta revisão de UI não altera os 631 identificadores, os 126 nós descritos, os 504 rascunhos ou a economia experimental.
