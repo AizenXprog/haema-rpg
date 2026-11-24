@@ -72,3 +72,14 @@ Arquivos de prévia: `arvore.html`, `arvore.css`, `arvore-data.js`, `arvore.js`,
 - Zoom ancorado no cursor, arraste com mouse, pinça com dois dedos, foco animado e tratamento de movimento reduzido.
 - Nenhuma compra é automaticamente desfeita ou estornada: decisões são permanentes e auditadas.
 - Esta revisão de UI não altera os 631 identificadores, os 126 nós descritos, os 504 rascunhos ou a economia experimental.
+
+
+## Auditoria didática das 126 habilidades — 24/11/2026 (playtest, aguardando aprovação)
+
+Uma habilidade **não dá autorização exclusiva para realizar uma ação comum**. Todos continuam livres para atacar, tentar uma manobra, observar, improvisar ferramentas, explorar, cuidar ou experimentar o que a narrativa e as regras já permitem. O que se compra por PE é **uma vantagem técnica aprendida e delimitada** que não existe na ação comum.
+
+Cada uma das 126 habilidades descritas tem: **como usar** (gatilho, declaração, Ação Principal/Reação/teste quando couber), **benefício mecânico mensurável** (em geral uma pequena melhoria contextual), **custo/limitação**, **exemplo mostrando a diferença na rolagem ou no resultado**. A visualização mostra Como usar diretamente, mantendo explicações extras recolhíveis. As 504 habilidades não descritas seguem não compráveis.
+
+As novas redações experimentais estão em `arvore-treinamentos.js`, ligadas aos mesmos IDs e nomes originais por `arvore-catalogo-vivo.js`. As personalizações já salvas pelo Mestre no Supabase prevalecem e não são apagadas; técnicas antigas editadas deverão ser revisadas manualmente com os novos critérios se não contiverem instrução de uso e uma vantagem específica.
+
+**Limites do playtest:** as descrições não substituem regras do Manual, não fornecem ações gratuitas, não dão automaticamente dados, competências, ferimentos curados, poderes nem recursos extras. Parry continua um nó no ramo Defesa; seu protocolo de resolução precisa de aprovação específica e não foi oficializado aqui.
