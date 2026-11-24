@@ -107,7 +107,9 @@
   }
   function dirty(){if(!ctx||destroyed)return;serial++;setStatus('Alterações pendentes…');clearTimeout(timer);timer=setTimeout(()=>{void flush()},400)}
   async function flush(){
-   clearTimeout(timer);if(!ctx||destroyed||working||serial===savedSerial)return !lastError;
+   clearTimeout(timer);if(!ctx||destroyed)return false;
+   if(working){while(working)await new Promise(resolve=>setTimeout(resolve,20));if(serial!==savedSerial&&!lastError)return flush();return !lastError;}
+   if(serial===savedSerial)return !lastError;
    working=true;const current=ctx,seq=serial,copy=JSON.parse(JSON.stringify(snapshot));
    setStatus('Salvando no Supabase…');
    try{
