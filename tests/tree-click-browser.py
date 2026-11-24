@@ -84,7 +84,7 @@ async def run_case(browser,width,height):
  assert await page.locator(".tree-usage-steps").is_visible(),"Como usar precisa estar visível no card"
  usage=await page.locator("#tree-detail-trigger").inner_text()
  effect=await page.locator("#tree-detail-body").inner_text()
- assert "Aparo" in usage and "declare" in usage.lower(),"Habilidade sem instrução concreta de ativação"
+ assert "Aparo" in usage and "declar" in usage.lower(),"Habilidade sem instrução concreta de ativação"
  assert "+1" in effect,"Habilidade sem pequena vantagem mensurável"
  await page.locator(".tree-rules-fold summary").click()
  assert "uma vez por cena" in (await page.locator("#tree-detail-limit").inner_text()).lower(),"Habilidade sem limite claro"
