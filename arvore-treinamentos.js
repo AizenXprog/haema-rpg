@@ -590,6 +590,122 @@
    "Você percebe a fumaça e orienta a retirada do ferido com +1 no teste."
   ]
  ]
+},
+  conhecimento:{
+ "0": [
+  [
+   "Observe por uma Ação Principal até três rotas reais e escolha uma antes do teste de exploração ou infiltração.",
+   "Some +1 no teste inicial de deslocamento ou reconhecimento da rota escolhida.",
+   "Uma vez por cena; rotas precisam estar à vista ou documentadas; não cria caminho inexistente.",
+   "Você compara escada, janela e corredor, escolhe a escada e reconhece a subida com +1."
+  ],
+  [
+   "Analise perigo material visível antes de uma tarefa e descreva o cuidado que preparou para evitá-lo.",
+   "Reduza em 1 a DT do teste de preparação contra esse perigo (mínimo DT 5).",
+   "Uma vez por cena; a ameaça deve ser observável e prevenível; não suprime armadilhas sem ação.",
+   "Você protege o cabo contra atrito; a DT do preparo cai de 8 para 7."
+  ],
+  [
+   "Observe o ciclo de um mecanismo ou patrulha durante uma rodada e indique a janela exata para um aliado agir.",
+   "O aliado soma +1 no teste da ação realizada durante a janela observada.",
+   "Uma vez por cena; ritmo deve se repetir e aliado precisa agir a tempo, sem ação extra.",
+   "Você mede a rotação da engrenagem e o aliado ajusta a peça com +1."
+  ],
+  [
+   "Antes da missão, gaste Ação Principal preparando uma segunda ferramenta ou rota adequada. Quando a primeira falhar, declare a reserva.",
+   "Receba +1 no primeiro teste da alternativa previamente preparada, ao executá-la com ação normal.",
+   "Uma vez por cena; a alternativa precisa ter sido preparada antes da falha; sem turno gratuito.",
+   "A ponte improvisada rompe; você usa o cordame reserva e soma +1 no teste."
+  ],
+  [
+   "Compare dois elementos de um problema durante uma Ação Principal e indique qual interromperá o mecanismo adversário.",
+   "Some +1 no teste técnico ou de manobra para interferir no ponto identificado.",
+   "Uma vez por cena; exige sinais verificáveis e acesso real ao elemento; não desliga inimigos de graça.",
+   "Você identifica a haste que trava o portão e soma +1 ao teste para soltá-la."
+  ],
+  [
+   "Antes de uma ação coordenada, defina comando curto e ensaie o momento de execução com pelo menos um aliado.",
+   "Um aliado soma +1 ao próximo teste relacionado à ordem ensaiada.",
+   "Uma vez por cena; não é ordem mental ou ação gratuita; não acumula com bônus de auxílio.",
+   "Você sinaliza a abertura da ponte; o aliado rola a manobra sincronizada com +1."
+  ]
+ ],
+ "1": [
+  [
+   "Escolha instrumento técnico adequado e declare a calibração específica antes do teste de Engenharia ou ofício.",
+   "Some +1 no teste de execução daquele ajuste.",
+   "Uma vez por cena; exige ferramenta material; não resolve por magia um dispositivo desconhecido.",
+   "Você calibra a chave antes de soltar o pino e testa Engenharia com +1."
+  ],
+  [
+   "Abra registro físico que você possua e localize a anotação relacionada à falha antes de tentar solucioná-la.",
+   "Some +1 ao próximo teste para reproduzir uma solução documentada no registro.",
+   "Uma vez por cena; a anotação precisa existir; não conjura informação ausente.",
+   "Você encontra desenho de uma roda dentada semelhante e soma +1 ao reparo."
+  ],
+  [
+   "Depois de uma primeira tentativa técnica malsucedida, registre concretamente o que mudou no mecanismo e anuncie correção.",
+   "Some +1 ao teste seguinte para repetir o procedimento com alteração material plausível.",
+   "Uma vez por cena; não pode repetir sem mudar nada e o erro não é apagado retroativamente.",
+   "Você identifica pressão excessiva na alavanca, a reduz e tenta outra vez com +1."
+  ],
+  [
+   "Inspecione uma peça acessível durante uma Ação Principal e indique o ponto real que precisa de manutenção.",
+   "Reduza em 1 a DT do primeiro teste de reparo desse ponto com ferramenta adequada (DT mínima 5).",
+   "Uma vez por cena; não inventa peças de reposição ou substitui a perícia necessária.",
+   "Você encontra a bucha desgastada e a DT de troca cai de 9 para 8."
+  ],
+  [
+   "Examine marcas de ruptura em material físico e declare o sinal que diferencia corte, carga ou atrito.",
+   "Some +1 no teste usado para classificar corretamente a origem do dano.",
+   "Uma vez por cena; não revela sabotador sem pistas; exige acesso à superfície danificada.",
+   "Você vê fibras torcidas no cabo e soma +1 para identificar o tipo de ruptura."
+  ],
+  [
+   "Após completar com sucesso uma tarefa técnica, registre a sequência exata e repita-a com os mesmos materiais.",
+   "Some +1 ao teste da primeira repetição do procedimento anotado.",
+   "Uma vez por cena; precisa de repetição equivalente, sem somar a Método Repetível.",
+   "Você monta o segundo filtro igual ao primeiro, usando o protocolo para ganhar +1."
+  ]
+ ],
+ "x": [
+  [
+   "Gaste uma Ação Principal formulando hipótese sobre vestígio observável; diga qual evidência poderia refutá-la antes do teste de investigação.",
+   "Receba +1 no teste de investigação usado para confrontar a hipótese com essa evidência.",
+   "Uma vez por cena; não exige que o mestre invente uma pista nem confirma algo sem teste.",
+   "Você compara cera da vela e fuligem da janela, somando +1 ao teste para verificar a hipótese."
+  ],
+  [
+   "Examine ferramentas existentes e anuncie qual usará para uma tarefa técnica antes de iniciar o teste.",
+   "Reduza em 1 a DT de um teste técnico feito com a ferramenta correta (DT mínima 5).",
+   "Uma vez por cena; o instrumento precisa estar disponível e não resolve tarefa por si só.",
+   "Você usa um calibre na dobradiça; a DT do ajuste cai de 9 para 8."
+  ],
+  [
+   "Antes de uma ação arriscada, gaste Ação Principal para mapear duas consequências observáveis da falha.",
+   "Receba +1 no teste de preparação para reduzir um desses riscos no próximo turno.",
+   "Uma vez por cena; não revela riscos secretos ou dispensa fazer o teste da ação principal.",
+   "Você identifica a queda da roldana e reforça o cabo, rolando o preparo com +1."
+  ],
+  [
+   "Compare duas fontes materiais disponíveis durante uma Ação Principal e anuncie a contradição a verificar.",
+   "Some +1 no teste de análise para detectar a discrepância entre as fontes.",
+   "Uma vez por cena; ambas fontes devem existir e poder ser examinadas; não cria informação.",
+   "Você confronta duas plantas e soma +1 para localizar a medida inconsistente."
+  ],
+  [
+   "Prepare um plano com um aliado usando Ação Principal e defina a tarefa técnica de cada um antes da execução.",
+   "Conceda +1 ao próximo teste de um aliado diretamente ligado ao plano que vocês ensaiaram.",
+   "Uma vez por cena; o aliado deve conseguir receber instruções e não soma com outro auxílio.",
+   "Você marca a sequência de abrir a comporta; o responsável pela alavanca soma +1."
+  ],
+  [
+   "Depois de executar um procedimento técnico com sucesso, anote condições e ferramentas necessárias para repetição.",
+   "Receba +1 na primeira repetição do mesmo teste com ferramentas e condições equivalentes.",
+   "Uma vez por cena; não serve para tarefas diferentes ou ambientes que mudaram muito.",
+   "Você repete o alinhamento de engrenagens idênticas e soma +1 ao segundo ajuste."
+  ]
+ ]
 }
  };
  function get(node){
