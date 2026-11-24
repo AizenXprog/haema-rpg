@@ -22,7 +22,7 @@ MOCK_DB = r"""
   const rows={
    haema_tree_node_edits:[],
    haema_characters:base.characters,
-   haema_campaigns:[{id:"campaign-smoke"}],
+   haema_campaigns:[{id:"campaign-smoke",gm_id:"user-smoke"}],
    haema_tree_profile_settings:[],
    haema_tree_progress:[{...base.progress,path:base.progress.path.slice()}],
    haema_tree_plans:[{planned_path:base.plan.slice()}]
