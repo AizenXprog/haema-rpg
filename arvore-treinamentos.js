@@ -242,6 +242,122 @@
    "Você prepara o escudo em vez de atacar; quando a lança chega, rola o Aparo com +1."
   ]
  ]
+},
+  precisao:{
+ "0": [
+  [
+   "Observe por uma rodada uma característica de marcha ou postura do alvo; declare esse sinal antes do próximo disparo.",
+   "Some +1 no próximo teste de ataque à distância contra o mesmo inimigo identificado.",
+   "Uma vez por cena; perde o ajuste se perder o alvo ou mudar radicalmente de distância.",
+   "Você acompanha a passada irregular do sentinela e dispara com +1."
+  ],
+  [
+   "Confirme um ponto desprotegido numa armadura e anuncie essa falha antes de rolar o ataque à distância.",
+   "Ignore 1 ponto de Absorção da armadura no acerto, respeitando mínimo zero.",
+   "Uma vez por cena; não atravessa cobertura nem armadura totalmente fechada.",
+   "Você mira a fenda da ombreira: uma Absorção 3 passa a 2 nesse tiro."
+  ],
+  [
+   "Ataque à distância a partir de Latebra válida e declare que vai amortecer o disparo com cobertura ou equipamento real.",
+   "Caso o ataque gere apenas ruído fraco plausivelmente amortecido, conserve uma Marca de Latebra que seria perdida.",
+   "Uma vez por cena; ruído forte, alvo que viu o atirador ou falta de cobertura anulam o efeito.",
+   "A besta leve dispara atrás de cortina pesada; você conserva uma Marca que o estalo fraco retiraria."
+  ],
+  [
+   "Depois de um tiro falhar por interferência física, identifique a borda do obstáculo antes de corrigir o próximo disparo.",
+   "Some +1 ao próximo teste de ataque ao mesmo alvo por uma linha adaptada.",
+   "Uma vez por cena; exige mudança concreta de ângulo e linha de tiro viável.",
+   "A flecha atinge a grade; você ajusta o ângulo e soma +1 ao próximo disparo."
+  ],
+  [
+   "Depois de observar a locomoção comprometida de um inimigo, declare ataque de contenção em lugar de dano.",
+   "Ganhe +1 na oposição da manobra para imobilizar temporariamente um membro alcançável, se o ataque acertar.",
+   "Uma vez por cena; não amputa, não ignora proteção e nunca soma dano ao controle.",
+   "Você mira uma bota presa no entulho e usa +1 na manobra de contenção."
+  ],
+  [
+   "Ataque o mesmo alvo por três turnos consecutivos sem perdê-lo de vista; anuncie a cadência aprendida antes do terceiro ataque.",
+   "O terceiro ataque contra esse alvo recebe +1 no teste.",
+   "Uma vez por cena; reinicia contagem se mudar de alvo, perder linha de tiro ou não realizar o ataque.",
+   "Você acompanha dois desvios do guarda e soma +1 no terceiro disparo."
+  ]
+ ],
+ "1": [
+  [
+   "Dedique uma Ação Principal a comparar duas trajetórias de tiro visíveis; escolha uma antes de lançar o ataque seguinte.",
+   "Some +1 ao primeiro ataque realizado pela trajetória escolhida até seu próximo turno.",
+   "Uma vez por cena; precisa haver duas linhas reais e não revela alvos ocultos.",
+   "Você compara a janela e o arco da porta e atira pela janela com +1."
+  ],
+  [
+   "Antes de um aliado atacar por uma linha que você estudou, aponte a interferência real e anuncie a correção.",
+   "O aliado soma +1 ao teste de um ataque à distância por aquela linha.",
+   "Uma vez por cena; você deve observar a cena e comunicar-se; não remove cobertura.",
+   "Você avisa que o vento desvia flechas à direita; o arqueiro soma +1."
+  ],
+  [
+   "Prepare o disparo para a passagem de um inimigo; ao acioná-lo, declare cobertura em lugar de dano.",
+   "Se acertar, a manobra de impedir travessia pela passagem recebe +1 na oposição aplicável.",
+   "Uma vez por cena; usa ação preparada normal e não gera segundo tiro.",
+   "O inimigo corre para a escada; seu disparo de cobertura ganha +1 na contenção."
+  ],
+  [
+   "Com um aliado ameaçando um lado de um corredor, anuncie qual linha cruzada você manterá durante uma Ação Principal de preparação.",
+   "O primeiro aliado que opuser fisicamente o avanço pelo cruzamento recebe +1 nesse teste.",
+   "Uma vez por cena; demanda linha de tiro visível, arma adequada e posição mantida.",
+   "Vocês dominam lados opostos da porta; o defensor soma +1 para barrar a travessia."
+  ],
+  [
+   "Estude cobertura e obstáculos de uma área por uma Ação Principal e indique a um aliado onde apoiar o próximo disparo.",
+   "O aliado recebe +1 na primeira tentativa de ataque à distância dessa posição até seu próximo turno.",
+   "Uma vez por cena; a posição deve existir e ser alcançada com Movimento normal.",
+   "Você marca a altura certa da muralha; seu companheiro atira dali com +1."
+  ],
+  [
+   "Monitore uma passagem visível até seu próximo turno e passe ao aliado a leitura de um obstáculo móvel antes de ele disparar.",
+   "O aliado recebe +1 no ataque à distância feito no momento em que o obstáculo deixa a linha.",
+   "Uma vez por cena; exige visibilidade contínua e comunicação; não concede disparos extras.",
+   "Você avisa quando a carroça passa; o arqueiro dispara no instante certo com +1."
+  ]
+ ],
+ "x": [
+  [
+   "Dedique uma Ação Principal a estudar a linha entre você e um alvo visível. Declare qual cobertura ou obstáculo mediu antes do ataque seguinte.",
+   "Receba +1 no primeiro teste de ataque à distância feito pela linha observada até seu próximo turno.",
+   "Uma vez por cena; se a linha mudar ou o alvo ficar oculto, perde o bônus; não atravessa cobertura.",
+   "Você mede o espaço entre duas colunas e dispara pela fresta com +1."
+  ],
+  [
+   "Gaste sua Ação Principal preparando mira num alvo que continua visível; declare o disparo preparado antes da rolagem seguinte.",
+   "Some +1 no próximo ataque à distância contra esse alvo até o início do seu próximo turno.",
+   "Uma vez por cena; mover a mira para outro alvo ou perder linha de visão desfaz o preparo.",
+   "Você estabiliza a besta atrás do parapeito e soma +1 no tiro seguinte."
+  ],
+  [
+   "Prepare uma ação ofensiva para quando um inimigo cruzar uma passagem visível; ao acioná-la, declare contenção em vez de dano.",
+   "Se o ataque acertar, reduza em até 1 m o deslocamento restante do alvo naquela travessia.",
+   "Uma vez por cena; gasta a ação normalmente e exige ataque que possa interromper o movimento; sem dano adicional.",
+   "O batedor atravessa o corredor e seu disparo de contenção reduz sua corrida em 1 m."
+  ],
+  [
+   "Observe durante uma rodada uma proteção física; antes de atacar a junta que enxergou, declare a abertura real.",
+   "Ignore 1 ponto de Absorção dessa peça no ataque bem-sucedido, mínimo de proteção zero.",
+   "Uma vez por cena; depende de ponto exposto confirmado e não ignora cobertura ou toda a armadura.",
+   "Você observa a couraça e dispara na emenda, reduzindo a Absorção de 2 para 1."
+  ],
+  [
+   "Após alcançar uma posição protegida, marque um trajeto seguro de saída antes de atirar.",
+   "Receba +1 no primeiro teste físico para deixar a posição sob ameaça até seu próximo turno.",
+   "Uma vez por cena; exige caminho visível e Movimento disponível; não concede deslocamento de graça.",
+   "Você dispara do telhado e usa +1 para descer pelo acesso que já mediu."
+  ],
+  [
+   "Prepare mira por duas Ações Principais sobre um mesmo ponto; antes do tiro, declare que trocará dano por precisão de controle.",
+   "Se o ataque acertar, a manobra para prender um objeto pequeno acessível recebe +1 na oposição pertinente.",
+   "Uma vez por cena; substitui dano, não impede todo Movimento e não cumula com bônus de mira.",
+   "Você prende a correia do inimigo na madeira; a manobra ganha +1, sem dano no alvo."
+  ]
+ ]
 }
  };
  function get(node){
