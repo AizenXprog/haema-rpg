@@ -96,10 +96,10 @@ async def run_case(browser,width,height):
  assert await page.locator("#tree-count").inner_text()=="1","Compra não gravou conquista"
  assert await page.evaluate("window.__treeSmoke.rpcCalls")==1,"Compra foi duplicada"
  # Um clique em nó distante só planeja, não gasta pontos.
- far=page.locator('#tree-map .tree-node[data-id="s1:0:3"]')
+ far=page.locator('#tree-map .tree-node[data-id="s1:x:3"]')
  await page.locator("#tree-detail-close").click()
- await far.click(force=True)
- await page.wait_for_function("window.__treeSmoke.plan.length===9",timeout=5000)
+ await far.click()
+ await page.wait_for_function("window.__treeSmoke.plan.length===3",timeout=5000)
  assert await page.locator("#tree-pe").inner_text()=="26","Planejamento não pode descontar PE"
  assert "etapas planejadas" in await page.locator("#tree-plan-status").inner_text(),"Planejamento invisível"
  if width<600:
