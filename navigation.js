@@ -3,13 +3,14 @@
  * main content changes; old pages remain directly accessible to browsers/crawlers.
  */
 (()=>{
- const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html','campanha.html','fichas.html','mestre.html','manual-unificado.html','laboratorio-unificado.html','tecnicas-unificadas.html','arvore.html']);
+ const routes=new Set(['','index.html','manual.html','portal.html','sistema.html','biblioteca.html','administracao.html','mesa.html','atualizacoes.html','campanha.html','fichas.html','mestre.html','manual-unificado.html','laboratorio-unificado.html','tecnicas-unificadas.html','arvore.html','painel-mestre.html']);
  const viewScripts=Object.freeze({
   'sistema.html':['rules-unified-playtest.js','sistema-didatico.js'],
   'manual-unificado.html':['manual-unificado.js'],
   'laboratorio-unificado.html':['rules-unified-playtest.js','laboratorio-unificado.js'],
   'tecnicas-unificadas.html':['techniques-unified-playtest.js','tecnicas-unificadas.js'],
   'arvore.html':['arvore-data.js','arvore.js'],
+  'painel-mestre.html':['painel-mestre.js'],
   'fichas.html':['rules-unified-playtest.js','techniques-unified-playtest.js','techniques-unified-logic.js']
  });
  const scriptPromises=new Map();
@@ -62,7 +63,7 @@
    else link.removeAttribute('aria-current');
   });
   const account=document.querySelector('.top-action');
-  if(account){if(['portal.html','administracao.html','campanha.html','fichas.html','mestre.html'].includes(key))account.setAttribute('aria-current','page');else account.removeAttribute('aria-current');}
+  if(account){if(['portal.html','administracao.html','campanha.html','fichas.html','mestre.html','painel-mestre.html'].includes(key))account.setAttribute('aria-current','page');else account.removeAttribute('aria-current');}
   const menu=document.getElementById('menu-toggle');
   const nav=document.getElementById('main-nav');
   if(menu)menu.setAttribute('aria-expanded','false');
