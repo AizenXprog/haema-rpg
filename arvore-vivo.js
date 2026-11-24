@@ -128,7 +128,14 @@
    state.cx+=rx*(1/old-1/next);state.cy+=ry*(1/old-1/next);state.zoom=next;view();
   }
   function zoom(f){zoomAt(f)}
-  function choose(id,focusMap=false){const n=data.map.get(id);if(!n)return;state.selected=id;paint();if(focusMap)focus(n,Math.max(state.zoom,.76))}
+  function choose(id,focusMap=false){const n=data.map.get(id);if(!n)return;state.selected=id;
+   root.classList.toggle('tree-detail-open',id!=='origem');paint();if(focusMap)focus(n,Math.max(state.zoom,.76))
+  }
+  function activateNode(id){const n=data.map.get(id);if(!n)return;
+   choose(id);
+   if(canBuy(n))openPurchase();
+   else if(routeValid(n)&&!frontier().has(n.id)&&state.plan.at(-1)!==n.id)markRoute();
+  }
   function draw(){
    const fragment=document.createDocumentFragment();
    for(const e of data.edges){const from=data.map.get(e.from),to=data.map.get(e.to);const midx=(from.x+to.x)/2,midy=(from.y+to.y)/2;
@@ -145,8 +152,8 @@
     grp.addEventListener('pointerleave',()=>hideTooltip(n.id));
     grp.addEventListener('focus',()=>showTooltip(n,null));
     grp.addEventListener('blur',()=>hideTooltip(n.id));
-    grp.addEventListener('click',()=>{if(state.suppressClick)return;choose(n.id);if(canBuy(n))openPurchase();else if(routeValid(n)&&!frontier().has(n.id)&&state.plan.at(-1)!==n.id)markRoute()});
-    grp.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();choose(n.id);if(canBuy(n))openPurchase();else if(routeValid(n)&&!frontier().has(n.id)&&state.plan.at(-1)!==n.id)markRoute()}});
+    /* Mouse and touch taps are delegated to the SVG node container. */
+    grp.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();activateNode(n.id)}});
     content.append(grp);
    }points.replaceChildren(content);
    $('tree-total').textContent=String(data.nodes.length);
@@ -355,7 +362,7 @@
     if(!info.user){$('tree-private-message').textContent='Entre com sua conta administrativa para acessar as habilidades.';const btn=$('tree-private-login');btn.hidden=false;btn.onclick=()=>auth.login();return}
     if(!info.admin){$('tree-private-message').textContent='Apenas a conta administradora do HÆMA pode acessar a constelação.';return}
     state.user=info.user;state.admin=true;state.db=await auth.client();await getEdits();await getCharacters();if(epoch!==lifecycle||!root.isConnected)return;
-    gate.hidden=true;root.hidden=false;draw();bind();$('tree-advanced-drawer').open=!window.matchMedia('(max-width:720px)').matches;paint();view();
+    gate.hidden=true;root.hidden=false;draw();bind();$('tree-advanced-drawer').open=false;root.classList.remove('tree-detail-open');paint();view();
     const fromUrl=new URLSearchParams(location.search).get('character');if(fromUrl&&state.characters.some(x=>x.id===fromUrl))await pickCharacter(fromUrl);
    }catch(e){if(epoch!==lifecycle)return;$('tree-private-message').textContent='Não foi possível liberar o acesso. '+safe(e.message)}
   }
@@ -363,6 +370,10 @@
    $('tree-character').addEventListener('change',e=>void pickCharacter(e.target.value));
    $('tree-projector-character').addEventListener('change',e=>void pickCharacter(e.target.value));
    $('tree-unlock').addEventListener('click',openPurchase);$('tree-projector-unlock').addEventListener('click',openPurchase);
+   $('tree-detail-close').addEventListener('click',()=>root.classList.remove('tree-detail-open'));
+   points.addEventListener('click',event=>{if(state.suppressClick)return;const target=event.target;
+    const group=target?.closest?.('.tree-node');if(group?.dataset.id)activateNode(group.dataset.id)
+   });
    $('tree-quick-action').addEventListener('click',()=>{const mode=$('tree-quick-action').dataset.action;if(mode==='buy')openPurchase();else if(mode==='plan')markRoute();else if(mode==='next')focusNextPlanned()});
    $('tree-confirm-cancel').addEventListener('click',closePurchase);$('tree-confirm-accept').addEventListener('click',()=>void confirmPurchase());
    $('tree-grant-button').addEventListener('click',()=>void grantPE());$('tree-remove-pe').addEventListener('click',()=>void correctPE());$('tree-regency-button').addEventListener('click',()=>void toggleAwakening());
@@ -380,7 +391,7 @@
    $('tree-center').addEventListener('click',()=>focus(data.map.get('origem'),.56));
    $('tree-projection').addEventListener('click',()=>state.projection?void exitProjection():void enterProjection());
    $('tree-projector-exit').addEventListener('click',()=>void exitProjection());
-   const key=e=>{if(e.key!=='Escape')return;if(!$('tree-editor-modal').hidden)closeEditor();else if(!$('tree-confirm-modal').hidden)closePurchase();else if(state.projection)void exitProjection()};
+   const key=e=>{if(e.key!=='Escape')return;if(!$('tree-editor-modal').hidden)closeEditor();else if(!$('tree-confirm-modal').hidden)closePurchase();else if(state.projection)void exitProjection();else root.classList.remove('tree-detail-open')};
    const resize=()=>view();const hidden=()=>document.body.classList.toggle('tree-sleep',document.hidden);
    const fullscreen=()=>{if(state.fullscreenUsed&&!document.fullscreenElement){state.fullscreenUsed=false;setProjection(false)}};
    document.addEventListener('keydown',key);window.addEventListener('resize',resize);document.addEventListener('visibilitychange',hidden);document.addEventListener('fullscreenchange',fullscreen);
@@ -390,7 +401,9 @@
     fingers.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(fingers.size===1){pinched=false;state.drag={x:e.clientX,y:e.clientY,cx:state.cx,cy:state.cy,moved:false}}
     if(fingers.size>=2){pinched=true;state.drag=null;state.suppressClick=true}
-    map.setPointerCapture(e.pointerId)
+    // NEVER capture a plain tap on a node: capturing the pointer redirects its click to the map.
+    // Capture blank-space gestures or actual drags only.
+    if(!e.target.closest?.('.tree-node')){try{map.setPointerCapture(e.pointerId)}catch{}}
    };
    const move=e=>{if(!fingers.has(e.pointerId))return;const old=[...fingers.values()];fingers.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(fingers.size>=2){const now=[...fingers.values()],a=old[0],b=old[1],c=now[0],d=now[1];
@@ -401,7 +414,8 @@
      state.cx=worldX-(midAfter.x-rect.left-w/2)/newZoom;state.cy=worldY-(midAfter.y-rect.top-h/2)/newZoom;state.zoom=newZoom;view();return;
     }
     if(!state.drag||pinched)return;const dx=e.clientX-state.drag.x,dy=e.clientY-state.drag.y;
-    if(Math.abs(dx)+Math.abs(dy)>5)state.drag.moved=true;
+    if(Math.abs(dx)+Math.abs(dy)>6){state.drag.moved=true;try{if(!map.hasPointerCapture(e.pointerId))map.setPointerCapture(e.pointerId)}catch{}}
+    if(!state.drag.moved)return;
     state.cx=state.drag.cx-dx/state.zoom;state.cy=state.drag.cy-dy/state.zoom;view();
    };
    const up=e=>{if(!fingers.has(e.pointerId))return;fingers.delete(e.pointerId);

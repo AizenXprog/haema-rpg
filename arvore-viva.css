@@ -203,3 +203,101 @@
  .tree-viva .tree-shortcuts button{min-height:39px}
 }
 @media(prefers-reduced-motion:reduce){.tree-viva .tree-node.muted{transition:none}}
+
+/* HÆMA · Constelação simples: só o caminho importa.
+   Opções administrativas continuam disponíveis sem dominar a cena. */
+.tree-viva .tree-heading{padding:20px clamp(12px,2.5vw,32px) 16px;max-width:1640px}
+.tree-viva .tree-heading h1{font-size:clamp(32px,3vw,48px);margin:5px 0}
+.tree-viva .tree-heading p,.tree-viva .tree-heading-meta,.tree-viva .tree-footer-note{display:none}
+.tree-viva .tree-app{max-width:1640px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);grid-template-areas:"profile" "canvas";gap:9px;min-height:0;position:relative;margin:0 auto 24px;padding:0 clamp(8px,2vw,24px)}
+.tree-viva .tree-profile{grid-area:profile;display:grid;grid-template-columns:auto minmax(175px,300px) minmax(210px,1fr) auto;gap:12px;align-items:center;max-height:none;min-height:0;overflow:visible;padding:10px 15px;z-index:40}
+.tree-viva .tree-profile>.tree-label{font-size:10px;white-space:nowrap}
+.tree-viva .tree-profile>.tree-select{width:100%;min-height:42px;padding:8px 12px}
+.tree-viva .tree-profile>.tree-metrics{display:flex;justify-content:flex-end;gap:8px;min-width:0;margin:0}
+.tree-viva .tree-profile>.tree-metrics>div{flex:0 1 108px;min-width:0;padding:5px 8px}
+.tree-viva .tree-profile>.tree-metrics small{white-space:nowrap;font-size:9px}
+.tree-viva .tree-profile>.tree-metrics strong{font-size:24px;line-height:1.15}
+.tree-viva .tree-profile>#tree-account-status{display:none}
+.tree-viva .tree-profile>#tree-account-status[data-error="yes"]{display:block;position:absolute;top:100%;left:10px;right:10px;z-index:48;background:#48252c;color:#ffdbca;border:1px solid #b97572;padding:10px;border-radius:6px;font-size:12px}
+.tree-viva .tree-profile>.tree-advanced-drawer{display:block;position:relative;grid-column:4;margin:0;align-self:center;z-index:50}
+.tree-viva .tree-advanced-drawer>summary{display:flex;align-items:center;justify-content:center;min-height:40px;white-space:nowrap;list-style:none;border:1px solid #806552;border-radius:8px;cursor:pointer;padding:0 13px;background:#302029;color:#f0d3a9;font:700 11px 'DM Sans',sans-serif;letter-spacing:0}
+.tree-viva .tree-advanced-drawer>summary::-webkit-details-marker{display:none}
+.tree-viva .tree-advanced-drawer[open]>summary{background:#5a3540;color:#ffe8bd}
+.tree-viva .tree-advanced-drawer>summary::after,.tree-viva .tree-advanced-drawer[open]>summary::after{content:none}
+.tree-viva .tree-advanced-content{display:block;position:absolute;z-index:52;right:0;top:calc(100% + 12px);width:min(350px,calc(100vw - 32px));max-height:min(78dvh,760px);overflow:auto;box-sizing:border-box;padding:18px;background:linear-gradient(160deg,#291923,#130e17);border:1px solid #8a6255;border-radius:12px;box-shadow:0 26px 65px #040306eb;scrollbar-width:thin}
+.tree-viva .tree-advanced-content #tree-view-filter{width:100%}
+.tree-viva .tree-advanced-content>.tree-label{display:block;margin-top:12px}
+.tree-viva .tree-advanced-content>.tree-shortcuts{margin-top:9px}
+.tree-viva .tree-advanced-content>.tree-projection-button{display:block;width:100%;margin-top:15px;min-height:42px;border:1px solid #aa8961;border-radius:7px;background:#3a2630;color:#efdbbf;cursor:pointer}
+.tree-viva .tree-advanced-content .tree-role-tools,.tree-viva .tree-advanced-content .tree-route-controls{margin-top:15px}
+.tree-viva .tree-viewport{grid-area:canvas;height:clamp(570px,76dvh,900px);min-height:570px;border-radius:12px;position:relative}
+.tree-viva .tree-viewport-controls{right:15px;top:15px;bottom:auto;gap:5px}
+.tree-viva .tree-viewport-controls button{border-radius:9px;min-height:42px;min-width:42px;background:#201722e8}
+.tree-viva .tree-quickbar{left:14px;right:14px;bottom:14px;min-height:64px;max-width:760px;margin:auto;padding:10px 13px;gap:12px}
+.tree-viva .tree-quick-pe{flex-basis:58px}
+.tree-viva .tree-quick-pe strong{font-size:30px}
+.tree-viva .tree-quick-info strong{font-size:22px}
+.tree-viva .tree-quickbar button{max-width:36%;min-height:42px}
+.tree-viva .tree-hover-card{display:none!important}
+.tree-viva .tree-details{display:none;position:absolute;z-index:20;right:clamp(20px,3vw,44px);top:86px;width:min(340px,calc(100% - 40px));max-height:calc(clamp(570px,76dvh,900px) - 130px);box-sizing:border-box;overflow:auto;padding:19px 18px 20px;border:1px solid #b78b68;border-radius:13px;background:linear-gradient(160deg,#2a1a24ed,#120d15fa);box-shadow:0 22px 80px #030205d9;backdrop-filter:blur(16px)}
+.tree-viva .tree-detail-open .tree-details{display:block;animation:tree-card-enter .22s ease-out}
+@keyframes tree-card-enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.tree-viva #tree-detail-close{display:grid;place-items:center;position:absolute;right:11px;top:11px;z-index:2;width:34px;height:34px;background:#32212b;color:#e9d3be;border:1px solid #8e635b;border-radius:8px;cursor:pointer}
+.tree-viva .tree-details .tree-panel-header,.tree-viva .tree-detail-glyph,.tree-viva .tree-details>.tree-route-note,.tree-viva .tree-details>.tree-detail-warning,.tree-viva #tree-unlock{display:none!important}
+.tree-viva .tree-details h2{font-size:clamp(27px,2.6vw,37px);margin:10px 36px 12px 0;line-height:1.03}
+.tree-viva .tree-detail-path{margin:0;font-size:10px}
+.tree-viva .tree-description{padding:12px;margin-top:12px}
+.tree-viva .tree-description p{font-size:12px;line-height:1.5}
+.tree-viva .tree-detail-meta{margin:10px 0;gap:5px}
+.tree-viva .tree-detail-meta>div{padding:8px}
+.tree-viva .tree-detail-meta strong{font-size:22px}
+.tree-viva .tree-detail-state{font-size:11px;line-height:1.5;min-height:0}
+.tree-viva .tree-rules-fold{border-top:1px solid #5d4043;border-bottom:1px solid #5d4043;margin-top:12px;padding:9px 0}
+.tree-viva .tree-rules-fold>summary{cursor:pointer;color:#e7c697;font-size:12px;font-weight:700;list-style:none;padding:5px 3px}
+.tree-viva .tree-rules-fold>summary::after{content:'＋';float:right}
+.tree-viva .tree-rules-fold[open]>summary::after{content:'−'}
+.tree-viva .tree-rules-fold>summary::-webkit-details-marker{display:none}
+.tree-viva .tree-rule-grid{margin-top:12px}
+.tree-viva .tree-edit-button{font-size:11px;padding:10px}
+.tree-viva .tree-node .node-touch{pointer-events:all;fill:rgba(0,0,0,.001)}
+.tree-viva .tree-node:focus-visible{outline:none}
+.tree-viva .tree-node:focus-visible circle.core{stroke:#fff6d8;stroke-width:6}
+.tree-projection .tree-viva .tree-app{display:block;height:100dvh!important;max-width:none!important;margin:0;padding:0}
+.tree-projection .tree-viva .tree-viewport{height:100dvh;min-height:0;border:0;border-radius:0}
+.tree-projection .tree-viva .tree-details{display:none!important}
+@media(max-width:900px){
+ .tree-viva .tree-profile{grid-template-columns:auto minmax(150px,1fr) auto;gap:8px;padding:9px}
+ .tree-viva .tree-profile>.tree-metrics{grid-column:1/3;grid-row:2;justify-content:flex-start}
+ .tree-viva .tree-profile>.tree-advanced-drawer{grid-column:3;grid-row:1/3}
+ .tree-viva .tree-details{top:150px}
+}
+@media(max-width:720px){
+ .tree-viva .tree-heading{padding:14px 12px 10px}
+ .tree-viva .tree-heading h1{font-size:31px}
+ .tree-viva .tree-app{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:7px;min-height:0;padding:0 6px}
+ .tree-viva .tree-profile{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 8px;padding:9px 10px;max-height:none;overflow:visible;order:0}
+ .tree-viva .tree-profile>.tree-label{grid-column:1;grid-row:1}
+ .tree-viva .tree-profile>.tree-select{grid-column:1;grid-row:2;min-height:43px}
+ .tree-viva .tree-profile>.tree-metrics{grid-column:1/-1;grid-row:3;display:flex;gap:6px}
+ .tree-viva .tree-profile>.tree-metrics>div{flex:1;max-width:unset;text-align:center}
+ .tree-viva .tree-profile>.tree-advanced-drawer{grid-column:2;grid-row:2}
+ .tree-viva .tree-profile>.tree-advanced-drawer>summary{font-size:10px;padding:0 10px}
+ .tree-viva .tree-advanced-content{right:0;top:calc(100% + 9px);max-height:63dvh}
+ .tree-viva .tree-viewport{grid-area:canvas;order:0;height:clamp(480px,70dvh,760px);min-height:480px}
+ .tree-viva .tree-quickbar{bottom:10px;left:8px;right:8px;max-width:none;min-height:0;grid-template-columns:45px minmax(0,1fr);padding:9px}
+ .tree-viva .tree-quick-info strong{font-size:18px}
+ .tree-viva .tree-quick-info span{font-size:10px}
+ .tree-viva .tree-quickbar button{max-width:none}
+ .tree-viva .tree-details{position:fixed;z-index:200;left:0;right:0;top:auto;bottom:calc(72px + env(safe-area-inset-bottom));width:100%;max-height:48dvh;padding:18px 18px 22px;border-radius:18px 18px 0 0;box-shadow:0 -14px 65px #000b;background:#1c121bdc;backdrop-filter:blur(23px)}
+ .tree-viva .tree-details h2{font-size:30px}
+ .tree-viva .tree-detail-open .tree-quickbar{position:fixed;z-index:210;left:0;right:0;bottom:0;max-width:none;width:100%;margin:0;padding:10px max(13px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom)) max(13px,env(safe-area-inset-right));border-radius:0;min-height:64px;display:flex;justify-content:space-between}
+ .tree-viva .tree-detail-open .tree-quick-pe{flex:0 0 48px}
+ .tree-viva .tree-detail-open .tree-quick-pe strong{font-size:26px}
+ .tree-viva .tree-detail-open .tree-quick-info{display:none}
+ .tree-viva .tree-detail-open .tree-quickbar button{flex:1;max-width:none}
+ .tree-viva .tree-viewport-controls{top:9px;right:9px;bottom:auto}
+ .tree-viva .tree-viewport-controls button{min-width:39px;min-height:39px}
+}
+@media(prefers-reduced-motion:reduce){.tree-viva .tree-detail-open .tree-details{animation:none}}
+
+.tree-viva .tree-advanced-drawer:not([open])>.tree-advanced-content{display:none!important}
