@@ -30,3 +30,16 @@
 @media(max-width:1120px){.tree-app{grid-template-columns:215px minmax(0,1fr);grid-template-areas:'profile canvas' 'details canvas';min-height:760px}.tree-profile{grid-area:profile}.tree-details{grid-area:details}.tree-viewport{grid-area:canvas}.tree-detail-body{min-height:0}}
 @media(max-width:750px){.tree-heading{padding:27px 17px 22px;align-items:start}.tree-heading-meta{display:none}.tree-app{display:flex;flex-direction:column;padding:0 8px;gap:8px}.tree-profile{order:1}.tree-viewport{order:2;height:65vh;min-height:420px}.tree-details{order:3}.tree-legend-items{display:grid;grid-template-columns:1fr 1fr}.tree-hint{display:none}.tree-canvas-label b{font-size:16px}.tree-heading h1{font-size:49px}.tree-projection .tree-viewport{height:100vh;min-height:0}}
 @media(prefers-reduced-motion:reduce){.tree-edge,.tree-node circle.core,.tree-unlock{transition:none}.tree-node.unlocked circle.core{filter:none}}
+/* Acesso exclusivo: nada da árvore é renderizado antes da autenticação do mestre. */
+.haema-tree-page [hidden],.tree-private-gate[hidden]{display:none!important}
+.tree-private-gate{min-height:53vh;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;text-align:center;padding:35px 18px;color:#ebded5}
+.tree-private-gate span{display:grid;place-items:center;width:82px;height:82px;border:1px solid #af8b6d;color:#d9b786;border-radius:50%;font:55px Georgia,serif}
+.tree-private-gate h2{font:2.35rem 'Cormorant Garamond',Georgia,serif;margin:0}
+.tree-private-gate p{max-width:51ch;color:#c7b4af}
+.tree-private-gate button{border:1px solid #b88c69;color:#f7e6cc;background:#522d39;padding:12px 19px;cursor:pointer;border-radius:6px}
+.tree-embedded .topbar,.tree-embedded .footer,.tree-embedded .tree-heading,.tree-embedded .tree-footer-note,.tree-embedded .tree-back{display:none!important}
+.tree-embedded body{background:#0f0b10!important}
+.tree-embedded .haema-tree-page{padding:0!important;margin:0!important;max-width:none!important}
+.tree-embedded .tree-app{height:calc(100dvh - 4px);min-height:600px;margin:0!important}
+.tree-embedded .tree-viewport{min-height:600px}
+@media(max-width:760px){.tree-embedded .tree-app{height:auto;min-height:700px}}
