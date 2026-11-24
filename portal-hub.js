@@ -14,7 +14,7 @@ async function init(){
    const a=node('a');a.href=href;const body=node('div');body.append(node('h3','',title),node('p','',description));a.append(body,node('b','','↗'));list.append(a);
   }
   if(info.admin){
-   link('painel-mestre.html','Painel do Mestre · Exclusivo','Console da sessão: constelação, personagens, anotações, rolagens, arquivo e regras rápidas.');
+   link('painel-mestre.html','Painel do Mestre · Exclusivo','Mesa ao Vivo: turnos, recursos dos jogadores, inimigos, evolução, notas e regras rápidas.');
    link('administracao.html','Central de Acessos','Aprovações, permissões e auditoria do HÆMA.');
   }
   if(info.areas.includes('library'))link('biblioteca.html','Biblioteca','Abra o acervo liberado para você.');
