@@ -122,3 +122,30 @@
 @media(max-width:990px){.tree-viva .tree-app{grid-template-columns:220px minmax(0,1fr);grid-template-areas:'profile canvas' 'details canvas';min-height:740px}.tree-viva .tree-details{grid-area:details;max-height:unset}.tree-viva .tree-profile{grid-area:profile}.tree-viva .tree-viewport{grid-area:canvas}.tree-viva .tree-hint{display:none}}
 @media(max-width:720px){.tree-viva .tree-app{display:flex;flex-direction:column;min-height:0;gap:9px}.tree-viva .tree-sidebar{max-height:unset}.tree-viva .tree-viewport{height:65dvh;min-height:440px}.tree-viva .tree-profile{order:1}.tree-viva .tree-details{order:3}.tree-viva .tree-viewport{order:2}.tree-viva .tree-heading{padding:27px 17px}.tree-viva .tree-projector-hud{width:min(90vw,360px);right:8px;top:8px;bottom:8px;padding:13px}.tree-projection .tree-viewport-controls{right:12px;bottom:10px;gap:4px}.tree-projection .tree-viewport-controls button{min-width:29px;min-height:31px;font-size:14px}.tree-projection .tree-viewport-controls .tree-projection-button{display:none}.tree-viva .tree-editor-card{padding:16px}.tree-viva .tree-editor-actions,.tree-viva .tree-confirm-actions{flex-direction:column}.tree-projection .tree-viewport{height:100dvh;min-height:0}}
 @media(prefers-reduced-motion:reduce){.tree-viva .tree-mote,.tree-viva .tree-node .node-aura,.tree-viva .tree-edge,.tree-viva .tree-projector-glyph,.tree-viva .tree-node.tree-celebrate .node-aura{animation:none!important}.tree-viva *, .tree-viva *::before,.tree-viva *::after{scroll-behavior:auto!important;transition:none!important}}
+
+/* Painel administrativo de PE / perfis e traçado de rotas */
+.tree-route-controls{margin-top:17px;padding:15px;border:1px solid rgba(197,158,103,.4);background:linear-gradient(155deg,#30202a,#171016);border-radius:9px}
+.tree-route-controls .tree-label{margin-bottom:8px}.tree-plan-status{color:#eee0c8;font-size:12px;line-height:1.55;margin:8px 0 14px}
+.tree-route-controls button{border:1px solid #a48866;background:#342129;color:#eddec8;border-radius:5px;padding:10px 9px;cursor:pointer;font-size:11px}
+.tree-route-controls .tree-route-primary{width:100%;color:#1c1113;background:linear-gradient(110deg,#e2c089,#bd8e60);font-weight:700}
+.tree-route-controls button:disabled{opacity:.48;cursor:not-allowed}.tree-route-inline{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.tree-route-note{font-size:11px;color:#b2a19e;line-height:1.6;margin:10px 0 0}
+.tree-profile-admin{border-top:1px solid rgba(202,170,127,.3);margin-top:15px;padding-top:15px;display:grid;gap:8px}
+.tree-profile-admin label{display:flex;align-items:center;gap:8px;color:#e1cdaf;font-size:11px;cursor:pointer}.tree-profile-admin label input{width:auto}
+.tree-profile-admin button{width:100%;text-align:center;padding:11px}.tree-profile-admin .tree-danger{border-color:#b86765;background:#441c28;color:#f1c0ba}
+.tree-profile-admin p{font-size:10px;color:#bda49d;line-height:1.6;margin:2px 0 0}
+.tree-role-tools #tree-pe-reason{margin-bottom:9px;font-size:11px}.tree-route-controls button:hover:not(:disabled),.tree-profile-admin button:hover:not(:disabled){filter:brightness(1.15)}
+.tree-edge.planned{stroke:#e5bc7c;stroke-width:7;stroke-dasharray:18 10;opacity:.94;filter:drop-shadow(0 0 8px rgba(227,179,96,.5));animation:haema-route-flow 9s linear infinite}
+.tree-node.planned circle.core{stroke:#ffdaa4;stroke-width:5;fill:#503435;filter:drop-shadow(0 0 10px #c69759)}
+@keyframes haema-route-flow{to{stroke-dashoffset:-112}}
+.tree-hover-card{position:absolute;z-index:27;left:16px;top:16px;pointer-events:none;width:min(365px,calc(100% - 24px));max-height:min(74vh,590px);overflow:auto;background:linear-gradient(155deg,rgba(47,29,37,.99),rgba(13,10,16,.99));border:1px solid #d2af7b;border-radius:9px;box-shadow:0 22px 55px #050507df,0 0 25px #bf8c5522;color:#f7e7d3;padding:17px 19px;box-sizing:border-box}
+.tree-hover-card[hidden]{display:none!important}.tree-hover-top{display:flex;align-items:start;gap:8px;justify-content:space-between}.tree-hover-top strong{font:600 24px/1.05 'Cormorant Garamond',Georgia,serif}.tree-hover-top span{font-size:9px;text-transform:uppercase;color:#e1bb7f;white-space:nowrap}
+.tree-hover-card p{font:400 12px/1.5 'DM Sans',sans-serif;color:#ecdbc7;margin:12px 0}.tree-hover-card dl,.tree-hover-card dd{margin:0}
+.tree-hover-card dl>div{border-top:1px solid rgba(197,158,117,.22);padding:8px 0}.tree-hover-card dt{color:#d6b27b;font-size:9px;letter-spacing:.1em;font-weight:700}.tree-hover-card dd{font-size:11px;line-height:1.5;color:#d5c2b2;margin-top:3px}
+.tree-hover-card small{font-size:10px;color:#e9c997}
+.tree-projector-plan{font-size:11px;color:#e4c496;line-height:1.5}.tree-projector-actions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tree-projector-actions button{flex:1;border:1px solid #b99562;background:#2c1922;color:#f1d5ac;font:700 10px 'DM Sans',sans-serif;letter-spacing:.05em;padding:11px 5px;cursor:pointer}
+.tree-projector-actions button:disabled{opacity:.48;cursor:not-allowed}
+.tree-projection .tree-hover-card{z-index:40}
+@media(max-width:750px){.tree-hover-card{max-height:48vh;width:min(360px,calc(100% - 18px));padding:12px 14px}.tree-hover-top strong{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.tree-edge.planned{animation:none}}
