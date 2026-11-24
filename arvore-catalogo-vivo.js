@@ -3,8 +3,9 @@
  * Gerações posteriores são espaços editoriais deliberadamente bloqueados.
  * Site e Sistema criado por Vitor Monte.
  */
-(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.HaemaTreeCatalogVivo=api;})(typeof window!=='undefined'?window:null,function(){
+(function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.HaemaTreeCatalogVivo=api;})(typeof window!=='undefined'?window:null,function(root){
  'use strict';
+ const training=(root&&root.HaemaTrainingGuide)||(typeof require==='function'?require('./arvore-treinamentos.js'):null);
  // Formato: título, gatilho, efeito, limitação, exemplo em mesa.
  const C={
  combate:{
@@ -219,7 +220,7 @@
   if(!parts)return null;
   const bits=parts[1]==='x'?'':parts[1],step=Number(parts[2]),entry=C[node.sector];
   const published=bits.length===0?entry.base[step-1]:bits.length===1?entry.branches[bits][step-1]:null;
-  if(published)return {name:published[0],trigger:published[1],effect:published[2],limit:published[3],example:published[4],status:'ready',kind:step===6?'Marco':step===3?'Técnica':'Especialização'};
+  if(published){const guide=training?.get(node);return {name:published[0],trigger:guide?.trigger??published[1],effect:guide?.effect??published[2],limit:guide?.limit??published[3],example:guide?.example??published[4],status:'ready',kind:step===6?'Marco':step===3?'Técnica':'Especialização',training:!!guide}};
   if(bits.length===3&&step===6){const i=parseInt(bits,2);return {name:apt[node.sector][i],trigger:'Conquista futura do caminho '+bits+'.',effect:'Ápice reservado para desenvolvimento e testes de combate. O efeito definitivo ainda não foi aprovado.',limit:'Em construção: não pode ser adquirido até aprovação do mestre.',example:'A ideia será desenvolvida neste espaço da árvore.',status:'draft',kind:'Ápice em criação'};}
   const focus=node.chapter||node.phase||'Estudo';
   return {name:`Em criação · ${focus} ${step}`,trigger:'A definir para esta bifurcação.',effect:`Lugar reservado à futura habilidade de ${node.label}, na rota ${bits} (${focus}).`,limit:'Este nó não pode ser comprado enquanto estiver em desenvolvimento.',example:'O mestre poderá editar, testar e liberar a habilidade.',status:'draft',kind:'Caminho futuro'};
