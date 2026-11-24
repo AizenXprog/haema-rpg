@@ -78,7 +78,8 @@
    $('tree-projector-pe').textContent=state.character?String(state.progress?.pe_available??0):'—';
    $('tree-projector-count').textContent=String(selectedPath().length);
    const routeLength=Math.max(0,state.plan.length-selectedPath().length);
-   const planText=!state.character?'Selecione um personagem para marcar uma rota.':isArchived()?'Perfil removido. Restaure antes de continuar.':routeLength?('Rota marcada: '+routeLength+' próximas habilidades; zero PE gastos no planejamento.'):'Nenhum caminho futuro marcado. Escolha um nó para desenhar a rota.';
+   const future=state.plan.slice(selectedPath().length),futureCost=data.formatCost(future);
+   const planText=!state.character?'Escolha um personagem para começar.':isArchived()?'Perfil arquivado. Restaure para continuar.':routeLength?`${routeLength} etapas planejadas · ${futureCost} PE previstos · nenhum PE gasto ainda.`:'Toque num nó distante da sua trilha para marcar a rota automaticamente.';
    $('tree-plan-status').textContent=planText;$('tree-projector-plan').textContent=planText;
    const planOk=n.id!=='origem'&&routeValid(n)&&!state.busy;
    $('tree-plan-route').disabled=!planOk;$('tree-projector-plan-route').disabled=!planOk;
@@ -88,17 +89,26 @@
    $('tree-archive-profile').textContent=isArchived()?'Restaurar perfil da árvore':'Remover perfil da árvore';
    $('tree-reset-profile').disabled=!hasOwner()||state.busy||isArchived();
    $('tree-remove-pe').disabled=!hasOwner()||state.busy||isArchived();
+   const quick=$('tree-quick-action'),balance=state.progress?.pe_available??0,route=ancestors(n),remaining=route?.slice(selectedPath().length)||[];
+   const routeCost=data.formatCost(remaining),isPlanned=state.plan.at(-1)===n.id&&state.plan.length>selectedPath().length;
+   $('tree-quick-pe').textContent=state.character?String(balance):'—';
+   $('tree-quick-title').textContent=n.id==='origem'?'O Primeiro Passo':n.name;
+   $('tree-quick-status').textContent=earned?'CONQUISTADA':possible?'PRONTA PARA CONQUISTAR':planned?'ROTA PLANEJADA':n.status!=='ready'?'EM CRIAÇÃO':available?'PRÓXIMA ETAPA':'EXPLORAR A CONSTELAÇÃO';
+   $('tree-quick-hint').textContent=n.id==='origem'?'Escolha uma direção para começar.':possible?n.cost+' PE · saldo após a compra: '+(balance-n.cost):earned?'Habilidade registrada na trilha.':isPlanned?remaining.length+' etapas · '+routeCost+' PE apenas no plano.':routeValid(n)?remaining.length+' etapas até aqui · previsão '+routeCost+' PE.':nodeState(n,earned,available);
+   const mode=possible?'buy':isPlanned?'next':routeValid(n)&&!state.busy?'plan':'none';
+   quick.dataset.action=mode;$('tree-quickbar').dataset.action=mode;quick.disabled=mode==='none';
+   quick.textContent=mode==='buy'?'CONQUISTAR · '+n.cost+' PE':mode==='next'?'IR AO PRÓXIMO PASSO':mode==='plan'?'TRAÇAR ROTA · '+routeCost+' PE':(state.character&&available&&n.status==='ready'&&balance<n.cost?'PE INSUFICIENTES':n.status!=='ready'?'EM CONSTRUÇÃO':'SELECIONE UM CAMINHO');
   }
   function paint(){
    const acquired=new Set(selectedPath()),next=frontier(),planned=new Set(state.plan);
-   for(const el of edges.children){const id=el.dataset.id;el.setAttribute('class','tree-edge'+(acquired.has(id)?' unlocked':planned.has(id)?' planned':next.has(id)?' available':''));}
+   for(const el of edges.children){const id=el.dataset.id;el.setAttribute('class','tree-edge'+(acquired.has(id)?' unlocked':planned.has(id)?' planned':next.has(id)?' available':'')+(state.celebrating===id?' tree-celebrate':''));}
    for(const el of points.children){const id=el.dataset.id,n=data.map.get(id);if(!n)continue;
     const classes=['tree-node',n.type];if(acquired.has(id)||id==='origem')classes.push('unlocked');else if(planned.has(id))classes.push('planned');else if(next.has(id))classes.push('available');
-    if(n.status!=='ready')classes.push('draft');if(id===state.selected)classes.push('current');el.setAttribute('class',classes.join(' '));
+    if(n.status!=='ready')classes.push('draft');if(next.has(id)&&n.status==='ready'&&state.character&&state.progress?.pe_available<n.cost)classes.push('no-pe');if(next.has(id)&&n.lockedByAwakening&&!state.progress?.awakened)classes.push('unawakened');if(id===state.selected)classes.push('current');if(state.celebrating===id)classes.push('tree-celebrate');el.setAttribute('class',classes.join(' '));
     el.setAttribute('aria-label',`${n.name}: ${acquired.has(id)?'adquirida':n.status!=='ready'?'em construção':next.has(id)?'próxima escolha':'rota não conectada'}. ${n.effect}`);
 
    }
-   $('tree-pe').textContent=state.character?String(state.progress?.pe_available??0):'—';$('tree-count').textContent=String(acquired.size);
+   $('tree-pe').textContent=state.character?String(state.progress?.pe_available??0):'—';$('tree-pe-spent').textContent=String(state.progress?.pe_spent??0);$('tree-count').textContent=String(acquired.size);
    $('tree-draft-total').textContent=String(data.nodes.filter(n=>n.status==='draft').length);
    display();
   }
@@ -123,8 +133,8 @@
     grp.addEventListener('pointerleave',()=>hideTooltip(n.id));
     grp.addEventListener('focus',()=>showTooltip(n,null));
     grp.addEventListener('blur',()=>hideTooltip(n.id));
-    grp.addEventListener('click',()=>{if(!state.suppressClick)choose(n.id)});
-    grp.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();choose(n.id)}});
+    grp.addEventListener('click',()=>{if(state.suppressClick)return;choose(n.id);if(canBuy(n))openPurchase();else if(routeValid(n)&&!frontier().has(n.id)&&state.plan.at(-1)!==n.id)markRoute()});
+    grp.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();choose(n.id);if(canBuy(n))openPurchase();else if(routeValid(n)&&!frontier().has(n.id)&&state.plan.at(-1)!==n.id)markRoute()}});
     content.append(grp);
    }points.replaceChildren(content);
    $('tree-total').textContent=String(data.nodes.length);
@@ -341,6 +351,7 @@
    $('tree-character').addEventListener('change',e=>void pickCharacter(e.target.value));
    $('tree-projector-character').addEventListener('change',e=>void pickCharacter(e.target.value));
    $('tree-unlock').addEventListener('click',openPurchase);$('tree-projector-unlock').addEventListener('click',openPurchase);
+   $('tree-quick-action').addEventListener('click',()=>{const mode=$('tree-quick-action').dataset.action;if(mode==='buy')openPurchase();else if(mode==='plan')markRoute();else if(mode==='next')focusNextPlanned()});
    $('tree-confirm-cancel').addEventListener('click',closePurchase);$('tree-confirm-accept').addEventListener('click',()=>void confirmPurchase());
    $('tree-grant-button').addEventListener('click',()=>void grantPE());$('tree-remove-pe').addEventListener('click',()=>void correctPE());$('tree-regency-button').addEventListener('click',()=>void toggleAwakening());
    $('tree-archive-profile').addEventListener('click',()=>void archiveProfile());$('tree-reset-profile').addEventListener('click',()=>void resetProfile());
