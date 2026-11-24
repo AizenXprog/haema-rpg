@@ -96,7 +96,7 @@
    $('tree-quick-title').textContent=n.id==='origem'?'O Primeiro Passo':n.name;
    $('tree-quick-status').textContent=earned?'CONQUISTADA':possible?'PRONTA PARA CONQUISTAR':planned?'ROTA PLANEJADA':n.status!=='ready'?'EM CRIAÇÃO':available?'PRÓXIMA ETAPA':'EXPLORAR A CONSTELAÇÃO';
    $('tree-quick-hint').textContent=n.id==='origem'?'Escolha uma direção para começar.':possible?n.cost+' PE · saldo após a compra: '+(balance-n.cost):earned?'Habilidade registrada na trilha.':isPlanned?remaining.length+' etapas · '+routeCost+' PE apenas no plano.':routeValid(n)?remaining.length+' etapas até aqui · previsão '+routeCost+' PE.':nodeState(n,earned,available);
-   const mode=possible?'buy':isPlanned?'next':routeValid(n)&&!state.busy?'plan':'none';
+   const mode=possible?'buy':(isPlanned||(earned&&!!nextPlanned()))&&!state.busy?'next':routeValid(n)&&!state.busy?'plan':'none';
    quick.dataset.action=mode;$('tree-quickbar').dataset.action=mode;quick.disabled=mode==='none';
    quick.textContent=mode==='buy'?'CONQUISTAR · '+n.cost+' PE':mode==='next'?'IR AO PRÓXIMO PASSO':mode==='plan'?'TRAÇAR ROTA · '+routeCost+' PE':(state.character&&available&&n.status==='ready'&&balance<n.cost?'PE INSUFICIENTES':n.status!=='ready'?'EM CONSTRUÇÃO':'SELECIONE UM CAMINHO');
   }
