@@ -12,13 +12,13 @@
   const tree=window.HaemaSkillTree;if(!tree){root.textContent='Não foi possível carregar o catálogo da árvore.';return;}
   const $=id=>root.querySelector('#'+id),nodeById=tree.map;
   const map=$('tree-map'),world=$('tree-universe'),edges=$('tree-edges'),points=$('tree-nodes');
-  const state={db:null,user:null,characters:[],owners:new Set(),character:null,progress:null,selection:'origem',zoom:0.56,cx:0,cy:0,busy:false,projecting:false,drag:null,blockClick:false};
+  const state={db:null,user:null,isAdmin:false,characters:[],owners:new Set(),character:null,progress:null,selection:'origem',zoom:0.56,cx:0,cy:0,busy:false,projecting:false,drag:null,blockClick:false};
   const svg=(name,attrs={})=>{const e=document.createElementNS(NS,name);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,String(v));return e};
   const safeString=(s)=>String(s??'').slice(0,400);
   const emit=(message,error=false)=>{const p=$('tree-account-status');p.textContent=message;p.dataset.error=error?'yes':'no'};
   const selectable=()=>state.progress?.path||[];
   const frontier=()=>new Set(tree.nextNodes(selectable()).map(n=>n.id));
-  const canBuy=node=>state.character&&state.user&&state.user.id===state.character.user_id&&state.progress&&node&&node.id!=='origem'&&frontier().has(node.id)&&state.progress.pe_available>=node.cost&&(!node.lockedByAwakening||state.progress.awakened)&&!state.projecting;
+  const canBuy=node=>state.character&&state.user&&state.isAdmin&&state.owners.has(state.character.campaign_id)&&state.progress&&node&&node.id!=='origem'&&frontier().has(node.id)&&state.progress.pe_available>=node.cost&&(!node.lockedByAwakening||state.progress.awakened)&&!state.projecting;
   const connect=()=>{
    const selected=new Set(selectable()),available=frontier();
    [...edges.children].forEach(line=>{
@@ -104,11 +104,38 @@
    else emit('Selecione um personagem. Todos os caminhos podem ser explorados sem gastar PE.');
   }
   async function loadAccount(){
+   const gate=document.getElementById('tree-private-gate');
+   const label=document.getElementById('tree-private-message');
+   const login=document.getElementById('tree-private-login');
    try{
-    const {client}=await import('./auth.js');const db=await client();if(token!==epoch||!root.isConnected)return;
-    state.db=db;const {data:{user},error}=await db.auth.getUser();if(error)throw error;if(!user){emit('Visualização pública. Entre pelo Portal com sua conta Google para salvar habilidades.');return}
-    state.user=user;await fetchCharacters();
-   }catch(e){if(token===epoch)emit('A árvore está disponível para explorar. Para salvar, configure ou acesse o Portal e a migração experimental do Supabase. '+safeString(e.message),true)}
+    const auth=await import('./auth.js');
+    const info=await auth.access();
+    if(token!==epoch||!root.isConnected)return;
+    if(!info.user){
+     label.textContent='Entre com a conta administradora para acessar a árvore e os personagens.';
+     login.hidden=false;login.textContent='Entrar com Google';login.onclick=()=>auth.login();return;
+    }
+    if(!info.admin){
+     label.textContent='Acesso negado: somente a conta administradora do HÆMA pode visualizar e modificar esta árvore.';
+     login.hidden=true;return;
+    }
+    state.isAdmin=true;state.user=info.user;state.db=await auth.client();
+    if(token!==epoch||!root.isConnected)return;
+    await fetchCharacters();
+    if(token!==epoch||!root.isConnected)return;
+    root.hidden=false;gate.hidden=true;
+    draw();bind();view();connect();
+    const desired=new URLSearchParams(location.search).get('character');
+    if(desired&&state.characters.some(c=>c.id===desired)){
+      state.character=state.characters.find(c=>c.id===desired);
+      $('tree-character').value=desired;
+      try{await fetchProgress()}catch(e){emit('Falha ao carregar a trilha: '+safeString(e.message),true)}
+    }
+   }catch(e){
+    if(token!==epoch||!root.isConnected)return;
+    label.textContent='O acesso permanece bloqueado: '+safeString(e.message);
+    login.hidden=true;
+   }
   }
   function waitFeedback(text,error=false){$('tree-detail-state').textContent=text;emit(text,error)}
   async function unlock(){
@@ -160,7 +187,7 @@
    map.addEventListener('pointercancel',()=>{state.drag=null});
    cleanup=()=>{document.removeEventListener('keydown',onKey);window.removeEventListener('resize',onResize);state.projecting=false;document.body.classList.remove('tree-projection');epoch++};
   }
-  draw();bind();view();connect();loadAccount();
+  loadAccount();
  }
  document.addEventListener('haema:navigated',init);
  document.addEventListener('haema:leaving',()=>{cleanup();cleanup=()=>{}});
