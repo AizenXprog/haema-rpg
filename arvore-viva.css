@@ -149,3 +149,8 @@
 .tree-projection .tree-hover-card{z-index:40}
 @media(max-width:750px){.tree-hover-card{max-height:48vh;width:min(360px,calc(100% - 18px));padding:12px 14px}.tree-hover-top strong{font-size:19px}}
 @media(prefers-reduced-motion:reduce){.tree-edge.planned{animation:none}}
+
+
+.tree-archive-toggle{display:flex;gap:8px;align-items:center;margin:10px 0;color:#cbbba7;font-size:11px;line-height:1.4;cursor:pointer}
+.tree-archive-toggle input{accent-color:#caa36b;width:15px;height:15px;flex:none}
+.tree-archive-toggle:hover{color:#f4e1c2}
