@@ -21,6 +21,7 @@
  <aside class="tree-sidebar tree-profile" aria-label="Personagens e caminhos">
   <div class="tree-panel-header"><span>ARQUIVO DA JORNADA</span><span class="tree-indicator">SISTEMA EXPERIMENTAL</span></div>
   <label class="tree-label" for="tree-character">Personagem em foco</label><select id="tree-character" class="tree-select"><option value="">Explorar sem selecionar personagem</option></select>
+  <label class="tree-archive-toggle"><input type="checkbox" id="tree-show-archived"> Exibir perfis removidos (restaurar)</label>
   <p class="tree-status" id="tree-account-status" role="status">Conectando à campanha…</p>
   <div class="tree-metrics"><div><small>PE disponíveis</small><strong id="tree-pe">—</strong></div><div><small>Conquistas</small><strong id="tree-count">0</strong></div></div>
   <div class="tree-search-area"><label class="tree-label" for="tree-search">Buscar habilidade ou caminho</label><input id="tree-search" type="search" autocomplete="off" placeholder="Ex.: Parry, Âncora, Execução" aria-controls="tree-search-results"><div id="tree-search-results" class="tree-search-results" aria-live="polite"></div></div>
@@ -34,7 +35,7 @@
   <div class="tree-role-tools" id="tree-gm-tools" hidden><p>Controle administrativo</p><label class="tree-label" for="tree-grant-pe">Conceder PE</label><div class="tree-inline"><input id="tree-grant-pe" type="number" inputmode="numeric" min="1" max="50" value="4"><button type="button" id="tree-grant-button">Conceder</button><button type="button" id="tree-remove-pe">Retirar</button></div>
    <label class="tree-label" for="tree-pe-reason">Motivo da correção de PE</label><input id="tree-pe-reason" maxlength="250" value="Correção de PE concedidos por engano">
    <button type="button" id="tree-regency-button" class="tree-secondary">Liberar Regências</button>
-   <div class="tree-profile-admin"><label><input type="checkbox" id="tree-show-archived"> Mostrar perfis removidos</label>
+   <div class="tree-profile-admin">
     <button type="button" id="tree-archive-profile">Remover perfil da árvore</button>
     <button type="button" id="tree-reset-profile" class="tree-danger">Reiniciar progressão</button>
     <p>Remover da lista é reversível e não apaga a ficha. Reiniciar zera conquistas e saldo, mas preserva auditoria.</p>
