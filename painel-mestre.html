@@ -6,8 +6,8 @@
 <title>Painel do Mestre — HÆMA</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=0.1"><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="painel-mestre.css?v=20261124">
-<script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script><script defer src="navigation.js?v=7"></script><script defer src="painel-mestre.js?v=20261124"></script>
+<link rel="stylesheet" href="style.css?v=0.1"><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="painel-mestre.css?v=20261124live1">
+<script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script><script defer src="navigation.js?v=7"></script><script defer src="painel-mesa-viva.js?v=20261124live1"></script><script defer src="painel-mestre.js?v=20261124live1"></script>
 </head>
 <body data-page="painel-mestre">
 <a class="skip-link" href="#conteudo">Pular para o painel</a><div aria-hidden="true" class="grain"></div>
@@ -23,19 +23,43 @@
   <div class="command-sidebar-brand"><span class="command-emblem">Æ</span><div><strong>HÆMA</strong><small>CONSOLE DO MESTRE</small></div></div>
   <label class="command-label" for="command-campaign">Campanha ativa</label><select id="command-campaign" class="command-select"><option>Carregando…</option></select>
   <div class="command-nav" role="tablist" aria-label="Ferramentas da sessão">
-   <button type="button" role="tab" data-view="overview" aria-selected="true">01 <span>Visão da sessão</span></button>
-   <button type="button" role="tab" data-view="tree" aria-selected="false">02 <span>Árvore de habilidades</span></button>
+   <button type="button" role="tab" data-view="live" aria-selected="true">01 <span>Mesa ao Vivo</span></button>
+   <button type="button" role="tab" data-view="tree" aria-selected="false">02 <span>Evolução</span></button>
    <button type="button" role="tab" data-view="characters" aria-selected="false">03 <span>Personagens</span></button>
-   <button type="button" role="tab" data-view="notes" aria-selected="false">04 <span>Notas e arquivo</span></button>
-   <button type="button" role="tab" data-view="tools" aria-selected="false">05 <span>Ferramentas</span></button>
-   <button type="button" role="tab" data-view="reference" aria-selected="false">06 <span>Regras rápidas</span></button>
+   <button type="button" role="tab" data-view="notes" aria-selected="false">04 <span>Campanha</span></button>
+   <details class="command-nav-more"><summary>Mais ferramentas</summary>
+    <button type="button" role="tab" data-view="overview" aria-selected="false">Visão geral</button>
+    <button type="button" role="tab" data-view="tools" aria-selected="false">Rolagens e links</button>
+    <button type="button" role="tab" data-view="reference" aria-selected="false">Regras rápidas</button>
+   </details>
   </div>
   <div class="command-sidebar-bottom"><div class="command-privacy"><span class="command-live-dot"></span> Sessão administrativa verificada</div><a href="portal.html">Voltar ao Portal</a></div>
  </aside>
  <div class="command-main">
-  <div class="command-toolbar"><div><p class="command-overline">ÁREA PRIVADA · CAMPANHA</p><h1 id="command-title">Visão da sessão</h1></div><div class="command-toolbar-actions"><span class="command-session-label" id="command-session-label">Nenhuma campanha selecionada</span><button type="button" id="command-refresh" class="command-btn minimal">Atualizar dados</button><button type="button" id="command-fullscreen" class="command-btn minimal">Tela cheia</button></div></div>
+  <div class="command-toolbar"><div><p class="command-overline">ÁREA PRIVADA · CAMPANHA</p><h1 id="command-title">Mesa ao Vivo</h1></div><div class="command-toolbar-actions"><span class="command-session-label" id="command-session-label">Nenhuma campanha selecionada</span><button type="button" id="command-refresh" class="command-btn minimal">Atualizar dados</button><button type="button" id="command-fullscreen" class="command-btn minimal">Tela cheia</button></div></div>
   <p class="command-feedback" id="command-feedback" role="status" aria-live="polite"></p>
-  <section data-panel="overview" class="command-panel" role="tabpanel"><div class="command-overview-grid">
+  <section data-panel="live" class="command-panel command-live-panel" role="tabpanel" aria-label="Mesa ao Vivo">
+    <div class="command-live-intro"><div><p class="command-overline">O COMBATE SOB SEU COMANDO</p><h2>Mesa ao Vivo</h2><p>Turnos e recursos dos seus personagens, em um único lugar. As mudanças desta mesa são privadas do Mestre e <strong>não alteram as fichas originais</strong>.</p></div><div class="live-sync"><span id="live-save-status" role="status" aria-live="polite">Carregando mesa…</span><button type="button" id="live-save-now" class="command-btn minimal">Salvar agora</button></div></div>
+    <div id="command-live-root" class="command-live-root">
+      <div class="live-topline">
+       <div class="live-focus"><small>RODADA <strong id="live-round">—</strong></small><strong id="live-current">Nenhum turno iniciado</strong></div>
+       <div class="live-actions"><button type="button" id="live-start" class="command-btn primary">Iniciar combate</button><button type="button" id="live-prev" class="command-btn minimal" disabled aria-label="Turno anterior">←</button><button type="button" id="live-next" class="command-btn primary" disabled>Próximo turno →</button><button type="button" id="live-finish" class="command-btn minimal" disabled>Encerrar</button></div>
+      </div>
+      <div class="live-layout">
+       <section class="live-order-panel" aria-label="Ordem de turnos">
+        <div class="live-section-head"><h3>Ordem de turnos</h3><small>↑ ↓ para reorganizar · clique no nome para ir ao turno</small></div>
+        <div id="live-order" class="live-order-list"><p>Selecione uma campanha.</p></div>
+        <form id="live-add-enemy" class="live-enemy-form"><label for="live-enemy-name">Novo adversário</label><div><input id="live-enemy-name" maxlength="70" autocomplete="off" placeholder="Ex.: Vigia do cais"><button type="submit" class="command-btn">Adicionar</button></div></form>
+       </section>
+       <section class="live-roster-panel" aria-label="Recursos e condições">
+        <div class="live-section-head"><h3>Personagens e adversários</h3><small>Integridade e Fôlego por clique. Recursos extras em cada ficha.</small></div>
+        <div id="live-roster" class="live-roster"><p>Carregando personagens…</p></div>
+       </section>
+      </div>
+      <p class="live-disclaimer">Controle temporário da sessão: valores não sincronizam automaticamente com a ficha 0.1. Use a área Personagens para administrar os perfis; PE e Parry são consultados da Constelação Viva.</p>
+    </div>
+  </section>
+  <section data-panel="overview" class="command-panel" role="tabpanel" hidden><div class="command-overview-grid">
    <article class="command-card command-card-feature"><span class="command-overline">PREPARAÇÃO E CONTROLE</span><h2>A sessão sob seu comando.</h2><p>Notas privadas, personagens, árvore evolutiva e referências num só lugar. Ações registradas permanecem vinculadas à campanha.</p><div class="command-inline-actions"><button type="button" class="command-btn primary" data-switch="tree">Abrir constelação</button><button type="button" class="command-btn" data-switch="notes">Registrar acontecimento</button></div></article>
    <article class="command-card"><span class="command-overline">PAINEL DA CAMPANHA</span><div class="command-stat"><strong id="command-character-count">—</strong><span>personagens</span></div><div class="command-stat"><strong id="command-notes-count">—</strong><span>registros no arquivo</span></div><div class="command-stat"><strong id="command-member-count">—</strong><span>integrantes</span></div></article>
    <article class="command-card command-card-wide"><div class="command-card-head"><h2>Elenco da campanha</h2><button class="command-text-button" type="button" data-switch="characters">Gerenciar personagens</button></div><div class="command-character-grid" id="command-overview-characters"><p>Consultando personagens…</p></div></article>
