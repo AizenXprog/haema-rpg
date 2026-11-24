@@ -86,6 +86,7 @@ async def run_case(browser,width,height):
  effect=await page.locator("#tree-detail-body").inner_text()
  assert "Aparo" in usage and "declare" in usage.lower(),"Habilidade sem instrução concreta de ativação"
  assert "+1" in effect,"Habilidade sem pequena vantagem mensurável"
+ await page.locator(".tree-rules-fold summary").click()
  assert "uma vez por cena" in (await page.locator("#tree-detail-limit").inner_text()).lower(),"Habilidade sem limite claro"
  assert not await page.locator("#tree-confirm-modal").is_visible(),"Não deve comprar sem personagem"
  await page.locator("#tree-detail-close").click()
