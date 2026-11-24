@@ -81,6 +81,12 @@ async def run_case(browser,width,height):
  await page.locator('#tree-map .tree-node[data-id="s1:x:1"]').click()
  assert await page.locator("#tree-details").is_visible(),"Clique do nó não abriu detalhes"
  assert "Postura Medida" in await page.locator("#tree-detail-name").inner_text(),"Nó incorreto foi selecionado"
+ assert await page.locator(".tree-usage-steps").is_visible(),"Como usar precisa estar visível no card"
+ usage=await page.locator("#tree-detail-trigger").inner_text()
+ effect=await page.locator("#tree-detail-body").inner_text()
+ assert "Aparo" in usage and "declare" in usage.lower(),"Habilidade sem instrução concreta de ativação"
+ assert "+1" in effect,"Habilidade sem pequena vantagem mensurável"
+ assert "uma vez por cena" in (await page.locator("#tree-detail-limit").inner_text()).lower(),"Habilidade sem limite claro"
  assert not await page.locator("#tree-confirm-modal").is_visible(),"Não deve comprar sem personagem"
  await page.locator("#tree-detail-close").click()
  assert not await page.locator("#tree-details").is_visible(),"Fechar painel não funcionou"
