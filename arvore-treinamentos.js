@@ -706,6 +706,122 @@
    "Você repete o alinhamento de engrenagens idênticas e soma +1 ao segundo ajuste."
   ]
  ]
+},
+  regencias:{
+ "0": [
+  [
+   "Diante de uma âncora aprovada em playtest, declare o apoio ou barreira material que instalará antes de nova sustentação.",
+   "Reduza em 1 a DT do teste experimental para protegê-la (DT mínima 5), se o mestre usar DT nessa prova.",
+   "Uma vez por cena; só proteção material, sem campo sobrenatural adicional.",
+   "Você prende a âncora ao suporte e diminui a DT do próximo teste de sustentação."
+  ],
+  [
+   "Prepare a mesma âncora e as mesmas condições por uma Ação Principal; declare o pulso que repetirá.",
+   "Some +1 no teste experimental de sustentação da manifestação autorizada.",
+   "Uma vez por cena; mudanças de âncora ou efeito cancelam o preparo; não amplia a manifestação.",
+   "Você ajusta a cadência à mesma peça e rola a sustentação com +1."
+  ],
+  [
+   "Antes de realizar teste de controle experimental, declare o elemento secundário que deseja preservar do efeito autorizado.",
+   "Some +1 no teste experimental para evitar que o efeito incida sobre esse detalhe material próximo.",
+   "Uma vez por cena; depende de efeito realmente permitido; não reduz dano nem anula alvo deliberado.",
+   "Você tenta impedir que a vibração alcance o vidro ao lado, somando +1 ao controle."
+  ],
+  [
+   "Com aliado junto à âncora autorizada, divida as tarefas físicas de manutenção antes do teste.",
+   "Um participante soma +1 ao teste experimental de proteção da âncora pelo auxílio coordenado.",
+   "Uma vez por cena; apoio real necessário; não acumula com outro bônus de auxílio.",
+   "Enquanto você sustenta a haste, o aliado verifica o encaixe e soma +1 no teste."
+  ],
+  [
+   "Antes de uma experiência aprovada, monte e inspecione os apoios físicos da âncora com Ação Principal.",
+   "Reduza em 1 a DT do teste experimental de preparação (DT mínima 5), se houver DT definida.",
+   "Uma vez por cena; não altera a consequência de uma falha depois de ela ocorrer.",
+   "Você confere a base e a DT do preparo da âncora cai de 8 para 7."
+  ],
+  [
+   "Depois de um teste experimental bem-sucedido sob condições estáveis, registre o mesmo protocolo antes de repeti-lo.",
+   "Some +1 à primeira repetição autorizada do teste com a mesma âncora e intensidade.",
+   "Uma vez por cena; não dispensa rolagem quando houver risco; não aumenta o efeito.",
+   "Você repete o ajuste de baixa intensidade e soma +1 no mesmo teste."
+  ]
+ ],
+ "1": [
+  [
+   "Com Eco experimental autorizado, declare a direção e a âncora física antes da tentativa de condução.",
+   "Some +1 no teste de condução desse Eco na direção que já foi aprovada.",
+   "Uma vez por cena; não concede Eco novo nem expande alcance permitido.",
+   "Você mantém a mesma haste e direciona o Eco pelo corredor, rolando +1."
+  ],
+  [
+   "Após observar refluxo de uma tentativa aprovada, declare qual reforço material corrigirá antes de repetir.",
+   "Some +1 no próximo teste de controle do refluxo sob condições corrigidas.",
+   "Uma vez por cena; não apaga instabilidade já causada ou danos prévios.",
+   "Você troca a fixação desgastada e testa o fluxo outra vez com +1."
+  ],
+  [
+   "Antes do teste de identificação do Eco, aponte duas fontes visíveis de matéria ou estímulo que poderiam alimentá-lo.",
+   "Receba +1 no teste experimental para distinguir qual fonte realmente participa da condução.",
+   "Uma vez por cena; não detecta fontes ocultas ou inventa reservas de energia.",
+   "Você compara o cristal e a lâmina próxima, somando +1 para identificar a fonte do Eco."
+  ],
+  [
+   "Ao realizar preparação leve para Eco autorizado, indique a ferramenta já disponível e declare a sequência breve antes de agir.",
+   "Some +1 no teste experimental de preparar o Eco usando essa ferramenta.",
+   "Uma vez por cena; não reduz o tempo de Ação Principal obrigatória nem permite mais uma conjuração.",
+   "Você alinha a ferramenta à âncora e soma +1 ao teste de preparação."
+  ],
+  [
+   "Com um aliado observando o mesmo Eco, divida antecipadamente os sinais materiais que cada um acompanhará.",
+   "Some +1 ao teste experimental de análise realizado por um participante após comparar as duas observações.",
+   "Uma vez por cena; exige observações reais, não produz descoberta automática ou poder.",
+   "Vocês anotam variações opostas e o analista soma +1 para interpretar o padrão."
+  ],
+  [
+   "Quando Eco experimental autorizado começar a gerar efeito secundário observável, declare interrupção antes do próximo teste de controle.",
+   "Some +1 no teste experimental para interromper o fluxo dentro do limite já permitido.",
+   "Uma vez por cena; não reverte dano já aplicado nem permite interromper algo que não possa ser parado.",
+   "Você percebe vibração excessiva, encerra a condução e rola o controle com +1."
+  ]
+ ],
+ "x": [
+  [
+   "Após Despertar autorizado, observe uma manifestação da própria Sintonia e descreva uma sensação verificável antes do teste experimental de observação.",
+   "Some +1 ao teste autorizado para reconhecer um padrão dessa mesma ressonância.",
+   "Uma vez por cena em playtest; não concede manifestação, poder ou Sintonia sem autorização do mestre.",
+   "Você percebe a mesma vibração na pedra e usa +1 para reconhecer seu padrão."
+  ],
+  [
+   "Com uma manifestação experimental autorizada e âncora física visível, declare qual detalhe da âncora examinará durante a preparação.",
+   "Some +1 ao teste experimental para manter o contato correto com essa âncora.",
+   "Uma vez por cena; a âncora deve existir e ser acessível; não cria energia ou matéria.",
+   "Você examina a fissura da haste e testa a sustentação experimental com +1."
+  ],
+  [
+   "Após falha numa tentativa experimental permitida, indique uma alteração concreta de âncora ou postura antes de repetir o teste.",
+   "Some +1 na primeira nova tentativa sob condições corrigidas.",
+   "Uma vez por cena; não repete sem mudar a condição e não apaga consequências da falha anterior.",
+   "A âncora escorregou; você fixa a base e tenta novamente com +1."
+  ],
+  [
+   "Depois de obter leitura confiável de uma âncora, registre um sinal material e declare que usará o mesmo sinal em teste posterior.",
+   "Some +1 no próximo teste experimental de identificação da mesma âncora naquela cena.",
+   "Uma vez por cena; perde utilidade se a âncora for removida ou alterada.",
+   "Você registra o brilho na incisão e soma +1 ao identificá-la novamente."
+  ],
+  [
+   "Durante um teste de Sintonia experimental autorizado, anuncie antes da leitura qual dos três dados observará com maior atenção.",
+   "Após a rolagem, receba uma informação objetiva sobre o dado indicado, sem alterar o resultado.",
+   "Uma vez por cena; não permite rerrolar ou modificar dados; interpretação cabe ao protocolo de mesa.",
+   "Você observa o segundo d4 e o mestre informa o sinal de desalinhamento já previsto no teste."
+  ],
+  [
+   "Ao preparar manifestação autorizada, indique a condição visível que poderia interromper a conexão com a âncora.",
+   "Some +1 no teste experimental para prevenir essa interrupção com medida material válida.",
+   "Uma vez por cena; não prevê riscos invisíveis, cancela fracasso ou torna a âncora invulnerável.",
+   "Você reforça a fiação da âncora e soma +1 à tentativa de mantê-la estável."
+  ]
+ ]
 }
  };
  function get(node){
