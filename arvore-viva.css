@@ -299,3 +299,5 @@
  .tree-viva .tree-viewport-controls button{min-width:39px;min-height:39px}
 }
 @media(prefers-reduced-motion:reduce){.tree-viva .tree-detail-open .tree-details{animation:none}}
+
+.tree-viva .tree-advanced-drawer:not([open])>.tree-advanced-content{display:none!important}
