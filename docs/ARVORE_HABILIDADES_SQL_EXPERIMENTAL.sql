@@ -59,7 +59,7 @@ BEGIN
  IF step_no>1 THEN expected_parent:='s'||sector_no||':'||bits||':'||(step_no-1);
  ELSIF bits='x' THEN expected_parent:='origem';
  ELSIF pg_catalog.length(bits)=1 THEN expected_parent:='s'||sector_no||':x:6';
- ELSE expected_parent:='s'||sector_no||':'||pg_catalog.substring(bits FROM 1 FOR pg_catalog.length(bits)-1)||':6'; END IF;
+ ELSE expected_parent:='s'||sector_no||':'||pg_catalog.substr(bits, 1, pg_catalog.length(bits)-1)||':6'; END IF;
  SELECT id,campaign_id,user_id INTO c FROM public.haema_characters WHERE id=p_character;
  IF NOT FOUND OR c.user_id<>auth.uid() THEN RAISE EXCEPTION 'Personagem indisponível ou não pertence à sua conta'; END IF;
  IF NOT EXISTS(SELECT 1 FROM public.haema_members m WHERE m.campaign_id=c.campaign_id AND m.user_id=auth.uid())
