@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=0.1"><link rel="stylesheet" href="archive.css?v=1"><link rel="stylesheet" href="portal.css?v=0.3"><link rel="stylesheet" href="arvore.css?v=20261124">
-<script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script><script defer src="navigation.js?v=5"></script><script defer src="arvore-data.js?v=20261124"></script><script defer src="arvore.js?v=20261124"></script>
+<script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('tree-embedded');else{const audio=document.createElement('script');audio.defer=true;audio.src='audio.js?v=0.5';document.head.append(audio)}</script><script defer src="script.js?v=0.2"></script><script defer src="navigation.js?v=5"></script><script defer src="arvore-data.js?v=20261124"></script><script defer src="arvore.js?v=20261124"></script>
 </head>
 <body data-page="arvore">
 <a class="skip-link" href="#conteudo">Pular para a árvore</a><div aria-hidden="true" class="grain"></div>
@@ -19,7 +19,7 @@
 </div></header>
 <main id="conteudo" class="haema-tree-page">
 <section class="tree-heading"><div><p class="tree-eyebrow">HÆMA · SISTEMA · PRÉVIA EXPERIMENTAL</p><h1>Constelação <em>das Escolhas</em></h1><p>Uma trilha por personagem. Cada passo transforma sua história; nenhum desvio é gratuito.</p></div><div class="tree-heading-meta"><strong id="tree-total">631</strong><span>pontos de destino<br>numa única constelação</span></div></section>
-<section class="tree-app" id="haema-tree-app" aria-label="Árvore interativa de habilidades">
+<div class="tree-private-gate" id="tree-private-gate" role="status" aria-live="polite"><span aria-hidden="true">Æ</span><h2>Árvore reservada ao Mestre</h2><p id="tree-private-message">Confirmando sua autorização administrativa…</p><button id="tree-private-login" type="button" hidden>Entrar com Google</button></div><section class="tree-app" id="haema-tree-app" hidden aria-label="Árvore interativa de habilidades">
   <aside class="tree-sidebar tree-profile" aria-label="Personagens e progressão">
     <div class="tree-panel-header"><span>ARQUIVO DO VIAJANTE</span><span class="tree-indicator">● EXPERIMENTAL</span></div>
     <label class="tree-label" for="tree-character">Perfil do personagem</label><select id="tree-character" class="tree-select"><option value="">Visualização da constelação</option></select>
@@ -28,7 +28,7 @@
     <p class="tree-notice">As escolhas são permanentes para a campanha. Cada próximo nó precisa estar ligado ao último conquistado.</p>
     <div class="tree-role-tools" id="tree-gm-tools" hidden><p>Controle do mestre</p><label class="tree-label" for="tree-grant-pe">Conceder PE ao personagem</label><div class="tree-inline"><input id="tree-grant-pe" type="number" inputmode="numeric" min="1" max="50" value="4"><button type="button" id="tree-grant-button">Conceder</button></div><button type="button" id="tree-regency-button" class="tree-secondary">Liberar acesso ao ramo de Regências</button></div>
     <div class="tree-legend"><p>CAMINHOS</p><div id="tree-legend-items"></div></div>
-    <a class="tree-back" href="sistema.html">← Voltar ao Sistema</a>
+    <a class="tree-back" href="painel-mestre.html">← Voltar ao Painel do Mestre</a>
   </aside>
   <div class="tree-viewport" id="tree-viewport">
     <div class="tree-canvas-label"><span>HÆMATOMANTHÍA</span><b>AS ROTAS QUE NOS DEFINEM</b></div>
@@ -48,7 +48,7 @@
     <p class="tree-detail-warning">Habilidades, custos e efeitos ainda estão em teste. A árvore não altera automaticamente cálculos da ficha.</p>
   </aside>
 </section>
-<section class="tree-footer-note"><strong>Registro separado e não destrutivo.</strong> A árvore consulta seus personagens existentes, mas não modifica dados de fichas antigas. Para salvar conquistas, é necessário que a migração experimental do Supabase esteja instalada e que o mestre conceda PE.</section>
+<section class="tree-footer-note"><strong>Registro separado e não destrutivo.</strong> A árvore consulta perfis de personagens da campanha e não modifica fichas antigas. Para salvar conquistas, é necessário que a migração experimental do Supabase esteja instalada e que o mestre conceda PE.</section>
 </main>
 <footer class="footer"><div class="footer-authorship"><span>CRIAÇÃO E DESENVOLVIMENTO</span><p>Site e Sistema criado por <strong>Vitor Monte</strong></p></div></footer>
 </body></html>
