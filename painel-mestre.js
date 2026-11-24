@@ -63,7 +63,7 @@
   function mountTree(characterId){const host=$('command-tree-host');if(!host)return;
    const url=new URL('arvore.html',location.href);url.searchParams.set('embed','1');if(characterId)url.searchParams.set('character',characterId);
    const existing=host.querySelector('iframe');if(existing&&!characterId)return;
-   host.replaceChildren();const f=el('iframe');f.title='Árvore experimental de habilidades, acesso exclusivo do mestre';f.loading='eager';f.referrerPolicy='same-origin';f.src=url.pathname+url.search;host.append(f)
+   host.replaceChildren();const f=el('iframe');f.title='Árvore experimental de habilidades, acesso exclusivo do mestre';f.loading='eager';f.referrerPolicy='same-origin';f.allowFullscreen=true;f.setAttribute('allow','fullscreen');f.src=url.pathname+url.search;host.append(f)
   }
   function characterCard(c){const item=el('div','command-character-tile');const tree=state.tree.find(t=>t.character_id===c.id);const owner=state.names.get(c.user_id)|| (c.user_id===state.user.id?'Mestre':'Jogador');
    appendText(item,'h3',c.title);appendText(item,'p',owner);
