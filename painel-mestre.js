@@ -163,6 +163,6 @@
   attach();authorize();
  }
  document.addEventListener('haema:navigated',init);
- document.addEventListener('haema:leaving',()=>{currentEpoch++;if(currentLive){void currentLive.flush().finally(()=>currentLive?.destroy());currentLive=null}});
+ document.addEventListener('haema:leaving',()=>{currentEpoch++;const previous=currentLive;currentLive=null;if(previous)void previous.flush().finally(()=>previous.destroy())});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
