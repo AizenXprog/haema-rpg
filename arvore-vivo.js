@@ -55,7 +55,7 @@
    $('tree-detail-name').textContent=n.name;
    $('tree-detail-path').textContent=panelTitle(n);
    $('tree-detail-body').textContent=n.effect;
-   $('tree-detail-trigger').textContent=n.trigger||'Exige estudo e preparação.';
+   $('tree-detail-trigger').textContent=n.trigger||'Ainda não existe protocolo aprovado para esta habilidade.';
    $('tree-detail-limit').textContent=n.limit||'O mestre define limites para esta Descoberta.';
    $('tree-detail-example').textContent=n.example||'Um exemplo poderá ser escrito no editor.';
    $('tree-detail-glyph').textContent=sec?.symbol||'Æ';$('tree-detail-glyph').style.color=sec?.color||'#dec18a';
@@ -253,8 +253,16 @@
    const nodeId=state.editing;
    const draft={node_id:nodeId,title:$('tree-edit-title').value.trim(),trigger_text:$('tree-edit-trigger').value.trim(),effect:$('tree-edit-effect').value.trim(),limit_text:$('tree-edit-limit').value.trim(),example:$('tree-edit-example').value.trim(),status,updated_by:state.user.id,updated_at:new Date().toISOString()};
    if(!draft.title)draft.title='Em criação';
-   if(status==='ready'&&(draft.title.length<3||draft.trigger_text.length<12||draft.effect.length<20||draft.limit_text.length<12||draft.example.length<12)){
-    $('tree-editor-feedback').textContent='Antes de publicar, preencha nome, gatilho, efeito, limites e exemplo com informações completas.';return;
+   if(status==='ready'&&(draft.title.length<3||draft.trigger_text.length<45||draft.effect.length<40||draft.limit_text.length<35||draft.example.length<35)){
+    $('tree-editor-feedback').textContent='Para publicar, descreva como usar (ação/teste), vantagem concreta, limitações e exemplo com detalhe suficiente.';return;
+   }
+   if(status==='ready'){
+    const usage=/(ataque|a[cç][aã]o|rea[cç][aã]o|teste|rola|rolagem|oposi[cç][aã]o|declara|gaste|gasta|observe|antes de|ap[oó]s|quando|prepare)/i;
+    const advantage=/(\+\s*\d+|reduz|receb|ganh|conserv|mantenh|ignore|evit|desbloque|soma|some|preserv|recuper|altera|custo|DT\s*\d+|dano|marca de Latebra|resultado)/i;
+    const lesson=/(\+\s*\d+|DT\s*\d+|reduz|dado|rola|teste|resultado|rea[cç][aã]o|marca|prote[cç][aã]o|F[oô]lego|Parry)/i;
+    if(!usage.test(draft.trigger_text)||!advantage.test(draft.effect)||!lesson.test(draft.example)){
+     $('tree-editor-feedback').textContent='Falta um procedimento ou benefício aprendido: diga COMO usar, QUAL vantagem exclusiva produz e demonstre no exemplo.';return;
+    }
    }
    state.busy=true;$('tree-editor-feedback').textContent='Salvando no arquivo da campanha…';
    try{const {data:row,error}=await state.db.from('haema_tree_node_edits').upsert(draft,{onConflict:'node_id'}).select('node_id,title,trigger_text,effect,limit_text,example,status,updated_at').single();if(error)throw error;
