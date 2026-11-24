@@ -126,6 +126,122 @@
    "Você tira o escudo do caminho com uma manobra e soma +1 no próximo golpe contra o flanco."
   ]
  ]
+},
+  defesa:{
+ "0": [
+  [
+   "Ocupe cobertura física entre uma ameaça e um aliado; antes de opor-se ao avanço pela linha protegida, declare o bastião.",
+   "Ganhe +1 na primeira disputa de posicionamento para manter o aliado protegido naquela linha.",
+   "Uma vez por cena; não gera escudo invisível, não protege ataques por ângulos descobertos.",
+   "Você permanece entre o guarda e o curandeiro; se o guarda tenta passar, sua oposição recebe +1."
+  ],
+  [
+   "Com um aliado adjacente em formação real, escolha quem seguirá seus movimentos defensivos antes do próximo ataque.",
+   "Esse aliado soma +1 ao próximo teste de Aparo ou Esquiva contra uma fonte frontal compartilhada.",
+   "Uma vez por cena; cada um ainda paga seus próprios custos de Reação; requer formação mantida.",
+   "Dois escudos lado a lado: seu parceiro usa o alinhamento e rola Aparo com +1."
+  ],
+  [
+   "Quando um aliado precisa abandonar uma cobertura, anuncie que sustentará a borda até ele concluir seu Movimento.",
+   "O aliado recebe +1 no próximo teste físico para deixar a cobertura sob pressão inimiga.",
+   "Uma vez por cena; a proteção precisa existir e você deve permanecer exposto no ponto de passagem.",
+   "Você segura a porta enquanto o ferido escapa, dando +1 à travessia dele."
+  ],
+  [
+   "Ao proteger um aliado adjacente com escudo ou obstáculo rígido, declare a técnica antes da redução de dano.",
+   "Reduza em 1 ponto o dano final do ataque protegido, após armadura e Aparo aplicáveis.",
+   "Uma vez por cena; exige cobertura material válida, não reduz dano de área sem barreira apropriada.",
+   "Seu escudo recebe parte do golpe contra o aliado; o dano final de 3 cai para 2."
+  ],
+  [
+   "Use sua Reação para interceptar a aproximação de um inimigo ao aliado que está recuando, declarando a rota a proteger.",
+   "Ganhe +1 na oposição física para impedir a passagem do perseguidor.",
+   "Uma vez por cena; consome sua Reação normal e exige alcance real; não causa dano nem ação extra.",
+   "O inimigo tenta seguir o socorrista; sua lança bloqueia a porta com +1 na oposição."
+  ],
+  [
+   "Depois de suportar um golpe protegendo alguém, declare que manterá a cobertura até o primeiro atendimento naquela posição.",
+   "O próximo aliado que tentar um atendimento com material adequado atrás dessa cobertura recebe +1 no teste de Medicina.",
+   "Uma vez por cena; precisa permanecer entre a ameaça e o paciente; não estabiliza automaticamente.",
+   "Você mantém o escudo erguido; o médico trabalha atrás dele com +1 no teste."
+  ]
+ ],
+ "1": [
+  [
+   "Assista a dois ataques com o mesmo desenho; antes de Aparar uma nova repetição, identifique o ângulo que aprendeu.",
+   "Acrescente +1 ao resultado do dado único de Aparo contra aquele padrão.",
+   "Uma vez por cena; gasta Reação e 1 Fôlego como Aparo normal; mudança de padrão anula a vantagem.",
+   "Você reconhece o terceiro corte horizontal e soma +1 no dado de Aparo."
+  ],
+  [
+   "Se seu Aparo reduzir dano de um ataque corpo a corpo, anuncie imediatamente a abertura que observou no oponente.",
+   "Receba +1 na primeira manobra ofensiva contra esse atacante em seu próximo turno.",
+   "Uma vez por cena; não concede riposta instantânea nem nova Reação; abertura precisa continuar acessível.",
+   "Você desvia a espada e no turno seguinte usa +1 para tentar desarmar seu oponente."
+  ],
+  [
+   "Vença uma oposição de armas; indique antes da ação seguinte como orientará o punho para proteger a própria retirada.",
+   "Some +1 ao próximo teste físico para se afastar do mesmo inimigo até seu próximo turno.",
+   "Uma vez por cena; exige disputa vencida e um trajeto desobstruído; não desloca arma do inimigo de graça.",
+   "Você domina o cabo da lança e se retira da distância de ameaça com +1 na manobra."
+  ],
+  [
+   "Tenha adquirido este nó. Quando um ataque corpo a corpo interceptável o atingir, antes do dano declare «Parry» e gaste sua Reação conforme o protocolo experimental aprovado em mesa.",
+   "Desbloqueia a tentativa exclusiva de Parry/Defesa Perfeita como alternativa ao Aparo e à Esquiva. Sem este nó, o personagem não tem acesso ao Parry.",
+   "Não é uma reação universal. Exige Reação disponível, arma apropriada e custo de Fôlego definido no protocolo. Os dados, critério de sucesso e eventual consequência do Parry ainda precisam de aprovação; nenhuma riposta gratuita é presumida.",
+   "O duelista com este nó declara Parry contra uma espada. O mestre aplica a regra experimental acordada antes da rolagem; sem este nó, só Aparo ou Esquiva usuais."
+  ],
+  [
+   "Depois de uma Esquiva bem-sucedida que custou 1 Fôlego, indique o flanco desguarnecido que encontrou.",
+   "Some +1 à sua primeira manobra de aproximação contra o atacante até o fim do próximo turno.",
+   "Uma vez por cena; não movimenta o personagem automaticamente nem concede Reação extra.",
+   "Você escapa da machadada e, na rodada seguinte, se aproxima pelo flanco com +1."
+  ],
+  [
+   "Após vencer uma oposição de armas defensiva, anuncie como fecha seu punho ou trava o escudo antes de um desarme seguinte.",
+   "Se o inimigo tentar desarmá-lo antes do seu próximo turno, receba +1 na oposição.",
+   "Uma vez por cena; não recupera a Reação gasta e exige que continue segurando a arma/escudo.",
+   "O golpe foi aparado; você fecha a guarda e soma +1 contra a tentativa de desarme."
+  ]
+ ],
+ "x": [
+  [
+   "Ao declarar Aparo válido com arma ou escudo, indique antes da rolagem como estabiliza sua base para a próxima defesa.",
+   "Receba +1 no primeiro teste de oposição de armas que realizar contra esse atacante até seu próximo turno.",
+   "Uma vez por cena; o Aparo ainda consome sua Reação e 1 Fôlego; não aumenta a redução do golpe atual.",
+   "Você segura a primeira lâmina com o escudo e soma +1 ao disputar o próximo controle de arma."
+  ],
+  [
+   "Sofra um golpe físico visível; antes de Aparar uma repetição do mesmo tipo de ataque, anuncie o padrão que memorizou.",
+   "Some +1 ao dado único de Aparo contra a repetição, antes de calcular a redução do dano.",
+   "Uma vez por cena; exige mesmo atacante, padrão reconhecível, Reação livre e pagamento de 1 Fôlego.",
+   "Após observar o martelo vertical, você rola o Aparo de sua competência com +1."
+  ],
+  [
+   "Com escudo ou obstáculo que cubra um aliado adjacente, declare antes do ataque de onde virá a proteção.",
+   "Dê +1 ao próximo teste de Esquiva do aliado contra a fonte coberta, se ele gastar a própria Reação.",
+   "Uma vez por cena; não intercepta golpes pelas costas nem substitui cobertura real.",
+   "Você ergue o escudo na linha do arqueiro; o aliado faz a Esquiva com +1."
+  ],
+  [
+   "Antes de realizar oposição física numa passagem que seu corpo realmente bloqueia, anuncie «Âncora de Guarda».",
+   "Ganhe +1 na disputa para impedir a passagem de um adversário.",
+   "Uma vez por cena; segura uma passagem por vez; não paralisa criaturas que não sejam fisicamente contidas.",
+   "Na porta estreita, você usa a própria base como obstáculo e soma +1 na oposição."
+  ],
+  [
+   "Depois de ser empurrado, anuncie a recuperação usando seu Movimento normal antes do próximo teste de equilíbrio.",
+   "Receba +1 no teste de equilíbrio necessário para firmar os pés no terreno onde caiu.",
+   "Uma vez por cena; sem movimento extra, requer apoio material e não cura condição ou Ferimento.",
+   "Você é empurrado para cascalhos, gira o calcanhar e recupera a base com +1."
+  ],
+  [
+   "Gaste sua Ação Principal assumindo uma guarda defensiva explícita. Na próxima Reação de Aparo até seu turno seguinte, declare o preparo.",
+   "Acrescente +1 ao dado de Aparo dessa Reação, antes de dividir por dois para reduzir dano.",
+   "Uma vez por cena; o Aparo ainda custa 1 Fôlego e a Reação; sem reação livre não há benefício.",
+   "Você prepara o escudo em vez de atacar; quando a lança chega, rola o Aparo com +1."
+  ]
+ ]
 }
  };
  function get(node){
