@@ -65,7 +65,7 @@
  });
  const grade=faces=>{const index=DICE.indexOf(faces);if(index<0)throw Error('Dado fora da escala');return index+1;};
  const defense=guard=>4+grade(guard);
- const integrity=vigor=>6+(DICE.includes(vigor)?vigor:(()=>{throw Error('Vigor fora da escala')})());
+ const integrity=vigor=>{if(!DICE.includes(vigor))throw Error('Vigor fora da escala');return 6+vigor;};
  function resonance(pattern,chosen){
   if(!Array.isArray(pattern)||!Array.isArray(chosen)||pattern.length!==3||chosen.length!==3||[...pattern,...chosen].some(n=>!Number.isInteger(n)||n<1||n>4))
    throw Error('A Primeira Ressonância usa três d4 posicionados com faces 1–4');
