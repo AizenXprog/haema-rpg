@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR" data-soundtrack="assets/media-vita-ambient.mp3">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#120d12"><meta name="author" content="Vitor Monte">
+<meta name="description" content="HÆMA — Base Oficial 2026.11: decisões aprovadas, protocolo de sessão-teste, Regências, Primeira Ressonância, Tanger, Descobertas e a Constelação Viva.">
+<title>Sistema Mestre — HÆMA | Referência oficial 2026.11</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=0.1">
+<link rel="stylesheet" href="foundation.css?v=1">
+<style>
+:root{color-scheme:dark}
+main.system-reference{color:#efdfd3;background:radial-gradient(ellipse at 45% 4%,rgba(114,39,53,.28),transparent 40%),radial-gradient(ellipse at 90% 70%,rgba(128,76,50,.1),transparent 40%),#140e14;min-height:100vh}
+.sr-shell{max-width:1280px;margin:auto;padding:clamp(26px,4vw,68px) 22px 100px}
+.sr-eyebrow{font:700 .66rem/1.5 "DM Sans",sans-serif;letter-spacing:.23em;text-transform:uppercase;color:#e1b77e}
+.sr-hero{position:relative;border-bottom:1px solid rgba(207,168,114,.34);padding:0 0 clamp(26px,4vw,52px);margin-bottom:30px}
+.sr-hero:before{content:"";position:absolute;left:0;top:12px;bottom:45px;width:3px;background:linear-gradient(#edb77d,#622536,transparent)}
+.sr-hero-inner{padding-left:clamp(18px,2vw,28px);max-width:960px}
+.sr-hero h1{font:600 clamp(3.3rem,8vw,7rem)/.92 "Cormorant Garamond",Georgia,serif;letter-spacing:.005em;color:#fae7c8;margin:15px 0 13px}
+.sr-hero h1 em{font-style:italic;color:#bc6b62}
+.sr-lead{font:400 clamp(1rem,1.5vw,1.17rem)/1.75 "DM Sans",sans-serif;color:#dfc9ba;max-width:780px;margin:0 0 25px}
+.sr-links{display:flex;flex-wrap:wrap;gap:10px}
+.sr-link{display:inline-flex;align-items:center;justify-content:center;background:#5a2635;color:#ffe7c8!important;border:1px solid #a77362;text-decoration:none!important;padding:11px 16px;border-radius:6px;font:600 .8rem "DM Sans",sans-serif}
+.sr-link.ghost{background:transparent;color:#e8ccad!important}
+.sr-link:hover{border-color:#f1c78a;background:#713446}
+.sr-status{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:30px}
+.sr-status>div{padding:17px 18px;border:1px solid rgba(210,170,116,.24);border-radius:8px;background:rgba(41,25,32,.7)}
+.sr-status strong{display:block;font:700 .7rem "DM Sans",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#f3d2a0}
+.sr-status p{font-size:.8rem;line-height:1.55;color:#d4bdb4;margin:7px 0 0}
+.sr-grid{display:grid;grid-template-columns:235px minmax(0,1fr);align-items:start;gap:clamp(18px,3vw,43px)}
+.sr-toc{position:sticky;top:85px;display:grid;gap:3px;border:1px solid rgba(188,139,99,.28);padding:17px 14px;background:rgba(30,19,26,.86);border-radius:9px}
+.sr-toc strong{color:#efca93;font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;margin:0 0 10px;padding:0 8px}
+.sr-toc a{font:500 .76rem/1.4 "DM Sans",sans-serif;text-decoration:none;color:#dcc6bb;padding:9px;border-radius:5px}
+.sr-toc a:hover,.sr-toc a:focus-visible{background:#4c2835;color:#fff1db}
+.sr-content{min-width:0}
+.sr-section{border-bottom:1px solid rgba(194,148,104,.25);padding:7px 0 clamp(28px,3vw,40px);margin-bottom:31px;scroll-margin-top:100px}
+.sr-section h2{font:600 clamp(1.9rem,4vw,2.85rem)/1.13 "Cormorant Garamond",Georgia,serif;color:#f5ddbd;margin:9px 0 15px}
+.sr-section h3{font:600 1.45rem/1.25 "Cormorant Garamond",Georgia,serif;color:#e4bd9c;margin:19px 0 8px}
+.sr-section p,.sr-section li{font:400 .87rem/1.75 "DM Sans",sans-serif;color:#dfc9c1}
+.sr-section p{margin:9px 0}
+.sr-section strong{color:#ffe0b5}
+.sr-section ul{padding-left:20px}
+.sr-section li{margin:4px 0}
+.sr-note{margin-top:16px;border-left:3px solid #b77d60;padding:11px 15px;background:rgba(149,83,66,.12);font-size:.82rem;line-height:1.6;color:#e3c8b7}
+.sr-note.warning{border-left-color:#bc626b;background:rgba(135,40,63,.14)}
+.sr-inline-state{display:inline-block;font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:#cdaa88;font-weight:700}
+.sr-table-wrap{overflow-x:auto;border:1px solid rgba(194,149,100,.25);border-radius:7px;margin-top:15px}
+.sr-table{border-collapse:collapse;width:100%;min-width:570px;text-align:left}
+.sr-table th,.sr-table td{border-bottom:1px solid rgba(194,149,100,.2);padding:10px 13px;font:.77rem/1.55 "DM Sans",sans-serif;vertical-align:top}
+.sr-table th{background:#3b2330;color:#ead1af}
+.sr-table td{color:#dfcbc0}
+.sr-table tr:last-child td{border-bottom:0}
+.sr-statline{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin:20px 0}
+.sr-statline>div{padding:15px;background:rgba(98,45,58,.24);border:1px solid rgba(212,167,117,.24);border-radius:8px}
+.sr-statline b{display:block;font:600 1.6rem/1.1 "Cormorant Garamond",serif;color:#f5d4a3}
+.sr-statline span{font:.7rem/1.5 "DM Sans",sans-serif;color:#c5aaa1}
+.sr-regencies{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.sr-regencies>div{padding:12px 14px;border:1px solid rgba(199,152,105,.23);border-radius:7px;background:#2b1d26}
+.sr-regencies b{display:block;color:#efcda8;font:600 1.26rem "Cormorant Garamond",Georgia,serif}
+.sr-regencies small{font:.74rem/1.5 "DM Sans",sans-serif;color:#cfb7ab}
+.sr-foot{padding-top:12px;text-align:center;color:#ab9088;font:.72rem "DM Sans",sans-serif}
+@media(max-width:820px){.sr-grid{grid-template-columns:minmax(0,1fr)}.sr-toc{position:static;display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:8px}.sr-toc strong{width:100%;margin:5px 0}.sr-toc a{font-size:.7rem}.sr-status{grid-template-columns:1fr}.sr-shell{padding-inline:16px}}
+@media(max-width:450px){.sr-regencies{grid-template-columns:1fr}.sr-hero h1{font-size:3.1rem}.sr-link{width:100%}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<script defer src="script.js?v=0.2"></script><script defer src="audio.js?v=0.5"></script><script defer src="navigation.js?v=5"></script>
+<script defer src="rules-system-reference.js?v=20261125"></script>
+</head>
+<body data-page="sistema">
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div aria-hidden="true" class="grain"></div>
+<header class="topbar"><div class="header-inner">
+<a aria-label="HÆMA, página inicial" class="brand" href="index.html"><img src="assets/favicon.svg" width="35" height="35" alt=""><span>H<span class="accent">Æ</span>MA</span></a>
+<nav class="nav" id="main-nav" aria-label="Navegação principal"><a href="index.html">Início</a><a href="sistema.html">Sistema</a><a href="biblioteca.html">Biblioteca</a></nav>
+<button class="sound-toggle" type="button" id="haema-sound-toggle" aria-label="Ativar música ambiente" aria-pressed="false" title="Controle de música ambiente"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span id="haema-sound-label">SOM DESLIGADO</span></button>
+<button class="menu-toggle" id="menu-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span></button><a class="top-action" href="portal.html">CONTA <span aria-hidden="true">↗</span></a>
+</div></header>
+<main id="conteudo" class="system-reference">
+<div class="sr-shell">
+<section class="sr-hero" aria-labelledby="sr-title"><div class="sr-hero-inner">
+<p class="sr-eyebrow">HÆMA · SISTEMA MESTRE · EDIÇÃO 2026.11</p>
+<h1 id="sr-title">Uma única <em>referência.</em></h1>
+<p class="sr-lead">Os princípios que definem o HÆMA, as regras escolhidas para a sessão-teste e tudo que ainda depende de validação. Seis atributos, técnicas humanas, Metus, Latebra, Invicta, sete Regências, Despertar, Tanger e a Constelação Viva — sem retornar ao Núcleo 0.1.</p>
+<div class="sr-links"><a class="sr-link" href="manual-unificado.html">Manual completo do playtest</a><a class="sr-link ghost" href="laboratorio-unificado.html">Laboratório</a><a class="sr-link ghost" href="https://github.com/AizenXprog/haema-rpg/blob/main/docs/SISTEMA_MESTRE_CONSOLIDADO_20261125.md" target="_blank" rel="noopener noreferrer">Documento integral de decisões</a></div>
+</div></section>
+<div class="sr-status" aria-label="Estados do sistema">
+<div><strong>Base oficial</strong><p>Decisões expressas do criador: identidade, termos, filosofia de jogo e conceitos aceitos.</p></div>
+<div><strong>Protocolo de playtest</strong><p>Uma versão única de números para jogar e medir. Operacional, mas ainda não balanceada com cinco jogadores reais.</p></div>
+<div><strong>Pendente</strong><p>Detalhes que não serão inventados: custo de Ignis, Parry completo, PE unificado, glifos, poderes e dano ofensivo das Regências.</p></div>
+</div>
+<div class="sr-grid">
+<nav class="sr-toc" aria-label="Capítulos da referência"><strong>Índice</strong>
+<a href="#criacao">01 · Criação</a><a href="#dados">02 · Dados e DT</a><a href="#combate">03 · Combate</a><a href="#medo">04 · Metus e Latebra</a>
+<a href="#ferimentos">05 · Ferimentos</a><a href="#evolucao">06 · Evolução e árvore</a><a href="#regencias">07 · Regências</a><a href="#ressonancia">08 · Primeira Ressonância</a><a href="#descobertas">09 · Tanger e Descobertas</a><a href="#invicta">10 · Invicta e Ápice</a><a href="#pendencias">11 · Pendências</a><a href="#ficha">12 · Ficha funcional</a></nav>
+<div class="sr-content">
+<section id="criacao" class="sr-section">
+<span class="sr-inline-state">01 / Base oficial + valores de playtest</span><h2>Criação sem classes</h2>
+<p>Os personagens começam <strong>humanos comuns</strong>. Profissão, história curta, relações e escolhas importam, mas não criam uma classe obrigatória. As capacidades são aprendidas em campanha.</p>
+<div class="sr-statline"><div><b>6</b><span>atributos</span></div><div><b>24</b><span>competências</span></div><div><b>d4 → d12</b><span>escala de evolução</span></div><div><b>5</b><span>jogadores de referência</span></div></div>
+<p><strong>Atributos:</strong> Força, Destreza, Vigor, Intelecto, Percepção e Presença.</p>
+<p><strong>Competências sociais:</strong> Enganação, Persuasão, Empatia, Intimidação, Diplomacia, Liderança, Atuação. <strong>Físicas:</strong> Atletismo, Acrobacia, Luta, Pontaria, Armas Brancas, Furtividade. <strong>Conhecimento:</strong> Observação, Investigação, Ciências, Cultura, Estratégia. <strong>Práticas:</strong> Medicina, Tecnologia, Engenharia, Sobrevivência, Condução, Ladinagem.</p>
+<div class="sr-note"><strong>Protocolo escolhido para o teste:</strong> todos iniciam em d4; quatro aumentos de atributos e seis de competências, até d6 na criação. Guarda inicial d6 dá <strong>Defesa 6</strong>. Integridade máxima = <strong>6 + faces de Vigor</strong>. Não misturar os 6/8 aumentos, Defesa 7 ou Fôlego da edição 0.1.</div>
+</section>
+<section id="dados" class="sr-section"><span class="sr-inline-state">02 / Regra de resolução</span><h2>Uma intenção. Dois dados.</h2>
+<p>Quando existe risco real, role <strong>1 dado do atributo + 1 dado da competência</strong>, compare a soma à DT declarada previamente. Igualar a DT já é sucesso. O Mestre seleciona os dados pela abordagem concreta, não pelo nome da profissão.</p>
+<div class="sr-table-wrap"><table class="sr-table"><thead><tr><th>DT de teste</th><th>Uso operacional</th></tr></thead><tbody><tr><td>5</td><td>Simples sob risco</td></tr><tr><td>7</td><td>Obstáculo significativo</td></tr><tr><td>9</td><td>Difícil, exige domínio ou preparo</td></tr><tr><td>11</td><td>Excepcional</td></tr><tr><td>13+</td><td>Muito excepcional, somente com possibilidade real</td></tr></tbody></table></div>
+<p>Ajuda material pode conceder +1 quando realmente relevante. No candidato, o teto de bônus fixo é +2. Uma tentativa que a ficção permite não depende de comprar uma habilidade.</p>
+</section>
+<section id="combate" class="sr-section"><span class="sr-inline-state">03 / Defesa híbrida</span><h2>Combate e liberdade de manobra</h2>
+<p>Uma Ação Principal, até 6 m de Movimento divisível e uma Reação por rodada. Ataques precisam de alcance real; desarmar, derrubar, atravessar, conter e negociar em perigo são ideias acessíveis a qualquer personagem.</p>
+<p><strong>Esquiva:</strong> Destreza + Acrobacia contra a soma do ataque, consumindo a Reação. <strong>Aparo comum:</strong> arma/escudo adequado, Reação, redução de 1 dano ou 2 para Luta/Armas Brancas d8+. Armadura reduz 0/1/2 conforme proteção. Cobertura parcial +2 ou escudo +1 à Defesa, usar o maior no teste atual.</p>
+<p><strong>Parry / Defesa Perfeita</strong> tem ideia-base aceita: em luta justa corpo a corpo, 1d8 do atacante e 1d8 do defensor; empate permite uma defesa excepcional e contra-ataque. <strong>Mas só é uma técnica aprendida na árvore de Defesa</strong>, não defesa universal. O procedimento detalhado segue em avaliação, isolado do combate comum.</p>
+<div class="sr-note warning"><strong>Pendente:</strong> o equilíbrio entre Aparo e armadura e os detalhes de contra-ataque do Parry ainda não têm aprovação final; não ativar regras extras automaticamente na ficha.</div>
+</section>
+<section id="medo" class="sr-section"><span class="sr-inline-state">04 / Conceitos próprios</span><h2>Metus e Latebra</h2>
+<p><strong>Metus:</strong> representa o medo. O dado de Metus d4/d6/d8 interfere quando a fonte do medo pressiona a ação: todo dado normal <strong>estritamente menor</strong> que Metus é anulado, mas empate sobrevive. Motus é outro termo, não uma nova palavra para Metus.</p>
+<p><strong>Latebra:</strong> números secretos representam a segurança de um esconderijo realmente plausível. Conforme Furtividade, o candidato cria 2–4 Marcas por dados; perseguidores procuram com 1d6 (Rápida) ou 2d6 (Intensiva). Ruído e exposição alteram ou encerram a ocultação. As Marcas podem precisar ser anotadas em área privada do Mestre.</p>
+</section>
+<section id="ferimentos" class="sr-section"><span class="sr-inline-state">05 / Sobrevivência</span><h2>Ferimentos e risco justo</h2>
+<p>No playtest, Integridade 0 incapacita. Dano final de fonte única ≥6 ou queda a 0 gera um Ferimento, até dois. A lesão descrita pode impor −1 apenas à tarefa física realmente prejudicada, sem acumulação automática.</p>
+<p>O candidato de 23/11 usa um único teste inicial Vigor + Sobrevivência DT5 na oportunidade seguinte ao desmaio, Risco de Morte contextual, socorro de Medicina DT5/7 e recuperação em segurança. <strong>Morte continua possível, mas não é um roteiro obrigatório.</strong> O protocolo completo está no Manual do playtest e precisa de validação real.</p>
+</section>
+<section id="evolucao" class="sr-section"><span class="sr-inline-state">06 / Aprendizagem real</span><h2>PE, Vivências e Constelação Viva</h2>
+<p>PE são parte da evolução, mas experiência em cena, treinamento e descobertas são indispensáveis. Ações possíveis permanecem livres; uma técnica comprada concede <strong>uma vantagem específica, observável e delimitada</strong>, com instrução de como usar e exemplo.</p>
+<p>O Manual Unificado propõe 22 técnicas humanas de ensaio. A Constelação Viva contém <strong>631 nós visuais, 126 habilidades descritas e 504 nós em construção</strong>. Parry está no ramo Defesa e depende de aquisição.</p>
+<div class="sr-note warning"><strong>Incompatibilidade conhecida:</strong> a Constelação ainda possui PE separado e técnicas que mencionam Fôlego. **Essas técnicas não estão harmonizadas ao protocolo atual.** Nem o saldo nem as escolhas existentes serão apagados ou convertidos de maneira arbitrária.</div>
+</section>
+<section id="regencias" class="sr-section"><span class="sr-inline-state">07 / Cânone conceitual</span><h2>As Regências conhecidas</h2>
+<p>Sete aspectos da realidade que o universo conhece — não uma lista necessariamente completa, nem escolas de classes, nem autorização gratuita para poderes. <strong>Despertar</strong> abre acesso; <strong>Tanger</strong> exerce influência; <strong>HÆM</strong> também pode investigar sem Tanger.</p>
+<div class="sr-regencies">
+<div><b>Kórven · Forma</b><small>Matéria, estrutura e composição</small></div><div><b>Sælir · Pulso</b><small>Vida, metabolismo e ciclos</small></div>
+<div><b>Vraek · Ímpeto</b><small>Movimento, energia e propagação</small></div><div><b>Ithren · Vínculo</b><small>Conexões e dependências</small></div>
+<div><b>Ossyra · Vestígio</b><small>Marcas, memória e permanência</small></div><div><b>Nælth · Limiar</b><small>Fronteiras e transições</small></div>
+<div><b>Eyris · Percepção</b><small>Sentidos, consciência e interpretação</small></div></div>
+<p>A <strong>forma visual</strong> da manifestação pertence ao jogador; cada Regência terá uma <strong>cor fixa própria</strong>, ainda dependente de aprovação na Lore. A descrição visual não concede efeitos novos.</p>
+</section>
+<section id="ressonancia" class="sr-section"><span class="sr-inline-state">08 / Direção acolhida · números experimentais</span><h2>Primeira Ressonância e Eco</h2>
+<p>Em ocasião narrativa apropriada, o jogador <strong>posiciona três dados d4</strong> com as faces escolhidas — <strong>sem rolá-los</strong> — a partir de pistas. O Mestre já havia definido um padrão secreto ordenado. A qualidade da conexão é determinada por coincidências exatas em cada posição.</p>
+<div class="sr-table-wrap"><table class="sr-table"><thead><tr><th>Acertos exatos</th><th>Estado candidato</th><th>Contato e Eco</th></tr></thead><tbody><tr><td>0/3</td><td>Indícios sem Despertar</td><td>Não recebe Regência utilizável</td></tr><tr><td>1/3</td><td>Contato Frágil</td><td>Regência d4, Eco, DT +2</td></tr><tr><td>2/3</td><td>Contato Instável</td><td>Regência d4, Eco, DT +1</td></tr><tr><td>3/3</td><td>Contato Nítido</td><td>Regência d4, Eco, sem penalidade</td></tr></tbody></table></div>
+<p><strong>Eco</strong> é a primeira influência mínima e localizada após contato utilizável. O teste candidato é dado da Regência + competência humana contra DT5 + penalidade de Sintonia quando existir risco; não concede ataque, cura, teleporte ou controle mental automático.</p>
+<p>Desenvolvimento futuro divide-se em <strong>Sintonia</strong> (qualidade do vínculo), <strong>Domínio</strong> (dado da Regência) e <strong>Descobertas</strong> (repertório). A cadência de ajustes de Sintonia ainda precisa de teste.</p>
+</section>
+<section id="descobertas" class="sr-section"><span class="sr-inline-state">09 / Crescimento por investigação</span><h2>Tanger, Descobertas e evolução da mesma manifestação</h2>
+<p>Uma ideia começa como <strong>Suspeita</strong>, pode ser ensaiada como <strong>Provisória</strong> e amadurecer até <strong>Estável</strong>. Cada aplicação registra fenômeno, âncora, competência humana, escala, alvo, duração, resultado, contrajogo e risco anunciado antes dos dados.</p>
+<p>As escalas do playtest são <strong>Ajuste DT5</strong>, <strong>Intervenção DT7</strong> e <strong>Maior DT9</strong> (esta última exige duas preparações distintas e condições reais). Ensaio adiciona +1 DT e não autoriza repetir infinitamente uma hipótese na mesma cena.</p>
+<p>Uma <strong>mesma manifestação</strong> pode amadurecer de um efeito muito pequeno até algo estruturalmente extraordinário, se o personagem conquistar novas Descobertas, treino e condições. <strong>Não</strong> recebe efeitos maiores automaticamente ao aumentar o dado, nem um resultado excepcional derruba uma muralha inteira sem mecanismo plausível.</p>
+<div class="sr-note warning">DTs ilustrativas de fechadura, porta e muralha, dados de dano ofensivo por escala e curas extraordinárias <strong>não foram ratificados</strong>. São casos de laboratório, não regras a imprimir como verdade universal.</div>
+</section>
+<section id="invicta" class="sr-section"><span class="sr-inline-state">10 / Feito extraordinário</span><h2>Invicta e as quatro formas de Ápice</h2>
+<p><strong>Invicta</strong> é raríssima e nasce de um feito técnico de dados sob perigo real, jamais por interpretação teatral. O protocolo mais recente usa valores altos em ambos os dados originais, um máximo natural e margem natural ≥6; a conta ainda será testada em cinco jogadores. Não há obrigação de uma Invicta por sessão.</p>
+<p>As quatro formas candidatas de <strong>Ápice</strong> são: <strong>Golpe</strong>, <strong>Proteção</strong>, <strong>Superação</strong> e <strong>Tanger</strong>, cada uma limitada por alcance, ação, preparação ou Descoberta real. Uma Invicta não transforma fracasso em sucesso nem inventa poderes.</p>
+</section>
+<section id="pendencias" class="sr-section"><span class="sr-inline-state">11 / Transparência das regras</span><h2>O que ainda não é regra definitiva</h2>
+<ul><li>Balanceamento de Esquiva, Aparo, armadura e Parry, inclusive o contra-ataque.</li>
+<li>Economia de PE única para a ficha, as técnicas e a árvore; remoção das referências antigas a Fôlego.</li>
+<li>Ritmo de risco de morte, recuperação e progressão após sessões reais.</li>
+<li>Custos de Ignis, papel mecânico de Motus, cores e glifos das sete Regências.</li>
+<li>Manifestações ofensivas e cura das Regências, combinações e efeitos Maiores.</li>
+<li>Seleção de habilidades da árvore que se tornará efetivamente normativa.</li></ul>
+<p>O Núcleo 0.1 permanece <strong>preservado como histórico</strong>, não como regra principal deste projeto.</p>
+</section>
+<section id="ficha" class="sr-section"><span class="sr-inline-state">12 / Próximo marco</span><h2>A futura ficha será funcional, não apenas bonita</h2>
+<p><strong>Página 1:</strong> identidade, seis atributos, Integridade, Guarda/Defesa, Ferimentos, risco, Metus e combate. <strong>Página 2:</strong> todas as 24 competências, especializações, instrumentos e história. <strong>Página 3:</strong> PE e Vivências, habilidades aprendidas, Invicta, Regências, Despertar, faces de Sintonia, Eco, Descobertas e Latebra.</p>
+<p>Será feita em <strong>três páginas A4 realmente separadas</strong>, com campos utilizáveis e sem recursos de versões antigas. O fluxo de criação da ficha virá depois desta consolidação, sem alterar automaticamente personagens já salvos.</p>
+<div class="sr-links"><a class="sr-link" href="manual-unificado.html">Consultar procedimento completo do playtest</a><a class="sr-link ghost" href="laboratorio-unificado.html">Testar dados e regras</a></div>
+</section>
+<p class="sr-foot">HÆMA · Edição de referência 2026.11 · Site e Sistema criado por Vitor Monte.</p>
+</div></div></div></main>
+<footer class="footer"><div class="footer-mark"><img src="assets/favicon.svg" width="40" height="40" alt=""><span class="display">HÆMA</span><span>HAEMATOMANTHÍA · SISTEMA AUTORAL</span></div><div class="footer-authorship"><span>CRIAÇÃO E DESENVOLVIMENTO</span><p>Site e Sistema criado por <strong>Vitor Monte</strong></p></div><div class="footer-inner"><span>MANUAL UNIFICADO · PLAYTEST / 2026</span><nav aria-label="Links do rodapé"><a href="index.html">Início</a><a href="manual-unificado.html">Manual</a><a href="portal.html">Portal</a></nav><span>ACESSO PRIVADO POR CAMPANHA</span></div></footer>
+</body></html>
