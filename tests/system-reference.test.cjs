@@ -79,7 +79,7 @@ test('entradas públicas apresentam referência oficial sem apagar manual experi
  assert.match(main,/Primeira Ressonância/);
  assert.match(main,/Parry/);
  assert.match(doc,/\[PENDENTE CRÍTICO\]/);
- assert.match(doc,/sem Fôlego/i);
+ assert.match(doc,/não utiliza barras universais de Fôlego/i);
  assert.match(doc,/Site e Sistema criado por Vitor Monte/);
  assert.ok(!main.includes('HAEMA_BIBLIA_MESTRA.md'),'Não exibir caminho de documento privado');
 });
