@@ -1,3 +1,27 @@
+# HÆMA — Sistema Mestre · Base Oficial 2026.11
+
+**Site e Sistema criado por Vitor Monte.**
+
+## Referência atual — 25/11/2026
+
+A fonte atual das **decisões de sistema explicitamente estabelecidas** é [docs/SISTEMA_MESTRE_CONSOLIDADO_20261125.md](docs/SISTEMA_MESTRE_CONSOLIDADO_20261125.md), apresentada no site em **[sistema-oficial.html](sistema-oficial.html)**. Ela preserva os conceitos autorais de seis atributos/24 competências, Metus, Latebra, Invicta/Ápice, sete Regências conhecidas, Despertar, Tanger, Primeira Ressonância 3d4 posicionados, Eco, Sintonia, Domínio, Descobertas e manifestações evolutivas. Registra também a Constelação Viva e Parry como técnica adquirida.
+
+**A palavra oficial neste repositório identifica a referência de decisões — NÃO afirma que todo valor matemático, poder, efeito de nó ou conteúdo de Lore foi ratificado.** O Manual Unificado e suas fórmulas são um **protocolo único de playtest** até validação com os cinco jogadores. Consulte estados [BASE OFICIAL], [PROTOCOLO DE PLAYTEST], [PENDENTE] e [HISTÓRICO] no documento.
+
+- **Entrada pública:** `sistema.html` → `sistema-oficial.html`; `manual-unificado.html` conserva o detalhamento operacional e recebeu adendo de precedência 25/11.
+- **Manifesto de regras para futura ficha:** `rules-system-reference.js` exporta atributos, 24 competências, Regências, modo da Primeira Ressonância, resultados candidatos, recursos ativos e contrato de 3 páginas.
+- **Laboratório isolado:** `rules-unified-playtest.js` continua candidato, sem conversão de personagens antigos.
+- **Constelação Viva:** 126 habilidades descritas e 504 em construção, 631 nós visuais; seus PE são separados da ficha e **não devem ser duplicados**. Algumas habilidades usam Fôlego e precisam de correção antes de serem normativas.
+- **Parry:** aprendido exclusivamente no ramo Defesa da Constelação. A ideia de 1d8 vs 1d8 empate é estabelecida, mas os procedimentos de contra-ataque e balanceamento ainda estão em revisão.
+- **Lore privada:** não foi publicada como documentação aberta; cores de Regências, glifos, história do universo e poderes aguardando aprovação não são presumidos.
+- **Preservação obrigatória:** não modificar nem apagar fichas, personagens, contas, livros, campanhas, música, trailers, permissões ou saldos antigos. Sem migração de Supabase por esta consolidação.
+- **Ficha futura:** até três páginas A4 independentes; só será criada depois de verificar o manifesto e decidir a consolidação dos recursos e PE.
+- **Autoria:** `Site e Sistema criado por Vitor Monte.`
+
+---
+
+## Documentação histórica (Núcleo 0.1 — preservada, NÃO a versão principal)
+
 # HÆMA — Manual Vivo e Mesa de Jogo 0.1
 
 **Site e Sistema criado por Vitor Monte.**
