@@ -3,7 +3,7 @@
  * Site e Sistema criado por Vitor Monte.
  */
 (()=>{'use strict';
- const tabs={live:'Mesa ao Vivo',overview:'Visão da sessão',tree:'Evolução',characters:'Personagens',notes:'Campanha',tools:'Ferramentas',reference:'Regras rápidas'};
+ const tabs={live:'Mesa ao Vivo',overview:'Visão da sessão',tree:'Evolução',characters:'Personagens',notes:'Campanha',tools:'Ferramentas',reference:'Regras rápidas',archive:'HÆMA Archive'};
  let currentEpoch=0,currentLive=null;
  const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n};
  const limited=(v,n=2000)=>String(v??'').slice(0,n);
@@ -63,6 +63,7 @@
    for(const section of app.querySelectorAll('[data-panel]'))section.hidden=section.dataset.panel!==tab;
    $('command-title').textContent=tabs[tab];
    if(tab==='tree')mountTree();
+   if(tab==='archive'){const host=$('command-archive-host');if(host&&!host.querySelector('iframe')){const f=el('iframe');f.title='HÆMA Archive — acervo administrativo';f.src='haema-archive.html';f.referrerPolicy='same-origin';host.append(f)}}
   }
   function mountTree(characterId){const host=$('command-tree-host');if(!host)return;
    const url=new URL('arvore.html',location.href);url.searchParams.set('embed','1');if(characterId)url.searchParams.set('character',characterId);
