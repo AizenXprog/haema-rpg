@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>HÆMA Archive</title><style>
+:root{color-scheme:dark;background:#100d0b;color:#eee6d9;font:16px system-ui}*{box-sizing:border-box}body{margin:0}main{max-width:1100px;margin:auto;padding:clamp(18px,5vw,60px)}a{color:#d9b67b}header{border-bottom:1px solid #443a2e;padding-bottom:25px}h1{font:400 clamp(3rem,9vw,6rem) Georgia,serif;margin:.2em 0;color:#ead4aa}small,p{color:#bdb0a0;line-height:1.5}section{padding:22px 0}input,select,button{font:inherit;border-radius:5px;border:1px solid #61503a;padding:12px;background:#211b16;color:inherit}button,a.action{cursor:pointer}button:disabled{opacity:.4;cursor:default}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}#query{flex:1;min-width:180px}button.primary{background:#c7a875;color:#120e0a}#results{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}.result{background:#1a1511;border:1px solid #443a2e;border-radius:8px;padding:18px;overflow-wrap:anywhere}.result h3{font-size:1rem;margin:8px 0}.result a{display:inline-block;margin:10px 12px 0 0}.result button{padding:7px 10px;font-size:13px}footer{border-top:1px solid #443a2e;padding-top:20px}[hidden]{display:none!important}
+</style></head><body><main><header><a href="portal.html">← Portal HÆMA</a><p>ACERVO PRIVADO · EDIÇÃO PILOTO</p><h1>HÆMA Archive</h1><p>Encontre recursos de RPG em português ou inglês. Os arquivos originais permanecem no MEGA.</p></header><section><p id="status" role="status">Verificando acesso…</p><button id="login" hidden>Entrar com Google</button><div id="workspace" hidden><div class="toolbar"><a href="archive-import.html">Importar índice para a nuvem</a><a href="https://mega.nz/fm" target="_blank" rel="noopener noreferrer">Abrir MEGA</a></div><p>Se o banco ainda estiver vazio, selecione o TXT para pesquisar imediatamente neste dispositivo. Para acessar o catálogo de outros dispositivos, importe-o primeiro.</p><label for="file">Índice local (opcional): </label><input id="file" type="file" accept=".txt,text/plain"><p id="source">Fonte: catálogo privado na nuvem.</p><form id="search" class="toolbar"><input id="query" aria-label="Pesquisar recursos" placeholder="Ex.: dragão vermelho, escada de madeira"><select id="format" aria-label="Formato"><option value="">Todos os formatos</option><option value="webp">WebP</option><option value="png">PNG</option><option value="jpg">JPG</option></select><button class="primary">Pesquisar</button></form><p>Abra o arquivo no MEGA usando sua conta. Se o link interno não localizar o item, copie o nome e pesquise no MEGA. As miniaturas e o download direto ainda não estão disponíveis.</p><p id="count" role="status"></p><div id="results"></div><div class="toolbar"><button id="prev" disabled>Anterior</button><button id="next" disabled>Próxima</button></div></div></section><footer><small>Site e Sistema criado por Vitor Monte</small></footer></main>
+<script type="module">
+import {access,client,login} from './auth.js';
+import {buildCatalog} from './archive-catalog.js';
+const $=id=>document.getElementById(id), size=48;
+let local=null,page=0,sequence=0,admin=false;
+const norm=q=>q.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\bsem\s+grade\b/g,'semgrade').replace(/\bmorto[ -]vivo\b/g,'undead').split(/[^a-z0-9]+/).filter(w=>w&&!['de','da','do','das','dos','com','e','um','uma'].includes(w));
+function el(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;}
+function render(rows,total){
+ const groups=new Map();for(const r of rows){if(!groups.has(r.asset_group))groups.set(r.asset_group,[]);groups.get(r.asset_group).push(r);}
+ $('results').replaceChildren();
+ for(const variants of groups.values()){
+ const card=el('article');card.className='result';card.append(el('h3',variants[0].name.replace(/_/g,' ')));
+ for(const r of variants){
+ const line=el('div');const a=el('a','Abrir no MEGA · '+r.format.toUpperCase());a.href='https://mega.nz/fm/'+encodeURIComponent(r.handle);a.target='_blank';a.rel='noopener noreferrer';line.append(a);
+ const b=el('button','Copiar nome');b.type='button';b.onclick=async()=>{try{await navigator.clipboard.writeText(r.remote_path.split('/').pop());b.textContent='Copiado';}catch{prompt('Copie o nome:',r.remote_path.split('/').pop());}};line.append(b);card.append(line);
+ }$('results').append(card);
+ }
+ $('count').textContent=total.toLocaleString('pt-BR')+' arquivos encontrados · página '+(page+1);
+ $('prev').disabled=page===0;$('next').disabled=(page+1)*size>=total;
+}
+async function search(){
+ if(!admin)return;const request=++sequence;const words=norm($('query').value), format=$('format').value;
+ $('count').textContent='Consultando…';$('results').replaceChildren();
+ try{
+ let rows,total;
+ if(local){
+ const matches=local.filter(r=>(!format||r.format===format)&&words.every(w=>r.terms.includes(w)));total=matches.length;rows=matches.slice(page*size,(page+1)*size);
+ }else{
+ const db=await client();let q=db.from('haema_archive_assets').select('handle,remote_path,asset_group,name,format',{count:'exact'});
+ if(words.length)q=q.contains('terms',words);
+ if(format)q=q.eq('format',format);
+ const {data,error,count}=await q.order('asset_group').order('handle').range(page*size,(page+1)*size-1);
+ if(error)throw error;rows=data;total=count??0;
+ }
+ if(request===sequence&&admin)render(rows,total);
+ }catch(e){if(request===sequence){$('count').textContent=e.message;$('prev').disabled=$('next').disabled=true;}}
+}
+async function gate(){
+ admin=false;sequence++;local=null;$('file').value='';$('results').replaceChildren();$('workspace').hidden=true;$('login').hidden=true;
+ const info=await access();admin=!!info.admin;$('workspace').hidden=!admin;$('login').hidden=!!info.user;$('status').textContent=admin?'Acesso administrativo autorizado.':info.user?'Área exclusiva do administrador.':'Entre com sua conta HÆMA.';
+ if(admin){$('source').textContent='Fonte: catálogo privado na nuvem.';page=0;await search();}
+}
+$('login').onclick=()=>login().catch(e=>$('status').textContent=e.message);
+$('file').onchange=async()=>{if(!admin)return;const file=$('file').files[0];if(!file){local=null;$('source').textContent='Fonte: catálogo privado na nuvem.';}else{try{const groups=buildCatalog(await file.text(),'/RPG/HAEMA/Imagens');if(!admin)return;local=groups.flatMap(g=>g.variants.filter(v=>v.handle).map(v=>({handle:v.handle,remote_path:v.path,asset_group:g.id,name:g.name,format:v.format,terms:g.terms})));$('source').textContent='Índice local: '+local.length.toLocaleString('pt-BR')+' arquivos.';}catch(e){$('count').textContent=e.message;return;}}page=0;search();};
+$('search').onsubmit=e=>{e.preventDefault();page=0;search();};$('prev').onclick=()=>{page=Math.max(0,page-1);search();};$('next').onclick=()=>{page++;search();};
+document.addEventListener('haema:auth',()=>gate().catch(e=>$('status').textContent=e.message));gate().catch(e=>$('status').textContent=e.message);
+</script></body></html>

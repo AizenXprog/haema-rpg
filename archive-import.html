@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>HÆMA Archive — Importação privada</title>
+<style>
+:root{color-scheme:dark;font:16px system-ui;background:#100e0d;color:#eee}body{margin:0}main{max-width:760px;margin:8vh auto;padding:24px}a{color:#d6bd85}h1{font:clamp(2rem,6vw,4rem) Georgia,serif;font-weight:400;color:#e2cfa5}section{border:1px solid #514735;padding:24px;border-radius:12px;background:#181512}label{display:block;margin:1rem 0}button,input{font:inherit}button{background:#c7ab72;color:#17120b;border:0;padding:12px 20px;border-radius:5px;cursor:pointer}button:disabled{opacity:.45;cursor:default}progress{width:100%;margin-top:16px}p{line-height:1.6;color:#bdb5a6}[hidden]{display:none!important}
+</style></head><body><main><a href="portal.html">← Portal HÆMA</a><h1>HÆMA Archive</h1><p>Importador administrativo do catálogo. Não transfere imagens e não publica links do MEGA.</p><section><p id="status" role="status">Verificando acesso…</p><button id="login" hidden>Entrar com Google</button><div id="workspace" hidden><label for="file">Índice com identificadores MEGA (.txt)</label><input id="file" type="file" accept=".txt,text/plain"><p id="summary"></p><button id="import" disabled>Importar catálogo</button><progress id="progress" hidden max="1" value="0"></progress></div></section><p>Site e Sistema criado por Vitor Monte</p></main>
+<script type="module">
+import {access,client,login} from './auth.js';
+import {buildCatalog} from './archive-catalog.js';
+const $=id=>document.getElementById(id);
+let rows=[],busy=false;
+$('login').addEventListener('click',()=>login().catch(e=>$('status').textContent=e.message));
+async function gate(){
+ const info=await access();
+ $('workspace').hidden=!info.admin;
+ $('login').hidden=!!info.user;
+ $('status').textContent=info.admin?'Acesso administrativo autorizado.':info.user?'Acesso restrito ao administrador.':'Entre com sua conta HÆMA.';
+ return info.admin;
+}
+gate().catch(e=>$('status').textContent=e.message);
+document.addEventListener('haema:auth',()=>gate().catch(e=>$('status').textContent=e.message));
+$('file').addEventListener('change',async()=>{
+ rows=[];$('import').disabled=true;$('summary').textContent='';
+ const file=$('file').files[0];if(!file)return;
+ try{
+ const text=await file.text();
+ const groups=buildCatalog(text,'/RPG/HAEMA/Imagens');
+ const seen=new Set();
+ let conflicts=0;
+ for(const group of groups) for(const v of group.variants){
+  if(!v.handle)continue;
+  if(seen.has(v.handle)){conflicts++;continue;}
+  seen.add(v.handle);
+  rows.push({handle:v.handle,remote_path:v.path,asset_group:group.id,name:group.name,format:v.format,terms:group.terms});
+ }
+ const total=text.split(/\r?\n/).filter(x=>x.trim()).length;
+ const skipped=total-rows.length;
+ $('summary').textContent=rows.length.toLocaleString('pt-BR')+' arquivos válidos; '+groups.length.toLocaleString('pt-BR')+' grupos; '+skipped+' linhas não importadas.';
+ if(conflicts||skipped){$('status').textContent='Há registros ignorados ou duplicados. Revise o índice antes de importar.';rows=[];return;}
+ $('status').textContent='Índice pronto. A importação é incremental e não exclui registros.';
+ $('import').disabled=!rows.length;
+ }catch(e){$('status').textContent=e.message;}
+});
+$('import').addEventListener('click',async()=>{
+ if(busy||!rows.length)return;
+ busy=true;$('import').disabled=true;$('file').disabled=true;
+ let done=0;
+ try{
+ if(!await gate())throw Error('Acesso administrativo necessário.');
+ const db=await client();
+ $('progress').hidden=false;$('progress').max=rows.length;$('progress').value=0;
+ for(let i=0;i<rows.length;i+=250){
+  const batch=rows.slice(i,i+250);
+  const {error}=await db.from('haema_archive_assets').upsert(batch,{onConflict:'handle'});
+  if(error)throw error;
+  done+=batch.length;$('progress').value=done;
+  $('status').textContent='Importados '+done.toLocaleString('pt-BR')+' de '+rows.length.toLocaleString('pt-BR')+'.';
+ }
+ $('status').textContent='Importação concluída: '+done.toLocaleString('pt-BR')+' registros enviados.';
+ }catch(e){$('status').textContent='Importação interrompida após '+done+' registros: '+e.message+' Você pode tentar novamente sem duplicar IDs.';}
+ finally{busy=false;$('file').disabled=false;$('import').disabled=!rows.length;}
+});
+</script></body></html>
