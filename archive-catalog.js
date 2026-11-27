@@ -9,7 +9,7 @@ const vocabulary = [
  ['sword','swords','espada','espadas'], ['shield','escudo'], ['bow','arco'], ['dagger','daggers','adaga','adagas'], ['greataxe','machado'], ['spear','lanca'], ['staff','cajado'], ['magic','magia','magico','magica'], ['fire','fogo'], ['lightning','raio','relampago'],
  ['table','mesa'], ['chair','cadeira'], ['ladder','escada'], ['door','porta'], ['window','janela'], ['wall','parede'], ['floor','piso','chao'], ['altar','altar'], ['tree','arvore','arvores'], ['water','agua'], ['river','rio'], ['snow','neve'], ['desert','deserto'], ['bridge','ponte'],
  ['barbarian','barbaro'], ['bard','bardo'], ['cleric','clerigo'], ['druid','druida'], ['fighter','guerreiro'], ['wizard','mago'], ['sorcerer','feiticeiro'], ['rogue','ladino'], ['paladin','paladino'], ['monk','monge'], ['ranger','patrulheiro'], ['warlock','bruxo'],
- ['beast','besta','animal'], ['undead','morto-vivo'], ['fiend','demonio'], ['elemental','elemental'], ['gridless','semgrade'], ['grid','grade'], ['canopy','copa']
+ ['beast','besta','animal'], ['undead','morto-vivo'], ['fiend','demonio'], ['elemental','elemental'], ['gridless','semgrade'], ['grid','grade'], ['canopy','copa'], ['map','battlemap','mapa','mapas'], ['barrel','barril'], ['crate','caixote','caixa'], ['chest','bau'], ['cave','caverna'], ['house','casa'], ['roof','telhado'], ['grass','grama'], ['rock','rocha'], ['torch','tocha'], ['book','livro'], ['potion','pocao'], ['bed','cama'], ['bone','osso'], ['skull','cranio','caveira'], ['zombie','zumbi'], ['skeleton','esqueleto'], ['horse','cavalo'], ['wolf','lobo'], ['adult','adulto','adulta'], ['dark','escuro','escura'], ['light','claro','clara'], ['furniture','movel','moveis'], ['alchemy','alquimia'], ['glass','vidro'], ['large','grande'], ['small','pequeno','pequena']
 ];
 const aliases = new Map();
 for (const group of vocabulary) for (const word of group) aliases.set(word, new Set(group));
@@ -19,7 +19,10 @@ export function buildCatalog(text, root = '/') {
  const groups = new Map();
  const prefix = root.endsWith('/') ? root : root + '/';
  for (const raw of String(text).split(/\r?\n/)) {
-  const path = raw.replace(/^\uFEFF/, '');
+  const line = raw.replace(/^\uFEFF/, '');
+  const record = line.match(/^(.*?)\s+<H:([A-Za-z0-9_-]{8})>\s*$/);
+  const path = record ? record[1] : line;
+  const handle = record ? record[2] : null;
   if (!path.startsWith(prefix) || !image.test(path)) continue;
   const match = path.match(image), format = match[1].toLowerCase();
   const key = path.slice(0, -match[0].length);
@@ -32,7 +35,7 @@ export function buildCatalog(text, root = '/') {
    item = { id:key, name, variants:[], terms:[...terms] };
    groups.set(key,item);
   }
-  if (!item.variants.some(v => v.path === path)) item.variants.push({format, path});
+  if (!item.variants.some(v => handle ? v.handle === handle : v.path === path)) item.variants.push({format, path, handle});
  }
  return [...groups.values()];
 }
