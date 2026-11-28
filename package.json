@@ -1,0 +1,9 @@
+{
+  "name": "haema-rpg",
+  "private": true,
+  "version": "0.3.0",
+  "dependencies": {
+    "megajs": "1.3.10",
+    "sharp": "0.34.5"
+  }
+}
