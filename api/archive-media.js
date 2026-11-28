@@ -1,5 +1,5 @@
 // Private, read-only MEGA bridge. Never exports share links or session keys.
-const { Storage } = require('megajs');
+const { Storage, File } = require('megajs');
 const sharp = require('sharp');
 const { pipeline } = require('node:stream/promises');
 const TYPES = {png:'image/png',webp:'image/webp',jpg:'image/jpeg',jpeg:'image/jpeg'};
@@ -21,13 +21,34 @@ async function isAdmin(req){
  const admin=await fetch(url.replace(/\/$/,'')+'/rest/v1/rpc/haema_is_admin',{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:'{}',cache:'no-store'});
  return admin.ok && (await admin.json())===true;
 }
+function folderLink(){
+ const value=(process.env.HAEMA_MEGA_FOLDER_URL||'').trim();
+ return /^https:\/\/mega\.nz\/folder\/[A-Za-z0-9_-]{8}#[A-Za-z0-9_-]{22}$/.test(value)?value:null;
+}
 function configured(){
+ if(folderLink())return true;
  const ids=(process.env.HAEMA_MEGA_ROOT_HANDLES||'').split(',').map(v=>v.trim()).filter(Boolean);
  return Boolean(process.env.HAEMA_MEGA_SESSION_JSON && ids.length && ids.every(x=>ID.test(x)));
 }
 async function storage(){
  if(!connection){
   connection=(async()=>{
+   const link=folderLink();
+   if(link){
+    const root=File.fromURL(link);
+    await root.loadAttributes();
+    if(!root.directory||!Array.isArray(root.children))throw Error('Archive folder unavailable');
+    const files=Object.create(null),allowed=new Set(),visited=new Set(),stack=[root];
+    while(stack.length){
+     const node=stack.pop();
+     if(visited.has(node))continue;visited.add(node);
+     if(node.directory){stack.push(...(node.children||[]));continue;}
+     const id=ID.test(node.nodeId||'')?node.nodeId:Array.isArray(node.downloadId)&&ID.test(node.downloadId[1]||'')?node.downloadId[1]:null;
+     if(id){files[id]=node;allowed.add(id);}
+    }
+    if(!allowed.size)throw Error('No files found in archive folder');
+    return {s:{files},allowed,expires:Date.now()+5*60*1000};
+   }
    const session=JSON.parse(process.env.HAEMA_MEGA_SESSION_JSON);
    const s=Storage.fromJSON(session);
    await s.reload();
